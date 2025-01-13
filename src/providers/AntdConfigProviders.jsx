@@ -6,6 +6,11 @@ export default function AntdConfigProviders({ children }) {
   const { styles } = useStyle();
   return (
     <StyleProvider
+      theme={{
+        token: {
+          fontFamily: 'Plus Jakarta Sans'
+        }
+      }}
       button={{
         className: styles.customButton
       }}

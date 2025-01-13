@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 import { notification } from 'antd';
-import { createContext } from 'react';
+import { NotificationContext } from '@/context';
 
 /**
  * @type {React.Context<{
@@ -11,7 +11,6 @@ import { createContext } from 'react';
  *   warning: (message: string, description?: string) => void;
  * }>}
  */
-export const NotificationContext = createContext();
 
 export default function NotificationProvider({ children }) {
   const [api, contextHolder] = notification.useNotification();

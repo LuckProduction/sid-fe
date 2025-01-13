@@ -3,8 +3,8 @@ import api from '@/utils/api';
 
 export default class AuthService {
   /**
-   * Logs in a user with the provided username and password.
-   * @param {string} username - The username of the user.
+   * Logs in a user with the provided email and password.
+   * @param {string} email - The email of the user.
    * @param {string} password - The password of the user.
    * @returns {Promise<{
    *   code: HTTPStatusCode,
@@ -13,8 +13,8 @@ export default class AuthService {
    *   data?: string
    * }>} - A promise that resolves to an object containing the HTTP status code, status, message, and authentication token.
    */
-  static async login(username, password) {
-    const response = await api.post('/auth/login', { body: { username, password } });
+  static async login(email, password) {
+    const response = await api.post('/auth/login', { body: { email, password } });
     if (!response.data) return response;
     return {
       ...response,
@@ -37,8 +37,8 @@ export default class AuthService {
     return { ...response, data: User.fromApiData(response.data, token) };
   }
 
-  static async logout(token) {
-    return await api.post('/auth/logout', { token });
+  static async logout() {
+    return await api.post('/auth/logout');
   }
 
   static async forgot(email) {

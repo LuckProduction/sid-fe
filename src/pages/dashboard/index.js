@@ -1,1 +1,2 @@
-export { default as Foo } from "./Foo";
+export { default as Dashboard } from './Dashboard';
+export { default as VillagePorfile } from './VillagePorfile';

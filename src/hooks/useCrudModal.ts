@@ -1,5 +1,4 @@
-
-import { CrudModalContext } from '@/providers/CrudModalProvider';
+import { CrudModalContext } from '@/context';
 import { useContext } from 'react';
 
 export default function useCrudModal() {

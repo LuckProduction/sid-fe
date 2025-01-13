@@ -76,7 +76,7 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
             {field.options.map((option, index) => (
               <div key={index} className="col-span-3 flex w-full items-center justify-center">
                 <input disabled={field.readOnly} type="radio" id={option.value} name="logo" value={option.value} className="peer hidden" defaultChecked={initialData?.logo === option.value} />
-                <label htmlFor={option.value} className="flex aspect-square h-full w-full items-center justify-center rounded-full border-4 border-gray-200 peer-checked:border-color-primary-500">
+                <label htmlFor={option.value} className="peer-checked:border-color-primary-500 flex aspect-square h-full w-full items-center justify-center rounded-full border-4 border-gray-200">
                   <img src={clientAsset(option.value)} alt={option.name} className="w-full p-1.5" />
                 </label>
               </div>

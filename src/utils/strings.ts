@@ -1,4 +1,4 @@
-import stringsData from "@/data/strings";
+import stringsData from '@/data/strings';
 
 export function upperFirst(str: string): string {
   const strings = str.split(/\W/g);

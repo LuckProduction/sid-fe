@@ -62,8 +62,9 @@ export default function useService<T, P extends any[]>(serviceMethod: (...params
         // TODO: use enum for error messages
         message = error instanceof Error ? error.message : 'An error occurred';
         isSuccess = false;
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
       setMessage(message);
       setIsSuccess(isSuccess);
 
