@@ -1,1 +1,1 @@
-export { default as Boom } from "./Boom"
+export { default as Home } from './Home';
