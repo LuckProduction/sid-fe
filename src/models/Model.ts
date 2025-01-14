@@ -1,9 +1,11 @@
-type ModelKeys = 'profil_desa' | 'user';
+type ModelKeys = 'profil_desa' | 'user' | 'article' | 'category';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
     profil_desa: undefined,
-    user: undefined
+    user: undefined,
+    article: undefined,
+    category: undefined
   };
 }
 

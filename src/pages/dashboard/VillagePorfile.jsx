@@ -17,8 +17,6 @@ const VillagePorfile = () => {
 
   const villageProfile = getAll.data ?? [];
 
-  console.log('from view', getAll.data);
-
   const formFields = [
     {
       label: 'Nama Desa',
@@ -163,10 +161,7 @@ const VillagePorfile = () => {
                   modal.edit({
                     title: 'Edit Data Profil Desa',
                     data: villageProfile,
-                    formFields: formFields,
-                    onsubmit: (values) => {
-                      console.log('formValues', values);
-                    }
+                    formFields: formFields
                   })
                 }
               >

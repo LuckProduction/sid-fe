@@ -2,7 +2,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 
-import { DashboardOutlined, HomeOutlined } from '@ant-design/icons';
+import { BookOutlined, DashboardOutlined, HomeOutlined, TagOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -35,6 +35,13 @@ export const dashboardLink = [
   {
     label: 'Pengaturan Desa',
     children: [{ path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillagePorfile }]
+  },
+  {
+    label: 'Atikel Desa',
+    children: [
+      { path: '/article', label: 'Article', icon: BookOutlined, element: Dashboard.Article },
+      { path: '/category', label: 'Kategori', icon: TagOutlined, element: Dashboard.Category }
+    ]
   }
 ].map((item) => ({
   ...item,
