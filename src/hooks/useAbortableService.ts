@@ -41,8 +41,6 @@ export default function useAbortableService<P extends any[], ApiData, Model>(
   const [totalData, setTotalData] = useState(0);
   const abortController = useRef<AbortController>();
 
-  console.log('data', data);
-
   const execute = useCallback(
     async (...params: P) => {
       setMessage('');
@@ -64,7 +62,6 @@ export default function useAbortableService<P extends any[], ApiData, Model>(
           result.data = typeof parser === 'function' ? parser(data) : (data as Model);
         }
 
-        console.log(result);
         setData(result.data);
         if (onResolved) onResolved({ apiData: awaitedResponse.data, model: result.data ?? undefined });
 

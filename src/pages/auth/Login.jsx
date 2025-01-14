@@ -5,11 +5,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const { user, login, isLoading } = useAuth();
+  const { login, isLoading } = useAuth();
   const { error } = useNotification();
   const [passwordVisible, setPasswordVisible] = useState(false);
-
-  console.log(user);
 
   /**
    * @param {{

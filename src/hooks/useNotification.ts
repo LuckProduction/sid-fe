@@ -1,4 +1,4 @@
-import { NotificationContext } from '@/providers/NotificationProvider';
+import { NotificationContext } from '@/context';
 import { useContext } from 'react';
 
 export default function useNotification() {

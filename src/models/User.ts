@@ -1,14 +1,6 @@
 import { Action } from '@/constants';
 import Model, { ModelChildren } from './Model';
 
-const something = {
-  id: 1,
-  name: 'admin',
-  email: 'admin@app.id',
-  email_verified_at: null,
-  created_at: '2025-01-11T17:19:38.000000Z',
-  updated_at: '2025-01-11T17:19:38.000000Z'
-};
 export interface IncomingApiData {
   id: number;
   email: string;
