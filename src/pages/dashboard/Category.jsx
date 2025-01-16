@@ -1,4 +1,4 @@
-import { DataTable } from '@/components';
+import { DataLoader, DataTable } from '@/components';
 import { InputType } from '@/constants';
 import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
 import { CategoryService } from '@/services';
@@ -119,63 +119,67 @@ const Category = () => {
 
   return (
     <div>
-      <Card>
-        <div className="mb-6 flex items-center justify-between">
-          <Typography.Title level={5}>Data {modul}</Typography.Title>
-          <div className="inline-flex items-center gap-2">
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                modal.create({
-                  title: `Tambah ${modul}`,
-                  formFields: formFields,
-                  onSubmit: async (values) => {
-                    const { message, isSuccess } = await storeCategory.execute(values, token);
-                    if (isSuccess) {
-                      success('Berhasil', message);
-                      fetchCategory(token);
-                    } else {
-                      error('Gagal', message);
+      {getAllCategory.isLoading ? (
+        <DataLoader type="datatable" />
+      ) : (
+        <Card>
+          <div className="mb-6 flex items-center justify-between">
+            <Typography.Title level={5}>Data {modul}</Typography.Title>
+            <div className="inline-flex items-center gap-2">
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  modal.create({
+                    title: `Tambah ${modul}`,
+                    formFields: formFields,
+                    onSubmit: async (values) => {
+                      const { message, isSuccess } = await storeCategory.execute(values, token);
+                      if (isSuccess) {
+                        success('Berhasil', message);
+                        fetchCategory(token);
+                      } else {
+                        error('Gagal', message);
+                      }
+                      return isSuccess;
                     }
-                    return isSuccess;
-                  }
-                });
-              }}
-            >
-              {modul}
-            </Button>
-            <Button
-              variant="outlined"
-              color="danger"
-              disabled={selectedData.length <= 0}
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                modal.delete.batch({
-                  title: `Hapus ${selectedData.length} ${modul} Yang Dipilih ? `,
-                  formFields: formFields,
-                  onSubmit: async () => {
-                    const ids = selectedData.map((item) => item.id);
-                    const { message, isSuccess } = await deleteBatchCategory.execute(ids, token);
-                    if (isSuccess) {
-                      success('Berhasil', message);
-                      fetchCategory(token);
-                    } else {
-                      error('Gagal', message);
+                  });
+                }}
+              >
+                {modul}
+              </Button>
+              <Button
+                variant="outlined"
+                color="danger"
+                disabled={selectedData.length <= 0}
+                icon={<DeleteOutlined />}
+                onClick={() => {
+                  modal.delete.batch({
+                    title: `Hapus ${selectedData.length} ${modul} Yang Dipilih ? `,
+                    formFields: formFields,
+                    onSubmit: async () => {
+                      const ids = selectedData.map((item) => item.id);
+                      const { message, isSuccess } = await deleteBatchCategory.execute(ids, token);
+                      if (isSuccess) {
+                        success('Berhasil', message);
+                        fetchCategory(token);
+                      } else {
+                        error('Gagal', message);
+                      }
+                      return isSuccess;
                     }
-                    return isSuccess;
-                  }
-                });
-              }}
-            >
-              {modul}
-            </Button>
+                  });
+                }}
+              >
+                {modul}
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable data={category} columns={Column} loading={getAllCategory.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
-        </div>
-      </Card>
+          <div className="w-full max-w-full overflow-x-auto">
+            <DataTable data={category} columns={Column} loading={getAllCategory.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+          </div>
+        </Card>
+      )}
     </div>
   );
 };

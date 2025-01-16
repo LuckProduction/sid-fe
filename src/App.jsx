@@ -5,6 +5,7 @@ import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
+import { CreateArticle, EditArticle } from './pages/dashboard';
 
 function App() {
   const { isLoading, user } = useAuth();
@@ -51,7 +52,9 @@ function App() {
                   element: <Element />
                 };
               })
-            )
+            ),
+            { path: '/article/create', element: <CreateArticle /> },
+            { path: '/article/edit/:id', element: <EditArticle /> }
           ]
         },
         {
