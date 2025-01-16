@@ -18,6 +18,21 @@ export default class ArticleService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: Article[];
+   * }>}
+   * */
+  static async getById(token, id) {
+    const response = await api.get(`/artikel/${id}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: Article.fromApiData(response.data) };
+  }
+
+  /**
    * @param {Article} data
    * @param {string} token
    * @returns {Promise<{
