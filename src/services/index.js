@@ -2,3 +2,5 @@ export { default as AuthService } from './AuthService';
 export { default as VillageProfilService } from './VillageProfileService';
 export { default as ArticleService } from './ArticleService';
 export { default as CategoryService } from './CategoryService';
+export { default as EmploymentService } from './EmploymentService';
+export { default as VillageOfficialsService } from './VillageOfficialsService';

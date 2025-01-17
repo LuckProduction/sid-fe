@@ -39,7 +39,7 @@ const Edit = () => {
             formFields={formFields({ options: { category } })}
             onSubmit={async (values) => {
               setSubmitLoading(true);
-              const { message, isSuccess } = await updateArticle.execute(id, values, token, values.image.file);
+              const { message, isSuccess } = await updateArticle.execute(id, { ...values, _method: 'PUT' }, token, values.image.file);
               if (isSuccess) {
                 success('Berhasil', message);
                 navigate(-1);

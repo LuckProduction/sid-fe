@@ -8,10 +8,13 @@ import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoading }) => {
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
+  const naviagte = useNavigate();
+  ('');
 
   const handleEditorChange = (editor) => {
     const content = editor.getContent();
@@ -76,8 +79,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
         return (
           <Editor
             apiKey="ltsdik9bjzzfm8i8g4ve5b32ii5sz0t7j6g2ag5khxm0bn1y"
-            initialValue={initialData.content ?? ''}
-            value={form.getFieldValue('content')}
+            initialValue={initialData?.content ?? ''}
             init={{
               referrer_policy: 'no-referrer',
               allow_script_urls: true,
@@ -89,6 +91,9 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
             }}
             onInit={(evt, editor) => {
               editor.on('change', () => handleEditorChange(editor));
+            }}
+            onEditorChange={(content) => {
+              form.setFieldsValue({ content }); // Sinkronisasi dengan form
             }}
           />
         );
@@ -111,7 +116,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
       {type !== 'show' && (
         <Form.Item className="mt-2">
           <div className="flex w-full items-center justify-end gap-x-2">
-            <Button type="default" onClick={close}>
+            <Button type="default" onClick={() => naviagte(-1)}>
               Batal
             </Button>
             {type === 'delete' ? (

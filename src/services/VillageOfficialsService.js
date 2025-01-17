@@ -1,39 +1,24 @@
-import { Article } from '@/models';
+import { VillageOfficials } from '@/models';
 import api from '@/utils/api';
 
-export default class ArticleService {
+export default class VillageOfficialsService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Article[];
+   *  data?: VillageOfficials[];
    * }>}
    * */
   static async getAll(token) {
-    const response = await api.get('/artikel', { token });
+    const response = await api.get('/perangkat-desa', { token });
     if (!response.data) return response;
-    return { ...response, data: Article.fromApiData(response.data) };
+    return { ...response, data: VillageOfficials.fromApiData(response.data) };
   }
 
   /**
-   * @param {string} token
-   * @returns {Promise<{
-   *  code: HTTPStatusCode;
-   *  status: boolean;
-   *  message: string;
-   *  data?: Article[];
-   * }>}
-   * */
-  static async getById(token, id) {
-    const response = await api.get(`/artikel/${id}`, { token });
-    if (!response.data) return response;
-    return { ...response, data: Article.fromApiData(response.data) };
-  }
-
-  /**
-   * @param {Article} data
+   * @param {VillageOfficials} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -43,12 +28,12 @@ export default class ArticleService {
    * }}
    */
   static async store(data, token, file) {
-    return await api.post('/artikel', { body: Article.toApiData(data), token, file: { gambar: file } });
+    return await api.post('/perangkat-desa', { body: VillageOfficials.toApiData(data), token, file: { foto: file } });
   }
 
   /**
    * @param {number} id
-   * @param {Article} data
+   * @param {VillageOfficials} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -58,7 +43,7 @@ export default class ArticleService {
    * }>}
    */
   static async update(id, data, token, file) {
-    return await api.post(`/artikel/edit/${id}`, { body: Article.toApiData(data), token, file: { gambar: file } });
+    return await api.post(`/perangkat-desa/edit/${id}`, { body: VillageOfficials.toApiData(data), token, file: { foto: file } });
   }
 
   /**
@@ -71,7 +56,7 @@ export default class ArticleService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/artikel/delete/${id}`, { token });
+    return await api.delete(`/perangkat-desa/delete/${id}`, { token });
   }
 
   /**
@@ -84,6 +69,6 @@ export default class ArticleService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/artikel/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/perangkat-desa/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }

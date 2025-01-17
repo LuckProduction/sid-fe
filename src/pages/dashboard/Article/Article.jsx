@@ -55,7 +55,6 @@ const Article = () => {
       width: '40%',
       render: (_, record) => (
         <Space size="small">
-          {/* FIXME: directing to article editor page */}
           <Button
             icon={<EditOutlined />}
             variant="outlined"
@@ -139,7 +138,7 @@ const Article = () => {
                       const { message, isSuccess } = await deleteBatchArticle.execute(ids, token);
                       if (isSuccess) {
                         success('Berhasil', message);
-                        fetchCategory(token);
+                        fetchArticle(token);
                       } else {
                         error('Gagal', message);
                       }
@@ -173,7 +172,6 @@ const Article = () => {
               >
                 Kategori
               </Button>
-              {/* FIXME: directing to article editor page */}
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
