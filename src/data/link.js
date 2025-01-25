@@ -1,14 +1,18 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-
-import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, TagOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
     label: 'Beranda',
-    path: '/',
+    key: '/',
     element: Landing.Home
+  },
+  {
+    label: 'Berita',
+    key: '/news',
+    element: Landing.News
   }
 ];
 
@@ -42,10 +46,7 @@ export const dashboardLink = [
   },
   {
     label: 'Atikel Desa',
-    children: [
-      { path: '/article', label: 'Article', icon: BookOutlined, element: Dashboard.Article },
-      { path: '/category', label: 'Kategori', icon: TagOutlined, element: Dashboard.Category }
-    ]
+    children: [{ path: '/article', label: 'Article', icon: BookOutlined, element: Dashboard.Article }]
   }
 ].map((item) => ({
   ...item,

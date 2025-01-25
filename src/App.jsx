@@ -6,21 +6,21 @@ import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
 import { CreateArticle, EditArticle } from './pages/dashboard';
+import { flattenLandingLinks } from './utils/landingLink';
 
 function App() {
   const { isLoading, user } = useAuth();
+  const flatLandingLinks = flattenLandingLinks(landingLink);
 
   return (
     <RouterProvider
       router={createBrowserRouter([
         {
           element: <LandingLayout />,
-          children: [
-            ...landingLink.map(({ path, element: Element }) => ({
-              path,
-              element: <Element />
-            }))
-          ]
+          children: flatLandingLinks.map(({ path, element: Element }) => ({
+            path,
+            element: <Element />
+          }))
         },
         {
           element: <DashboardLayout />,

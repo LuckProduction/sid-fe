@@ -14,6 +14,27 @@ export const formFields = ({ options }) => [
     ]
   },
   {
+    label: `Status ${Modul.ARTICLE}`,
+    name: 'status',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Draft',
+        value: 'draft'
+      },
+      {
+        label: 'Publish',
+        value: 'publish'
+      }
+    ],
+    rules: [
+      {
+        required: true,
+        message: `Status ${Modul.ARTICLE} harus diisi`
+      }
+    ]
+  },
+  {
     label: `Kategori ${Modul.ARTICLE}`,
     name: 'category',
     type: InputType.SELECT,
