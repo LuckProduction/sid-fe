@@ -1,3 +1,4 @@
+import asset from '@/utils/asset';
 import Model from './Model';
 
 export interface IncomingApiData {
@@ -13,6 +14,7 @@ export interface IncomingApiData {
 }
 
 export interface OutgoingApiData {
+  _method?: 'PUT';
   judul: string;
   konten: string;
   kategori: string;
@@ -21,6 +23,7 @@ export interface OutgoingApiData {
 }
 
 interface FormValue {
+  _method: 'PUT';
   title: string;
   content: string;
   category?: number[];
@@ -55,7 +58,7 @@ export default class Article extends Model {
         id: item.id,
         category_name: item.nama_kategori
       })),
-      apiData.gambar,
+      asset(apiData.gambar),
       apiData.tag
     ) as ReturnType<T, IncomingApiData, Article>;
   }
@@ -66,6 +69,7 @@ export default class Article extends Model {
       throw new Error('Kategori tidak boleh kosong');
     }
     const apiData: OutgoingApiData = {
+      ...(article._method ? { _method: article._method } : {}),
       judul: article.title,
       konten: article.content,
       kategori: article.category.join(','),
@@ -77,4 +81,4 @@ export default class Article extends Model {
   }
 }
 
-Model.children.article = Article;
+Model.children.artikel = Article;

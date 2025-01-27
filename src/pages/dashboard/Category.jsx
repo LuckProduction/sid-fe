@@ -1,5 +1,6 @@
 import { DataLoader, DataTable } from '@/components';
 import { InputType } from '@/constants';
+import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
 import { CategoryService } from '@/services';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
@@ -7,7 +8,6 @@ import { Button, Card, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 
 const Category = () => {
-  const modul = 'Kategori';
   const { token } = useAuth();
   const { success, error } = useNotification();
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getAll);
@@ -49,7 +49,7 @@ const Category = () => {
             color="primary"
             onClick={() => {
               modal.edit({
-                title: `Edit ${modul}`,
+                title: `Edit ${Modul.CATEGORY}`,
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
@@ -71,7 +71,7 @@ const Category = () => {
             color="danger"
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${modul}`,
+                title: `Delete ${Modul.CATEGORY}`,
                 data: record,
                 formFields: formFields,
                 onSubmit: async () => {
@@ -94,24 +94,24 @@ const Category = () => {
 
   const formFields = [
     {
-      label: `Nama ${modul}`,
+      label: `Nama ${Modul.CATEGORY}`,
       name: 'category_name',
       type: InputType.TEXT,
       rules: [
         {
           required: true,
-          message: `Nama ${modul} harus diisi`
+          message: `Nama ${Modul.CATEGORY} harus diisi`
         }
       ]
     },
     {
-      label: `Tipe ${modul}`,
+      label: `Tipe ${Modul.CATEGORY}`,
       name: 'type',
       type: InputType.TEXT,
       rules: [
         {
           required: true,
-          message: `Tipe ${modul} harus diisi`
+          message: `Tipe ${Modul.CATEGORY} harus diisi`
         }
       ]
     }
@@ -124,30 +124,8 @@ const Category = () => {
       ) : (
         <Card>
           <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {modul}</Typography.Title>
+            <Typography.Title level={5}>Data {Modul.CATEGORY}</Typography.Title>
             <div className="inline-flex items-center gap-2">
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${modul}`,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeCategory.execute(values, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchCategory(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {modul}
-              </Button>
               <Button
                 variant="outlined"
                 color="danger"
@@ -155,7 +133,7 @@ const Category = () => {
                 icon={<DeleteOutlined />}
                 onClick={() => {
                   modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${modul} Yang Dipilih ? `,
+                    title: `Hapus ${selectedData.length} ${Modul.CATEGORY} Yang Dipilih ? `,
                     formFields: formFields,
                     onSubmit: async () => {
                       const ids = selectedData.map((item) => item.id);
@@ -171,7 +149,29 @@ const Category = () => {
                   });
                 }}
               >
-                {modul}
+                {Modul.CATEGORY}
+              </Button>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  modal.create({
+                    title: `Tambah ${Modul.CATEGORY}`,
+                    formFields: formFields,
+                    onSubmit: async (values) => {
+                      const { message, isSuccess } = await storeCategory.execute(values, token);
+                      if (isSuccess) {
+                        success('Berhasil', message);
+                        fetchCategory(token);
+                      } else {
+                        error('Gagal', message);
+                      }
+                      return isSuccess;
+                    }
+                  });
+                }}
+              >
+                {Modul.CATEGORY}
               </Button>
             </div>
           </div>

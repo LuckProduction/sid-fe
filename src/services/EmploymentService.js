@@ -1,24 +1,24 @@
-import { Category } from '@/models';
+import { Employment } from '@/models';
 import api from '@/utils/api';
 
-export default class CategoryService {
+export default class EmploymentService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Category[];
+   *  data?: Employment[];
    * }>}
    * */
   static async getAll(token) {
-    const response = await api.get('/kategori', { token });
+    const response = await api.get('/jabatan', { token });
     if (!response.data) return response;
-    return { ...response, data: Category.fromApiData(response.data) };
+    return { ...response, data: Employment.fromApiData(response.data) };
   }
 
   /**
-   * @param {Category} data
+   * @param {Employment} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -28,12 +28,12 @@ export default class CategoryService {
    * }}
    */
   static async store(data, token) {
-    return await api.post('/kategori', { body: Category.toApiData(data), token });
+    return await api.post('/jabatan', { body: Employment.toApiData(data), token });
   }
 
   /**
    * @param {number} id
-   * @param {Category} data
+   * @param {Employment} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -43,7 +43,7 @@ export default class CategoryService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.patch(`/kategori/edit/${id}`, { body: Category.toApiData(data), token });
+    return await api.patch(`/jabatan/edit/${id}`, { body: Employment.toApiData(data), token });
   }
 
   /**
@@ -56,7 +56,7 @@ export default class CategoryService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/kategori/delete/${id}`, { token });
+    return await api.delete(`/jabatan/delete/${id}`, { token });
   }
 
   /**
@@ -69,6 +69,6 @@ export default class CategoryService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/kategori/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/jabatan/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }
