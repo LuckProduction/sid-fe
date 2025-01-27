@@ -13,12 +13,12 @@ const Edit = () => {
   const { id } = useParams();
   const [submitLoading, setSubmitLoading] = useState(false);
   const { success, error } = useNotification();
-  const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getAll);
+  const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
   const { execute: fetchArticle, ...getAllArticle } = useService(ArticleService.getById);
   const updateArticle = useService(ArticleService.update);
 
   useEffect(() => {
-    fetchCategory(token);
+    fetchCategory(token, 'artikel');
     fetchArticle(token, id);
   }, [fetchArticle, fetchCategory, id, token]);
 
@@ -39,7 +39,7 @@ const Edit = () => {
             formFields={formFields({ options: { category } })}
             onSubmit={async (values) => {
               setSubmitLoading(true);
-              const { message, isSuccess } = await updateArticle.execute(id, { ...values, _method: 'PUT' }, token, values.image.file);
+              const { message, isSuccess } = await updateArticle.execute(id, { ...values, _method: 'PUT', user_id: 1 }, token, values.image.file);
               if (isSuccess) {
                 success('Berhasil', message);
                 navigate(-1);

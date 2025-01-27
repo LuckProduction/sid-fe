@@ -7,5 +7,3 @@ export { default as EditArticle } from './article/Edit';
 
 export { default as Employment } from './Employment';
 export { default as VillageOfficials } from './VillageOfficials';
-
-export { default as Category } from './Category';

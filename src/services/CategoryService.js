@@ -71,4 +71,10 @@ export default class CategoryService {
   static async deleteBatch(ids, token) {
     return await api.delete(`/kategori/multi-delete/?ids=${ids.join(',')}`, { token });
   }
+
+  static async getByType(token, type) {
+    const response = await api.get(`/kategori?tipe=${type}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: Category.fromApiData(response.data) };
+  }
 }

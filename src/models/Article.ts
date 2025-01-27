@@ -11,6 +11,8 @@ export interface IncomingApiData {
   }[];
   gambar: string;
   tag: string;
+  user_id: number;
+  status: string;
 }
 
 export interface OutgoingApiData {
@@ -20,6 +22,8 @@ export interface OutgoingApiData {
   kategori: string;
   gambar: string;
   tag: string;
+  user_id: number;
+  status: string;
 }
 
 interface FormValue {
@@ -29,6 +33,8 @@ interface FormValue {
   category?: number[];
   image: string;
   tag: string;
+  user_id: number;
+  status: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -43,7 +49,9 @@ export default class Article extends Model {
       category_name: string;
     }[] = [],
     public image: string,
-    public tag: string
+    public tag: string,
+    public user_id: number,
+    public status: string
   ) {
     super();
   }
@@ -59,7 +67,9 @@ export default class Article extends Model {
         category_name: item.nama_kategori
       })),
       asset(apiData.gambar),
-      apiData.tag
+      apiData.tag,
+      apiData.user_id,
+      apiData.status
     ) as ReturnType<T, IncomingApiData, Article>;
   }
 
@@ -74,7 +84,9 @@ export default class Article extends Model {
       konten: article.content,
       kategori: article.category.join(','),
       gambar: article.image,
-      tag: article.tag
+      tag: article.tag,
+      user_id: article.user_id,
+      status: article.status
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
