@@ -1,7 +1,7 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -46,7 +46,10 @@ export const dashboardLink = [
   },
   {
     label: 'Atikel Desa',
-    children: [{ path: '/article', label: 'Article', icon: BookOutlined, element: Dashboard.Article }]
+    children: [
+      { path: '/article', label: 'Artikel', icon: BookOutlined, element: Dashboard.Article },
+      { path: '/village-potential', label: 'Potensi Desa ', icon: NodeIndexOutlined, element: Dashboard.VillagePotential }
+    ]
   }
 ].map((item) => ({
   ...item,
