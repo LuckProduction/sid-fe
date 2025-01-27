@@ -4,3 +4,4 @@ export { default as ArticleService } from './ArticleService';
 export { default as CategoryService } from './CategoryService';
 export { default as EmploymentService } from './EmploymentService';
 export { default as VillageOfficialsService } from './VillageOfficialsService';
+export { default as VillagePotentialService } from './VillagePotentialService';

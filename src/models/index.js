@@ -6,3 +6,4 @@ export { default as Article } from './Article';
 export { default as Category } from './Category';
 export { default as Employment } from './Employment';
 export { default as VillageOfficials } from './VillageOfficials';
+export { default as VillagePotential } from './VillagePotential';

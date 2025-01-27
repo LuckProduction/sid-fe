@@ -26,7 +26,7 @@ const Navbar = () => {
   };
 
   const isDesktop = breakpoints.lg || breakpoints.xl || breakpoints.xxl;
-  
+
   return (
     <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between gap-x-4 p-4">
       <div className="flex w-fit items-center gap-x-4 lg:w-full">

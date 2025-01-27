@@ -1,74 +1,50 @@
 import { DataLoader, DataTable } from '@/components';
 import { InputType } from '@/constants';
-import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
-import { ArticleService, CategoryService } from '@/services';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Tag, Typography } from 'antd';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { formFields } from './FormFields';
 import Modul from '@/constants/Modul';
+import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
+import { CategoryService, VillagePotentialService } from '@/services';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Space, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 
-const Article = () => {
-  const navigate = useNavigate();
+const VillagePotential = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchArticle, ...getAllArticle } = useService(ArticleService.getAll);
+  const { execute: fetchVillagePotential, ...getAllVillagePotential } = useService(VillagePotentialService.getAll);
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
   const updateCategory = useService(CategoryService.update);
   const deleteCategory = useService(CategoryService.delete);
   const storeCategory = useService(CategoryService.store);
   const deleteBatchCategory = useService(CategoryService.deleteBatch);
-  const deleteArticle = useService(ArticleService.delete);
-  const deleteBatchArticle = useService(ArticleService.deleteBatch);
-  const [selectedArticle, setSelectedArticle] = useState([]);
+  const storeVillagePotential = useService(VillagePotentialService.store);
+  const updateVillagePotential = useService(VillagePotentialService.update);
+  const deleteVillagePotential = useService(VillagePotentialService.delete);
+  const deleteBatchVillagePotential = useService(VillagePotentialService.deleteBatch);
+  const [selectedVillagePotential, setSelectedVillagePotential] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
 
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchArticle(token);
-    fetchCategory(token, 'artikel');
-  }, [fetchArticle, fetchCategory, token]);
+    fetchVillagePotential(token);
+    fetchCategory(token, 'potensi');
+  }, [fetchVillagePotential, fetchCategory, token]);
 
-  const article = getAllArticle.data ?? [];
+  const villagePotential = getAllVillagePotential.data ?? [];
   const category = getAllCategory.data ?? [];
 
-  const articleColumn = [
+  const villagePotentialColumn = [
     {
-      title: 'Judul',
-      dataIndex: 'title',
-      sorter: (a, b) => a.title.length - b.title.length,
+      title: 'Nama Potensi',
+      dataIndex: 'potential_name',
+      sorter: (a, b) => a.potential_name.length - b.potential_name.length,
       searchable: true
     },
     {
-      title: 'Tag',
-      dataIndex: 'tag',
-      sorter: (a, b) => a.tag.length - b.tag.length,
+      title: 'Lokasi',
+      dataIndex: 'location',
+      sorter: (a, b) => a.location.length - b.location.length,
       searchable: true
-    },
-    {
-      title: 'Kateogri',
-      dataIndex: 'category',
-      sorter: (a, b) => a.category.length - b.category.length,
-      searchable: true,
-      render: (record) => record.map((item) => ` ${item.category_name} ,`)
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      sorter: (a, b) => a.status.length - b.status.length,
-      searchable: true,
-      render: (record) => {
-        switch (record) {
-          case 'draft':
-            return <Tag color="blue">Draft</Tag>;
-          case 'publish':
-            return <Tag color="green">Publish</Tag>;
-          default:
-            return <Tag color="error">Undifined</Tag>;
-        }
-      }
     },
     {
       title: 'Aksi',
@@ -80,7 +56,21 @@ const Article = () => {
             variant="outlined"
             color="primary"
             onClick={() => {
-              navigate(window.location.pathname + '/edit/' + record.id);
+              modal.edit({
+                title: `Edit ${Modul.VILLAGE_POTENTIALS}`,
+                data: { ...record, category: record.category.id },
+                formFields: villagePotentialFormFields,
+                onSubmit: async (values) => {
+                  const { message, isSuccess } = await updateVillagePotential.execute(record.id, { ...values, _method: 'PUT' }, token, values.foto.file);
+                  if (isSuccess) {
+                    success('Berhasil', message);
+                    fetchVillagePotential(token);
+                  } else {
+                    error('Gagal', message);
+                  }
+                  return isSuccess;
+                }
+              });
             }}
           />
           <Button
@@ -89,14 +79,14 @@ const Article = () => {
             color="danger"
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.ARTICLE}`,
-                data: { ...record, category: record.category.map((item) => item.id) },
-                formFields: formFields({ options: { category } }).filter((field) => field.name !== 'content'),
+                title: `Delete ${Modul.VILLAGE_POTENTIALS}`,
+                data: { ...record, category: record.category.id },
+                formFields: villagePotentialFormFields,
                 onSubmit: async () => {
-                  const { isSuccess, message } = await deleteArticle.execute(record.id, token);
+                  const { isSuccess, message } = await deleteVillagePotential.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchArticle(token);
+                    fetchVillagePotential(token);
                   } else {
                     error('Gagal', message);
                   }
@@ -132,10 +122,10 @@ const Article = () => {
                 data: record,
                 formFields: categoryFormFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateCategory.execute(record.id, { ...values, type: 'artikel' }, token);
+                  const { message, isSuccess } = await updateCategory.execute(record.id, { ...values, type: 'potensi' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchCategory(token, 'artikel');
+                    fetchCategory(token, 'potensi');
                   } else {
                     error('Gagal', message);
                   }
@@ -157,7 +147,7 @@ const Article = () => {
                   const { isSuccess, message } = await deleteCategory.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchCategory(token, 'artikel');
+                    fetchCategory(token, 'potensi');
                   } else {
                     error('Gagal', message);
                   }
@@ -168,6 +158,87 @@ const Article = () => {
           />
         </Space>
       )
+    }
+  ];
+
+  const villagePotentialFormFields = [
+    {
+      label: `Nama Potensi`,
+      name: 'potential_name',
+      type: InputType.TEXT,
+      rules: [
+        {
+          required: true,
+          message: `Nama Potensi harus diisi`
+        }
+      ]
+    },
+    {
+      label: `Deskripsi`,
+      name: 'description',
+      type: InputType.LONGTEXT,
+      rules: [
+        {
+          required: true,
+          message: `Deskripsi harus diisi`
+        }
+      ]
+    },
+    {
+      label: `Lokasi`,
+      name: 'location',
+      type: InputType.TEXT,
+      rules: [
+        {
+          required: true,
+          message: `Lokasi harus diisi`
+        }
+      ]
+    },
+    {
+      label: `Kategori`,
+      name: 'category',
+      type: InputType.SELECT,
+      options: category.map((item) => ({
+        label: item.category_name,
+        value: item.id
+      })),
+      rules: [
+        {
+          required: true,
+          message: `Kategori harus diisi`
+        }
+      ]
+    },
+    {
+      label: `Gambar ${Modul.VILLAGE_POTENTIALS}`,
+      name: 'foto',
+      type: InputType.UPLOAD,
+      max: 1,
+      beforeUpload: () => {
+        return false;
+      },
+      getFileList: (data) => {
+        return [
+          {
+            url: data?.foto,
+            name: data?.name
+          }
+        ];
+      },
+      accept: ['.png', '.jpg', '.jpeg', 'webp'],
+      rules: [{ required: true, message: 'Logo harus diisi' }]
+    },
+    {
+      label: `Titik Koordinat`,
+      name: 'coordinate',
+      type: InputType.TEXT,
+      rules: [
+        {
+          required: true,
+          message: `Titik Koordinat harus diisi`
+        }
+      ]
     }
   ];
 
@@ -187,28 +258,28 @@ const Article = () => {
 
   return (
     <>
-      {getAllArticle.isLoading ? (
+      {getAllVillagePotential.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <Card className="col-span-8">
             <div className="mb-6 flex items-center justify-between">
-              <Typography.Title level={5}>Data {Modul.ARTICLE}</Typography.Title>
+              <Typography.Title level={5}>Data {Modul.VILLAGE_POTENTIALS}</Typography.Title>
               <div className="inline-flex items-center gap-2">
                 <Button
                   variant="outlined"
                   color="danger"
-                  disabled={selectedArticle.length <= 0}
+                  disabled={selectedVillagePotential.length <= 0}
                   icon={<DeleteOutlined />}
                   onClick={() => {
                     modal.delete.batch({
-                      title: `Hapus ${selectedArticle.length} ${Modul.ARTICLE} Yang Dipilih ? `,
+                      title: `Hapus ${selectedVillagePotential.length} ${Modul.VILLAGE_POTENTIALS} Yang Dipilih ? `,
                       onSubmit: async () => {
-                        const ids = selectedArticle.map((item) => item.id);
-                        const { message, isSuccess } = await deleteBatchArticle.execute(ids, token);
+                        const ids = selectedVillagePotential.map((item) => item.id);
+                        const { message, isSuccess } = await deleteBatchVillagePotential.execute(ids, token);
                         if (isSuccess) {
                           success('Berhasil', message);
-                          fetchArticle(token);
+                          fetchVillagePotential(token);
                         } else {
                           error('Gagal', message);
                         }
@@ -217,28 +288,45 @@ const Article = () => {
                     });
                   }}
                 >
-                  {Modul.ARTICLE}
+                  {Modul.VILLAGE_POTENTIALS}
                 </Button>
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}
                   onClick={() => {
-                    navigate(window.location.pathname + '/create');
+                    modal.create({
+                      title: `Tambah ${Modul.VILLAGE_POTENTIALS}`,
+                      formFields: villagePotentialFormFields,
+                      onSubmit: async (values) => {
+                        const { message, isSuccess } = await storeVillagePotential.execute(values, token, values.foto.file);
+                        if (isSuccess) {
+                          success('Berhasil', message);
+                          fetchVillagePotential(token);
+                        } else {
+                          error('Gagal', message);
+                        }
+                        return isSuccess;
+                      }
+                    });
                   }}
                 >
-                  {Modul.ARTICLE}
+                  {Modul.VILLAGE_POTENTIALS}
                 </Button>
               </div>
             </div>
             <div className="w-full max-w-full overflow-x-auto">
-              <DataTable data={article} columns={articleColumn} loading={getAllArticle.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
+              <DataTable
+                data={villagePotential}
+                columns={villagePotentialColumn}
+                loading={getAllVillagePotential.isLoading}
+                map={(article) => ({ key: article.id, ...article })}
+                handleSelectedData={(_, selectedRows) => setSelectedVillagePotential(selectedRows)}
+              />
             </div>
           </Card>
           <Card className="col-span-4">
             <div className="mb-6 flex items-center justify-between">
-              <Typography.Title level={5}>
-                Data {Modul.ARTICLE} {Modul.CATEGORY}
-              </Typography.Title>
+              <Typography.Title level={5}>Data {Modul.CATEGORY}</Typography.Title>
               <div className="inline-flex items-center gap-2">
                 <Button
                   variant="outlined"
@@ -247,13 +335,13 @@ const Article = () => {
                   icon={<DeleteOutlined />}
                   onClick={() => {
                     modal.delete.batch({
-                      title: `Hapus ${selectedCategory.length} ${Modul.CATEGORY} ${Modul.ARTICLE} Yang Dipilih ? `,
+                      title: `Hapus ${selectedCategory.length} ${Modul.CATEGORY} ${Modul.VILLAGE_POTENTIALS} Yang Dipilih ? `,
                       onSubmit: async () => {
                         const ids = selectedCategory.map((item) => item.id);
                         const { message, isSuccess } = await deleteBatchCategory.execute(ids, token);
                         if (isSuccess) {
                           success('Berhasil', message);
-                          fetchCategory(token, 'artikel');
+                          fetchCategory(token, 'potensi');
                         } else {
                           error('Gagal', message);
                         }
@@ -273,10 +361,10 @@ const Article = () => {
                       title: `Tambah Kategori`,
                       formFields: categoryFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeCategory.execute({ ...values, type: 'artikel' }, token);
+                        const { message, isSuccess } = await storeCategory.execute({ ...values, type: 'potensi' }, token);
                         if (isSuccess) {
                           success('Berhasil', message);
-                          fetchCategory(token, 'artikel');
+                          fetchCategory(token, 'potensi');
                         } else {
                           error('Gagal', message);
                         }
@@ -299,4 +387,4 @@ const Article = () => {
   );
 };
 
-export default Article;
+export default VillagePotential;
