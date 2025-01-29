@@ -1,7 +1,7 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, PaperClipOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -49,7 +49,8 @@ export const dashboardLink = [
     label: 'Atikel Desa',
     children: [
       { path: '/article', label: 'Artikel', icon: BookOutlined, element: Dashboard.Article },
-      { path: '/village-potential', label: 'Potensi Desa ', icon: NodeIndexOutlined, element: Dashboard.VillagePotential }
+      { path: '/village-potential', label: 'Potensi Desa ', icon: NodeIndexOutlined, element: Dashboard.VillagePotential },
+      { path: '/legal-products', label: 'Produk Hukum ', icon: PaperClipOutlined, element: Dashboard.LegalProducts }
     ]
   }
 ].map((item) => ({

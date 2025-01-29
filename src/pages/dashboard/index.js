@@ -9,3 +9,4 @@ export { default as Employment } from './Employment';
 export { default as VillageOfficials } from './VillageOfficials';
 export { default as VillagePotential } from './VillagePotential';
 export { default as Hamlet } from './Hamlet';
+export { default as LegalProducts } from './LegalProducts';

@@ -4,7 +4,8 @@ enum Modul {
   EMPLOYMENT = 'Jabatan',
   VILLAGE_OFFICIALS = 'Perangkat Kerja',
   VILLAGE_POTENTIALS = 'Potensi Desa',
-  HAMLET = 'Dusun'
+  HAMLET = 'Dusun',
+  LEGAL_PRODUCTS = 'Produk Hukum'
 }
 
 export default Modul;
