@@ -10,3 +10,4 @@ export { default as VillageOfficials } from './VillageOfficials';
 export { default as VillagePotential } from './VillagePotential';
 export { default as Hamlet } from './Hamlet';
 export { default as LegalProducts } from './LegalProducts';
+export { default as VisiMisi } from './VisiMisi';
