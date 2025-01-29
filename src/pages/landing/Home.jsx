@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Boom = () => {
   const navigate = useNavigate();
+  
   return (
     <>
       <section className="mx-auto grid max-w-screen-xl grid-cols-12 items-center gap-x-10 px-4 py-28">
@@ -57,6 +58,43 @@ const Boom = () => {
               </Avatar.Group>
               <span className="rounded-full bg-blue-500 p-3 px-5 text-xs text-white">50+ Perangkat Desa</span>
             </div>
+          </div>
+        </div>
+      </section>
+      <section className='w-full bg-white py-6'>
+        <div className='w-full max-w-screen-xl mx-auto grid grid-cols-12 gap-x-24 px-20 py-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-3xl'>
+          <div className='col-span-4 flex flex-col gap-y-2'>
+            <div className="flex flex-col gap-y-2">
+              <h2 className="text-sm font-semibold text-white px-4 py-2 rounded-full border border-white w-fit">Visi dan Misi</h2>
+              <p className="max-w-44 text-xl font-semibold text-white">Visi dan Misi Desa Mukti :</p>
+            </div>
+            <p className='text-white text-sm'>
+              Form only update the Field which changed to avoid full refresh perf issue. Thus you can not get real time value with getFieldsValue in render. And useWatch will rerender current component to sync with latest value. You can also use Field renderProps to get better performance if only want to do conditional render. If component no need care field value change, you can use onValuesChange to give to parent component to avoid current one rerender.
+            </p>
+          </div>
+          <div className='col-span-8 p-2 grid grid-cols-12 gap-6'>
+            <Card className='col-span-6 bg-blue-400 border-none'>
+              <div className='flex flex-col gap-y-2 p-4'>
+                <span className='px-4 py-3 bg-blue-100 text-blue-500 font-bold w-fit rounded-full text-lg mb-6'>
+                  01
+                </span>
+                <h3 className='text-lg font-semibold text-white'>Misi No 1</h3>
+                <p className='text-xs text-white'>
+                  Form only update the Field which changed to avoid full refresh perf issue. Thus you can not get real time value with getFieldsValue in render. And useWatch will rerender current component to sync with latest value. You can also use Field renderProps to get better performance if only want to do conditional render.
+                </p>
+              </div>
+            </Card>
+            <Card className='col-span-6 bg-blue-400 border-none'>
+              <div className='flex flex-col gap-y-2 p-4'>
+                <span className='px-4 py-3 bg-blue-100 text-blue-500 font-bold w-fit rounded-full text-lg mb-6'>
+                  01
+                </span>
+                <h3 className='text-lg font-semibold text-white'>Misi No 1</h3>
+                <p className='text-xs text-white'>
+                  Form only update the Field which changed to avoid full refresh perf issue. Thus you can not get real time value with getFieldsValue in render. And useWatch will rerender current component to sync with latest value. You can also use Field renderProps to get better performance if only want to do conditional render.
+                </p>
+              </div>
+            </Card>
           </div>
         </div>
       </section>

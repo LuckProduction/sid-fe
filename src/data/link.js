@@ -39,7 +39,7 @@ export const dashboardLink = [
   {
     label: 'Pengaturan Desa',
     children: [
-      { path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillagePorfile },
+      { path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillageProfile },
       { path: '/employment', label: 'Jabatan', icon: CreditCardOutlined, element: Dashboard.Employment },
       { path: '/hamlet', label: 'Dusun', icon: TableOutlined, element: Dashboard.Hamlet },
       { path: '/village_officials', label: 'Perangkat Desa', icon: UsergroupAddOutlined, element: Dashboard.VillageOfficials },

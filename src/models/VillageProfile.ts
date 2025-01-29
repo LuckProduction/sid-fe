@@ -1,3 +1,4 @@
+import asset from '@/utils/asset';
 import Model from './Model';
 
 interface Kecamatan {
@@ -41,23 +42,39 @@ interface IncomingApiData {
 }
 
 interface OutgoingApiData {
-  nama_desa: string;
-  kode_desa: string;
-  kode_pos: string;
-  alamat_kantor: string;
-  email_desa: string;
-  id_kecamatan: number;
-  id_kabupaten: number;
+  _method?: 'PUT';
+  nama_desa?: string;
+  kode_desa?: string;
+  kode_pos_desa?: string;
+  alamat_kantor?: string;
+  email_desa?: string;
+  logo_desa?: string
+  id_kecamatan?: number;
+  nama_kecamatan?: string;
+  kode_kecamatan?: string;
+  nama_camat?: string;
+  id_kabupaten?: number;
+  nama_kabupaten?: string;
+  kode_kabupaten?: string;
+  nama_bupati?: string;
 }
 
 interface FormValue {
+  _method: 'PUT';
   village_name: string;
   village_code: string;
   postal_code: string;
   office_adress: string;
   village_email: string;
+  village_logo: string;
   district_id: number;
+  district_name: string;
+  district_code: string;
+  districthead_name: string;
   regency_id: number;
+  regency_name: string;
+  regency_code: string;
+  regencyhead_name: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -93,7 +110,7 @@ export default class VillageProfile extends Model {
       apiData.kode_pos_desa,
       apiData.alamat_kantor,
       apiData.email_desa,
-      apiData.logo_desa,
+      asset(apiData.logo_desa),
       apiData.profil_kecamatan.id,
       apiData.profil_kecamatan.kode_kecamatan,
       apiData.profil_kecamatan.nama_camat,
@@ -108,13 +125,21 @@ export default class VillageProfile extends Model {
   static toApiData<T extends FormValue | FormValue[]>(formValue: T): ReturnType<T, FormValue, OutgoingApiData> {
     if (Array.isArray(formValue)) return formValue.map((object) => VillageProfile.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      nama_desa: formValue.village_name,
-      kode_desa: formValue.village_code,
-      kode_pos: formValue.postal_code,
-      alamat_kantor: formValue.office_adress,
-      email_desa: formValue.village_email,
-      id_kecamatan: formValue.district_id,
-      id_kabupaten: formValue.regency_id
+      ...(formValue._method ? { _method: formValue._method } : {}),
+      ...(formValue.village_name ? { nama_desa: formValue.village_name } : {}),
+      ...(formValue.village_code ? { kode_desa: formValue.village_code } : {}),
+      ...(formValue.postal_code ? { kode_pos_desa: formValue.postal_code } : {}),
+      ...(formValue.office_adress ? { alamat_kantor: formValue.office_adress } : {}),
+      ...(formValue.village_email ? { email_desa: formValue.village_email } : {}),
+      ...(formValue.district_id ? { id_kecamatan: formValue.district_id } : {}),
+      ...(formValue.district_name ? { nama_kecamatan: formValue.district_name } : {}),
+      ...(formValue.district_code ? { kode_kecamatan: formValue.district_code } : {}),
+      ...(formValue.districthead_name ? { nama_camat: formValue.districthead_name } : {}),
+      ...(formValue.regency_id ? { id_kabupaten: formValue.regency_id } : {}),
+      ...(formValue.regency_name ? { nama_kabupaten: formValue.regency_name } : {}),
+      ...(formValue.regency_code ? { kode_kabupaten: formValue.regency_code } : {}),
+      ...(formValue.regencyhead_name ? { nama_bupati: formValue.regencyhead_name } : {}),
+      ...(formValue.village_logo ? { logo_desa: formValue.village_logo } : {})
     };
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
   }
