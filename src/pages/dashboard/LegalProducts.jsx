@@ -9,7 +9,7 @@ import { Button, Card, Space, Tag, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 
-const Employment = () => {
+const LegalProducts = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
   const { execute: fetchLegalProducts, ...getAllLegalProducts } = useService(LegalProductsService.getAll);
@@ -359,4 +359,4 @@ const Employment = () => {
   );
 };
 
-export default Employment;
+export default LegalProducts;

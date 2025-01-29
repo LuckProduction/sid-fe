@@ -1,7 +1,7 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, PaperClipOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, PaperClipOutlined, RocketOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -42,7 +42,8 @@ export const dashboardLink = [
       { path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillagePorfile },
       { path: '/employment', label: 'Jabatan', icon: CreditCardOutlined, element: Dashboard.Employment },
       { path: '/hamlet', label: 'Dusun', icon: TableOutlined, element: Dashboard.Hamlet },
-      { path: '/village_officials', label: 'Perangkat Desa', icon: UsergroupAddOutlined, element: Dashboard.VillageOfficials }
+      { path: '/village_officials', label: 'Perangkat Desa', icon: UsergroupAddOutlined, element: Dashboard.VillageOfficials },
+      { path: '/visi-misi', label: 'Visi Misi', icon: RocketOutlined, element: Dashboard.VisiMisi }
     ]
   },
   {
