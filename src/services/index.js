@@ -9,3 +9,4 @@ export { default as HamletService } from './HamletService';
 export { default as LegalProductsService } from './LegalProductsService';
 export { default as VisiMisiService } from './VisiMisiService';
 export { default as VillageInstitutionService } from './VillageInstitutionService';
+export { default as ResidentService } from './ResidentService';

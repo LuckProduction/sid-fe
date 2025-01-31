@@ -7,7 +7,8 @@ enum Modul {
   HAMLET = 'Dusun',
   LEGAL_PRODUCTS = 'Produk Hukum',
   VISI_MISI = 'Visi Misi',
-  VILLAGE_INSTITUTION = 'Lembaga Desa'
+  VILLAGE_INSTITUTION = 'Lembaga Desa',
+  RESIDENTIAL = 'Kependudukan'
 }
 
 export default Modul;
