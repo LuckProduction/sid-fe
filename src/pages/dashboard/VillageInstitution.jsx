@@ -86,7 +86,6 @@ const VillageInstitution = () => {
             variant="outlined"
             color="green"
             onClick={() => {
-              console.log(record.status);
               modal.show.description({
                 title: record.institution_name,
                 data: [
