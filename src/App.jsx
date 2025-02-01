@@ -7,6 +7,7 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { CreateArticle, EditArticle, EditResident } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
+import { DetailNews } from './pages/landing';
 
 function App() {
   const { isLoading, user } = useAuth();
@@ -17,10 +18,14 @@ function App() {
       router={createBrowserRouter([
         {
           element: <LandingLayout />,
-          children: flatLandingLinks.map(({ path, element: Element }) => ({
-            path,
-            element: <Element />
-          }))
+          children: [
+            // Tambahkan route dari landingLink
+            ...flatLandingLinks.map(({ path, element: Element }) => ({
+              path,
+              element: <Element />
+            })),
+            { path: '/article/detail/:id', element: <DetailNews /> }
+          ]
         },
         {
           element: <DashboardLayout />,

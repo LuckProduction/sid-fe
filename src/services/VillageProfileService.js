@@ -21,7 +21,6 @@ export default class VillageProfileService {
     return { ...response, data: VillageProfile.fromApiData(response.data) };
   }
 
-
   static async update(data, token) {
     return await api.post(`/profil-desa`, { body: VillageProfile.toApiData(data), token });
   }

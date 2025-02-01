@@ -32,9 +32,9 @@ const Navbar = () => {
       <div className="flex w-fit items-center gap-x-4 lg:w-full">
         {isDesktop ? (
           <>
-            <Image width={40} preview={false} src="./logo/logo_desa.png" />
+            <Image width={40} preview={false} src="./logo/bonebolango.jpg" />
             <b>
-              Desa <span className="text-blue-500">Mukti</span>{' '}
+              Desa <span className="text-blue-500">Sukma</span>{' '}
             </b>
             <Menu style={{ minWidth: 0, flex: 'auto', border: 'none' }} mode="horizontal" items={landingLink} activeKey="" onClick={handleMenuClick} />
           </>

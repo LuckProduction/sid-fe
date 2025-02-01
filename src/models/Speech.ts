@@ -3,24 +3,26 @@ import strings from '@/utils/strings';
 import { DescriptionsItemType } from 'antd/es/descriptions';
 import Model from './Model';
 import { InputType } from '@/constants';
+import asset from '@/utils/asset';
 
 export interface IncomingApiData {
-  id: number,
+  id: number;
   perangkat_desa_id: {
-    nama: string,
+    nama: string;
+    foto: string;
     jabatan: {
-      id: number,
-      nama_jabatan: string,
-      kode_jabatan: number,
-      golongan: string,
-      tupoksi_jabatan: string,
-    }
-  },
+      id: number;
+      nama_jabatan: string;
+      kode_jabatan: number;
+      golongan: string;
+      tupoksi_jabatan: string;
+    };
+  };
   profil_desa_id: {
-    nama_desa: string,
-    kode_desa: number
-  },
-  konten: string,
+    nama_desa: string;
+    kode_desa: number;
+  };
+  konten: string;
 }
 
 export interface OutgoingApiData {
@@ -28,7 +30,7 @@ export interface OutgoingApiData {
 }
 
 interface FormValue {
-  content: string,
+  content: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -37,24 +39,24 @@ export default class Speech extends Model {
   constructor(
     public id: number,
     public village_officials: {
-      name: string,
+      name: string;
+      foto: string;
       employment: {
-        id: number,
-        employment_name: string,
-        employment_code: number,
-        faction: string,
-        employment_duties: string,
-      }
+        id: number;
+        employment_name: string;
+        employment_code: number;
+        faction: string;
+        employment_duties: string;
+      };
     },
     public villagee_profile: {
-      village_name: string,
-      village_code: number, 
+      village_name: string;
+      village_code: number;
     },
-    public content: string,
+    public content: string
   ) {
     super();
   }
-
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Speech> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Speech>;
@@ -62,6 +64,7 @@ export default class Speech extends Model {
       apiData.id,
       {
         name: apiData.perangkat_desa_id.nama,
+        foto: asset(apiData.perangkat_desa_id.foto),
         employment: {
           id: apiData.perangkat_desa_id.jabatan.id,
           employment_name: apiData.perangkat_desa_id.jabatan.nama_jabatan,

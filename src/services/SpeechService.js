@@ -12,9 +12,9 @@ export default class SpeechService {
    * }>}
    * */
   static async getAll(token) {
-    const response = await api.get('/sambutan', {token});
-    if(!response.data) return response;
-    return { ...response, data: Speech.fromApiData(response.data)};
+    const response = await api.get('/sambutan', { token });
+    if (!response.data) return response;
+    return { ...response, data: Speech.fromApiData(response.data) };
   }
 
   /**
@@ -30,6 +30,4 @@ export default class SpeechService {
   static async update(data, token) {
     return await api.post('/sambutan', { body: Speech.toApiData(data), token });
   }
-
- 
 }

@@ -6,5 +6,6 @@ export { default as DashboardFooter } from './dashboard/Footer';
 export { default as DataTable } from './dashboard/DataTable';
 
 export { default as Navbar } from './landing/Navbar';
+export { default as Footer } from './landing/Footer';
 
 export { default as DataLoader } from './DataLoader';

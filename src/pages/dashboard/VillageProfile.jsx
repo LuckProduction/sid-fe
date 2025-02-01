@@ -18,7 +18,7 @@ const VillagePorfile = () => {
 
   useEffect(() => {
     fetchVillageProfile(token);
-    fetchSpeech(token)
+    fetchSpeech(token);
   }, [fetchSpeech, fetchVillageProfile, token]);
 
   const villageProfile = getAll.data ?? [];
@@ -35,8 +35,8 @@ const VillagePorfile = () => {
           message: 'Kata Sambutan harus diisi'
         }
       ]
-    },
-  ]
+    }
+  ];
 
   const districtFormFields = [
     {
@@ -60,8 +60,8 @@ const VillagePorfile = () => {
           message: 'Nama Camat harus diisi'
         }
       ]
-    },
-  ]
+    }
+  ];
 
   const regencyFormFields = [
     {
@@ -85,8 +85,8 @@ const VillagePorfile = () => {
           message: 'Nama Bupati harus diisi'
         }
       ]
-    },
-  ]
+    }
+  ];
 
   const villageFormFields = [
     {
@@ -147,7 +147,7 @@ const VillagePorfile = () => {
           message: 'Field harus berupa email'
         }
       ]
-    },
+    }
   ];
 
   const logoFormFields = [
@@ -169,22 +169,22 @@ const VillagePorfile = () => {
       },
       accept: ['.png', '.jpg', '.jpeg', 'webp'],
       rules: [{ required: true, message: 'Logo harus diisi' }]
-    },
-  ]
+    }
+  ];
 
   return (
     <>
       {getAll.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
-        <div className='grid grid-cols-12 gap-4'>
-          <Card className='col-span-4 h-fit'>
-            <div className='w-full flex flex-col gap-y-4'>
+        <div className="grid grid-cols-12 gap-4">
+          <Card className="col-span-4 h-fit">
+            <div className="flex w-full flex-col gap-y-4">
               <Image src={villageProfile.village_logo} alt={`Logo ${villageProfile.village_name}`} />
               <Button
-                color='primary'
-                variant='solid'
-                size='large'
+                color="primary"
+                variant="solid"
+                size="large"
                 icon={<EditOutlined />}
                 onClick={() =>
                   modal.edit({
@@ -192,7 +192,6 @@ const VillagePorfile = () => {
                     data: villageProfile,
                     formFields: logoFormFields,
                     onSubmit: async (values) => {
-                      console.log(values)
                       const { message, isSuccess } = await updateLogoVillageProfile.execute({ ...values, _method: 'PUT' }, token, values.village_logo.file);
                       if (isSuccess) {
                         success('Berhasil', message);
@@ -208,9 +207,8 @@ const VillagePorfile = () => {
                 Perbaharui Logo Desa
               </Button>
             </div>
-
           </Card>
-          <Card className='col-span-8'>
+          <Card className="col-span-8">
             <div className="mb-6 flex items-center justify-between">
               <Typography.Title level={5}>Data Profil Desa</Typography.Title>
               <div className="inline-flex items-center gap-x-2">
@@ -219,10 +217,10 @@ const VillagePorfile = () => {
                   onClick={() =>
                     modal.edit({
                       title: 'Edit Data Kecamatan',
-                      data: villageProfile,
+                      data: villageProfile.district_profile,
                       formFields: districtFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await updateVillageProfile.execute(values, token);
+                        const { message, isSuccess } = await updateVillageProfile.execute({ ...values, district_profile: { ...values } }, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchVillageProfile(token);
@@ -241,10 +239,10 @@ const VillagePorfile = () => {
                   onClick={() =>
                     modal.edit({
                       title: 'Edit Data Kabupaten',
-                      data: villageProfile,
+                      data: villageProfile.regency_profile,
                       formFields: regencyFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await updateVillageProfile.execute(values, token);
+                        const { message, isSuccess } = await updateVillageProfile.execute({ ...values, regency_profile: { ...values } }, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchVillageProfile(token);
@@ -297,22 +295,24 @@ const VillagePorfile = () => {
             <Descriptions column={1} bordered className="mb-6">
               <Descriptions.Item label="Nama Kecamatan">
                 <Typography.Title level={5} className="m-0">
-                  {villageProfile.district_name}
+                  {villageProfile?.district_profile?.district_name}
                 </Typography.Title>
               </Descriptions.Item>
-              <Descriptions.Item label="Camat">{villageProfile.districthead_name}</Descriptions.Item>
+              <Descriptions.Item label="Camat">{villageProfile?.district_profile?.districthead_name}</Descriptions.Item>
+              <Descriptions.Item label="Kode Kecamatan">{villageProfile?.district_profile?.district_code}</Descriptions.Item>
               <Descriptions.Item label="Nama Kabupaten">
                 <Typography.Title level={5} className="m-0">
-                  {villageProfile.regency_name}
+                  {villageProfile?.regency_profile?.regency_name}
                 </Typography.Title>
               </Descriptions.Item>
-              <Descriptions.Item label="Bupati">{villageProfile.regencyhead_name}</Descriptions.Item>
+              <Descriptions.Item label="Bupati">{villageProfile?.regency_profile?.regencyhead_name}</Descriptions.Item>
+              <Descriptions.Item label="Kode Kabupaten">{villageProfile?.regency_profile?.regency_code}</Descriptions.Item>
             </Descriptions>
-            <Descriptions column={1} bordered className='mb-6'>
+            <Descriptions column={1} bordered className="mb-6">
               <Descriptions.Item label="Kata Sambutan">
-                
+                {speech.content}
                 <Button
-                  type='link'
+                  type="link"
                   icon={speech.length <= 0 ? <PlusOutlined /> : <EditOutlined />}
                   onClick={() =>
                     modal.edit({
@@ -330,14 +330,14 @@ const VillagePorfile = () => {
                         return isSuccess;
                       }
                     })
-                  }>
+                  }
+                >
                   Kata Sambutan
                 </Button>
               </Descriptions.Item>
             </Descriptions>
           </Card>
         </div>
-
       )}
     </>
   );

@@ -1,7 +1,7 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BankOutlined, BookOutlined, CreditCardOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, PaperClipOutlined, PartitionOutlined, RocketOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BankOutlined, BookOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, PaperClipOutlined, PartitionOutlined, RocketOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -40,7 +40,6 @@ export const dashboardLink = [
     label: 'Pengaturan Desa',
     children: [
       { path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillageProfile },
-      { path: '/employment', label: 'Jabatan', icon: CreditCardOutlined, element: Dashboard.Employment },
       { path: '/hamlet', label: 'Dusun', icon: TableOutlined, element: Dashboard.Hamlet },
       { path: '/village_officials', label: 'Perangkat Desa', icon: UsergroupAddOutlined, element: Dashboard.VillageOfficials },
       { path: '/village_institutions', label: 'Lembaga Desa', icon: BankOutlined, element: Dashboard.VillageInstitution },
