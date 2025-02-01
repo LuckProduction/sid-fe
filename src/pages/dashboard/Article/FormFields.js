@@ -92,3 +92,17 @@ export const formFields = ({ options }) => [
     ]
   }
 ];
+
+export const categoryFormFields = () => [
+  {
+    label: `Nama Kategori`,
+    name: 'category_name',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Nama Kategori harus diisi`
+      }
+    ]
+  }
+];

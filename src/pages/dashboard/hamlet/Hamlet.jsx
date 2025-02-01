@@ -1,41 +1,59 @@
 import { DataLoader, DataTable } from '@/components';
-import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
-import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
-import { VisiMisiService } from '@/services';
+import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
+import { HamletService } from '@/services';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { formFields } from './FormFields';
 
-const VisiMisi = () => {
+const Hamlet = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchVisiMisi, ...getAllVisiMisi } = useService(VisiMisiService.getAll);
-  const storeVisiMisi = useService(VisiMisiService.store);
-  const updateVisiMisi = useService(VisiMisiService.update);
-  const deleteVisiMisi = useService(VisiMisiService.delete);
-  const deleteBatchVisiMisi = useService(VisiMisiService.deleteBatch);
-  const [selectedData, setSelectedData] = useState([]);
-
   const modal = useCrudModal();
 
-  useEffect(() => {
-    fetchVisiMisi(token);
-  }, [fetchVisiMisi, token]);
+  const useCrudService = (service) => {
+    const { execute: fetch, ...getAll } = useService(service.getAll);
+    return {
+      fetch,
+      store: useService(service.store),
+      update: useService(service.update),
+      delete: useService(service.delete),
+      deleteBatch: useService(service.deleteBatch),
+      getAll,
+      pagination: usePagination({ totalData: getAll.totalData }),
+      selected: useState([])
+    };
+  };
 
-  const visiMisi = getAllVisiMisi.data ?? [];
+  const useFetchData = (fetchFn, pagination) => {
+    return useCallback(() => {
+      fetchFn(token, pagination.page, pagination.perPage);
+    }, [fetchFn, pagination.page, pagination.perPage]);
+  };
+
+  const hamletService = useCrudService(HamletService);
+
+  const fetchHamlets = useFetchData(hamletService.fetch, hamletService.pagination);
+
+  useEffect(() => {
+    fetchHamlets();
+  }, [fetchHamlets]);
+
+  const hamlets = hamletService.getAll.data ?? [];
+  const [selectedData, setSelectedData] = useState([]);
 
   const Column = [
     {
-      title: 'Tipe',
-      dataIndex: 'type',
-      sorter: (a, b) => a.type.length - b.type.length,
+      title: 'Nama Dusun',
+      dataIndex: 'hamlet_name',
+      sorter: (a, b) => a.hamlet_name.length - b.hamlet_name.length,
       searchable: true
     },
     {
-      title: 'Konten',
-      dataIndex: 'content',
-      sorter: (a, b) => a.content.length - b.content.length,
+      title: 'Nama Kepala Dusun',
+      dataIndex: 'head_hamlet_name',
+      sorter: (a, b) => a.head_hamlet_name.length - b.head_hamlet_name.length,
       searchable: true
     },
     {
@@ -49,14 +67,14 @@ const VisiMisi = () => {
             color="primary"
             onClick={() => {
               modal.edit({
-                title: `Edit ${Modul.VISI_MISI}`,
+                title: `Edit ${Modul.HAMLET}`,
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateVisiMisi.execute(record.id, { ...values, _method: 'PUT' }, token);
+                  const { message, isSuccess } = await hamletService.update.execute(record.id, { ...values, _method: 'PUT' }, token, values.administrative_area.file);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchVisiMisi(token);
+                    fetchHamlets(token);
                   } else {
                     error('Gagal', message);
                   }
@@ -71,17 +89,22 @@ const VisiMisi = () => {
             color="green"
             onClick={() => {
               modal.show.description({
-                title: record.type,
+                title: record.hamlet_name,
                 data: [
                   {
-                    key: 'content',
-                    label: `Konten ${Modul.VISI_MISI}`,
-                    children: record.content
+                    key: 'hamlet_name',
+                    label: `Nama ${Modul.HAMLET}`,
+                    children: record.hamlet_name
                   },
                   {
-                    key: 'type',
-                    label: `Tipe ${Modul.VISI_MISI}`,
-                    children: record.type
+                    key: 'head_hamlet_name',
+                    label: `Nama Kepala ${Modul.HAMLET}`,
+                    children: record.head_hamlet_name
+                  },
+                  {
+                    key: 'head_hamlet_nik',
+                    label: `NIK Kepala ${Modul.HAMLET}`,
+                    children: record.head_hamlet_nik
                   }
                 ]
               });
@@ -93,14 +116,14 @@ const VisiMisi = () => {
             color="danger"
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.VISI_MISI}`,
+                title: `Delete ${Modul.HAMLET}`,
                 data: record,
                 formFields: formFields,
                 onSubmit: async () => {
-                  const { isSuccess, message } = await deleteVisiMisi.execute(record.id, token);
+                  const { isSuccess, message } = await hamletService.delete.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchVisiMisi(token);
+                    fetchHamlets(token);
                   } else {
                     error('Gagal', message);
                   }
@@ -114,49 +137,14 @@ const VisiMisi = () => {
     }
   ];
 
-  const formFields = [
-    {
-      label: `Konten ${Modul.VISI_MISI}`,
-      name: 'content',
-      type: InputType.LONGTEXT,
-      rules: [
-        {
-          required: true,
-          message: `Konten ${Modul.VISI_MISI} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Tipe ${Modul.VISI_MISI}`,
-      name: 'type',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Tipe ${Modul.VISI_MISI} harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Visi',
-          value: 'visi'
-        },
-        {
-          label: 'Misi',
-          value: 'misi'
-        }
-      ]
-    }
-  ];
-
   return (
     <div>
-      {getAllVisiMisi.isLoading ? (
+      {hamletService.getAll.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>
           <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.VISI_MISI}</Typography.Title>
+            <Typography.Title level={5}>Data {Modul.HAMLET}</Typography.Title>
             <div className="inline-flex items-center gap-2">
               <Button
                 variant="outlined"
@@ -165,14 +153,14 @@ const VisiMisi = () => {
                 icon={<DeleteOutlined />}
                 onClick={() => {
                   modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.VISI_MISI} Yang Dipilih ? `,
+                    title: `Hapus ${selectedData.length} ${Modul.HAMLET} Yang Dipilih ? `,
                     formFields: formFields,
                     onSubmit: async () => {
                       const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchVisiMisi.execute(ids, token);
+                      const { message, isSuccess } = await hamletService.deleteBatch.execute(ids, token);
                       if (isSuccess) {
                         success('Berhasil', message);
-                        fetchVisiMisi(token);
+                        fetchHamlets(token);
                       } else {
                         error('Gagal', message);
                       }
@@ -181,20 +169,20 @@ const VisiMisi = () => {
                   });
                 }}
               >
-                {Modul.VISI_MISI}
+                {Modul.HAMLET}
               </Button>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => {
                   modal.create({
-                    title: `Tambah ${Modul.VISI_MISI}`,
+                    title: `Tambah ${Modul.HAMLET}`,
                     formFields: formFields,
                     onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeVisiMisi.execute(values, token);
+                      const { message, isSuccess } = await hamletService.store.execute(values, token, values.administrative_area.file);
                       if (isSuccess) {
                         success('Berhasil', message);
-                        fetchVisiMisi(token);
+                        fetchHamlets(token);
                       } else {
                         error('Gagal', message);
                       }
@@ -203,12 +191,19 @@ const VisiMisi = () => {
                   });
                 }}
               >
-                {Modul.VISI_MISI}
+                {Modul.HAMLET}
               </Button>
             </div>
           </div>
           <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={visiMisi} columns={Column} loading={getAllVisiMisi.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+            <DataTable
+              data={hamlets}
+              columns={Column}
+              loading={hamletService.getAll.isLoading}
+              map={(hamlet) => ({ key: hamlet.id, ...hamlet })}
+              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+              pagination={hamletService.pagination}
+            />
           </div>
         </Card>
       )}
@@ -216,4 +211,4 @@ const VisiMisi = () => {
   );
 };
 
-export default VisiMisi;
+export default Hamlet;

@@ -11,8 +11,8 @@ export default class ArticleService {
    *  data?: Article[];
    * }>}
    * */
-  static async getAll(token) {
-    const response = await api.get('/artikel', { token });
+  static async getAll(token, page = 1, perPage = 10) {
+    const response = await api.get('/artikel', { token, page, perPage });
     if (!response.data) return response;
     return { ...response, data: Article.fromApiData(response.data) };
   }

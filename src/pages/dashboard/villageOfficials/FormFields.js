@@ -1,0 +1,195 @@
+import { InputType } from '@/constants';
+import Modul from '@/constants/Modul';
+
+export const villageOfficialsFormFields = ({ options }) => [
+  {
+    label: `Nama ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'name',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Nama ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Jenis Kelamin ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'gender',
+    type: InputType.SELECT,
+    rules: [
+      {
+        required: true,
+        message: `Jenis Kelamin ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ],
+    options: [
+      {
+        label: 'Laki-laki',
+        value: 'L'
+      },
+      {
+        label: 'Perempuan',
+        value: 'P'
+      }
+    ]
+  },
+  {
+    label: `NIP ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'nip',
+    type: InputType.TEXT
+    // FIXME: IT HAS TO BE REQUIRED BUT FIX IT WHEN THE BACKEND IS FIXED
+    // rules: [
+    //   {
+    //     required: true,
+    //     message: `NIP ${Modul.VILLAGE_OFFICIALS} harus diisi`
+    //   }
+    // ]
+  },
+  {
+    label: `Alamat ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'address',
+    type: InputType.LONGTEXT,
+    rules: [
+      {
+        required: true,
+        message: `Alamat ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Nomor Telp ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'phone_number',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Nomor Telp ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Tempat Lahir ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'birth_place',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Tempat Lahir ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Tanggal Lahir ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'birth_date',
+    type: InputType.DATE,
+    rules: [
+      {
+        required: true,
+        message: `Tanggal Lahir ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Status ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'status',
+    type: InputType.SELECT,
+    rules: [
+      {
+        required: true,
+        message: `Status ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ],
+    options: [
+      {
+        label: 'Aktif',
+        value: 'aktif'
+      },
+      {
+        label: 'Non-Aktif',
+        value: 'nonaktif'
+      }
+    ]
+  },
+  {
+    label: `Jabatan ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'employment_id',
+    type: InputType.SELECT,
+    rules: [
+      {
+        required: true,
+        message: `Jabatan ${Modul.VILLAGE_OFFICIALS} harus diisi`
+      }
+    ],
+    options: options.employments.map((item) => ({
+      label: item.employment_name,
+      value: item.id
+    }))
+  },
+  {
+    label: `Gambar ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'image',
+    type: InputType.UPLOAD,
+    max: 1,
+    beforeUpload: () => {
+      return false;
+    },
+    getFileList: (data) => {
+      return [
+        {
+          url: data?.image,
+          name: data?.name
+        }
+      ];
+    },
+    accept: ['.png', '.jpg', '.jpeg', 'webp'],
+    rules: [{ required: true, message: 'Logo harus diisi' }]
+  }
+];
+
+export const employmentFormFields = () => [
+  {
+    label: `Nama ${Modul.EMPLOYMENT}`,
+    name: 'employment_name',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Nama ${Modul.EMPLOYMENT} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Kode ${Modul.EMPLOYMENT}`,
+    name: 'employment_code',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Kode ${Modul.EMPLOYMENT} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Tupoksi ${Modul.EMPLOYMENT}`,
+    name: 'employment_duties',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Tupoksi ${Modul.EMPLOYMENT} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Golongan ${Modul.EMPLOYMENT}`,
+    name: 'faction',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Golongan ${Modul.EMPLOYMENT} harus diisi`
+      }
+    ]
+  }
+];

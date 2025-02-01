@@ -11,8 +11,8 @@ export default class HamletService {
    *  data?: Hamlet[];
    * }>}
    * */
-  static async getAll(token) {
-    const response = await api.get('/dusun', { token });
+  static async getAll(token, page = 1, perPage = 10) {
+    const response = await api.get('/dusun', { token, page, perPage });
     if (!response.data) return response;
     return { ...response, data: Hamlet.fromApiData(response.data) };
   }

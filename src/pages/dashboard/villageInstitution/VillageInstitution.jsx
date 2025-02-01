@@ -1,29 +1,47 @@
 import { DataLoader, DataTable } from '@/components';
-import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
-import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
+import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageInstitutionService } from '@/services';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Tag, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { formFields } from './FormFields';
 
 const VillageInstitution = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchVillageInstitution, ...getAllVillageInstitution } = useService(VillageInstitutionService.getAll);
-  const storeVillageInstitution = useService(VillageInstitutionService.store);
-  const updateVillageInstitution = useService(VillageInstitutionService.update);
-  const deleteVillageInstitution = useService(VillageInstitutionService.delete);
-  const deleteBatchVillageInstitution = useService(VillageInstitutionService.deleteBatch);
-  const [selectedData, setSelectedData] = useState([]);
-
   const modal = useCrudModal();
 
-  useEffect(() => {
-    fetchVillageInstitution(token);
-  }, [fetchVillageInstitution, token]);
+  const useCrudService = (service) => {
+    const { execute: fetch, ...getAll } = useService(service.getAll);
+    return {
+      fetch,
+      store: useService(service.store),
+      update: useService(service.update),
+      delete: useService(service.delete),
+      deleteBatch: useService(service.deleteBatch),
+      getAll,
+      pagination: usePagination({ totalData: getAll.totalData }),
+      selected: useState([])
+    };
+  };
 
-  const villageInstitution = getAllVillageInstitution.data ?? [];
+  const useFetchData = (fetchFn, pagination) => {
+    return useCallback(() => {
+      fetchFn(token, pagination.page, pagination.perPage);
+    }, [fetchFn, pagination.page, pagination.perPage]);
+  };
+
+  const villageInstitutionService = useCrudService(VillageInstitutionService);
+
+  const fetchVillageInstitution = useFetchData(villageInstitutionService.fetch, villageInstitutionService.pagination);
+
+  useEffect(() => {
+    fetchVillageInstitution();
+  }, [fetchVillageInstitution]);
+
+  const villageInstitution = villageInstitutionService.getAll.data ?? [];
+  const [selectedData, setSelectedData] = useState([]);
 
   const Column = [
     {
@@ -69,7 +87,7 @@ const VillageInstitution = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateVillageInstitution.execute(record.id, { ...values, _method: 'PUT' }, token);
+                  const { message, isSuccess } = await villageInstitutionService.update.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchVillageInstitution(token);
@@ -131,7 +149,7 @@ const VillageInstitution = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async () => {
-                  const { isSuccess, message } = await deleteVillageInstitution.execute(record.id, token);
+                  const { isSuccess, message } = await villageInstitutionService.delete.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchVillageInstitution(token);
@@ -148,56 +166,9 @@ const VillageInstitution = () => {
     }
   ];
 
-  const formFields = [
-    {
-      label: `Nama ${Modul.VILLAGE_INSTITUTION}`,
-      name: 'institution_name',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nama ${Modul.VILLAGE_INSTITUTION} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Kode ${Modul.VILLAGE_INSTITUTION}`,
-      name: 'institution_code',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Kode ${Modul.VILLAGE_INSTITUTION} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Status ${Modul.VILLAGE_INSTITUTION}`,
-      name: 'status',
-      type: InputType.SELECT,
-      picker: 'select',
-      rules: [
-        {
-          required: true,
-          message: `Status ${Modul.VILLAGE_INSTITUTION} harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Aktif',
-          value: 'aktif'
-        },
-        {
-          label: 'Non-Aktif',
-          value: 'nonaktif'
-        }
-      ]
-    }
-  ];
-
   return (
     <div>
-      {getAllVillageInstitution.isLoading ? (
+      {villageInstitutionService.getAll.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>
@@ -215,7 +186,7 @@ const VillageInstitution = () => {
                     formFields: formFields,
                     onSubmit: async () => {
                       const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchVillageInstitution.execute(ids, token);
+                      const { message, isSuccess } = await villageInstitutionService.deleteBatch.execute(ids, token);
                       if (isSuccess) {
                         success('Berhasil', message);
                         fetchVillageInstitution(token);
@@ -237,7 +208,7 @@ const VillageInstitution = () => {
                     title: `Tambah ${Modul.VILLAGE_INSTITUTION}`,
                     formFields: formFields,
                     onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeVillageInstitution.execute(values, token);
+                      const { message, isSuccess } = await villageInstitutionService.store.execute(values, token);
                       if (isSuccess) {
                         success('Berhasil', message);
                         fetchVillageInstitution(token);
@@ -254,7 +225,14 @@ const VillageInstitution = () => {
             </div>
           </div>
           <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={villageInstitution} columns={Column} loading={getAllVillageInstitution.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+            <DataTable
+              data={villageInstitution}
+              columns={Column}
+              loading={villageInstitutionService.getAll.isLoading}
+              map={(category) => ({ key: category.id, ...category })}
+              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+              pagination={villageInstitutionService.pagination}
+            />
           </div>
         </Card>
       )}
