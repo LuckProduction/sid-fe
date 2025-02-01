@@ -1,4 +1,4 @@
-import { Navbar } from '@/components';
+import { Footer, Navbar } from '@/components';
 import { Outlet } from 'react-router-dom';
 
 const Landing = () => {
@@ -10,7 +10,7 @@ const Landing = () => {
 
       <main className="flex-auto bg-white pt-8">
         <Outlet />
-        {/* <Footer /> */}
+        <Footer />
       </main>
     </div>
   );

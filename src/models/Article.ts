@@ -3,6 +3,7 @@ import Model from './Model';
 
 export interface IncomingApiData {
   id: number;
+  slug: string;
   judul: string;
   konten: string;
   kategori: {
@@ -42,6 +43,7 @@ type ReturnType<S, From, To> = S extends From[] ? To[] : To;
 export default class Article extends Model {
   constructor(
     public id: number,
+    public slug: string,
     public title: string,
     public content: string,
     public category: {
@@ -60,6 +62,7 @@ export default class Article extends Model {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Article>;
     return new Article(
       apiData.id,
+      apiData.slug,
       apiData.judul,
       apiData.konten,
       apiData.kategori.map((item) => ({

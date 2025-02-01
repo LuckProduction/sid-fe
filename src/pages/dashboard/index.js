@@ -1,5 +1,5 @@
 export { default as Dashboard } from './Dashboard';
-export { default as VillagePorfile } from './VillagePorfile';
+export { default as VillageProfile } from './VillageProfile';
 
 export { default as Article } from './article/Article';
 export { default as CreateArticle } from './article/Create';

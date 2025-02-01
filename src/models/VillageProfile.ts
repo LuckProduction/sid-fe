@@ -1,3 +1,4 @@
+import asset from '@/utils/asset';
 import Model from './Model';
 
 interface Kecamatan {
@@ -14,20 +15,6 @@ interface Kabupaten {
   kode_kabupaten: string;
 }
 
-interface District {
-  id: number;
-  district_name: string;
-  districthead_name: string;
-  district_code: string;
-}
-
-interface Regency {
-  id: number;
-  regency_name: string;
-  regencyhead_name: string;
-  regency_code: string;
-}
-
 interface IncomingApiData {
   id: number;
   nama_desa: string;
@@ -41,23 +28,39 @@ interface IncomingApiData {
 }
 
 interface OutgoingApiData {
-  nama_desa: string;
-  kode_desa: string;
-  kode_pos: string;
-  alamat_kantor: string;
-  email_desa: string;
-  id_kecamatan: number;
-  id_kabupaten: number;
+  _method?: 'PUT';
+  nama_desa?: string;
+  kode_desa?: string;
+  kode_pos_desa?: string;
+  alamat_kantor?: string;
+  email_desa?: string;
+  logo_desa?: string;
+  profil_kecamatan?: {
+    nama_camat?: string;
+    kode_kecamatan?: string;
+  };
+  profil_kabupaten?: {
+    nama_bupati?: string;
+    kode_kabupaten?: string;
+  };
 }
 
 interface FormValue {
+  _method: 'PUT';
   village_name: string;
   village_code: string;
   postal_code: string;
   office_adress: string;
   village_email: string;
-  district_id: number;
-  regency_id: number;
+  village_logo: string;
+  district_profile: {
+    districthead_name: string;
+    district_code: string;
+  };
+  regency_profile: {
+    regencyhead_name: string;
+    regency_code: string;
+  };
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -71,14 +74,18 @@ export default class VillageProfile extends Model {
     public office_address: string,
     public village_email: string,
     public village_logo: string,
-    public district_id: number,
-    public district_code: string,
-    public district_name: string,
-    public districthead_name: string,
-    public regency_id: number,
-    public regency_name: string,
-    public regency_code: string,
-    public regencyhead_name: string
+    public district_profile?: {
+      id_district: number;
+      district_name: string;
+      districthead_name: string;
+      district_code: string;
+    },
+    public regency_profile?: {
+      id_regency: number;
+      regency_name: string;
+      regencyhead_name: string;
+      regency_code: string;
+    }
   ) {
     super();
   }
@@ -93,28 +100,47 @@ export default class VillageProfile extends Model {
       apiData.kode_pos_desa,
       apiData.alamat_kantor,
       apiData.email_desa,
-      apiData.logo_desa,
-      apiData.profil_kecamatan.id,
-      apiData.profil_kecamatan.kode_kecamatan,
-      apiData.profil_kecamatan.nama_camat,
-      apiData.profil_kecamatan.nama_camat,
-      apiData.profil_kabupaten.id,
-      apiData.profil_kabupaten.nama_kabupaten,
-      apiData.profil_kabupaten.kode_kabupaten,
-      apiData.profil_kabupaten.nama_bupati
+      asset(apiData.logo_desa),
+      apiData.profil_kecamatan
+        ? {
+            id_district: apiData.profil_kecamatan.id,
+            district_code: apiData.profil_kecamatan.kode_kecamatan,
+            districthead_name: apiData.profil_kecamatan.nama_camat,
+            district_name: apiData.profil_kecamatan.nama_kecamatan
+          }
+        : undefined,
+      apiData.profil_kabupaten
+        ? {
+            id_regency: apiData.profil_kabupaten.id,
+            regency_code: apiData.profil_kabupaten.kode_kabupaten,
+            regencyhead_name: apiData.profil_kabupaten.nama_bupati,
+            regency_name: apiData.profil_kabupaten.nama_kabupaten
+          }
+        : undefined
     ) as ReturnType<T, IncomingApiData, VillageProfile>;
   }
 
   static toApiData<T extends FormValue | FormValue[]>(formValue: T): ReturnType<T, FormValue, OutgoingApiData> {
     if (Array.isArray(formValue)) return formValue.map((object) => VillageProfile.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      nama_desa: formValue.village_name,
-      kode_desa: formValue.village_code,
-      kode_pos: formValue.postal_code,
-      alamat_kantor: formValue.office_adress,
-      email_desa: formValue.village_email,
-      id_kecamatan: formValue.district_id,
-      id_kabupaten: formValue.regency_id
+      ...(formValue._method ? { _method: formValue._method } : {}),
+      ...(formValue.village_name ? { nama_desa: formValue.village_name } : {}),
+      ...(formValue.village_code ? { kode_desa: formValue.village_code } : {}),
+      ...(formValue.postal_code ? { kode_pos_desa: formValue.postal_code } : {}),
+      ...(formValue.office_adress ? { alamat_kantor: formValue.office_adress } : {}),
+      ...(formValue.village_email ? { email_desa: formValue.village_email } : {}),
+      profil_kecamatan: formValue.district_profile
+        ? {
+            kode_kecamatan: formValue.district_profile.district_code,
+            nama_camat: formValue.district_profile.districthead_name
+          }
+        : undefined,
+      profil_kabupaten: formValue.regency_profile
+        ? {
+            kode_kabupaten: formValue.regency_profile.regency_code,
+            nama_bupati: formValue.regency_profile.regencyhead_name
+          }
+        : undefined
     };
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
   }
