@@ -71,6 +71,7 @@ export interface OutgoingApiData {
     pekerjaan: string;
     pendidikan_sedang_ditempuh: string;
   };
+  file?: string;
 }
 
 interface FormValue {
@@ -107,6 +108,7 @@ interface FormValue {
     career: string;
     education_in_progress: string;
   };
+  file?: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -242,7 +244,8 @@ export default class Resident extends Model {
             pekerjaan: resident.education_career.career,
             pendidikan_sedang_ditempuh: resident.education_career.education_in_progress
           }
-        : undefined
+        : undefined,
+      ...(resident.file ? { _method: resident.file } : {})
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

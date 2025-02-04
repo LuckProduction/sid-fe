@@ -1,9 +1,9 @@
 import { DataLoader, DataTable } from '@/components';
-import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
+import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Tag, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modul from '@/constants/Modul';
 import { InputType } from '@/constants';
@@ -12,16 +12,23 @@ const Resident = () => {
   const navigate = useNavigate();
   const { token } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchResident, ...getAllResident } = useService(ResidentService.getAll);
+  const { execute, ...getAllResident } = useService(ResidentService.getAll);
   const storeResident = useService(ResidentService.store);
+  const importResident = useService(ResidentService.import);
+  const exportResident = useService(ResidentService.export);
   const deleteResident = useService(ResidentService.delete);
   const deleteBatchResident = useService(ResidentService.deleteBatch);
   const [selectedResident, setSelectedResident] = useState([]);
   const modal = useCrudModal();
+  const pagination = usePagination({ totalData: getAllResident.totalData });
+
+  const fetchResident = useCallback(() => {
+    execute(token, pagination.page, pagination.perPage);
+  }, [execute, pagination.page, pagination.perPage, token]);
 
   useEffect(() => {
-    fetchResident(token);
-  }, [fetchResident, token]);
+    fetchResident();
+  }, [fetchResident]);
 
   const resident = getAllResident.data ?? [];
 
@@ -290,6 +297,65 @@ const Resident = () => {
                 {Modul.RESIDENTIAL}
               </Button>
               <Button
+                variant="solid"
+                icon={<ImportOutlined />}
+                onClick={() => {
+                  modal.create({
+                    formFields: [
+                      {
+                        label: `File ${Modul.RESIDENTIAL}`,
+                        name: 'file',
+                        type: InputType.UPLOAD,
+                        max: 1,
+                        beforeUpload: () => {
+                          return false;
+                        },
+                        getFileList: (data) => {
+                          return [
+                            {
+                              url: data?.file,
+                              name: data?.name
+                            }
+                          ];
+                        },
+                        accept: ['.xlsx'],
+                        rules: [{ required: true, message: 'Logo harus diisi' }]
+                      }
+                    ],
+                    title: `Import ${Modul.RESIDENTIAL} `,
+                    onSubmit: async (values) => {
+                      const { message, isSuccess } = await importResident.execute(values, token, values.file.file);
+                      if (isSuccess) {
+                        success('Berhasil', message);
+                        fetchResident(token);
+                      } else {
+                        error('Gagal', message);
+                      }
+                      return isSuccess;
+                    }
+                  });
+                }}
+              >
+                Import
+              </Button>
+              <Button
+                variant="solid"
+                loading={exportResident.isLoading}
+                icon={<ExportOutlined />}
+                onClick={async () => {
+                  const { message, isSuccess } = await exportResident.execute(token);
+                  if (isSuccess) {
+                    success('Berhasil', message);
+                    fetchResident(token);
+                  } else {
+                    error('Gagal', message);
+                  }
+                  return isSuccess;
+                }}
+              >
+                Export
+              </Button>
+              <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => {
@@ -314,7 +380,7 @@ const Resident = () => {
             </div>
           </div>
           <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} />
+            <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} pagination={pagination} />
           </div>
         </Card>
       )}

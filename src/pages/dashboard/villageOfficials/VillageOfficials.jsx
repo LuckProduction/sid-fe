@@ -1,40 +1,55 @@
 import { DataLoader, DataTable } from '@/components';
-import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
-import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
+import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { EmploymentService, VillageOfficialsService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Image, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { employmentFormFields, villageOfficialsFormFields } from './FormFields';
 
 const VillageOfficials = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchVillageOfficials, ...getAllVillageOfficials } = useService(VillageOfficialsService.getAll);
-  const storeVillageOfficials = useService(VillageOfficialsService.store);
-  const updateVillageOfficials = useService(VillageOfficialsService.update);
-  const deleteVillageOfficials = useService(VillageOfficialsService.delete);
-  const deleteBatchVillageOfficials = useService(VillageOfficialsService.deleteBatch);
-  const [selectedVillageOfficials, setSelectedVillageOfficials] = useState([]);
-
-  const { execute: fetchEmployment, ...getAllEmployment } = useService(EmploymentService.getAll);
-  const storeEmployment = useService(EmploymentService.store);
-  const updateEmployment = useService(EmploymentService.update);
-  const deleteEmployment = useService(EmploymentService.delete);
-  const deleteBatchEmnployment = useService(EmploymentService.deleteBatch);
-  const [selectedEmployment, setSelectedEmployment] = useState([]);
-
   const modal = useCrudModal();
 
-  useEffect(() => {
-    fetchVillageOfficials(token);
-    fetchEmployment(token);
-  }, [fetchEmployment, fetchVillageOfficials, token]);
+  const useCrudService = (service) => {
+    const { execute: fetch, ...getAll } = useService(service.getAll);
+    return {
+      fetch,
+      store: useService(service.store),
+      update: useService(service.update),
+      delete: useService(service.delete),
+      deleteBatch: useService(service.deleteBatch),
+      getAll,
+      pagination: usePagination({ totalData: getAll.totalData }),
+      selected: useState([])
+    };
+  };
 
-  const villageOfficials = getAllVillageOfficials.data ?? [];
-  const employments = getAllEmployment.data ?? [];
+  const useFetchData = (fetchFn, pagination) => {
+    return useCallback(() => {
+      fetchFn(token, pagination.page, pagination.perPage);
+    }, [fetchFn, pagination.page, pagination.perPage]);
+  };
+
+  const villageOfficialsService = useCrudService(VillageOfficialsService);
+  const employmentService = useCrudService(EmploymentService);
+
+  const fetchVillageOfficials = useFetchData(villageOfficialsService.fetch, villageOfficialsService.pagination);
+  const fetchEmployment = useFetchData(employmentService.fetch, employmentService.pagination);
+
+  useEffect(() => {
+    fetchVillageOfficials();
+    fetchEmployment();
+  }, [fetchVillageOfficials, fetchEmployment]);
+
+  const villageOfficials = villageOfficialsService.getAll.data ?? [];
+  const employments = employmentService.getAll.data ?? [];
+
+  const [selectedVillageOfficials, setSelectedVillageOfficials] = useState([]);
+  const [selectedEmployment, setSelectedEmployment] = useState([]);
 
   const villageOfficialsColumn = [
     {
@@ -62,9 +77,9 @@ const VillageOfficials = () => {
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_OFFICIALS}`,
                 data: { ...record, birth_date: dayjs(record.birth_date), birth_place: record.birth_place, employment_id: record.employment.id },
-                formFields: villageOfficialsFormFields,
+                formFields: villageOfficialsFormFields({ options: { employments } }),
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateVillageOfficials.execute(record.id, { ...values, birth_date: dateFormatter(values.birth_date), _method: 'PUT' }, token, values.image.file);
+                  const { message, isSuccess } = await villageOfficialsService.update.execute(record.id, { ...values, birth_date: dateFormatter(values.birth_date), _method: 'PUT' }, token, values.image.file);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchVillageOfficials(token);
@@ -141,9 +156,9 @@ const VillageOfficials = () => {
               modal.delete.default({
                 title: `Delete ${Modul.VILLAGE_OFFICIALS}`,
                 data: { ...record, birth_date: dayjs(record.birth_date), employment_id: record.employment.id },
-                formFields: villageOfficialsFormFields,
+                formFields: villageOfficialsFormFields({ options: { employments } }),
                 onSubmit: async () => {
-                  const { isSuccess, message } = await deleteVillageOfficials.execute(record.id, token);
+                  const { isSuccess, message } = await villageOfficialsService.delete.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchVillageOfficials(token);
@@ -194,7 +209,7 @@ const VillageOfficials = () => {
                 data: record,
                 formFields: employmentFormFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateEmployment.execute(record.id, values, token);
+                  const { message, isSuccess } = await employmentService.update.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchEmployment(token);
@@ -248,7 +263,7 @@ const VillageOfficials = () => {
                 data: record,
                 formFields: employmentFormFields,
                 onSubmit: async () => {
-                  const { isSuccess, message } = await deleteEmployment.execute(record.id, token);
+                  const { isSuccess, message } = await employmentService.delete.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchEmployment(token);
@@ -265,202 +280,9 @@ const VillageOfficials = () => {
     }
   ];
 
-  const villageOfficialsFormFields = [
-    {
-      label: `Nama ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'name',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nama ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Jenis Kelamin ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'gender',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Jenis Kelamin ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Laki-laki',
-          value: 'L'
-        },
-        {
-          label: 'Perempuan',
-          value: 'P'
-        }
-      ]
-    },
-    {
-      label: `NIP ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'nip',
-      type: InputType.TEXT
-      // FIXME: IT HAS TO BE REQUIRED BUT FIX IT WHEN THE BACKEND IS FIXED
-      // rules: [
-      //   {
-      //     required: true,
-      //     message: `NIP ${Modul.VILLAGE_OFFICIALS} harus diisi`
-      //   }
-      // ]
-    },
-    {
-      label: `Alamat ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'address',
-      type: InputType.LONGTEXT,
-      rules: [
-        {
-          required: true,
-          message: `Alamat ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Nomor Telp ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'phone_number',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nomor Telp ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Tempat Lahir ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'birth_place',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Tempat Lahir ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Tanggal Lahir ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'birth_date',
-      type: InputType.DATE,
-      rules: [
-        {
-          required: true,
-          message: `Tanggal Lahir ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Status ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'status',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Status ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Aktif',
-          value: 'aktif'
-        },
-        {
-          label: 'Non-Aktif',
-          value: 'nonaktif'
-        }
-      ]
-    },
-    {
-      label: `Jabatan ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'employment_id',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Jabatan ${Modul.VILLAGE_OFFICIALS} harus diisi`
-        }
-      ],
-      options: employments.map((item) => ({
-        label: item.employment_name,
-        value: item.id
-      }))
-    },
-    {
-      label: `Gambar ${Modul.VILLAGE_OFFICIALS}`,
-      name: 'image',
-      type: InputType.UPLOAD,
-      max: 1,
-      beforeUpload: () => {
-        return false;
-      },
-      getFileList: (data) => {
-        return [
-          {
-            url: data?.image,
-            name: data?.name
-          }
-        ];
-      },
-      accept: ['.png', '.jpg', '.jpeg', 'webp'],
-      rules: [{ required: true, message: 'Logo harus diisi' }]
-    }
-  ];
-
-  const employmentFormFields = [
-    {
-      label: `Nama ${Modul.EMPLOYMENT}`,
-      name: 'employment_name',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nama ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Kode ${Modul.EMPLOYMENT}`,
-      name: 'employment_code',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Kode ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Tupoksi ${Modul.EMPLOYMENT}`,
-      name: 'employment_duties',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Tupoksi ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Golongan ${Modul.EMPLOYMENT}`,
-      name: 'faction',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Golongan ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    }
-  ];
-
   return (
     <>
-      {getAllVillageOfficials.isLoading ? (
+      {villageOfficialsService.getAll.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
@@ -476,10 +298,10 @@ const VillageOfficials = () => {
                   onClick={() => {
                     modal.delete.batch({
                       title: `Hapus ${selectedVillageOfficials.length} ${Modul.VILLAGE_OFFICIALS} Yang Dipilih ? `,
-                      formFields: villageOfficialsFormFields,
+                      formFields: villageOfficialsFormFields({ options: { employments } }),
                       onSubmit: async () => {
                         const ids = selectedVillageOfficials.map((item) => item.id);
-                        const { message, isSuccess } = await deleteBatchVillageOfficials.execute(ids, token);
+                        const { message, isSuccess } = await villageOfficialsService.deleteBatch.execute(ids, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchVillageOfficials(token);
@@ -499,9 +321,9 @@ const VillageOfficials = () => {
                   onClick={() => {
                     modal.create({
                       title: `Tambah ${Modul.VILLAGE_OFFICIALS}`,
-                      formFields: villageOfficialsFormFields,
+                      formFields: villageOfficialsFormFields({ options: { employments } }),
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeVillageOfficials.execute(
+                        const { message, isSuccess } = await villageOfficialsService.store.execute(
                           {
                             ...values,
                             birth_date: dateFormatter(values.birth_date)
@@ -527,15 +349,16 @@ const VillageOfficials = () => {
             <div className="w-full max-w-full overflow-x-auto">
               <DataTable
                 data={villageOfficials}
+                pagination={villageOfficialsService.pagination}
                 columns={villageOfficialsColumn}
-                loading={getAllVillageOfficials.isLoading}
+                loading={villageOfficialsService.getAll.isLoading}
                 map={(category) => ({ key: category.id, ...category })}
                 handleSelectedData={(_, selectedRows) => setSelectedVillageOfficials(selectedRows)}
               />
             </div>
           </Card>
-          <Card className="col-span-4">
-            <div className="mb-6 flex items-center justify-between">
+          <Card className="col-span-4 h-fit">
+            <div className="mb-6 flex h-fit items-center justify-between">
               <Typography.Title level={5}>Data {Modul.EMPLOYMENT}</Typography.Title>
               <div className="inline-flex items-center gap-2">
                 <Button
@@ -549,7 +372,7 @@ const VillageOfficials = () => {
                       formFields: employmentFormFields,
                       onSubmit: async () => {
                         const ids = selectedEmployment.map((item) => item.id);
-                        const { message, isSuccess } = await deleteBatchEmnployment.execute(ids, token);
+                        const { message, isSuccess } = await employmentService.deleteBatch.execute(ids, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchEmployment(token);
@@ -571,7 +394,7 @@ const VillageOfficials = () => {
                       title: `Tambah ${Modul.EMPLOYMENT}`,
                       formFields: employmentFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeEmployment.execute(values, token);
+                        const { message, isSuccess } = await employmentService.store.execute(values, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchEmployment(token);
@@ -588,7 +411,14 @@ const VillageOfficials = () => {
               </div>
             </div>
             <div className="w-full max-w-full overflow-x-auto">
-              <DataTable data={employments} columns={employmentColumn} loading={getAllEmployment.isLoading} map={(employment) => ({ key: employment.id, ...employment })} handleSelectedData={(_, selectedRows) => setSelectedEmployment(selectedRows)} />
+              <DataTable
+                data={employments}
+                columns={employmentColumn}
+                loading={employmentService.getAll.isLoading}
+                map={(employment) => ({ key: employment.id, ...employment })}
+                handleSelectedData={(_, selectedRows) => setSelectedEmployment(selectedRows)}
+                pagination={employmentService.pagination}
+              />
             </div>
           </Card>
         </div>

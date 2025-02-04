@@ -11,8 +11,8 @@ export default class ResidentService {
    *  data?: Resident[];
    * }>}
    * */
-  static async getAll(token) {
-    const response = await api.get('/master-penduduk', { token });
+  static async getAll(token, page = 1, perPage = 10) {
+    const response = await api.get('/master-penduduk', { token, page, perPage });
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }
@@ -85,5 +85,22 @@ export default class ResidentService {
    */
   static async deleteBatch(ids, token) {
     return await api.delete(`/master-penduduk/multi-delete/?ids=${ids.join(',')}`, { token });
+  }
+
+  /**
+   * @param {number[]} ids
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   * }>}
+   */
+  static async import(data, token, file) {
+    return await api.post('/master-penduduk/import', { body: data, token, file: { file: file } });
+  }
+
+  static async export(token) {
+    return await api.post('/master-penduduk/export', { token });
   }
 }

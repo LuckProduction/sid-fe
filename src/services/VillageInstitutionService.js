@@ -11,8 +11,8 @@ export default class VillageInstitutionService {
    *  data?: VillageInstitution[];
    * }>}
    * */
-  static async getAll(token) {
-    const response = await api.get('/lembaga-desa', { token });
+  static async getAll(token, page = 1, perPage = 10) {
+    const response = await api.get('/lembaga-desa', { token, page, perPage });
     if (!response.data) return response;
     return { ...response, data: VillageInstitution.fromApiData(response.data) };
   }
