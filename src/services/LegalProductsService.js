@@ -11,8 +11,9 @@ export default class LegalProductsService {
    *  data?: LegalProducts[];
    * }>}
    * */
-  static async getAll(token) {
-    const response = await api.get('/produk-hukum', { token });
+  static async getAll(token, page = null, perPage = null) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get('/produk-hukum', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: LegalProducts.fromApiData(response.data) };
   }

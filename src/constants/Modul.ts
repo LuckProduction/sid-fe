@@ -11,7 +11,8 @@ enum Modul {
   RESIDENTIAL = 'Kependudukan',
   INSTITUTION_MEMBER = 'Anggota Lembaga',
   APBD_REPORT = 'Laporan APBD',
-  APBD_ITEM = 'Item APBD'
+  APBD_ITEM = 'Item APBD',
+  PUBLIC_ASSISTANCE = 'Bantuan'
 }
 
 export default Modul;

@@ -1,7 +1,7 @@
 import { DataLoader, DataTable } from '@/components';
 import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
-import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
+import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LegalProductsService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
 import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
@@ -19,11 +19,13 @@ const LegalProducts = () => {
   const deleteBatchLegalProducts = useService(LegalProductsService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
 
+  const pagination = usePagination({ totalData: getAllLegalProducts.totalData });
+
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchLegalProducts(token);
-  }, [fetchLegalProducts, token]);
+    fetchLegalProducts(token, pagination.page, pagination.perPage);
+  }, [fetchLegalProducts, pagination.page, pagination.perPage, token]);
 
   const legalProducts = getAllLegalProducts.data ?? [];
 
@@ -351,7 +353,14 @@ const LegalProducts = () => {
             </div>
           </div>
           <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={legalProducts} columns={Column} loading={getAllLegalProducts.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+            <DataTable
+              data={legalProducts}
+              columns={Column}
+              pagination={pagination}
+              loading={getAllLegalProducts.isLoading}
+              map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
+              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+            />
           </div>
         </Card>
       )}

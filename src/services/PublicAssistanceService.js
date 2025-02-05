@@ -1,25 +1,25 @@
-import { VillagePotential } from '@/models';
+import { PublicAssistance } from '@/models';
 import api from '@/utils/api';
 
-export default class VillagePotentialService {
+export default class PublicAssistanceService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: VillagePotential[];
+   *  data?: PublicAssistance[];
    * }>}
    * */
   static async getAll(token, page = null, perPage = null) {
     const params = page && perPage ? { page, perPage } : {};
-    const response = await api.get('/potensi-desa', { token, ...params });
+    const response = await api.get('/bantuan', { token, ...params });
     if (!response.data) return response;
-    return { ...response, data: VillagePotential.fromApiData(response.data) };
+    return { ...response, data: PublicAssistance.fromApiData(response.data) };
   }
 
   /**
-   * @param {VillagePotential} data
+   * @param {PublicAssistance} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -28,13 +28,13 @@ export default class VillagePotentialService {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token, file) {
-    return await api.post('/potensi-desa', { body: VillagePotential.toApiData(data), token, file: { foto: file } });
+  static async store(data, token) {
+    return await api.post('/bantuan', { body: PublicAssistance.toApiData(data), token });
   }
 
   /**
    * @param {number} id
-   * @param {VillagePotential} data
+   * @param {PublicAssistance} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -43,8 +43,8 @@ export default class VillagePotentialService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token, file) {
-    return await api.post(`/potensi-desa/edit/${id}`, { body: VillagePotential.toApiData(data), token, file: { foto: file } });
+  static async update(id, data, token) {
+    return await api.put(`/bantuan/edit/${id}`, { body: PublicAssistance.toApiData(data), token });
   }
 
   /**
@@ -57,7 +57,7 @@ export default class VillagePotentialService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/potensi-desa/delete/${id}`, { token });
+    return await api.delete(`/bantuan/delete/${id}`, { token });
   }
 
   /**
@@ -70,6 +70,6 @@ export default class VillagePotentialService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/potensi-desa/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/bantuan/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }

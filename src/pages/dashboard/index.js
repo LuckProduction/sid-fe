@@ -19,3 +19,4 @@ export { default as VillageInstitution } from './villageInstitution/VillageInsti
 export { default as InstitutionMember } from './institutionMember/InstitutionMember';
 export { default as ApbdReport } from './apbdReport/ApbdReport';
 export { default as ApbdItem } from './apbdItem/ApbdItem';
+export { default as PublicAssistance } from './publicAsistance/PublicAssistance';

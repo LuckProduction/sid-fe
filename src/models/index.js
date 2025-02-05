@@ -16,3 +16,4 @@ export { default as Speech } from './Speech';
 export { default as InstitutionMember } from './InstitutionMember';
 export { default as ApbdReport } from './ApbdReport';
 export { default as ApbdItem } from './ApbdItem';
+export { default as PublicAssistance } from './PublicAssistance';

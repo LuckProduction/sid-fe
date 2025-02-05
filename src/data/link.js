@@ -6,6 +6,7 @@ import {
   BookOutlined,
   DashboardOutlined,
   FileOutlined,
+  GiftOutlined,
   HomeOutlined,
   IdcardOutlined,
   NodeIndexOutlined,
@@ -56,14 +57,25 @@ export const dashboardLink = [
     children: [
       { path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillageProfile },
       { path: '/hamlet', label: 'Dusun', icon: TableOutlined, element: Dashboard.Hamlet },
+      { path: '/visi-misi', label: 'Visi Misi', icon: RocketOutlined, element: Dashboard.VisiMisi }
+    ]
+  },
+  {
+    label: 'Perangkat Desa',
+    children: [
       { path: '/employment', label: 'Jabatan', icon: IdcardOutlined, element: Dashboard.Employment },
       { path: '/village_officials', label: 'Perangkat Desa', icon: UsergroupAddOutlined, element: Dashboard.VillageOfficials },
       { path: '/village_institutions', label: 'Lembaga Desa', icon: BankOutlined, element: Dashboard.VillageInstitution },
-      { path: '/institution_member', label: 'Anggota Lembaga', icon: UserSwitchOutlined, element: Dashboard.InstitutionMember },
-      { path: '/visi-misi', label: 'Visi Misi', icon: RocketOutlined, element: Dashboard.VisiMisi },
+      { path: '/institution_member', label: 'Anggota Lembaga', icon: UserSwitchOutlined, element: Dashboard.InstitutionMember }
+    ]
+  },
+  {
+    label: 'Kependudukan',
+    children: [
       { path: '/residential', label: 'Kependudukan', icon: PartitionOutlined, element: Dashboard.Resident },
       { path: '/apbd-report', label: 'Laporan APBD', icon: PrinterOutlined, element: Dashboard.ApbdReport },
-      { path: '/apbd-item', label: 'Item APBD', icon: FileOutlined, element: Dashboard.ApbdItem }
+      { path: '/apbd-item', label: 'Item APBD', icon: FileOutlined, element: Dashboard.ApbdItem },
+      { path: '/public-assistance', label: 'Bantuan', icon: GiftOutlined, element: Dashboard.PublicAssistance }
     ]
   },
   {
