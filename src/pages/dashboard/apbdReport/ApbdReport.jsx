@@ -13,10 +13,10 @@ const ApbdReport = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
   const { execute: fetchApbdReport, ...getAllApbdReport } = useService(ApbdReportService.getAll);
-  const storeLegalProducts = useService(ApbdReportService.store);
-  const updateLegalProducts = useService(ApbdReportService.update);
-  const deleteLegalProducts = useService(ApbdReportService.delete);
-  const deleteBatchLegalProducts = useService(ApbdReportService.deleteBatch);
+  const storeApbdReport = useService(ApbdReportService.store);
+  const updateApbdReport = useService(ApbdReportService.update);
+  const deleteApbdReport = useService(ApbdReportService.delete);
+  const deleteBatchApbdReport = useService(ApbdReportService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
 
   const pagination = usePagination({ totalData: getAllApbdReport.totalData });
@@ -57,7 +57,7 @@ const ApbdReport = () => {
                 data: { ...record, year: dayjs(record.year) },
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateLegalProducts.execute(record.id, { ...values, year: dateFormatter(values.year, 'year'), _method: 'PUT' }, token, values.document.file);
+                  const { message, isSuccess } = await updateApbdReport.execute(record.id, { ...values, year: dateFormatter(values.year, 'year'), _method: 'PUT' }, token, values.document.file);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchApbdReport(token);
@@ -110,7 +110,7 @@ const ApbdReport = () => {
                 data: { ...record, year: dayjs(record.year) },
                 formFields: formFields,
                 onSubmit: async () => {
-                  const { isSuccess, message } = await deleteLegalProducts.execute(record.id, token);
+                  const { isSuccess, message } = await deleteApbdReport.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchApbdReport(token);
@@ -147,7 +147,7 @@ const ApbdReport = () => {
                     formFields: formFields,
                     onSubmit: async () => {
                       const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchLegalProducts.execute(ids, token);
+                      const { message, isSuccess } = await deleteBatchApbdReport.execute(ids, token);
                       if (isSuccess) {
                         success('Berhasil', message);
                         fetchApbdReport(token);
@@ -169,7 +169,7 @@ const ApbdReport = () => {
                     title: `Tambah ${Modul.APBD_REPORT}`,
                     formFields: formFields,
                     onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeLegalProducts.execute({ ...values, year: dateFormatter(values.year, 'year') }, token, values.document.file);
+                      const { message, isSuccess } = await storeApbdReport.execute({ ...values, year: dateFormatter(values.year, 'year') }, token, values.document.file);
                       if (isSuccess) {
                         success('Berhasil', message);
                         fetchApbdReport(token);

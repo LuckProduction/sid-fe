@@ -14,3 +14,4 @@ export { default as SpeechService } from './SpeechService';
 export { default as LandingService } from './LandingService';
 export { default as InstitutionMemberService } from './InstitutionMemberService';
 export { default as ApbdReportService } from './ApbdReportService';
+export { default as ApbdItemService } from './ApbdItemService';
