@@ -14,3 +14,4 @@ export { default as VillageInstitution } from './VillageInstitution';
 export { default as Resident } from './Resident';
 export { default as Speech } from './Speech';
 export { default as InstitutionMember } from './InstitutionMember';
+export { default as ApbdReport } from './ApbdReport';

@@ -36,8 +36,6 @@ const InstitutionMember = () => {
   const resident = getAllResident.data ?? [];
   const employment = getAllEmployment.data ?? [];
 
-  console.log(institutionMember);
-
   const villagePotentialColumn = [
     {
       title: 'Lembaga',

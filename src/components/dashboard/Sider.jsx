@@ -37,7 +37,6 @@ const Sider = ({ collapsed, onCloseMenu }) => {
           .map(({ label, children }) => ({
             key: label,
             label,
-            type: 'group',
             children: children
               .filter(({ permissions, roles }) => {
                 const hasPermission = !permissions || user?.eitherCan(...permissions);

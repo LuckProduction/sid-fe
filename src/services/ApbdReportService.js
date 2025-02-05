@@ -1,25 +1,25 @@
-import { Employment } from '@/models';
+import { ApbdReport } from '@/models';
 import api from '@/utils/api';
 
-export default class EmploymentService {
+export default class ApbdReportService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Employment[];
+   *  data?: ApbdReport[];
    * }>}
    * */
   static async getAll(token, page = null, perPage = null) {
     const params = page && perPage ? { page, perPage } : {};
-    const response = await api.get('/jabatan', { token, ...params });
+    const response = await api.get('/laporan-apbd', { token, ...params });
     if (!response.data) return response;
-    return { ...response, data: Employment.fromApiData(response.data) };
+    return { ...response, data: ApbdReport.fromApiData(response.data) };
   }
 
   /**
-   * @param {Employment} data
+   * @param {ApbdReport} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -28,13 +28,13 @@ export default class EmploymentService {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token) {
-    return await api.post('/jabatan', { body: Employment.toApiData(data), token });
+  static async store(data, token, file) {
+    return await api.post('/laporan-apbd', { body: ApbdReport.toApiData(data), token, file: { dokumen: file } });
   }
 
   /**
    * @param {number} id
-   * @param {Employment} data
+   * @param {ApbdReport} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -43,8 +43,8 @@ export default class EmploymentService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.patch(`/jabatan/edit/${id}`, { body: Employment.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/laporan-apbd/edit/${id}`, { body: ApbdReport.toApiData(data), token, file: { dokumen: file } });
   }
 
   /**
@@ -57,7 +57,7 @@ export default class EmploymentService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/jabatan/delete/${id}`, { token });
+    return await api.delete(`/laporan-apbd/delete/${id}`, { token });
   }
 
   /**
@@ -70,6 +70,6 @@ export default class EmploymentService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/jabatan/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/laporan-apbd/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }

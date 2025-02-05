@@ -250,7 +250,7 @@ const LegalProducts = () => {
       ]
     },
     {
-      label: `Dokumen ${Modul.VILLAGE_POTENTIALS}`,
+      label: `Dokumen ${Modul.LEGAL_PRODUCTS}`,
       name: 'document',
       type: InputType.UPLOAD,
       max: 1,
