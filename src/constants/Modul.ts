@@ -10,7 +10,8 @@ enum Modul {
   VILLAGE_INSTITUTION = 'Lembaga Desa',
   RESIDENTIAL = 'Kependudukan',
   INSTITUTION_MEMBER = 'Anggota Lembaga',
-  APBD_REPORT = 'Laporan APBD'
+  APBD_REPORT = 'Laporan APBD',
+  APBD_ITEM = 'Item APBD'
 }
 
 export default Modul;

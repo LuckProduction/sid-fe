@@ -5,6 +5,7 @@ import {
   BankOutlined,
   BookOutlined,
   DashboardOutlined,
+  FileOutlined,
   HomeOutlined,
   IdcardOutlined,
   NodeIndexOutlined,
@@ -61,7 +62,8 @@ export const dashboardLink = [
       { path: '/institution_member', label: 'Anggota Lembaga', icon: UserSwitchOutlined, element: Dashboard.InstitutionMember },
       { path: '/visi-misi', label: 'Visi Misi', icon: RocketOutlined, element: Dashboard.VisiMisi },
       { path: '/residential', label: 'Kependudukan', icon: PartitionOutlined, element: Dashboard.Resident },
-      { path: '/apbd-report', label: 'Laporan APBD', icon: PrinterOutlined, element: Dashboard.ApbdReport }
+      { path: '/apbd-report', label: 'Laporan APBD', icon: PrinterOutlined, element: Dashboard.ApbdReport },
+      { path: '/apbd-item', label: 'Item APBD', icon: FileOutlined, element: Dashboard.ApbdItem }
     ]
   },
   {

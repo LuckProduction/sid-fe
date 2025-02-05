@@ -1,4 +1,20 @@
-type ModelKeys = 'profil_desa' | 'user' | 'artikel' | 'kategori' | 'jabatan' | 'perangkat_desa' | 'potensi_desa' | 'dusun' | 'sambutan' | 'produk_hukum' | 'visi_misi' | 'lembaga_desa' | 'master_penduduk' | 'anggota_lembaga' | 'laporan_apbd';
+type ModelKeys =
+  | 'profil_desa'
+  | 'user'
+  | 'artikel'
+  | 'kategori'
+  | 'jabatan'
+  | 'perangkat_desa'
+  | 'potensi_desa'
+  | 'dusun'
+  | 'sambutan'
+  | 'produk_hukum'
+  | 'visi_misi'
+  | 'lembaga_desa'
+  | 'master_penduduk'
+  | 'anggota_lembaga'
+  | 'laporan_apbd'
+  | 'item_apbd';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -15,7 +31,8 @@ export default abstract class Model {
     master_penduduk: undefined,
     sambutan: undefined,
     anggota_lembaga: undefined,
-    laporan_apbd: undefined
+    laporan_apbd: undefined,
+    item_apbd: undefined
   };
 }
 
