@@ -9,10 +9,11 @@ export { default as Resident } from './resident/Resident';
 // export { default as CreateResident } from './resident/Create';
 export { default as EditResident } from './resident/Edit';
 
-export { default as Employment } from './Employment';
+export { default as Employment } from './employment/Employment';
 export { default as VillageOfficials } from './villageOfficials/VillageOfficials';
 export { default as VillagePotential } from './villagePotential/VillagePotential';
 export { default as Hamlet } from './hamlet/Hamlet';
 export { default as LegalProducts } from './LegalProducts';
 export { default as VisiMisi } from './visiMisi/VisiMisi';
 export { default as VillageInstitution } from './villageInstitution/VillageInstitution';
+export { default as InstitutionMember } from './institutionMember/InstitutionMember';

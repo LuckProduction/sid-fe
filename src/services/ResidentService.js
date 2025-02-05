@@ -11,8 +11,9 @@ export default class ResidentService {
    *  data?: Resident[];
    * }>}
    * */
-  static async getAll(token, page = 1, perPage = 10) {
-    const response = await api.get('/master-penduduk', { token, page, perPage });
+  static async getAll(token, page = null, perPage = null) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get('/master-penduduk', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }
@@ -101,6 +102,7 @@ export default class ResidentService {
   }
 
   static async export(token) {
+    console.log(token);
     return await api.post('/master-penduduk/export', { token });
   }
 }

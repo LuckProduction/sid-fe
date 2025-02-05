@@ -1,26 +1,25 @@
-import { Employment } from '@/models';
+import { InstitutionMember } from '@/models';
 import api from '@/utils/api';
 
-export default class EmploymentService {
+export default class InstitutionMemberService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Employment[];
+   *  data?: InstitutionMember[];
    * }>}
    * */
   static async getAll(token, page = null, perPage = null) {
     const params = page && perPage ? { page, perPage } : {};
-    const response = await api.get('/jabatan', { token, ...params });
-    console.log(response);
+    const response = await api.get('/anggota-lembaga', { token, ...params });
     if (!response.data) return response;
-    return { ...response, data: Employment.fromApiData(response.data) };
+    return { ...response, data: InstitutionMember.fromApiData(response.data) };
   }
 
   /**
-   * @param {Employment} data
+   * @param {InstitutionMember} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -29,13 +28,13 @@ export default class EmploymentService {
    *  errors?: { [key: string]: string[] };
    * }}
    */
-  static async store(data, token) {
-    return await api.post('/jabatan', { body: Employment.toApiData(data), token });
+  static async store(data, token, file) {
+    return await api.post('/anggota-lembaga', { body: InstitutionMember.toApiData(data), token, file: { foto: file } });
   }
 
   /**
    * @param {number} id
-   * @param {Employment} data
+   * @param {InstitutionMember} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -44,8 +43,8 @@ export default class EmploymentService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.patch(`/jabatan/edit/${id}`, { body: Employment.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/anggota-lembaga/edit/${id}`, { body: InstitutionMember.toApiData(data), token, file: { foto: file } });
   }
 
   /**
@@ -58,7 +57,7 @@ export default class EmploymentService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/jabatan/delete/${id}`, { token });
+    return await api.delete(`/anggota-lembaga/delete/${id}`, { token });
   }
 
   /**
@@ -71,6 +70,6 @@ export default class EmploymentService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/jabatan/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/anggota-lembaga/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }
