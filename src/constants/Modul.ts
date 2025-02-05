@@ -8,7 +8,8 @@ enum Modul {
   LEGAL_PRODUCTS = 'Produk Hukum',
   VISI_MISI = 'Visi Misi',
   VILLAGE_INSTITUTION = 'Lembaga Desa',
-  RESIDENTIAL = 'Kependudukan'
+  RESIDENTIAL = 'Kependudukan',
+  INSTITUTION_MEMBER = 'Anggota Lembaga'
 }
 
 export default Modul;

@@ -13,3 +13,4 @@ export { default as VisiMisi } from './VisiMisi';
 export { default as VillageInstitution } from './VillageInstitution';
 export { default as Resident } from './Resident';
 export { default as Speech } from './Speech';
+export { default as InstitutionMember } from './InstitutionMember';

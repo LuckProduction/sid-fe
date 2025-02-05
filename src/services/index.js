@@ -12,3 +12,4 @@ export { default as VillageInstitutionService } from './VillageInstitutionServic
 export { default as ResidentService } from './ResidentService';
 export { default as SpeechService } from './SpeechService';
 export { default as LandingService } from './LandingService';
+export { default as InstitutionMemberService } from './InstitutionMemberService';

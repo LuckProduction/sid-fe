@@ -1,11 +1,11 @@
 import { DataLoader, DataTable } from '@/components';
-import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
-import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
+import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { EmploymentService } from '@/services';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
+import { formFields } from './FormFields';
 
 const Employment = () => {
   const { token } = useAuth();
@@ -16,12 +16,13 @@ const Employment = () => {
   const deleteEmployment = useService(EmploymentService.delete);
   const deleteBatchEmnployment = useService(EmploymentService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
-
   const modal = useCrudModal();
 
+  const pagination = usePagination({ totalData: getAllEmployments.totalData });
+
   useEffect(() => {
-    fetchEmployments(token);
-  }, [fetchEmployments, token]);
+    fetchEmployments(token, pagination.page, pagination.perPage);
+  }, [fetchEmployments, pagination.page, pagination.perPage, token]);
 
   const employments = getAllEmployments.data ?? [];
 
@@ -130,53 +131,6 @@ const Employment = () => {
     }
   ];
 
-  const formFields = [
-    {
-      label: `Nama ${Modul.EMPLOYMENT}`,
-      name: 'employment_name',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nama ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Kode ${Modul.EMPLOYMENT}`,
-      name: 'employment_code',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Kode ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Tupoksi ${Modul.EMPLOYMENT}`,
-      name: 'employment_duties',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Tupoksi ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Golongan ${Modul.EMPLOYMENT}`,
-      name: 'faction',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Golongan ${Modul.EMPLOYMENT} harus diisi`
-        }
-      ]
-    }
-  ];
-
   return (
     <div>
       {getAllEmployments.isLoading ? (
@@ -236,7 +190,14 @@ const Employment = () => {
             </div>
           </div>
           <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={employments} columns={Column} loading={getAllEmployments.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+            <DataTable
+              pagination={pagination}
+              data={employments}
+              columns={Column}
+              loading={getAllEmployments.isLoading}
+              map={(category) => ({ key: category.id, ...category })}
+              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+            />
           </div>
         </Card>
       )}

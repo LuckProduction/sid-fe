@@ -1,7 +1,7 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BankOutlined, BookOutlined, DashboardOutlined, HomeOutlined, NodeIndexOutlined, PaperClipOutlined, PartitionOutlined, RocketOutlined, TableOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { BankOutlined, BookOutlined, DashboardOutlined, HomeOutlined, IdcardOutlined, NodeIndexOutlined, PaperClipOutlined, PartitionOutlined, RocketOutlined, TableOutlined, UsergroupAddOutlined, UserSwitchOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -41,8 +41,10 @@ export const dashboardLink = [
     children: [
       { path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillageProfile },
       { path: '/hamlet', label: 'Dusun', icon: TableOutlined, element: Dashboard.Hamlet },
+      { path: '/employment', label: 'Jabatan', icon: IdcardOutlined, element: Dashboard.Employment },
       { path: '/village_officials', label: 'Perangkat Desa', icon: UsergroupAddOutlined, element: Dashboard.VillageOfficials },
       { path: '/village_institutions', label: 'Lembaga Desa', icon: BankOutlined, element: Dashboard.VillageInstitution },
+      { path: '/institution_member', label: 'Anggota Lembaga', icon: UserSwitchOutlined, element: Dashboard.InstitutionMember },
       { path: '/visi-misi', label: 'Visi Misi', icon: RocketOutlined, element: Dashboard.VisiMisi },
       { path: '/residential', label: 'Kependudukan', icon: PartitionOutlined, element: Dashboard.Resident }
     ]

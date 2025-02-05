@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modul from '@/constants/Modul';
 import { InputType } from '@/constants';
+import { formFields } from './FormFields';
 
 const Resident = () => {
   const navigate = useNavigate();
@@ -15,7 +16,6 @@ const Resident = () => {
   const { execute, ...getAllResident } = useService(ResidentService.getAll);
   const storeResident = useService(ResidentService.store);
   const importResident = useService(ResidentService.import);
-  const exportResident = useService(ResidentService.export);
   const deleteResident = useService(ResidentService.delete);
   const deleteBatchResident = useService(ResidentService.deleteBatch);
   const [selectedResident, setSelectedResident] = useState([]);
@@ -31,6 +31,27 @@ const Resident = () => {
   }, [fetchResident]);
 
   const resident = getAllResident.data ?? [];
+
+  const exportResident = () => {
+    fetch('http://127.0.0.1:8000/api/master-penduduk/export', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'users.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => console.error('Export failed:', error));
+  };
 
   const column = [
     {
@@ -107,162 +128,6 @@ const Resident = () => {
     }
   ];
 
-  const formFields = [
-    {
-      label: `NIK`,
-      name: 'nik',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `NIK harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Nomor KK`,
-      name: 'kk_number',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nomor KK harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Nama Lengkap`,
-      name: 'full_name',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nama Lengkap harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Hubungan Keluarga`,
-      name: 'family_relation',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Hubungan Keluarga harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Kepala Keluarga',
-          value: 'kepala keluarga'
-        },
-        {
-          label: 'Suami',
-          value: 'suami'
-        },
-        {
-          label: 'Istri',
-          value: 'istri'
-        },
-        {
-          label: 'Anak',
-          value: 'anak'
-        },
-        {
-          label: 'Mantu',
-          value: 'mantu'
-        },
-        {
-          label: 'Cucu',
-          value: 'cucu'
-        }
-      ]
-    },
-    {
-      label: `Status Kependudukan`,
-      name: 'resident_status',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Status Kependudukan harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Tetap',
-          value: 'tetap'
-        },
-        {
-          label: 'Tidak Tetap',
-          value: 'tidak tetap'
-        }
-      ]
-    },
-    {
-      label: `Status Pernikahan`,
-      name: 'marital_status',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Status Pernikahan harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Menikah',
-          value: 'telah menikah'
-        },
-        {
-          label: 'Belum Menikah',
-          value: 'belum menikah'
-        },
-        {
-          label: 'Cerai Hidup',
-          value: 'cerai hidup'
-        },
-        {
-          label: 'Cerai Mati',
-          value: 'cerai mati'
-        }
-      ]
-    },
-
-    {
-      label: `Jenis Kelamin`,
-      name: 'gender',
-      type: InputType.SELECT,
-      rules: [
-        {
-          required: true,
-          message: `Jenis Kelamin harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Laki Laki',
-          value: 'L'
-        },
-        {
-          label: 'Perempuan',
-          value: 'P'
-        }
-      ]
-    },
-    {
-      label: `Agama`,
-      name: 'religion',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Agama harus diisi`
-        }
-      ]
-    }
-  ];
-
   return (
     <>
       {getAllResident.isLoading ? (
@@ -303,7 +168,7 @@ const Resident = () => {
                   modal.create({
                     formFields: [
                       {
-                        label: `File ${Modul.RESIDENTIAL}`,
+                        label: `File ${Modul.RESIDENTIAL} `,
                         name: 'file',
                         type: InputType.UPLOAD,
                         max: 1,
@@ -340,10 +205,9 @@ const Resident = () => {
               </Button>
               <Button
                 variant="solid"
-                loading={exportResident.isLoading}
                 icon={<ExportOutlined />}
-                onClick={async () => {
-                  const { message, isSuccess } = await exportResident.execute(token);
+                onClick={() => {
+                  const { message, isSuccess } = exportResident();
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchResident(token);
@@ -360,7 +224,7 @@ const Resident = () => {
                 icon={<PlusOutlined />}
                 onClick={() => {
                   modal.create({
-                    title: `Tambah ${Modul.RESIDENTIAL}`,
+                    title: `Tambah ${Modul.RESIDENTIAL} `,
                     formFields: formFields,
                     onSubmit: async (values) => {
                       const { message, isSuccess } = await storeResident.execute(values, token);
