@@ -17,3 +17,4 @@ export { default as LegalProducts } from './LegalProducts';
 export { default as VisiMisi } from './visiMisi/VisiMisi';
 export { default as VillageInstitution } from './villageInstitution/VillageInstitution';
 export { default as InstitutionMember } from './institutionMember/InstitutionMember';
+export { default as ApbdReport } from './apbdReport/ApbdReport';

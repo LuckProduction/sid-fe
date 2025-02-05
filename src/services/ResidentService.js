@@ -102,7 +102,6 @@ export default class ResidentService {
   }
 
   static async export(token) {
-    console.log(token);
     return await api.post('/master-penduduk/export', { token });
   }
 }

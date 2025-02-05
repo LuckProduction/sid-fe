@@ -9,7 +9,8 @@ enum Modul {
   VISI_MISI = 'Visi Misi',
   VILLAGE_INSTITUTION = 'Lembaga Desa',
   RESIDENTIAL = 'Kependudukan',
-  INSTITUTION_MEMBER = 'Anggota Lembaga'
+  INSTITUTION_MEMBER = 'Anggota Lembaga',
+  APBD_REPORT = 'Laporan APBD'
 }
 
 export default Modul;

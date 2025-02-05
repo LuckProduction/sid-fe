@@ -1,7 +1,21 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BankOutlined, BookOutlined, DashboardOutlined, HomeOutlined, IdcardOutlined, NodeIndexOutlined, PaperClipOutlined, PartitionOutlined, RocketOutlined, TableOutlined, UsergroupAddOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import {
+  BankOutlined,
+  BookOutlined,
+  DashboardOutlined,
+  HomeOutlined,
+  IdcardOutlined,
+  NodeIndexOutlined,
+  PaperClipOutlined,
+  PartitionOutlined,
+  PrinterOutlined,
+  RocketOutlined,
+  TableOutlined,
+  UsergroupAddOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -46,7 +60,8 @@ export const dashboardLink = [
       { path: '/village_institutions', label: 'Lembaga Desa', icon: BankOutlined, element: Dashboard.VillageInstitution },
       { path: '/institution_member', label: 'Anggota Lembaga', icon: UserSwitchOutlined, element: Dashboard.InstitutionMember },
       { path: '/visi-misi', label: 'Visi Misi', icon: RocketOutlined, element: Dashboard.VisiMisi },
-      { path: '/residential', label: 'Kependudukan', icon: PartitionOutlined, element: Dashboard.Resident }
+      { path: '/residential', label: 'Kependudukan', icon: PartitionOutlined, element: Dashboard.Resident },
+      { path: '/apbd-report', label: 'Laporan APBD', icon: PrinterOutlined, element: Dashboard.ApbdReport }
     ]
   },
   {
