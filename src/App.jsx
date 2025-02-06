@@ -5,7 +5,7 @@ import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
-import { CreateArticle, EditArticle, EditResident } from './pages/dashboard';
+import { Beneficiary, CreateArticle, EditArticle, EditResident } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
 import { DetailNews } from './pages/landing';
 
@@ -60,7 +60,8 @@ function App() {
             ),
             { path: '/article/create', element: <CreateArticle /> },
             { path: '/article/edit/:id', element: <EditArticle /> },
-            { path: '/residential/edit/:id', element: <EditResident /> }
+            { path: '/residential/edit/:id', element: <EditResident /> },
+            { path: '/public-assistance/:id/beneficiary', element: <Beneficiary /> }
           ]
         },
         {

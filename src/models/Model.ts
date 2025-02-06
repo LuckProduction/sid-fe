@@ -15,7 +15,8 @@ type ModelKeys =
   | 'anggota_lembaga'
   | 'laporan_apbd'
   | 'item_apbd'
-  | 'bantuan';
+  | 'bantuan'
+  | 'peserta_bantuan';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -34,7 +35,8 @@ export default abstract class Model {
     anggota_lembaga: undefined,
     laporan_apbd: undefined,
     item_apbd: undefined,
-    bantuan: undefined
+    bantuan: undefined,
+    peserta_bantuan: undefined
   };
 }
 

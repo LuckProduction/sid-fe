@@ -20,3 +20,4 @@ export { default as InstitutionMember } from './institutionMember/InstitutionMem
 export { default as ApbdReport } from './apbdReport/ApbdReport';
 export { default as ApbdItem } from './apbdItem/ApbdItem';
 export { default as PublicAssistance } from './publicAsistance/PublicAssistance';
+export { default as Beneficiary } from './beneficiary/Beneficiary';
