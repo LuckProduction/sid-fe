@@ -19,6 +19,21 @@ export default class ApbdReportService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: ApbdReport[];
+   * }>}
+   * */
+  static async getById(token, id) {
+    const response = await api.get(`/laporan-apbd/${id}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: ApbdReport.fromApiData(response.data) };
+  }
+
+  /**
    * @param {ApbdReport} data
    * @param {string} token
    * @returns {Promise<{
