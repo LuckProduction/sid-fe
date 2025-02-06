@@ -75,7 +75,7 @@ const ApbdItem = () => {
             color="primary"
             onClick={() => {
               modal.edit({
-                title: `Edit ${Modul.APBD_REPORT}`,
+                title: `Edit ${Modul.APBD_ITEM}`,
                 data: { ...record, apbd_report: record.apbd_report.id },
                 formFields: formFields({ options: { apbdReport } }),
                 onSubmit: async (values) => {
@@ -144,7 +144,7 @@ const ApbdItem = () => {
             color="danger"
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.APBD_REPORT}`,
+                title: `Delete ${Modul.APBD_ITEM}`,
                 data: { ...record, apbd_report: record.apbd_report.id },
                 formFields: formFields({ options: { apbdReport } }),
                 onSubmit: async () => {
@@ -172,7 +172,7 @@ const ApbdItem = () => {
       ) : (
         <Card>
           <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.APBD_REPORT}</Typography.Title>
+            <Typography.Title level={5}>Data {Modul.APBD_ITEM}</Typography.Title>
             <div className="inline-flex items-center gap-2">
               <Button
                 variant="outlined"
@@ -181,7 +181,7 @@ const ApbdItem = () => {
                 icon={<DeleteOutlined />}
                 onClick={() => {
                   modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.APBD_REPORT} Yang Dipilih ? `,
+                    title: `Hapus ${selectedData.length} ${Modul.APBD_ITEM} Yang Dipilih ? `,
                     onSubmit: async () => {
                       const ids = selectedData.map((item) => item.id);
                       const { message, isSuccess } = await deleteBatchApbdItem.execute(ids, token);
@@ -196,14 +196,14 @@ const ApbdItem = () => {
                   });
                 }}
               >
-                {Modul.APBD_REPORT}
+                {Modul.APBD_ITEM}
               </Button>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={() => {
                   modal.create({
-                    title: `Tambah ${Modul.APBD_REPORT}`,
+                    title: `Tambah ${Modul.APBD_ITEM}`,
                     formFields: formFields({ options: { apbdReport } }),
                     onSubmit: async (values) => {
                       const { message, isSuccess } = await storeApbdItem.execute(values, token);
@@ -218,7 +218,7 @@ const ApbdItem = () => {
                   });
                 }}
               >
-                {Modul.APBD_REPORT}
+                {Modul.APBD_ITEM}
               </Button>
             </div>
           </div>

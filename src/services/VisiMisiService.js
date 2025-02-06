@@ -11,8 +11,9 @@ export default class VisiMisiService {
    *  data?: VisiMisi[];
    * }>}
    * */
-  static async getAll(token, page = 1, perPage = 10) {
-    const response = await api.get('/visi-misi', { token, page, perPage });
+  static async getAll(token, page = null, perPage = null) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get('/visi-misi', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: VisiMisi.fromApiData(response.data) };
   }
