@@ -19,6 +19,21 @@ export default class VillageInstitutionService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: VillageInstitution[];
+   * }>}
+   * */
+  static async getById(token, id) {
+    const response = await api.get(`/lembaga-desa/${id}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: VillageInstitution.fromApiData(response.data) };
+  }
+
+  /**
    * @param {VillageInstitution} data
    * @param {string} token
    * @returns {Promise<{

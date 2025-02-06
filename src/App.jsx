@@ -5,7 +5,7 @@ import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
-import { ApbdItem, Beneficiary, CreateArticle, EditArticle, EditResident } from './pages/dashboard';
+import { ApbdItem, Beneficiary, CreateArticle, EditArticle, EditResident, InstitutionMember } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
 import { DetailNews } from './pages/landing';
 
@@ -62,7 +62,8 @@ function App() {
             { path: '/article/edit/:id', element: <EditArticle /> },
             { path: '/residential/edit/:id', element: <EditResident /> },
             { path: '/public_assistance/:id/beneficiary', element: <Beneficiary /> },
-            { path: '/apbd_report/:id/apbd-item', element: <ApbdItem /> }
+            { path: '/apbd_report/:id/apbd-item', element: <ApbdItem /> },
+            { path: '/village_institutions/:id/institution_member', element: <InstitutionMember /> }
           ]
         },
         {
