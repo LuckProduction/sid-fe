@@ -2,14 +2,16 @@ import { DataLoader, DataTable } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { PublicAssistanceService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Tag, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { formFields } from './FormFields';
+import { useNavigate } from 'react-router-dom';
 
 const PublicAssistance = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
+  const navigate = useNavigate();
   const { execute: fetchPublicAssistance, ...getAllPublicAssistance } = useService(PublicAssistanceService.getAll);
   const storePublicAssistance = useService(PublicAssistanceService.store);
   const updatePublicAssistance = useService(PublicAssistanceService.update);
@@ -31,7 +33,7 @@ const PublicAssistance = () => {
     {
       title: 'Nama Bantuan',
       dataIndex: 'public_assistance_name',
-      sorter: (a, b) => a.public_assistance_name.length - b.component_name.length,
+      sorter: (a, b) => a.public_assistance_name.length - b.public_assistance_name.length,
       searchable: true
     },
     {
@@ -161,6 +163,7 @@ const PublicAssistance = () => {
               });
             }}
           />
+          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/beneficiary`)} />
         </Space>
       )
     }

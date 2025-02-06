@@ -1,21 +1,21 @@
-import { PublicAssistance } from '@/models';
+import { Beneficiary } from '@/models';
 import api from '@/utils/api';
 
-export default class PublicAssistanceService {
+export default class BeneficiaryService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: PublicAssistance[];
+   *  data?: Beneficiary[];
    * }>}
    * */
-  static async getAll(token, page = null, perPage = null) {
+  static async getAll(token, id, page = null, perPage = null) {
     const params = page && perPage ? { page, perPage } : {};
-    const response = await api.get('/bantuan', { token, ...params });
+    const response = await api.get(`/peserta-bantuan?bantuan_id=${id}`, { token, ...params });
     if (!response.data) return response;
-    return { ...response, data: PublicAssistance.fromApiData(response.data) };
+    return { ...response, data: Beneficiary.fromApiData(response.data) };
   }
 
   /**
@@ -24,17 +24,17 @@ export default class PublicAssistanceService {
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: PublicAssistance[];
+   *  data?: Beneficiary[];
    * }>}
    * */
-  static async getById(token, id) {
-    const response = await api.get(`/bantuan/${id}`, { token });
+  static async getById(token) {
+    const response = await api.get('/peserta-bantuan', { token });
     if (!response.data) return response;
-    return { ...response, data: PublicAssistance.fromApiData(response.data) };
+    return { ...response, data: Beneficiary.fromApiData(response.data) };
   }
 
   /**
-   * @param {PublicAssistance} data
+   * @param {Beneficiary} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -44,12 +44,12 @@ export default class PublicAssistanceService {
    * }}
    */
   static async store(data, token) {
-    return await api.post('/bantuan', { body: PublicAssistance.toApiData(data), token });
+    return await api.post('/peserta-bantuan', { body: Beneficiary.toApiData(data), token });
   }
 
   /**
    * @param {number} id
-   * @param {PublicAssistance} data
+   * @param {Beneficiary} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -59,7 +59,7 @@ export default class PublicAssistanceService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.put(`/bantuan/edit/${id}`, { body: PublicAssistance.toApiData(data), token });
+    return await api.put(`/peserta-bantuan/edit/${id}`, { body: Beneficiary.toApiData(data), token });
   }
 
   /**
@@ -72,7 +72,7 @@ export default class PublicAssistanceService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/bantuan/delete/${id}`, { token });
+    return await api.delete(`/peserta-bantuan/delete/${id}`, { token });
   }
 
   /**
@@ -85,6 +85,6 @@ export default class PublicAssistanceService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/bantuan/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/peserta-bantuan/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }
