@@ -1,7 +1,7 @@
 import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
 
-export const formFields = ({ options }) => [
+export const formFields = () => [
   {
     label: `Nama ${Modul.APBD_ITEM}`,
     name: 'component_name',
@@ -12,21 +12,6 @@ export const formFields = ({ options }) => [
         message: `Nama ${Modul.APBD_ITEM} harus diisi`
       }
     ]
-  },
-  {
-    label: `Laporan APBD`,
-    name: 'apbd_report',
-    type: InputType.SELECT,
-    rules: [
-      {
-        required: true,
-        message: `Laporan APBD harus diisi`
-      }
-    ],
-    options: options.apbdReport.map((item) => ({
-      label: item.report_name,
-      value: item.id
-    }))
   },
   {
     label: `Tipe`,

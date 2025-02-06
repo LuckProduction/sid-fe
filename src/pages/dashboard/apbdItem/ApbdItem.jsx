@@ -2,17 +2,19 @@ import { DataLoader, DataTable } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ApbdItemService, ApbdReportService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Typography } from 'antd';
+import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Descriptions, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { formFields } from './FormField';
 import { rupiahFormat } from '@/utils/rupiahFormat';
+import { useParams } from 'react-router-dom';
 
 const ApbdItem = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
+  const { id } = useParams();
   const { execute: fetchApbdItem, ...getAllApbdItem } = useService(ApbdItemService.getAll);
-  const { execute: fetchApbdReport, ...getAllApbdReport } = useService(ApbdReportService.getAll);
+  const { execute: fetchApbdReportById, ...getAllApbdReportById } = useService(ApbdReportService.getById);
   const storeApbdItem = useService(ApbdItemService.store);
   const updateApbdItem = useService(ApbdItemService.update);
   const deleteApbdItem = useService(ApbdItemService.delete);
@@ -25,11 +27,11 @@ const ApbdItem = () => {
 
   useEffect(() => {
     fetchApbdItem(token, pagination.page, pagination.perPage);
-    fetchApbdReport(token);
-  }, [fetchApbdItem, fetchApbdReport, pagination.page, pagination.perPage, token]);
+    fetchApbdReportById(token, id);
+  }, [fetchApbdItem, fetchApbdReportById, id, pagination.page, pagination.perPage, token]);
 
   const apbdItem = getAllApbdItem.data ?? [];
-  const apbdReport = getAllApbdReport.data ?? [];
+  const apbdReportById = getAllApbdReportById.data ?? [];
 
   const Column = [
     {
@@ -77,9 +79,9 @@ const ApbdItem = () => {
               modal.edit({
                 title: `Edit ${Modul.APBD_ITEM}`,
                 data: { ...record, apbd_report: record.apbd_report.id },
-                formFields: formFields({ options: { apbdReport } }),
+                formFields: formFields(),
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateApbdItem.execute(record.id, values, token);
+                  const { message, isSuccess } = await updateApbdItem.execute(record.id, { ...values, apbd_report: apbdReportById.id }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchApbdItem(token);
@@ -146,7 +148,7 @@ const ApbdItem = () => {
               modal.delete.default({
                 title: `Delete ${Modul.APBD_ITEM}`,
                 data: { ...record, apbd_report: record.apbd_report.id },
-                formFields: formFields({ options: { apbdReport } }),
+                formFields: formFields(),
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteApbdItem.execute(record.id, token);
                   if (isSuccess) {
@@ -170,62 +172,75 @@ const ApbdItem = () => {
       {getAllApbdItem.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
-        <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.APBD_ITEM}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedData.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.APBD_ITEM} Yang Dipilih ? `,
-                    onSubmit: async () => {
-                      const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchApbdItem.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchApbdItem(token);
-                      } else {
-                        error('Gagal', message);
+        <div className="grid grid-cols-12 gap-6">
+          <Card className="col-span-12">
+            <Descriptions bordered>
+              <Descriptions.Item label="Nama Bantuan">{apbdReportById.report_name}</Descriptions.Item>
+              <Descriptions.Item label="Target Bantuan">{apbdReportById.year}</Descriptions.Item>
+              <Descriptions.Item label="Sumber Dana">
+                <Button icon={<DownloadOutlined />} onClick={() => window.open(apbdReportById.document, '_blank')}>
+                  Download Sumber
+                </Button>
+              </Descriptions.Item>
+            </Descriptions>
+          </Card>
+          <Card className="col-span-12">
+            <div className="mb-6 flex items-center justify-between">
+              <Typography.Title level={5}>Data {Modul.APBD_ITEM}</Typography.Title>
+              <div className="inline-flex items-center gap-2">
+                <Button
+                  variant="outlined"
+                  color="danger"
+                  disabled={selectedData.length <= 0}
+                  icon={<DeleteOutlined />}
+                  onClick={() => {
+                    modal.delete.batch({
+                      title: `Hapus ${selectedData.length} ${Modul.APBD_ITEM} Yang Dipilih ? `,
+                      onSubmit: async () => {
+                        const ids = selectedData.map((item) => item.id);
+                        const { message, isSuccess } = await deleteBatchApbdItem.execute(ids, token);
+                        if (isSuccess) {
+                          success('Berhasil', message);
+                          fetchApbdItem(token);
+                        } else {
+                          error('Gagal', message);
+                        }
+                        return isSuccess;
                       }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.APBD_ITEM}
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.APBD_ITEM}`,
-                    formFields: formFields({ options: { apbdReport } }),
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeApbdItem.execute(values, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchApbdItem(token);
-                      } else {
-                        error('Gagal', message);
+                    });
+                  }}
+                >
+                  {Modul.APBD_ITEM}
+                </Button>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    modal.create({
+                      title: `Tambah ${Modul.APBD_ITEM}`,
+                      formFields: formFields(),
+                      onSubmit: async (values) => {
+                        const { message, isSuccess } = await storeApbdItem.execute({ ...values, apbd_report: apbdReportById.id }, token);
+                        if (isSuccess) {
+                          success('Berhasil', message);
+                          fetchApbdItem(token);
+                        } else {
+                          error('Gagal', message);
+                        }
+                        return isSuccess;
                       }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.APBD_ITEM}
-              </Button>
+                    });
+                  }}
+                >
+                  {Modul.APBD_ITEM}
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={apbdItem} columns={Column} loading={getAllApbdItem.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
-          </div>
-        </Card>
+            <div className="w-full max-w-full overflow-x-auto">
+              <DataTable data={apbdItem} columns={Column} loading={getAllApbdItem.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+            </div>
+          </Card>
+        </div>
       )}
     </div>
   );

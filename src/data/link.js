@@ -5,7 +5,6 @@ import {
   BankOutlined,
   BookOutlined,
   DashboardOutlined,
-  FileOutlined,
   GiftOutlined,
   HomeOutlined,
   IdcardOutlined,
@@ -73,17 +72,16 @@ export const dashboardLink = [
     label: 'Kependudukan',
     children: [
       { path: '/residential', label: 'Kependudukan', icon: PartitionOutlined, element: Dashboard.Resident },
-      { path: '/apbd-report', label: 'Laporan APBD', icon: PrinterOutlined, element: Dashboard.ApbdReport },
-      { path: '/apbd-item', label: 'Item APBD', icon: FileOutlined, element: Dashboard.ApbdItem },
-      { path: '/public-assistance', label: 'Bantuan', icon: GiftOutlined, element: Dashboard.PublicAssistance }
+      { path: '/apbd_report', label: 'Laporan APBD', icon: PrinterOutlined, element: Dashboard.ApbdReport },
+      { path: '/public_assistance', label: 'Bantuan', icon: GiftOutlined, element: Dashboard.PublicAssistance }
     ]
   },
   {
     label: 'Atikel Desa',
     children: [
       { path: '/article', label: 'Artikel', icon: BookOutlined, element: Dashboard.Article },
-      { path: '/village-potential', label: 'Potensi Desa ', icon: NodeIndexOutlined, element: Dashboard.VillagePotential },
-      { path: '/legal-products', label: 'Produk Hukum ', icon: PaperClipOutlined, element: Dashboard.LegalProducts }
+      { path: '/village_potential', label: 'Potensi Desa ', icon: NodeIndexOutlined, element: Dashboard.VillagePotential },
+      { path: '/legal_products', label: 'Produk Hukum ', icon: PaperClipOutlined, element: Dashboard.LegalProducts }
     ]
   }
 ].map((item) => ({

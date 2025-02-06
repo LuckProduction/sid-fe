@@ -3,15 +3,17 @@ import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ApbdReportService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
-import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { formFields } from './FormFields';
+import { useNavigate } from 'react-router-dom';
 
 const ApbdReport = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
+  const navigate = useNavigate();
   const { execute: fetchApbdReport, ...getAllApbdReport } = useService(ApbdReportService.getAll);
   const storeApbdReport = useService(ApbdReportService.store);
   const updateApbdReport = useService(ApbdReportService.update);
@@ -122,6 +124,7 @@ const ApbdReport = () => {
               });
             }}
           />
+          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/apbd-item`)} />
         </Space>
       )
     }
