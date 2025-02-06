@@ -6,12 +6,14 @@ import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-de
 import { Button, Card, Image, Space, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { institutionMemberFormFields } from './FormFields';
+import { useParams } from 'react-router-dom';
 
 const InstitutionMember = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
+  const { id } = useParams();
   const { execute: fetchInstitutionMember, ...getAllInstitutionMember } = useService(InstitutionMemberService.getAll);
-  const { execute: fetchVillageInstitution, ...getAllVillageInstitution } = useService(VillageInstitutionService.getAll);
+  const { execute: fetchVillageInstitutionById, ...getAllVillageInstitutionById } = useService(VillageInstitutionService.getAll);
   const { execute: fetchResident, ...getAllResident } = useService(ResidentService.getAll);
   const { execute: fetchEmployment, ...getAllEmployment } = useService(EmploymentService.getAll);
   const storeInstitutionMember = useService(InstitutionMemberService.store);
@@ -25,14 +27,14 @@ const InstitutionMember = () => {
   const pagination = usePagination({ totalData: getAllInstitutionMember.totalData });
 
   useEffect(() => {
-    fetchInstitutionMember(token, pagination.page, pagination.perPage);
-    fetchVillageInstitution(token);
+    fetchInstitutionMember(token, id, pagination.page, pagination.perPage);
     fetchResident(token);
     fetchEmployment(token);
-  }, [fetchEmployment, fetchInstitutionMember, fetchResident, fetchVillageInstitution, pagination.page, pagination.perPage, token]);
+    fetchVillageInstitutionById(token, id);
+  }, [fetchEmployment, fetchInstitutionMember, fetchResident, fetchVillageInstitutionById, id, pagination.page, pagination.perPage, token]);
 
   const institutionMember = getAllInstitutionMember.data ?? [];
-  const villageInstitution = getAllVillageInstitution.data ?? [];
+  const villageInstitutionById = getAllVillageInstitutionById.data ?? [];
   const resident = getAllResident.data ?? [];
   const employment = getAllEmployment.data ?? [];
 
@@ -68,9 +70,9 @@ const InstitutionMember = () => {
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_POTENTIALS}`,
                 data: { ...record, village_institution: record.village_institution.id, employment: record.employment.id, resident: record.resident.id },
-                formFields: institutionMemberFormFields({ options: { villageInstitution, employment, resident } }),
+                formFields: institutionMemberFormFields({ options: { employment, resident } }),
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateInstitutionMember.execute(record.id, { ...values, _method: 'PUT' }, token, values.foto.file);
+                  const { message, isSuccess } = await updateInstitutionMember.execute(record.id, { ...values, village_institution: villageInstitutionById.id, _method: 'PUT' }, token, values.foto.file);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchInstitutionMember(token);
@@ -122,7 +124,7 @@ const InstitutionMember = () => {
               modal.delete.default({
                 title: `Delete ${Modul.VILLAGE_POTENTIALS}`,
                 data: { ...record, village_institution: record.village_institution.id, employment: record.employment.id, resident: record.resident.id },
-                formFields: institutionMemberFormFields({ options: { villageInstitution, employment, resident } }),
+                formFields: institutionMemberFormFields({ options: { employment, resident } }),
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteInstitutionMember.execute(record.id, token);
                   if (isSuccess) {
@@ -181,9 +183,9 @@ const InstitutionMember = () => {
                   onClick={() => {
                     modal.create({
                       title: `Tambah ${Modul.VILLAGE_POTENTIALS}`,
-                      formFields: institutionMemberFormFields({ options: { villageInstitution, employment, resident } }),
+                      formFields: institutionMemberFormFields({ options: { employment, resident } }),
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeInstitutionMember.execute(values, token, values.foto.file);
+                        const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: villageInstitutionById.id }, token, values.foto.file);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchInstitutionMember(token);

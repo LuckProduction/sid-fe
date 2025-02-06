@@ -2,16 +2,17 @@ import { DataLoader, DataTable } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageInstitutionService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { formFields } from './FormFields';
+import { useNavigate } from 'react-router-dom';
 
 const VillageInstitution = () => {
   const { token } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
-
+  const navigate = useNavigate();
   const useCrudService = (service) => {
     const { execute: fetch, ...getAll } = useService(service.getAll);
     return {
@@ -161,6 +162,7 @@ const VillageInstitution = () => {
               });
             }}
           />
+          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/institution_member`)} />
         </Space>
       )
     }
