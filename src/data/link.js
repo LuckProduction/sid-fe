@@ -1,21 +1,7 @@
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import {
-  BankOutlined,
-  BookOutlined,
-  DashboardOutlined,
-  GiftOutlined,
-  HomeOutlined,
-  IdcardOutlined,
-  NodeIndexOutlined,
-  PaperClipOutlined,
-  PartitionOutlined,
-  PrinterOutlined,
-  RocketOutlined,
-  TableOutlined,
-  UsergroupAddOutlined
-} from '@ant-design/icons';
+import { BookOutlined, DashboardOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -48,38 +34,43 @@ export const landingLink = [
 export const dashboardLink = [
   {
     label: 'Overview',
-    children: [{ path: '/dashboard', label: 'Dashboard', icon: DashboardOutlined, element: Dashboard.Dashboard }]
+    icon: DashboardOutlined,
+    children: [{ path: '/dashboard', label: 'Dashboard', element: Dashboard.Dashboard }]
   },
   {
     label: 'Pengaturan Desa',
+    icon: HomeOutlined,
     children: [
-      { path: '/village_profile', label: 'Profil', icon: HomeOutlined, element: Dashboard.VillageProfile },
-      { path: '/hamlet', label: 'Dusun', icon: TableOutlined, element: Dashboard.Hamlet },
-      { path: '/visi-misi', label: 'Visi Misi', icon: RocketOutlined, element: Dashboard.VisiMisi }
+      { path: '/village_profile', label: 'Profil', element: Dashboard.VillageProfile },
+      { path: '/hamlet', label: 'Dusun', element: Dashboard.Hamlet },
+      { path: '/visi-misi', label: 'Visi Misi', element: Dashboard.VisiMisi }
     ]
   },
   {
     label: 'Perangkat Desa',
+    icon: IdcardOutlined,
     children: [
-      { path: '/employment', label: 'Jabatan', icon: IdcardOutlined, element: Dashboard.Employment },
-      { path: '/village_officials', label: 'Perangkat Desa', icon: UsergroupAddOutlined, element: Dashboard.VillageOfficials },
-      { path: '/village_institutions', label: 'Lembaga Desa', icon: BankOutlined, element: Dashboard.VillageInstitution }
+      { path: '/employment', label: 'Jabatan', element: Dashboard.Employment },
+      { path: '/village_officials', label: 'Perangkat Desa', element: Dashboard.VillageOfficials },
+      { path: '/village_institutions', label: 'Lembaga Desa', element: Dashboard.VillageInstitution }
     ]
   },
   {
     label: 'Kependudukan',
+    icon: PartitionOutlined,
     children: [
-      { path: '/residential', label: 'Kependudukan', icon: PartitionOutlined, element: Dashboard.Resident },
-      { path: '/apbd_report', label: 'Laporan APBD', icon: PrinterOutlined, element: Dashboard.ApbdReport },
-      { path: '/public_assistance', label: 'Bantuan', icon: GiftOutlined, element: Dashboard.PublicAssistance }
+      { path: '/residential', label: 'Kependudukan', element: Dashboard.Resident },
+      { path: '/apbd_report', label: 'Laporan APBD', element: Dashboard.ApbdReport },
+      { path: '/public_assistance', label: 'Bantuan', element: Dashboard.PublicAssistance }
     ]
   },
   {
     label: 'Atikel Desa',
+    icon: BookOutlined,
     children: [
-      { path: '/article', label: 'Artikel', icon: BookOutlined, element: Dashboard.Article },
-      { path: '/village_potential', label: 'Potensi Desa ', icon: NodeIndexOutlined, element: Dashboard.VillagePotential },
-      { path: '/legal_products', label: 'Produk Hukum ', icon: PaperClipOutlined, element: Dashboard.LegalProducts }
+      { path: '/article', label: 'Artikel', element: Dashboard.Article },
+      { path: '/village_potential', label: 'Potensi Desa ', element: Dashboard.VillagePotential },
+      { path: '/legal_products', label: 'Produk Hukum ', element: Dashboard.LegalProducts }
     ]
   }
 ].map((item) => ({

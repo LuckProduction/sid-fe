@@ -1,8 +1,8 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
-import { DeleteOutlined, EditOutlined, ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Tag, Typography } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Card, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modul from '@/constants/Modul';
@@ -90,7 +90,6 @@ const Resident = () => {
     },
     {
       title: 'Aksi',
-      width: '40%',
       render: (_, record) => (
         <Space size="small">
           <Button
@@ -128,121 +127,95 @@ const Resident = () => {
     }
   ];
 
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedResident.length} ${Modul.RESIDENTIAL} Yang Dipilih ? `,
+      onSubmit: async () => {
+        const ids = selectedResident.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchResident.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchResident(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onImport = () => {
+    modal.create({
+      formFields: [
+        {
+          label: `File ${Modul.RESIDENTIAL} `,
+          name: 'file',
+          type: InputType.UPLOAD,
+          max: 1,
+          beforeUpload: () => {
+            return false;
+          },
+          getFileList: (data) => {
+            return [
+              {
+                url: data?.file,
+                name: data?.name
+              }
+            ];
+          },
+          accept: ['.xlsx'],
+          rules: [{ required: true, message: 'Logo harus diisi' }]
+        }
+      ],
+      title: `Import ${Modul.RESIDENTIAL} `,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await importResident.execute(values, token, values.file.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchResident(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onExport = () => {
+    const { message, isSuccess } = exportResident();
+    if (isSuccess) {
+      success('Berhasil', message);
+      fetchResident(token);
+    } else {
+      error('Gagal', message);
+    }
+    return isSuccess;
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.RESIDENTIAL} `,
+      formFields: formFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeResident.execute(values, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchResident(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
   return (
     <>
       {getAllResident.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.RESIDENTIAL}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedResident.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedResident.length} ${Modul.RESIDENTIAL} Yang Dipilih ? `,
-                    onSubmit: async () => {
-                      const ids = selectedResident.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchResident.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchResident(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.RESIDENTIAL}
-              </Button>
-              <Button
-                variant="solid"
-                icon={<ImportOutlined />}
-                onClick={() => {
-                  modal.create({
-                    formFields: [
-                      {
-                        label: `File ${Modul.RESIDENTIAL} `,
-                        name: 'file',
-                        type: InputType.UPLOAD,
-                        max: 1,
-                        beforeUpload: () => {
-                          return false;
-                        },
-                        getFileList: (data) => {
-                          return [
-                            {
-                              url: data?.file,
-                              name: data?.name
-                            }
-                          ];
-                        },
-                        accept: ['.xlsx'],
-                        rules: [{ required: true, message: 'Logo harus diisi' }]
-                      }
-                    ],
-                    title: `Import ${Modul.RESIDENTIAL} `,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await importResident.execute(values, token, values.file.file);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchResident(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                Import
-              </Button>
-              <Button
-                variant="solid"
-                icon={<ExportOutlined />}
-                onClick={() => {
-                  const { message, isSuccess } = exportResident();
-                  if (isSuccess) {
-                    success('Berhasil', message);
-                    fetchResident(token);
-                  } else {
-                    error('Gagal', message);
-                  }
-                  return isSuccess;
-                }}
-              >
-                Export
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.RESIDENTIAL} `,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeResident.execute(values, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchResident(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.RESIDENTIAL}
-              </Button>
-            </div>
-          </div>
+          <DataTableHeader modul={Modul.RESIDENTIAL} onCreate={onCreate} onDeleteBatch={onDeleteBatch} onExport={onExport} onImport={onImport} selectedData={selectedResident} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} pagination={pagination} />
           </div>

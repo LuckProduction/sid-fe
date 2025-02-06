@@ -60,7 +60,6 @@ const LegalProducts = () => {
     },
     {
       title: 'Aksi',
-      width: '40%',
       render: (_, record) => (
         <Space size="small">
           <Button
