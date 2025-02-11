@@ -1,18 +1,19 @@
 import asset from '@/utils/asset';
 import Model from './Model';
 
-interface Kecamatan {
-  id: number;
-  nama_kecamatan: string;
-  nama_camat: string;
-  kode_kecamatan: string;
-}
-
 interface Kabupaten {
   id: number;
   nama_kabupaten: string;
   nama_bupati: string;
   kode_kabupaten: string;
+}
+
+interface Kecamatan {
+  id: number;
+  nama_kecamatan: string;
+  nama_camat: string;
+  kode_kecamatan: string;
+  profil_kabupaten: Kabupaten;
 }
 
 interface IncomingApiData {
@@ -24,7 +25,6 @@ interface IncomingApiData {
   email_desa: string;
   logo_desa: string;
   profil_kecamatan: Kecamatan;
-  profil_kabupaten: Kabupaten;
 }
 
 interface OutgoingApiData {
@@ -38,28 +38,28 @@ interface OutgoingApiData {
   profil_kecamatan?: {
     nama_camat?: string;
     kode_kecamatan?: string;
-  };
-  profil_kabupaten?: {
-    nama_bupati?: string;
-    kode_kabupaten?: string;
+    profil_kabupaten?: {
+      nama_bupati?: string;
+      kode_kabupaten?: string;
+    };
   };
 }
 
 interface FormValue {
-  _method: 'PUT';
-  village_name: string;
-  village_code: string;
-  postal_code: string;
-  office_adress: string;
-  village_email: string;
-  village_logo: string;
-  district_profile: {
-    districthead_name: string;
-    district_code: string;
-  };
-  regency_profile: {
-    regencyhead_name: string;
-    regency_code: string;
+  _method?: 'PUT';
+  village_name?: string;
+  village_code?: string;
+  postal_code?: string;
+  office_adress?: string;
+  village_email?: string;
+  village_logo?: string;
+  district_profile?: {
+    districthead_name?: string;
+    district_code?: string;
+    regency_profile?: {
+      regencyhead_name?: string;
+      regency_code?: string;
+    };
   };
 }
 
@@ -79,12 +79,12 @@ export default class VillageProfile extends Model {
       district_name: string;
       districthead_name: string;
       district_code: string;
-    },
-    public regency_profile?: {
-      id_regency: number;
-      regency_name: string;
-      regencyhead_name: string;
-      regency_code: string;
+      regency_profile?: {
+        id_regency: number;
+        regency_name: string;
+        regencyhead_name: string;
+        regency_code: string;
+      };
     }
   ) {
     super();
@@ -106,15 +106,13 @@ export default class VillageProfile extends Model {
             id_district: apiData.profil_kecamatan.id,
             district_code: apiData.profil_kecamatan.kode_kecamatan,
             districthead_name: apiData.profil_kecamatan.nama_camat,
-            district_name: apiData.profil_kecamatan.nama_kecamatan
-          }
-        : undefined,
-      apiData.profil_kabupaten
-        ? {
-            id_regency: apiData.profil_kabupaten.id,
-            regency_code: apiData.profil_kabupaten.kode_kabupaten,
-            regencyhead_name: apiData.profil_kabupaten.nama_bupati,
-            regency_name: apiData.profil_kabupaten.nama_kabupaten
+            district_name: apiData.profil_kecamatan.nama_kecamatan,
+            regency_profile: {
+              id_regency: apiData.profil_kecamatan.profil_kabupaten.id,
+              regency_code: apiData.profil_kecamatan.profil_kabupaten.kode_kabupaten,
+              regencyhead_name: apiData.profil_kecamatan.profil_kabupaten.nama_bupati,
+              regency_name: apiData.profil_kecamatan.profil_kabupaten.nama_kabupaten
+            }
           }
         : undefined
     ) as ReturnType<T, IncomingApiData, VillageProfile>;
@@ -132,13 +130,13 @@ export default class VillageProfile extends Model {
       profil_kecamatan: formValue.district_profile
         ? {
             kode_kecamatan: formValue.district_profile.district_code,
-            nama_camat: formValue.district_profile.districthead_name
-          }
-        : undefined,
-      profil_kabupaten: formValue.regency_profile
-        ? {
-            kode_kabupaten: formValue.regency_profile.regency_code,
-            nama_bupati: formValue.regency_profile.regencyhead_name
+            nama_camat: formValue.district_profile.districthead_name,
+            profil_kabupaten: formValue.district_profile.regency_profile
+              ? {
+                  kode_kabupaten: formValue.district_profile.regency_profile.regency_code,
+                  nama_bupati: formValue.district_profile.regency_profile.regencyhead_name
+                }
+              : undefined
           }
         : undefined
     };

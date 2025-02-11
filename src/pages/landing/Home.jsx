@@ -1,178 +1,293 @@
-import { useService } from '@/hooks';
-import { LandingService } from '@/services';
+/* eslint-disable react-hooks/exhaustive-deps */
 import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Image, Pagination, Space, Typography } from 'antd';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Avatar, Button, Card, Image, Pagination, Skeleton, Space, Typography } from 'antd';
+import { useCallback, useEffect } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import parse from 'html-react-parser';
+import { Reveal } from '@/components';
 
 const Home = () => {
   const navigate = useNavigate();
-  const { execute: fetchVisiMisi, ...getAllVisiMisi } = useService(LandingService.getAllVisiMisi);
-  const { execute: fetchArticle, ...getAllArticle } = useService(LandingService.getAllArticle);
-  const { execute: fetchSpeech, ...getAllSpeech } = useService(LandingService.getSpeech);
+  const { villageProfile, article, speech, visiMisi, institution } = useOutletContext();
+
+  const executeVillageProfile = useCallback(() => villageProfile.execute(), [villageProfile]);
+  const executeVisiMisi = useCallback(() => visiMisi.execute(), [visiMisi]);
+  const executeSpeech = useCallback(() => speech.execute(), [speech]);
+  const executeArticle = useCallback(() => article.execute(), [article]);
+  const executeInstitution = useCallback(() => institution.execute(), [institution]);
 
   useEffect(() => {
-    fetchVisiMisi();
-    fetchArticle();
-    fetchSpeech();
-  }, [fetchArticle, fetchSpeech, fetchVisiMisi]);
-
-  const visiMisi = getAllVisiMisi.data ?? [];
-  const article = getAllArticle.data ?? [];
-  const speech = getAllSpeech.data ?? [];
+    executeVillageProfile();
+    executeVisiMisi();
+    executeSpeech();
+    executeArticle();
+    executeInstitution();
+  }, []);
 
   return (
     <>
       <section className="mx-auto grid max-w-screen-xl grid-cols-12 items-center gap-x-10 px-4 py-28">
-        <div className="col-span-6 flex flex-col gap-y-4">
-          <Image src="/logo/bonebolango.jpg" preview={false} width={100} />
-          <div>
-            <Typography.Title style={{ margin: 0, marginBottom: 6 }}>
-              Sistem Informasi Desa <span className="text-blue-500">Sukma</span>
-            </Typography.Title>
-            <Typography.Title level={4} style={{ margin: 0 }}>
-              Kec. Botupingge, Kabupaten Bonebolango
-            </Typography.Title>
-          </div>
-
-          <Typography.Paragraph className="text-gray-500">
-            Selamat datang di Sistem Informasi Desa Sukma, sebuah platform digital yang dirancang untuk mendukung transparansi, efisiensi, dan kemudahan akses informasi di Desa Sukma.
-          </Typography.Paragraph>
-          <Space size="small">
-            <Button variant="solid" size="large" color="primary">
-              Lihat Berita
-            </Button>
-            <Button size="large" icon={<PlayCircleOutlined />} variant="outlined" color="primary">
-              Profil Desa
-            </Button>
-          </Space>
-        </div>
-        <div className="order-last col-span-5 grid grid-cols-12 gap-x-4">
-          <div className="col-span-6 flex flex-col gap-y-4">
-            <div className="inline-flex gap-x-4 rounded-xl bg-gray-100 p-5">
-              <DatabaseOutlined style={{ fontSize: '26px' }} className="text-blue-500" />
-              <p className="text-xs font-semibold">Akses cepat dan update mudah data desa Sukma</p>
+        {villageProfile.isLoading ? (
+          <>
+            <div className="col-span-6">
+              <Skeleton.Image active size={100} shape="circle" className="mb-6" />
+              <Skeleton active className="mb-6" />
+              <Skeleton.Button active />
             </div>
-            <div className="landing-village-card-container flex min-h-80 flex-col gap-y-4 rounded-xl p-6 shadow-2xl shadow-blue-400">
-              <p className="text-xs font-semibold text-white">
-                Akses Cepat <FieldTimeOutlined />
-              </p>
-              <p className="text-5xl font-bold text-white">Desa Sukma</p>
+            <div className="col-span-6 flex w-full items-center justify-center">
+              <Skeleton.Node active style={{ width: '500px', height: '360px' }} />
             </div>
-          </div>
-          <div className="col-span-6 flex flex-col gap-y-4">
-            <div className="flex min-h-80 flex-col gap-y-4 rounded-xl bg-gradient-to-b from-blue-500 to-blue-300 p-6">
-              <p className="text-xs font-semibold text-white">
-                Praktis <FieldTimeOutlined />
-              </p>
-              <p className="text-5xl font-bold text-white">Mudah & Cepat</p>
+          </>
+        ) : (
+          <>
+            <div className="col-span-6 flex flex-col gap-y-4">
+              <Image src={villageProfile?.data?.village_logo} preview={false} width={100} />
+              <div>
+                <Typography.Title style={{ margin: 0, marginBottom: 6 }}>
+                  <Reveal>
+                    Sistem Informasi Desa <span className="text-blue-500">{villageProfile?.data?.village_name}</span>
+                  </Reveal>
+                </Typography.Title>
+                <Typography.Title level={4} style={{ margin: 0 }}>
+                  <Reveal>
+                    Kecamatan {villageProfile?.data?.district_profile?.district_name}, {villageProfile?.data?.district_profile?.regency_profile?.regency_name}
+                  </Reveal>
+                </Typography.Title>
+              </div>
+              <Typography.Paragraph className="text-gray-500">
+                <Reveal>
+                  Selamat datang di Sistem Informasi Desa {villageProfile?.data?.village_name}, sebuah platform digital yang dirancang untuk mendukung transparansi, efisiensi, dan kemudahan akses informasi di Desa {villageProfile?.data?.village_name}
+                  .
+                </Reveal>
+              </Typography.Paragraph>
+              <Space size="small">
+                <Button variant="solid" size="large" color="primary">
+                  Lihat Berita
+                </Button>
+                <Button size="large" icon={<PlayCircleOutlined />} variant="outlined" color="primary">
+                  Profil Desa
+                </Button>
+              </Space>
             </div>
-            <div className="inline-flex items-center gap-x-2">
-              <Avatar.Group shape="circle" size="large">
-                <Avatar style={{ backgroundColor: '#fde3cf' }}>A</Avatar>
-                <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
-              </Avatar.Group>
-              <span className="rounded-full bg-blue-500 p-3 px-5 text-xs text-white">50+ Perangkat Desa</span>
+            <div className="order-last col-span-6 ml-28 grid grid-cols-12 gap-x-4">
+              <div className="col-span-6 flex flex-col gap-y-4">
+                <Reveal>
+                  <div className="inline-flex gap-x-4 rounded-xl bg-gray-100 p-5">
+                    <DatabaseOutlined style={{ fontSize: '26px' }} className="text-blue-500" />
+                    <p className="text-xs font-semibold">Akses cepat dan update mudah data desa {villageProfile?.data?.village_name}</p>
+                  </div>
+                </Reveal>
+                <div className="landing-village-card-container flex min-h-80 flex-col gap-y-4 rounded-xl p-6 shadow-2xl shadow-blue-400">
+                  <p className="text-xs font-semibold text-white">
+                    Akses Cepat <FieldTimeOutlined />
+                  </p>
+                  <p className="text-4xl font-bold text-white">Desa {villageProfile?.data?.village_name}</p>
+                </div>
+              </div>
+              <div className="col-span-6 flex flex-col gap-y-4">
+                <div className="flex min-h-80 flex-col gap-y-4 rounded-xl bg-gradient-to-b from-blue-500 to-blue-300 p-6">
+                  <p className="text-xs font-semibold text-white">
+                    Praktis <FieldTimeOutlined />
+                  </p>
+                  <p className="text-4xl font-bold text-white">Mudah & Cepat</p>
+                </div>
+                <div className="inline-flex items-center gap-x-2">
+                  <Avatar.Group shape="circle" size="large">
+                    <Avatar style={{ backgroundColor: '#fde3cf' }}>A</Avatar>
+                    <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
+                  </Avatar.Group>
+                  <span className="rounded-full bg-blue-500 p-3 px-5 text-xs text-white">50+ Perangkat Desa</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </section>
       <section className="w-full bg-white py-24">
         <div className="mx-auto grid w-full max-w-screen-xl grid-cols-12 gap-x-24 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 px-20 py-16">
-          <div className="col-span-4 flex flex-col gap-y-6">
-            <div className="flex flex-col gap-y-3">
-              <h2 className="w-fit rounded-full border border-white px-4 py-2 text-sm font-semibold text-white">Visi dan Misi</h2>
-              <p className="max-w-44 text-xl font-semibold text-white">Visi dan Misi Desa Sukma :</p>
+          {visiMisi.isLoading ? (
+            <Skeleton active className="col-span-12" />
+          ) : (
+            <>
+              <div className="col-span-4 flex flex-col gap-y-6">
+                <div className="flex flex-col gap-y-3">
+                  <h2 className="w-fit rounded-full border border-white px-4 py-2 text-sm font-semibold text-white">Visi dan Misi</h2>
+                  <p className="max-w-44 text-xl font-semibold text-white">Visi dan Misi Desa {villageProfile?.data?.village_name} :</p>
+                </div>
+                <p className="text-sm text-white">{visiMisi.data?.find((item) => item.type === 'visi')?.content}</p>
+              </div>
+              <div className="col-span-8 grid grid-cols-12 gap-6 p-2">
+                {visiMisi?.data &&
+                  visiMisi?.data
+                    .filter((item) => item.type !== 'visi') // Hanya ambil item yang bukan "visi"
+                    .map((item, index) => (
+                      <Card key={item.id} className="col-span-6 border-none bg-blue-400 transition-all duration-300 hover:-translate-y-2">
+                        <div className="flex flex-col gap-y-2 p-4">
+                          <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-center text-lg font-bold text-blue-500">0{index + 1}</span>
+                          <h3 className="text-lg font-semibold text-white">Misi No {index + 1}</h3>
+                          <p className="text-xs text-white">{item.content}</p>
+                        </div>
+                      </Card>
+                    ))}
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+      <section className="w-full bg-gray-100">
+        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-10 items-center gap-x-10 px-6 py-32">
+          {villageProfile.isLoading ? (
+            <div className="col-span-5 flex flex-col gap-y-6">
+              <div className="flex flex-col gap-y-2">
+                <h2 className="font-semibold text-blue-500">Batas Desa</h2>
+                <p className="text-2xl font-semibold">Batas Desa Sukma</p>
+              </div>
+              <Skeleton active />
+              <ul className="flex flex-col gap-y-3">
+                <li className="inline-flex items-center gap-x-2 font-semibold">
+                  <Skeleton.Input active size="small" />
+                </li>
+                <li className="inline-flex items-center gap-x-2 font-semibold">
+                  <Skeleton.Input active size="small" />
+                </li>
+              </ul>
+              <Skeleton.Button active />
             </div>
-            <p className="text-sm text-white">{visiMisi?.find((item) => item.type === 'visi')?.content}</p>
+          ) : (
+            <div className="col-span-5 flex flex-col gap-y-6">
+              <div className="flex flex-col gap-y-2">
+                <Reveal>
+                  <h2 className="font-semibold text-blue-500">Batas Desa</h2>
+                </Reveal>
+                <Reveal>
+                  <p className="text-2xl font-semibold">Batas Desa Sukma</p>
+                </Reveal>
+              </div>
+              <Reveal>
+                <p className="max-w-lg">Batas Desa bukan sekadar garis di peta—ini adalah fondasi untuk membangun desa yang lebih tertata, aman, dan berkembang! Dengan fitur Batas Desa, Anda bisa:</p>
+              </Reveal>
+              <ul className="flex flex-col gap-y-3">
+                <Reveal>
+                  <li className="inline-flex items-center gap-x-2 font-semibold">
+                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                    Menentukan Wilayah dengan Jelas
+                  </li>
+                </Reveal>
+                <Reveal>
+                  <li className="inline-flex items-center gap-x-2 font-semibold">
+                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                    Mendukung Perencanaan Pembangunan
+                  </li>
+                </Reveal>
+                <Reveal>
+                  <li className="inline-flex items-center gap-x-2 font-semibold">
+                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                    Mempermudah Pelayanan Publik
+                  </li>
+                </Reveal>
+              </ul>
+              <Button className="mt-2 w-fit" variant="solid" color="primary" size="large" icon={<EnvironmentOutlined />}>
+                Lihat Batas Desa
+              </Button>
+            </div>
+          )}
+
+          <div className="col-span-5 flex items-center justify-center">
+            <img src="/illustration/map.png" />
           </div>
-          <div className="col-span-8 grid grid-cols-12 gap-6 p-2">
-            {visiMisi &&
-              visiMisi
-                .filter((item) => item.type !== 'visi') // Hanya ambil item yang bukan "visi"
-                .map((item, index) => (
-                  <Card key={item.id} className="col-span-6 border-none bg-blue-400 transition-all duration-300 hover:-translate-y-2">
-                    <div className="flex flex-col gap-y-2 p-4">
-                      <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-center text-lg font-bold text-blue-500">0{index + 1}</span>
-                      <h3 className="text-lg font-semibold text-white">Misi No {index + 1}</h3>
-                      <p className="text-xs text-white">{item.content}</p>
+        </div>
+      </section>
+      <section className="w-full bg-blue-500">
+        <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 py-24">
+          <div className="flex flex-col items-center justify-center gap-y-2">
+            <Reveal>
+              <h2 className="text-sm font-semibold text-white">Lembaga</h2>
+            </Reveal>
+            <Reveal>
+              <p className="text-xl font-semibold text-white">Lembaga Desa</p>
+            </Reveal>
+          </div>
+          <div className="grid w-full grid-cols-12 items-center justify-center gap-4">
+            {institution.isLoading
+              ? Array.from({ length: 6 }, (_, i) => i).map((index) => (
+                  <Card className="col-span-2" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
+              : institution?.data?.map((item) => (
+                  <Card className="col-span-2" key={item.id}>
+                    <div className="flex flex-col gap-y-2">
+                      <Image src="" />
+                      <b>{item.institution_name}</b>
                     </div>
                   </Card>
                 ))}
           </div>
         </div>
       </section>
-      <section className="w-full bg-gray-100">
-        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-10 gap-x-10 px-6 py-32">
-          <div className="col-span-5 flex flex-col gap-y-6">
-            <div className="flex flex-col gap-y-2">
-              <h2 className="font-semibold text-blue-500">Batas Desa</h2>
-              <p className="text-2xl font-semibold">Batas Desa Sukma</p>
-            </div>
-            <p className="max-w-lg">Batas Desa bukan sekadar garis di peta—ini adalah fondasi untuk membangun desa yang lebih tertata, aman, dan berkembang! Dengan fitur Batas Desa, Anda bisa:</p>
-            <ul className="flex flex-col gap-y-3">
-              <li className="inline-flex items-center gap-x-2 font-semibold">
-                <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                Menentukan Wilayah dengan Jelas
-              </li>
-              <li className="inline-flex items-center gap-x-2 font-semibold">
-                <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                Mendukung Perencanaan Pembangunan
-              </li>
-              <li className="inline-flex items-center gap-x-2 font-semibold">
-                <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                Mempermudah Pelayanan Publik
-              </li>
-            </ul>
-            <Button className="mt-2 w-fit" variant="solid" color="primary" size="large" icon={<EnvironmentOutlined />}>
-              Lihat Batas Desa
-            </Button>
-          </div>
-          <div className="col-span-5 flex items-center justify-center">
-            <img src="/illustration/map.png" />
-          </div>
-        </div>
-      </section>
       <section className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 py-24">
         <div className="flex flex-col items-center justify-center gap-y-2">
-          <h2 className="text-sm font-semibold text-blue-500">Sambutan</h2>
-          <p className="text-xl font-semibold">Sambutan Kepala Desa</p>
+          <Reveal>
+            <h2 className="text-sm font-semibold text-blue-500">Sambutan</h2>
+          </Reveal>
+          <Reveal>
+            <p className="text-xl font-semibold">Sambutan Kepala Desa</p>
+          </Reveal>
         </div>
         <div className="flex w-full max-w-4xl gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md">
-          <img src={speech.village_officials?.foto} className="w-full flex-1 rounded-l-lg object-cover grayscale transition-all duration-300 hover:grayscale-0" />
-          <div className="flex-2 flex w-full flex-col p-12">
-            <svg className="h-16 w-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                fillRule="evenodd"
-                d="M6 6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3H5a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2H6Zm9 0a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3h-1a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <p className="mb-12 w-full">{speech.content}</p>
-            <b className="w-full">{speech.village_officials?.name}</b>
-            <small className="mb-2 w-full">{speech.village_officials?.employment?.employment_name}</small>
-          </div>
+          {speech.isLoading ? (
+            <Skeleton active className="p-16" />
+          ) : (
+            <>
+              <img src={speech?.data?.village_officials?.foto} className="w-full flex-1 rounded-l-lg object-cover grayscale transition-all duration-300 hover:grayscale-0" />
+              <div className="flex-2 flex w-full flex-col p-12">
+                <svg className="h-16 w-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    fillRule="evenodd"
+                    d="M6 6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3H5a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2H6Zm9 0a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3h-1a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <p className="mb-12 w-full">{speech?.data?.content}</p>
+                <b className="w-full">{speech?.data?.village_officials?.name}</b>
+                <small className="mb-2 w-full">{speech?.data?.village_officials?.employment?.employment_name}</small>
+              </div>
+            </>
+          )}
         </div>
       </section>
       <section className="w-full bg-gray-100">
         <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-8 px-4 py-20">
           <div className="flex items-end justify-between">
             <div className="flex flex-col gap-y-2">
-              <h2 className="text-sm font-semibold text-blue-500">Berita</h2>
-              <p className="max-w-44 text-xl font-semibold">Berita khas desa Sukma terbaru :</p>
+              <Reveal>
+                <h2 className="text-sm font-semibold text-blue-500">Berita</h2>
+              </Reveal>
+              <Reveal>
+                <p className="max-w-44 text-xl font-semibold">Berita khas desa Sukma terbaru :</p>
+              </Reveal>
             </div>
             <Button icon={<RightOutlined />} onClick={() => navigate('/news')} iconPosition="end" variant="solid" color="primary">
               Lihat Selengkapnya
             </Button>
           </div>
           <div className="grid grid-cols-10 gap-4">
-            {article.slice(0, 5).map((item, index) => (
-              <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ maxHeight: '180px', objectFit: 'cover' }} src={item.image} />}>
-                <b className="news-text">{item.title}</b>
-                <p className="news-text mt-2">{parse(item.content)}</p>
-              </Card>
-            ))}
+            {article.isLoading
+              ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
+                  <Card className="col-span-2" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
+              : article?.data?.slice(0, 5).map((item, index) => (
+                  <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
+                    <Reveal>
+                      <b className="news-text">{item.title}</b>
+                    </Reveal>
+                    <Reveal>
+                      <p className="news-text mt-2">{parse(item.content)}</p>
+                    </Reveal>
+                  </Card>
+                ))}
           </div>
           <Pagination />
         </div>

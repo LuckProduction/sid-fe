@@ -1,11 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { landingLink } from '@/data/link';
 import { findItemByKey } from '@/utils/landingLink';
 import { MenuOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Drawer, Grid, Image, Input, Menu } from 'antd';
-import { useState } from 'react';
+import { Button, Drawer, Grid, Image, Menu, Skeleton } from 'antd';
+import PropTypes from 'prop-types';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ villageProfile }) => {
   const navigate = useNavigate();
   const breakpoints = Grid.useBreakpoint();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -25,6 +27,12 @@ const Navbar = () => {
     }
   };
 
+  const executeVillageProfile = useCallback(() => villageProfile.execute(), [villageProfile]);
+
+  useEffect(() => {
+    executeVillageProfile();
+  }, []);
+
   const isDesktop = breakpoints.lg || breakpoints.xl || breakpoints.xxl;
 
   return (
@@ -32,10 +40,19 @@ const Navbar = () => {
       <div className="flex w-fit items-center gap-x-4 lg:w-full">
         {isDesktop ? (
           <>
-            <Image width={40} preview={false} src="./logo/bonebolango.jpg" />
-            <b>
-              Desa <span className="text-blue-500">Sukma</span>{' '}
-            </b>
+            {villageProfile.isLoading ? (
+              <div className="inline-flex items-center gap-x-2">
+                <Skeleton.Button size="large" active />
+                <Skeleton.Input size="small" active />
+              </div>
+            ) : (
+              <>
+                <Image width={40} preview={false} src={villageProfile?.data?.village_logo} />
+                <b>
+                  Desa <span className="text-blue-500">{villageProfile?.data?.village_name}</span>{' '}
+                </b>
+              </>
+            )}
             <Menu style={{ minWidth: 0, flex: 'auto', border: 'none' }} mode="horizontal" items={landingLink} activeKey="" onClick={handleMenuClick} />
           </>
         ) : (
@@ -48,13 +65,16 @@ const Navbar = () => {
         )}
       </div>
       <div className="flex w-full items-center justify-end gap-x-4">
-        <Input.Search className="w-full lg:max-w-xs" placeholder="Cari" />
         <Button variant="solid" color="primary" icon={<UserOutlined />} onClick={() => navigate('/auth/login')}>
           Masuk
         </Button>
       </div>
     </div>
   );
+};
+
+Navbar.propTypes = {
+  villageProfile: PropTypes.object
 };
 
 export default Navbar;

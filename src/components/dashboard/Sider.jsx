@@ -1,63 +1,94 @@
 import { dashboardLink } from '@/data/link';
-import { useAuth } from '@/hooks';
-import { Drawer, Menu } from 'antd';
+import { useAuth, useService } from '@/hooks';
+import { LandingService } from '@/services';
+import { Drawer, Grid, Image, Menu } from 'antd';
+import Sider from 'antd/es/layout/Sider';
 import PropTypes from 'prop-types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Sider = ({ collapsed, onCloseMenu }) => {
+const DashboardSider = ({ collapsed, onCloseMenu }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useAuth();
+  const breakpoints = Grid.useBreakpoint();
+  const { execute: fetchVillageProfile, ...getAll } = useService(LandingService.getVillageProfile);
 
-  return (
-    <Drawer styles={{ body: { padding: 10 } }} placement="left" width={250} open={!collapsed} onClose={onCloseMenu}>
-      <Menu
-        className="w-full !border-none font-semibold"
-        theme="light"
-        mode="inline"
-        defaultSelectedKeys={[pathname]}
-        items={dashboardLink
-          .filter(({ permissions, roles }) => {
-            if (!user) return false;
+  const isDesktop = breakpoints.lg || breakpoints.xl || breakpoints.xxl;
 
-            const hasPermission = permissions && permissions.length > 0;
-            const hasRole = roles && roles.length > 0;
+  const menuItems = dashboardLink
+    .filter(({ permissions, roles }) => {
+      if (!user) return false;
 
-            const isPublicPage = !hasPermission && !hasRole;
-            if (isPublicPage) return true;
+      const hasPermission = permissions && permissions.length > 0;
+      const hasRole = roles && roles.length > 0;
 
-            const roleSpecific = hasRole && !hasPermission;
-            if (roleSpecific) return user.eitherIs(...roles);
+      const isPublicPage = !hasPermission && !hasRole;
+      if (isPublicPage) return true;
 
-            const permissionSpecific = hasPermission && !hasRole;
-            if (permissionSpecific) return user.eitherCan(...permissions);
+      const roleSpecific = hasRole && !hasPermission;
+      if (roleSpecific) return user.eitherIs(...roles);
 
-            return user.eitherCan(...permissions) && user.eitherIs(...roles);
-          })
-          .map(({ label, children }) => ({
-            key: label,
-            label,
-            children: children
-              .filter(({ permissions, roles }) => {
-                const hasPermission = !permissions || user?.eitherCan(...permissions);
-                const hasRole = !roles || user?.eitherIs(...roles);
-                return hasPermission && hasRole;
-              })
-              .map(({ path, label, icon: Icon }) => ({
-                key: path,
-                icon: <Icon />,
-                label,
-                onClick: () => navigate(path)
-              }))
-          }))}
-      />
+      const permissionSpecific = hasPermission && !hasRole;
+      if (permissionSpecific) return user.eitherCan(...permissions);
+
+      return user.eitherCan(...permissions) && user.eitherIs(...roles);
+    })
+    .map(({ label, children, icon: Icon }) => ({
+      key: label,
+      label,
+      icon: <Icon />,
+      children: children
+        .filter(({ permissions, roles }) => {
+          const hasPermission = !permissions || user?.eitherCan(...permissions);
+          const hasRole = !roles || user?.eitherIs(...roles);
+          return hasPermission && hasRole;
+        })
+        .map(({ path, label }) => ({
+          key: path,
+          label,
+          onClick: () => navigate(path)
+        }))
+    }));
+
+  useEffect(() => {
+    fetchVillageProfile();
+  }, [fetchVillageProfile]);
+
+  const villageProfile = getAll.data ?? [];
+
+  return isDesktop ? (
+    <Sider theme="light" className="p-4" width={230} collapsed={collapsed}>
+      <Link to="/">
+        <div className="mb-4 flex w-full items-center justify-center">
+          <Image width={40} preview={false} src={villageProfile?.village_logo} />
+        </div>
+      </Link>
+      <Menu className="w-full !border-none font-semibold" theme="light" mode="inline" defaultSelectedKeys={[pathname]} items={menuItems} />
+    </Sider>
+  ) : (
+    <Drawer
+      styles={{ body: { padding: 10 } }}
+      placement="left"
+      width={250}
+      open={!collapsed}
+      onClose={onCloseMenu}
+      title={
+        <Link to="/">
+          <div className="flex w-full items-center justify-center">
+            <Image width={40} preview={false} src={villageProfile?.village_logo} />
+          </div>
+        </Link>
+      }
+    >
+      <Menu className="w-full !border-none font-semibold" theme="light" mode="inline" defaultSelectedKeys={[pathname]} items={menuItems} />
     </Drawer>
   );
 };
 
-export default Sider;
+export default DashboardSider;
 
-Sider.propTypes = {
+DashboardSider.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   onCloseMenu: PropTypes.func.isRequired
 };
