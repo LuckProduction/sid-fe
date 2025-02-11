@@ -18,3 +18,6 @@ export { default as ApbdReport } from './ApbdReport';
 export { default as ApbdItem } from './ApbdItem';
 export { default as PublicAssistance } from './PublicAssistance';
 export { default as Beneficiary } from './Beneficiary';
+export { default as LetterType } from './LetterType';
+export { default as LetterAttribute } from './LetterAttribute';
+export { default as LetterTemplate } from './LetterTemplate';

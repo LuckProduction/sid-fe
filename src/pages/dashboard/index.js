@@ -21,3 +21,5 @@ export { default as ApbdReport } from './apbdReport/ApbdReport';
 export { default as ApbdItem } from './apbdItem/ApbdItem';
 export { default as PublicAssistance } from './publicAsistance/PublicAssistance';
 export { default as Beneficiary } from './beneficiary/Beneficiary';
+export { default as LetterType } from './correspondence/LetterType';
+export { default as Lettering } from './correspondence/Lettering';

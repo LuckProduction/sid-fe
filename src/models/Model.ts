@@ -16,7 +16,10 @@ type ModelKeys =
   | 'laporan_apbd'
   | 'item_apbd'
   | 'bantuan'
-  | 'peserta_bantuan';
+  | 'peserta_bantuan'
+  | 'jenis_surat'
+  | 'template_surat' 
+  | 'atribut_surat';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -36,7 +39,11 @@ export default abstract class Model {
     laporan_apbd: undefined,
     item_apbd: undefined,
     bantuan: undefined,
-    peserta_bantuan: undefined
+    peserta_bantuan: undefined,
+    jenis_surat: undefined,
+    jabatan: undefined,
+    atribut_surat: undefined,
+    template_surat: undefined,  
   };
 }
 

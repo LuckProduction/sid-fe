@@ -17,3 +17,6 @@ export { default as ApbdReportService } from './ApbdReportService';
 export { default as ApbdItemService } from './ApbdItemService';
 export { default as PublicAssistanceService } from './PublicAssistanceService';
 export { default as BeneficiaryService } from './BeneficiaryService';
+export { default as LetterTypeService } from './LetterTypeService';
+export { default as LetterAttributeService } from './LetterAttributeService';
+export { default as LetterTemplateService } from './LetterTemplateService';

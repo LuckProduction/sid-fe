@@ -69,6 +69,7 @@ export const dashboardLink = [
     icon: BookOutlined,
     children: [
       { path: '/article', label: 'Artikel', element: Dashboard.Article },
+      { path: '/correspondence', label: 'Surat Menyurat', element: Dashboard.LetterType },
       { path: '/village_potential', label: 'Potensi Desa ', element: Dashboard.VillagePotential },
       { path: '/legal_products', label: 'Produk Hukum ', element: Dashboard.LegalProducts }
     ]
