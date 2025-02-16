@@ -7,7 +7,8 @@ enum InputType {
   SELECT = 'select',
   SELECT_FETCH = 'select_fetch',
   SELECT_LOGO = 'select-logo',
-  CONTENT_EDITOR = 'content-editor'
+  CONTENT_EDITOR = 'content-editor',
+  SELECT_SEARCH = 'select-search'
 }
 
 export default InputType;

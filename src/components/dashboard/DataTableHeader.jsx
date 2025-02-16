@@ -1,44 +1,68 @@
+import { Action } from '@/constants';
+import { useAuth } from '@/hooks';
 import { DeleteOutlined, ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Typography } from 'antd';
+import { Button, Skeleton, Typography } from 'antd';
 import PropTypes from 'prop-types';
 
-const DataTableHeader = ({ modul, selectedData, onDeleteBatch, onImport, onExport, onCreate }) => {
-  return (
-    <div className="mb-6 flex flex-col justify-between gap-y-2 lg:flex-row lg:items-center">
-      <Typography.Title level={5}>Data {modul}</Typography.Title>
-      <div className="flex flex-col gap-2 gap-y-2 lg:flex-row lg:items-start">
-        {onDeleteBatch && (
-          <Button variant="outlined" color="danger" disabled={!selectedData?.length} icon={<DeleteOutlined />} onClick={onDeleteBatch}>
-            {modul}
-          </Button>
-        )}
-        {onImport && (
-          <Button variant="solid" icon={<ImportOutlined />} onClick={onImport}>
-            Import
-          </Button>
-        )}
-        {onExport && (
-          <Button variant="solid" icon={<ExportOutlined />} onClick={onExport}>
-            Export
-          </Button>
-        )}
-        {onCreate && (
-          <Button type="primary" icon={<PlusOutlined />} onClick={onCreate}>
-            {modul}
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-};
+const { CREATE, DELETE } = Action;
 
-DataTableHeader.propTypes = {
+const { Title, Text } = Typography;
+
+export default function DataHeader({ modul, subtitle, selectedData, onStore, onDeleteBatch, model, children, onImport, onExport }) {
+  const { user } = useAuth();
+
+  return (
+    <>
+      <div className="mb-6">
+        {modul ? <Title level={5}>Data {modul}</Title> : <Skeleton.Input size="small" />}
+        {subtitle &&
+          (typeof subtitle === 'string' ? (
+            <Text type="secondary" style={{ display: 'block', marginTop: '10px' }}>
+              {subtitle}
+            </Text>
+          ) : (
+            subtitle
+          ))}
+      </div>
+      {(children || (user && user.eitherCan([DELETE, model], [CREATE, model]))) && (
+        <div className="mb-6 flex flex-col-reverse justify-end gap-2 empty:hidden md:flex-row">
+          {user && user.can(DELETE, model) && (
+            <Button className="me-auto" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedData?.length} onClick={onDeleteBatch}>
+              Hapus {selectedData?.length || null} Pilihan
+            </Button>
+          )}
+          {user && user.can(CREATE, model) && (
+            <Button icon={<PlusOutlined />} type="primary" onClick={onStore}>
+              Tambah
+            </Button>
+          )}
+          {onImport && (
+            <Button variant="solid" icon={<ImportOutlined />} onClick={onImport}>
+              Import
+            </Button>
+          )}
+          {onExport && (
+            <Button variant="solid" icon={<ExportOutlined />} onClick={onExport}>
+              Export
+            </Button>
+          )}
+
+          {children}
+        </div>
+      )}
+    </>
+  );
+}
+
+DataHeader.propTypes = {
   modul: PropTypes.string,
-  selectedData: PropTypes.array,
-  onDeleteBatch: PropTypes.func,
+  subtitle: PropTypes.node,
+  onVerify: PropTypes.func,
+  onStore: PropTypes.func,
   onImport: PropTypes.func,
   onExport: PropTypes.func,
-  onCreate: PropTypes.func
+  onDeleteBatch: PropTypes.func,
+  selectedData: PropTypes.array,
+  model: PropTypes.func,
+  children: PropTypes.node
 };
-
-export default DataTableHeader;

@@ -4,7 +4,6 @@ export default class Action {
   public static readonly READ = new Action('read');
   public static readonly CREATE = new Action('create');
   public static readonly UPDATE = new Action('update');
-  public static readonly VERIFY = new Action('verify');
   public static readonly DELETE = new Action('delete');
   public static readonly NONE = new Action('none');
 
@@ -13,7 +12,6 @@ export default class Action {
       read: Action.READ,
       create: Action.CREATE,
       update: Action.UPDATE,
-      verify: Action.VERIFY,
       delete: Action.DELETE,
       none: Action.NONE
     };

@@ -1,14 +1,18 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { HamletService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Typography } from 'antd';
+import { Card, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { formFields } from './FormFields';
+import { Action } from '@/constants';
+import { Hamlet as HamletModel } from '@/models';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+
+const { UPDATE, READ, DELETE } = Action;
 
 const Hamlet = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
 
@@ -55,15 +59,17 @@ const Hamlet = () => {
       dataIndex: 'head_hamlet_name',
       sorter: (a, b) => a.head_hamlet_name.length - b.head_hamlet_name.length,
       searchable: true
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, HamletModel], [DELETE, HamletModel], [READ, HamletModel])) {
+    Column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            model={HamletModel}
+            title={`Edit ${Modul.HAMLET}`}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.HAMLET}`,
@@ -82,10 +88,9 @@ const Hamlet = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            model={HamletModel}
+            title={`Detail ${Modul.HAMLET}`}
             onClick={() => {
               modal.show.description({
                 title: record.hamlet_name,
@@ -109,10 +114,9 @@ const Hamlet = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            model={HamletModel}
+            title={`Delete ${Modul.HAMLET}`}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.HAMLET}`,
@@ -133,8 +137,43 @@ const Hamlet = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedData.length} ${Modul.HAMLET} Yang Dipilih ? `,
+      formFields: formFields,
+      onSubmit: async () => {
+        const ids = selectedData.map((item) => item.id);
+        const { message, isSuccess } = await hamletService.deleteBatch.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchHamlets(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.HAMLET}`,
+      formFields: formFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await hamletService.store.execute(values, token, values.administrative_area.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchHamlets(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <div>
@@ -142,58 +181,7 @@ const Hamlet = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.HAMLET}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedData.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.HAMLET} Yang Dipilih ? `,
-                    formFields: formFields,
-                    onSubmit: async () => {
-                      const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await hamletService.deleteBatch.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchHamlets(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.HAMLET}
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.HAMLET}`,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await hamletService.store.execute(values, token, values.administrative_area.file);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchHamlets(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.HAMLET}
-              </Button>
-            </div>
-          </div>
+          <DataTableHeader model={HamletModel} modul={Modul.HAMLET} onDeleteBatch={onDeleteBatch} onStore={onCreate} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               data={hamlets}
