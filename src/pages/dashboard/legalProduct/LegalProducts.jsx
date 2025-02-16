@@ -1,16 +1,21 @@
-import { DataLoader, DataTable } from '@/components';
-import { InputType } from '@/constants';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LegalProductsService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
-import { DeleteOutlined, DownloadOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Tag, Typography } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { Button, Card, Space, Tag } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
+import { formFields } from './FormFields';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { Action } from '@/constants';
+import { LegalProducts as legalProductsModel } from '@/models';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const LegalProducts = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { execute: fetchLegalProducts, ...getAllLegalProducts } = useService(LegalProductsService.getAll);
   const storeLegalProducts = useService(LegalProductsService.store);
@@ -57,15 +62,17 @@ const LegalProducts = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, legalProductsModel], [DELETE, legalProductsModel], [READ, legalProductsModel])) {
+    Column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.LEGAL_PRODUCTS}`}
+            model={legalProductsModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.LEGAL_PRODUCTS}`,
@@ -89,10 +96,9 @@ const LegalProducts = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            title={`Detail ${Modul.LEGAL_PRODUCTS}`}
+            model={legalProductsModel}
             onClick={() => {
               modal.show.description({
                 title: record.assignment_number,
@@ -164,10 +170,9 @@ const LegalProducts = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.LEGAL_PRODUCTS}`}
+            model={legalProductsModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.LEGAL_PRODUCTS}`,
@@ -188,110 +193,43 @@ const LegalProducts = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
 
-  const formFields = [
-    {
-      label: `Judul ${Modul.LEGAL_PRODUCTS}`,
-      name: 'title',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Judul ${Modul.LEGAL_PRODUCTS} harus diisi`
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedData.length} ${Modul.LEGAL_PRODUCTS} Yang Dipilih ? `,
+      formFields: formFields,
+      onSubmit: async () => {
+        const ids = selectedData.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchLegalProducts.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchLegalProducts(token);
+        } else {
+          error('Gagal', message);
         }
-      ]
-    },
-    {
-      label: `Nomor Penetapan `,
-      name: 'assignment_number',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Nomor Penetapan ${Modul.LEGAL_PRODUCTS} harus diisi`
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.LEGAL_PRODUCTS}`,
+      formFields: formFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeLegalProducts.execute({ ...values, assignment_date: dateFormatter(values.assignment_date), year: dateFormatter(values.year, 'year') }, token, values.document.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchLegalProducts(token);
+        } else {
+          error('Gagal', message);
         }
-      ]
-    },
-    {
-      label: `Tanggal Penetapan `,
-      name: 'assignment_date',
-      type: InputType.DATE,
-      rules: [
-        {
-          required: true,
-          message: `Tanggal Penetapan ${Modul.LEGAL_PRODUCTS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Jenis ${Modul.LEGAL_PRODUCTS}`,
-      name: 'type',
-      type: InputType.TEXT,
-      rules: [
-        {
-          required: true,
-          message: `Jenis ${Modul.LEGAL_PRODUCTS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Tahun ${Modul.LEGAL_PRODUCTS}`,
-      name: 'year',
-      type: InputType.DATE,
-      extra: {
-        picker: 'year'
-      },
-      rules: [
-        {
-          required: true,
-          message: `Tahun ${Modul.LEGAL_PRODUCTS} harus diisi`
-        }
-      ]
-    },
-    {
-      label: `Dokumen ${Modul.LEGAL_PRODUCTS}`,
-      name: 'document',
-      type: InputType.UPLOAD,
-      max: 1,
-      beforeUpload: () => {
-        return false;
-      },
-      getFileList: (data) => {
-        return [
-          {
-            url: data?.document,
-            name: data?.name
-          }
-        ];
-      },
-      accept: ['.pdf'],
-      rules: [{ required: true, message: 'Dokumen harus diisi' }]
-    },
-    {
-      label: `Status ${Modul.LEGAL_PRODUCTS}`,
-      name: 'status',
-      type: InputType.SELECT,
-      picker: 'select',
-      rules: [
-        {
-          required: true,
-          message: `Status ${Modul.LEGAL_PRODUCTS} harus diisi`
-        }
-      ],
-      options: [
-        {
-          label: 'Aktif',
-          value: 'aktif'
-        },
-        {
-          label: 'Non-Aktif',
-          value: 'nonaktif'
-        }
-      ]
-    }
-  ];
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <div>
@@ -299,58 +237,7 @@ const LegalProducts = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.LEGAL_PRODUCTS}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedData.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.LEGAL_PRODUCTS} Yang Dipilih ? `,
-                    formFields: formFields,
-                    onSubmit: async () => {
-                      const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchLegalProducts.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchLegalProducts(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.LEGAL_PRODUCTS}
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.LEGAL_PRODUCTS}`,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeLegalProducts.execute({ ...values, assignment_date: dateFormatter(values.assignment_date), year: dateFormatter(values.year, 'year') }, token, values.document.file);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchLegalProducts(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.LEGAL_PRODUCTS}
-              </Button>
-            </div>
-          </div>
+          <DataTableHeader model={legalProductsModel} modul={Modul.BENEFICIARY} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               data={legalProducts}

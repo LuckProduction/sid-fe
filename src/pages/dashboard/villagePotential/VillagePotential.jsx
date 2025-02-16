@@ -1,15 +1,19 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CategoryService, VillagePotentialService } from '@/services';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Typography } from 'antd';
+import { Card, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { villagePotentialFormFields } from './FormFields';
 import Category from './Category';
+import { Delete, Edit } from '@/components/dashboard/button';
+import { Action } from '@/constants';
+import { VillagePotential as VillagePotentialModel } from '@/models';
+
+const { DELETE, UPDATE } = Action;
 
 const VillagePotential = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { execute: fetchVillagePotential, ...getAllVillagePotential } = useService(VillagePotentialService.getAll);
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
@@ -44,15 +48,17 @@ const VillagePotential = () => {
       dataIndex: 'location',
       sorter: (a, b) => a.location.length - b.location.length,
       searchable: true
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, VillagePotentialModel], [DELETE, VillagePotentialModel])) {
+    villagePotentialColumn.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.VILLAGE_POTENTIALS}`}
+            model={VillagePotentialModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_POTENTIALS}`,
@@ -71,10 +77,9 @@ const VillagePotential = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.VILLAGE_POTENTIALS}`}
+            model={VillagePotentialModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.VILLAGE_POTENTIALS}`,
@@ -95,8 +100,42 @@ const VillagePotential = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedVillagePotential.length} ${Modul.VILLAGE_POTENTIALS} Yang Dipilih ? `,
+      onSubmit: async () => {
+        const ids = selectedVillagePotential.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchVillagePotential.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVillagePotential(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.VILLAGE_POTENTIALS}`,
+      formFields: villagePotentialFormFields({ options: { category } }).filter((field) => field.name !== 'content'),
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeVillagePotential.execute(values, token, values.foto.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVillagePotential(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <>
@@ -105,57 +144,7 @@ const VillagePotential = () => {
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <Card className="col-span-8">
-            <div className="mb-6 flex items-center justify-between">
-              <Typography.Title level={5}>Data {Modul.VILLAGE_POTENTIALS}</Typography.Title>
-              <div className="inline-flex items-center gap-2">
-                <Button
-                  variant="outlined"
-                  color="danger"
-                  disabled={selectedVillagePotential.length <= 0}
-                  icon={<DeleteOutlined />}
-                  onClick={() => {
-                    modal.delete.batch({
-                      title: `Hapus ${selectedVillagePotential.length} ${Modul.VILLAGE_POTENTIALS} Yang Dipilih ? `,
-                      onSubmit: async () => {
-                        const ids = selectedVillagePotential.map((item) => item.id);
-                        const { message, isSuccess } = await deleteBatchVillagePotential.execute(ids, token);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchVillagePotential(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.VILLAGE_POTENTIALS}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    modal.create({
-                      title: `Tambah ${Modul.VILLAGE_POTENTIALS}`,
-                      formFields: villagePotentialFormFields({ options: { category } }).filter((field) => field.name !== 'content'),
-                      onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeVillagePotential.execute(values, token, values.foto.file);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchVillagePotential(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.VILLAGE_POTENTIALS}
-                </Button>
-              </div>
-            </div>
+            <DataTableHeader model={VillagePotentialModel} modul={Modul.VILLAGE_POTENTIALS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedVillagePotential} />
             <div className="w-full max-w-full overflow-x-auto">
               <DataTable
                 data={villagePotential}

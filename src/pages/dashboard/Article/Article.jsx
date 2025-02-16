@@ -1,17 +1,21 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ArticleService, CategoryService } from '@/services';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Tag, Typography } from 'antd';
+import { Card, Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formFields } from './FormFields';
 import Modul from '@/constants/Modul';
 import Category from './Category';
+import { Delete, Edit } from '@/components/dashboard/button';
+import { Action } from '@/constants';
+import { Article as ArticleModel } from '@/models';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const Article = () => {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
   const { execute: executeArticleFetch, ...getAllArticle } = useService(ArticleService.getAll);
@@ -65,23 +69,24 @@ const Article = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, ArticleModel], [DELETE, ArticleModel], [READ, ArticleModel])) {
+    articleColumn.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.ARTICLE}`}
+            model={ArticleModel}
             onClick={() => {
               navigate(window.location.pathname + '/edit/' + record.id);
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.ARTICLE}`}
+            model={ArticleModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.ARTICLE}`,
@@ -102,8 +107,29 @@ const Article = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedArticle.length} ${Modul.ARTICLE} Yang Dipilih ? `,
+      onSubmit: async () => {
+        const ids = selectedArticle.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchArticle.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          executeArticleFetch(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    navigate(window.location.pathname + '/create');
+  };
 
   return (
     <>
@@ -112,44 +138,7 @@ const Article = () => {
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <Card className="col-span-8">
-            <div className="mb-6 flex items-center justify-between">
-              <Typography.Title level={5}>Data {Modul.ARTICLE}</Typography.Title>
-              <div className="inline-flex items-center gap-2">
-                <Button
-                  variant="outlined"
-                  color="danger"
-                  disabled={selectedArticle.length <= 0}
-                  icon={<DeleteOutlined />}
-                  onClick={() => {
-                    modal.delete.batch({
-                      title: `Hapus ${selectedArticle.length} ${Modul.ARTICLE} Yang Dipilih ? `,
-                      onSubmit: async () => {
-                        const ids = selectedArticle.map((item) => item.id);
-                        const { message, isSuccess } = await deleteBatchArticle.execute(ids, token);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          executeArticleFetch(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.ARTICLE}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    navigate(window.location.pathname + '/create');
-                  }}
-                >
-                  {Modul.ARTICLE}
-                </Button>
-              </div>
-            </div>
+            <DataTableHeader model={ArticleModel} modul={Modul.ARTICLE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} />
             <div className="w-full max-w-full overflow-x-auto">
               <DataTable data={article} columns={articleColumn} loading={getAllArticle.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
             </div>

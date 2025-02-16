@@ -1,16 +1,20 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { EmploymentService, VillageOfficialsService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Image, Space, Typography } from 'antd';
+import { Card, Image, Space } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
 import { villageOfficialsFormFields } from './FormFields';
+import { Action } from '@/constants';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { VillageOfficials as VillageOfficialsModel } from '@/models';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const VillageOfficials = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
 
@@ -62,15 +66,17 @@ const VillageOfficials = () => {
       dataIndex: ['employment', 'employment_name'],
       sorter: (a, b) => a.employment.employment_name.length - b.employment.employment_name.length,
       searchable: true
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, VillageOfficialsModel], [DELETE, VillageOfficialsModel], [READ, VillageOfficialsModel])) {
+    villageOfficialsColumn.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.VILLAGE_OFFICIALS}`}
+            model={VillageOfficialsModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_OFFICIALS}`,
@@ -89,10 +95,9 @@ const VillageOfficials = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            title={`Detail ${Modul.VILLAGE_OFFICIALS}`}
+            model={VillageOfficialsModel}
             onClick={() => {
               modal.show.description({
                 title: record.name,
@@ -146,10 +151,9 @@ const VillageOfficials = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.VILLAGE_OFFICIALS}`}
+            model={VillageOfficialsModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.VILLAGE_OFFICIALS}`,
@@ -170,8 +174,50 @@ const VillageOfficials = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedVillageOfficials.length} ${Modul.VILLAGE_OFFICIALS} Yang Dipilih ? `,
+      formFields: villageOfficialsFormFields({ options: { employments } }),
+      onSubmit: async () => {
+        const ids = selectedVillageOfficials.map((item) => item.id);
+        const { message, isSuccess } = await villageOfficialsService.deleteBatch.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVillageOfficials(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.VILLAGE_OFFICIALS}`,
+      formFields: villageOfficialsFormFields({ options: { employments } }),
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await villageOfficialsService.store.execute(
+          {
+            ...values,
+            birth_date: dateFormatter(values.birth_date)
+          },
+          token,
+          values.image.file
+        );
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVillageOfficials(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <>
@@ -180,65 +226,7 @@ const VillageOfficials = () => {
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <Card className="col-span-12">
-            <div className="mb-6 flex items-center justify-between">
-              <Typography.Title level={5}>Data {Modul.VILLAGE_OFFICIALS}</Typography.Title>
-              <div className="inline-flex items-center gap-2">
-                <Button
-                  variant="outlined"
-                  color="danger"
-                  disabled={selectedVillageOfficials.length <= 0}
-                  icon={<DeleteOutlined />}
-                  onClick={() => {
-                    modal.delete.batch({
-                      title: `Hapus ${selectedVillageOfficials.length} ${Modul.VILLAGE_OFFICIALS} Yang Dipilih ? `,
-                      formFields: villageOfficialsFormFields({ options: { employments } }),
-                      onSubmit: async () => {
-                        const ids = selectedVillageOfficials.map((item) => item.id);
-                        const { message, isSuccess } = await villageOfficialsService.deleteBatch.execute(ids, token);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchVillageOfficials(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.VILLAGE_OFFICIALS}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    modal.create({
-                      title: `Tambah ${Modul.VILLAGE_OFFICIALS}`,
-                      formFields: villageOfficialsFormFields({ options: { employments } }),
-                      onSubmit: async (values) => {
-                        const { message, isSuccess } = await villageOfficialsService.store.execute(
-                          {
-                            ...values,
-                            birth_date: dateFormatter(values.birth_date)
-                          },
-                          token,
-                          values.image.file
-                        );
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchVillageOfficials(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.VILLAGE_OFFICIALS}
-                </Button>
-              </div>
-            </div>
+            <DataTableHeader model={VillageOfficialsModel} modul={Modul.VILLAGE_OFFICIALS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedVillageOfficials} />
             <div className="w-full max-w-full overflow-x-auto">
               <DataTable
                 data={villageOfficials}

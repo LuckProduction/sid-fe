@@ -1,15 +1,19 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { EmploymentService, InstitutionMemberService, ResidentService, VillageInstitutionService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Image, Space, Typography } from 'antd';
+import { Card, Image, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { institutionMemberFormFields } from './FormFields';
 import { useParams } from 'react-router-dom';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { Action } from '@/constants';
+import { InstitutionMember as InstitutionMemberModel } from '@/models';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const InstitutionMember = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { id } = useParams();
   const { execute: fetchInstitutionMember, ...getAllInstitutionMember } = useService(InstitutionMemberService.getAll);
@@ -38,7 +42,7 @@ const InstitutionMember = () => {
   const resident = getAllResident.data ?? [];
   const employment = getAllEmployment.data ?? [];
 
-  const villagePotentialColumn = [
+  const column = [
     {
       title: 'Lembaga',
       dataIndex: ['village_institution', 'institution_name'],
@@ -56,18 +60,20 @@ const InstitutionMember = () => {
       dataIndex: ['employment', 'employment_name'],
       sorter: (a, b) => a.employment.employment_name.length - b.employment.employment_name.length,
       searchable: true
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, InstitutionMemberModel], [DELETE, InstitutionMemberModel], [READ, InstitutionMemberModel])) {
+    column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.INSTITUTION_MEMBER}`}
+            model={InstitutionMemberModel}
             onClick={() => {
               modal.edit({
-                title: `Edit ${Modul.VILLAGE_POTENTIALS}`,
+                title: `Edit ${Modul.INSTITUTION_MEMBER}`,
                 data: { ...record, village_institution: record.village_institution.id, employment: record.employment.id, resident: record.resident.id },
                 formFields: institutionMemberFormFields({ options: { employment, resident } }),
                 onSubmit: async (values) => {
@@ -83,10 +89,9 @@ const InstitutionMember = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            title={`Detail ${Modul.INSTITUTION_MEMBER}`}
+            model={InstitutionMemberModel}
             onClick={() => {
               modal.show.description({
                 title: record.resident.full_name,
@@ -115,10 +120,9 @@ const InstitutionMember = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.INSTITUTION_MEMBER}`}
+            model={InstitutionMemberModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.VILLAGE_POTENTIALS}`,
@@ -139,8 +143,42 @@ const InstitutionMember = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedInstitutionMember.length} ${Modul.INSTITUTION_MEMBER} Yang Dipilih ? `,
+      onSubmit: async () => {
+        const ids = selectedInstitutionMember.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchInstitutionMember.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchInstitutionMember(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.INSTITUTION_MEMBER}`,
+      formFields: institutionMemberFormFields({ options: { employment, resident } }),
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: villageInstitutionById.id }, token, values.foto.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchInstitutionMember(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <>
@@ -149,61 +187,11 @@ const InstitutionMember = () => {
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <Card className="col-span-12">
-            <div className="mb-6 flex items-center justify-between">
-              <Typography.Title level={5}>Data {Modul.INSTITUTION_MEMBER}</Typography.Title>
-              <div className="inline-flex items-center gap-2">
-                <Button
-                  variant="outlined"
-                  color="danger"
-                  disabled={selectedInstitutionMember.length <= 0}
-                  icon={<DeleteOutlined />}
-                  onClick={() => {
-                    modal.delete.batch({
-                      title: `Hapus ${selectedInstitutionMember.length} ${Modul.VILLAGE_POTENTIALS} Yang Dipilih ? `,
-                      onSubmit: async () => {
-                        const ids = selectedInstitutionMember.map((item) => item.id);
-                        const { message, isSuccess } = await deleteBatchInstitutionMember.execute(ids, token);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchInstitutionMember(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.INSTITUTION_MEMBER}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    modal.create({
-                      title: `Tambah ${Modul.VILLAGE_POTENTIALS}`,
-                      formFields: institutionMemberFormFields({ options: { employment, resident } }),
-                      onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: villageInstitutionById.id }, token, values.foto.file);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchInstitutionMember(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.INSTITUTION_MEMBER}
-                </Button>
-              </div>
-            </div>
+            <DataTableHeader model={InstitutionMemberModel} modul={Modul.VILLAGE_OFFICIALS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedInstitutionMember} />
             <div className="w-full max-w-full overflow-x-auto">
               <DataTable
                 data={institutionMember}
-                columns={villagePotentialColumn}
+                columns={column}
                 loading={getAllInstitutionMember.isLoading}
                 map={(institutionMember) => ({ key: institutionMember.id, ...institutionMember })}
                 pagination={pagination}

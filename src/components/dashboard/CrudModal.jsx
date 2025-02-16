@@ -17,11 +17,10 @@ import { useAuth } from '@/hooks';
  * }} props
  * @returns
  */
-export default function CrudModal({ isModalOpen, data: initialData, close, title, formFields, onSubmit, onChange = () => {}, type = CrudModalType.SHOW, isLoading, ...props }) {
+export default function CrudModal({ isModalOpen, data: initialData, close, title, formFields, onSubmit, onChange = () => { }, type = CrudModalType.SHOW, isLoading, ...props }) {
   const { token } = useAuth();
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
-  const [searchTerm, setSearchTerm] = useState('');
   const [searchOptions, setSearchOptions] = useState(null);
 
   useEffect(() => {
@@ -41,18 +40,16 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
   }
 
   const handleSearch = debounce(async (value, field) => {
-    setSearchTerm(value);
-
     if (field.fetchOptions) {
-      const data = await field.fetchOptions({ token: token, search: searchTerm });
+      const data = await field.fetchOptions({ token: token, search: value });
       setSearchOptions(
         data.data.map(
           field.mapOptions
             ? field.mapOptions
             : (item) => ({
-                label: item.name,
-                value: item.id
-              })
+              label: item.name,
+              value: item.id
+            })
         )
       );
     }
