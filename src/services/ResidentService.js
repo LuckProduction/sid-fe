@@ -11,9 +11,9 @@ export default class ResidentService {
    *  data?: Resident[];
    * }>}
    * */
-  static async getAll(token, page = null, perPage = null) {
+  static async getAll({ token, page = null, perPage = null, search = '' }) {
     const params = page && perPage ? { page, perPage } : {};
-    const response = await api.get('/master-penduduk', { token, ...params });
+    const response = await api.get('/master-penduduk', { token, ...params, params: { search: search } });
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }

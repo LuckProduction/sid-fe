@@ -1,21 +1,22 @@
 import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
 
-export const residentFormFields = ({ options }) => [
+export const residentFormFields = ({ fetchResident }) => [
   {
     label: `Nama ${Modul.BENEFICIARY}`,
     name: 'beneficiary',
-    type: InputType.SELECT,
+    type: InputType.SELECT_FETCH,
     rules: [
       {
         required: true,
         message: `Nama ${Modul.BENEFICIARY} harus diisi`
       }
     ],
-    options: options.resident.map((item) => ({
-      label: item.full_name,
+    fetchOptions: fetchResident,
+    mapOptions: (item) => ({
+      label: item.full_name, // Bisa disesuaikan
       value: item.id
-    }))
+    })
   }
 ];
 

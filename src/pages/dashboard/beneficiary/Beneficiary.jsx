@@ -28,7 +28,7 @@ const Beneficiary = () => {
 
   useEffect(() => {
     fetchBeneficiary(token, id, pagination.page, pagination.perPage);
-    fetchResident(token);
+    fetchResident({ token: token });
     fetchVillageInstitution(token);
     fetchPublicAssistance(token);
     fetchPublicAssistanceById(token, id);
@@ -349,7 +349,7 @@ const Beneficiary = () => {
                       title: `Tambah ${Modul.BENEFICIARY}`,
                       formFields:
                         publicAssistanceById?.program_target === 'penduduk' || publicAssistanceById?.program_target === 'kartu keluarga'
-                          ? residentFormFields({ options: { resident, publicAssistance } })
+                          ? residentFormFields({ fetchResident })
                           : institutionFormFields({ options: { villageInstitution, publicAssistance } }),
                       onSubmit: async (values) => {
                         const { message, isSuccess } = await storeBeneficiary.execute({ ...values, public_assistance: publicAssistanceById?.id }, token);
