@@ -1,15 +1,19 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { BeneficiaryService, PublicAssistanceService, ResidentService, VillageInstitutionService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Descriptions, Empty, Space, Tag, Typography } from 'antd';
+import { Card, Descriptions, Empty, Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { institutionFormFields, residentFormFields } from './FormFields';
 import { useParams } from 'react-router-dom';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { Action } from '@/constants';
+import { Beneficiary as BeneficiaryModel } from '@/models';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const Beneficiary = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { id } = useParams();
   const { execute: fetchBeneficiary, ...getAllBeneficiary } = useService(BeneficiaryService.getAll);
@@ -28,7 +32,7 @@ const Beneficiary = () => {
 
   useEffect(() => {
     fetchBeneficiary(token, id, pagination.page, pagination.perPage);
-    fetchResident(token);
+    fetchResident({ token: token });
     fetchVillageInstitution(token);
     fetchPublicAssistance(token);
     fetchPublicAssistanceById(token, id);
@@ -73,18 +77,20 @@ const Beneficiary = () => {
         dataIndex: ['beneficiary', 'resident_status'],
         sorter: (a, b) => a.beneficiary.resident_status.length - b.beneficiary.resident_status.length,
         searchable: true
-      },
-      {
+      }
+    );
+
+    if (user && user.eitherCan([UPDATE, BeneficiaryModel], [DELETE, BeneficiaryModel], [READ, BeneficiaryModel])) {
+      Column.push({
         title: 'Aksi',
         render: (_, record) => (
           <Space size="small">
-            <Button
-              icon={<EditOutlined />}
-              variant="outlined"
-              color="primary"
+            <Edit
+              title={`Edit ${Modul.BENEFICIARY}`}
+              model={BeneficiaryModel}
               onClick={() => {
                 modal.edit({
-                  title: `Edit ${Modul.PUBLIC_ASSISTANCE}`,
+                  title: `Edit ${Modul.BENEFICIARY}`,
                   data: { ...record, beneficiary: record.beneficiary.id, public_assistance: record.public_assistance.id },
                   formFields: residentFormFields({ options: { resident, publicAssistance } }),
                   onSubmit: async (values) => {
@@ -100,10 +106,9 @@ const Beneficiary = () => {
                 });
               }}
             />
-            <Button
-              icon={<EyeOutlined />}
-              variant="outlined"
-              color="green"
+            <Detail
+              title={`Detail ${Modul.BENEFICIARY}`}
+              model={BeneficiaryModel}
               onClick={() => {
                 modal.show.description({
                   title: record.beneficiary.full_name,
@@ -152,10 +157,9 @@ const Beneficiary = () => {
                 });
               }}
             />
-            <Button
-              icon={<DeleteOutlined />}
-              variant="outlined"
-              color="danger"
+            <Delete
+              title={`Delete ${Modul.BENEFICIARY}`}
+              model={BeneficiaryModel}
               onClick={() => {
                 modal.delete.default({
                   title: `Delete ${Modul.BENEFICIARY}`,
@@ -176,8 +180,8 @@ const Beneficiary = () => {
             />
           </Space>
         )
-      }
-    );
+      });
+    }
   }
 
   if (publicAssistanceById?.program_target === 'lembaga') {
@@ -193,15 +197,17 @@ const Beneficiary = () => {
         dataIndex: ['beneficiary', 'institution_code'],
         sorter: (a, b) => a.beneficiary.institution_code.length - b.beneficiary.institution_code.length,
         searchable: true
-      },
-      {
+      }
+    );
+
+    if (user && user.eitherCan([UPDATE, BeneficiaryModel], [DELETE, BeneficiaryModel], [READ, BeneficiaryModel])) {
+      Column.push({
         title: 'Aksi',
         render: (_, record) => (
           <Space size="small">
-            <Button
-              icon={<EditOutlined />}
-              variant="outlined"
-              color="primary"
+            <Edit
+              title={`Edit ${Modul.BENEFICIARY}`}
+              model={BeneficiaryModel}
               onClick={() => {
                 modal.edit({
                   title: `Edit ${Modul.PUBLIC_ASSISTANCE}`,
@@ -220,10 +226,9 @@ const Beneficiary = () => {
                 });
               }}
             />
-            <Button
-              icon={<EyeOutlined />}
-              variant="outlined"
-              color="green"
+            <Detail
+              title={`Detail ${Modul.BENEFICIARY}`}
+              model={BeneficiaryModel}
               onClick={() => {
                 modal.show.description({
                   title: record.beneficiary.institution_name,
@@ -260,10 +265,9 @@ const Beneficiary = () => {
                 });
               }}
             />
-            <Button
-              icon={<DeleteOutlined />}
-              variant="outlined"
-              color="danger"
+            <Delete
+              title={`Delete ${Modul.BENEFICIARY}`}
+              model={BeneficiaryModel}
               onClick={() => {
                 modal.delete.default({
                   title: `Delete ${Modul.BENEFICIARY}`,
@@ -284,9 +288,43 @@ const Beneficiary = () => {
             />
           </Space>
         )
-      }
-    );
+      });
+    }
   }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedData.length} ${Modul.BENEFICIARY} Yang Dipilih ? `,
+      onSubmit: async () => {
+        const ids = selectedData.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchBeneficiary.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.BENEFICIARY}`,
+      formFields: publicAssistanceById?.program_target === 'penduduk' || publicAssistanceById?.program_target === 'kartu keluarga' ? residentFormFields({ fetchResident }) : institutionFormFields({ options: { villageInstitution, publicAssistance } }),
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeBeneficiary.execute({ ...values, public_assistance: publicAssistanceById?.id }, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <div>
@@ -314,60 +352,7 @@ const Beneficiary = () => {
             </Descriptions>
           </Card>
           <Card className="col-span-12">
-            <div className="mb-6 flex items-center justify-between">
-              <Typography.Title level={5}>Data {Modul.BENEFICIARY}</Typography.Title>
-              <div className="inline-flex items-center gap-2">
-                <Button
-                  variant="outlined"
-                  color="danger"
-                  disabled={selectedData.length <= 0}
-                  icon={<DeleteOutlined />}
-                  onClick={() => {
-                    modal.delete.batch({
-                      title: `Hapus ${selectedData.length} ${Modul.BENEFICIARY} Yang Dipilih ? `,
-                      onSubmit: async () => {
-                        const ids = selectedData.map((item) => item.id);
-                        const { message, isSuccess } = await deleteBatchBeneficiary.execute(ids, token);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchBeneficiary(token, id, pagination.page, pagination.perPage);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.BENEFICIARY}
-                </Button>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => {
-                    modal.create({
-                      title: `Tambah ${Modul.BENEFICIARY}`,
-                      formFields:
-                        publicAssistanceById?.program_target === 'penduduk' || publicAssistanceById?.program_target === 'kartu keluarga'
-                          ? residentFormFields({ options: { resident, publicAssistance } })
-                          : institutionFormFields({ options: { villageInstitution, publicAssistance } }),
-                      onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeBeneficiary.execute({ ...values, public_assistance: publicAssistanceById?.id }, token);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchBeneficiary(token, id, pagination.page, pagination.perPage);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    });
-                  }}
-                >
-                  {Modul.BENEFICIARY}
-                </Button>
-              </div>
-            </div>
+            <DataTableHeader model={BeneficiaryModel} modul={Modul.BENEFICIARY} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
             <div className="w-full max-w-full overflow-x-auto">
               {getAllBeneficiary?.data?.length === 0 ? (
                 <Empty className="mb-4" />

@@ -1,15 +1,20 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageInstitutionService } from '@/services';
-import { DatabaseOutlined, DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Tag, Typography } from 'antd';
+import { Button, Card, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { formFields } from './FormFields';
 import { useNavigate } from 'react-router-dom';
+import { Action } from '@/constants';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { VillageInstitution as VillageInstitutionModel } from '@/models';
+import { DatabaseOutlined } from '@ant-design/icons';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const VillageInstitution = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
   const navigate = useNavigate();
@@ -72,22 +77,24 @@ const VillageInstitution = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, VillageInstitutionModel], [DELETE, VillageInstitutionModel], [READ, VillageInstitutionModel])) {
+    Column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.VILLAGE_INSTITUTION}`}
+            model={VillageInstitutionModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_INSTITUTION}`,
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await villageInstitutionService.update.execute(record.id, { ...values, _method: 'PUT' }, token);
+                  const { message, isSuccess } = await villageInstitutionService.update.execute(record.id, { ...values, _method: 'PUT' }, token, values.image.file);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchVillageInstitution(token);
@@ -99,10 +106,9 @@ const VillageInstitution = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            title={`Detail ${Modul.VILLAGE_INSTITUTION}`}
+            model={VillageInstitutionModel}
             onClick={() => {
               modal.show.description({
                 title: record.institution_name,
@@ -134,15 +140,19 @@ const VillageInstitution = () => {
                       }
                       return statusTag;
                     })()
+                  },
+                  {
+                    key: 'desc',
+                    label: `Kode ${Modul.VILLAGE_INSTITUTION}`,
+                    children: record.desc
                   }
                 ]
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.VILLAGE_INSTITUTION}`}
+            model={VillageInstitutionModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.VILLAGE_INSTITUTION}`,
@@ -164,8 +174,43 @@ const VillageInstitution = () => {
           <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/institution_member`)} />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedData.length} ${Modul.VILLAGE_INSTITUTION} Yang Dipilih ? `,
+      formFields: formFields,
+      onSubmit: async () => {
+        const ids = selectedData.map((item) => item.id);
+        const { message, isSuccess } = await villageInstitutionService.deleteBatch.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVillageInstitution(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.VILLAGE_INSTITUTION}`,
+      formFields: formFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await villageInstitutionService.store.execute(values, token, values.image.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVillageInstitution(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <div>
@@ -173,58 +218,7 @@ const VillageInstitution = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.VILLAGE_INSTITUTION}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedData.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.VILLAGE_INSTITUTION} Yang Dipilih ? `,
-                    formFields: formFields,
-                    onSubmit: async () => {
-                      const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await villageInstitutionService.deleteBatch.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchVillageInstitution(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.VILLAGE_INSTITUTION}
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.VILLAGE_INSTITUTION}`,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await villageInstitutionService.store.execute(values, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchVillageInstitution(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.VILLAGE_INSTITUTION}
-              </Button>
-            </div>
-          </div>
+          <DataTableHeader model={VillageInstitutionModel} modul={Modul.VILLAGE_INSTITUTION} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               data={villageInstitution}

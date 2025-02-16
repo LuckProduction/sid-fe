@@ -11,10 +11,10 @@ export default class LetterTemplateService {
    *  data?: LetterTemplate[];
    * }>}
    * */
-  static async getAll(token) {
-    const response = await api.get('/letter-template', {token});
-    if(!response.data) return response;
-    return { ...response, data: LetterTemplate.fromApiData(response.data)};
+  static async getAll(token, type_id) {
+    const response = await api.get(`/template-jenis-surat?jenis_surat_id=${type_id}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: LetterTemplate.fromApiData(response.data) };
   }
 
   /**
@@ -28,7 +28,7 @@ export default class LetterTemplateService {
    * }}
    */
   static async store(data, token) {
-    return await api.post('/letter-template', { body: LetterTemplate.toApiData(data), token });
+    return await api.post('/template-jenis-surat', { body: LetterTemplate.toApiData(data), token });
   }
 
   /**
@@ -43,7 +43,7 @@ export default class LetterTemplateService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.patch(`/letter-template/edit/${id}`, { body: LetterTemplate.toApiData(data), token });
+    return await api.patch(`/template-jenis-surat/edit/${id}`, { body: LetterTemplate.toApiData(data), token });
   }
 
   /**
@@ -56,7 +56,7 @@ export default class LetterTemplateService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/letter-template/delete/${id}`, { token });
+    return await api.delete(`/template-jenis-surat/delete/${id}`, { token });
   }
 
   /**
@@ -69,6 +69,6 @@ export default class LetterTemplateService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/letter-template/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/template-jenis-surat/multi-delete/?id=${ids.join(',')}`, { token });
   }
 }

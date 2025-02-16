@@ -20,3 +20,5 @@ export { default as BeneficiaryService } from './BeneficiaryService';
 export { default as LetterTypeService } from './LetterTypeService';
 export { default as LetterAttributeService } from './LetterAttributeService';
 export { default as LetterTemplateService } from './LetterTemplateService';
+export { default as ProspectiveVotersService } from './ProspectiveVotersService';
+export { default as SubmitLetterService } from './SubmitLetterService';

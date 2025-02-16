@@ -1,91 +1,47 @@
-import { DatatableColumn, FormField as FormFieldType, Override } from '@/types';
-import strings from '@/utils/strings';
-import { DescriptionsItemType } from 'antd/es/descriptions';
 import Model from './Model';
-import { InputType } from '@/constants';
 
 export interface IncomingApiData {
   id: number;
-  name: string;
+  jenis_surat_id: number;
+  konten: string;
 }
 
 export interface OutgoingApiData {
-  name: string;
+  jenis_surat_id: number;
+  konten: string;
 }
 
-type FormValue = Pick<LetterTemplate, 'name'>;
+interface FormValue {
+  letter_type_id: number;
+  content: string;
+}
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
-type Column = DatatableColumn<LetterTemplate>;
-type FormField = FormFieldType<FormValue>;
-type DescriptionsType = Override<DescriptionsItemType, { key: keyof Omit<LetterTemplate, 'descriptions'> }>;
 
 export default class LetterTemplate extends Model {
-  constructor(public id: number, public name: string) {
+  constructor(
+    public id: number,
+    public letter_type_id: number,
+    public content: string
+  ) {
     super();
   }
 
-  public static columns: Record<keyof Omit<LetterTemplate, 'descriptions'>, (column?: Partial<Column>) => Column> = {
-    id: (column) => ({
-      title: strings('id'),
-      dataIndex: 'id',
-      sorter: (a, b) => a.id - b.id,
-      ...column
-    }),
-    name: (column) => ({
-      title: strings('name'),
-      dataIndex: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name),
-      searchable: true,
-      ...column
-    })
-  }
-
-  private static _formFields: Record<keyof FormValue, (field?: Partial<FormField>) => FormField> = {
-    name: (field) => ({
-      label: strings('name'),
-      name: 'name',
-      type: InputType.TEXT,
-      rules: [{ required: true, message: strings('s_is_required', strings('name')) }],
-      ...field
-    })
-  };
-
-  public static formFields(): FormField[] {
-    return [
-      this._formFields.name()
-    ];
-  }
-
-  public descriptions: Record<keyof Omit<LetterTemplate, 'descriptions'>, (item?: Partial<DescriptionsType>) => DescriptionsType> = {
-    id: (item) => ({
-      key: 'id',
-      label: strings('id'),
-      children: this.id,
-      ...item
-    }),
-    name: (item) => ({
-      key: 'name',
-      label: strings('name'),
-      children: this.name,
-      ...item
-    })
-  };
-
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, LetterTemplate> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, LetterTemplate>;
-    return new LetterTemplate(apiData.id, apiData.name) as ReturnType<T, IncomingApiData, LetterTemplate>;
+    return new LetterTemplate(apiData.id, apiData.jenis_surat_id, apiData.konten) as ReturnType<T, IncomingApiData, LetterTemplate>;
   }
 
-  public static toApiData<T extends LetterTemplate | LetterTemplate[]>(letterTemplate: T): ReturnType<T, LetterTemplate, OutgoingApiData> {
-    if (Array.isArray(letterTemplate)) return letterTemplate.map((object) => this.toApiData(object)) as ReturnType<T, LetterTemplate, OutgoingApiData>;
+  public static toApiData<T extends FormValue | FormValue[]>(letterTemplate: T): ReturnType<T, FormValue, OutgoingApiData> {
+    if (Array.isArray(letterTemplate)) return letterTemplate.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
-      name: letterTemplate.name
+      jenis_surat_id: letterTemplate.letter_type_id,
+      konten: letterTemplate.content
     };
 
-    return apiData as ReturnType<T, LetterTemplate, OutgoingApiData>;
+    return apiData as ReturnType<T, FormValue, OutgoingApiData>;
   }
 }
 
 // FIXME: you maybe want to change below line. If you don't want to then delete this FIXME line
-Model.children.letter_template = LetterTemplate;
+Model.children.template_surat = LetterTemplate;

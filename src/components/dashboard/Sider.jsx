@@ -32,7 +32,7 @@ const DashboardSider = ({ collapsed, onCloseMenu }) => {
       const permissionSpecific = hasPermission && !hasRole;
       if (permissionSpecific) return user.eitherCan(...permissions);
 
-      return user.eitherCan(...permissions) && user.eitherIs(...roles);
+      return user.eitherCan(...permissions) || user.eitherIs(...roles);
     })
     .map(({ label, children, icon: Icon }) => ({
       key: label,

@@ -1,17 +1,20 @@
 import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Tag } from 'antd';
+import { Card, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modul from '@/constants/Modul';
-import { InputType } from '@/constants';
+import { Action, InputType } from '@/constants';
 import { formFields } from './FormFields';
+import { Resident as ResidentModel } from '@/models';
+import { Delete, Edit } from '@/components/dashboard/button';
+
+const { UPDATE, DELETE } = Action;
 
 const Resident = () => {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { execute, ...getAllResident } = useService(ResidentService.getAll);
   const storeResident = useService(ResidentService.store);
@@ -23,7 +26,7 @@ const Resident = () => {
   const pagination = usePagination({ totalData: getAllResident.totalData });
 
   const fetchResident = useCallback(() => {
-    execute(token, pagination.page, pagination.perPage);
+    execute({ token: token, page: pagination.page, perPage: pagination.perPage });
   }, [execute, pagination.page, pagination.perPage, token]);
 
   useEffect(() => {
@@ -87,23 +90,24 @@ const Resident = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, ResidentModel], [DELETE, ResidentModel])) {
+    column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            model={ResidentModel}
+            title={`Edit ${Modul.RESIDENTIAL}`}
             onClick={() => {
               navigate(window.location.pathname + '/edit/' + record.id);
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            model={ResidentModel}
+            title={`Delete ${Modul.RESIDENTIAL}`}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.RESIDENTIAL}`,
@@ -124,8 +128,8 @@ const Resident = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
 
   const onDeleteBatch = () => {
     modal.delete.batch({
@@ -215,7 +219,7 @@ const Resident = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <DataTableHeader modul={Modul.RESIDENTIAL} onCreate={onCreate} onDeleteBatch={onDeleteBatch} onExport={onExport} onImport={onImport} selectedData={selectedResident} />
+          <DataTableHeader modul={Modul.RESIDENTIAL} model={ResidentModel} onDeleteBatch={onDeleteBatch} onStore={onCreate} onExport={onExport} onImport={onImport} selectedData={selectedResident} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} pagination={pagination} />
           </div>

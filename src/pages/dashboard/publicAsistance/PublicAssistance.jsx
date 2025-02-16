@@ -1,15 +1,20 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { PublicAssistanceService } from '@/services';
-import { DatabaseOutlined, DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Tag, Typography } from 'antd';
+import { DatabaseOutlined } from '@ant-design/icons';
+import { Button, Card, Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { formFields } from './FormFields';
 import { useNavigate } from 'react-router-dom';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { Action } from '@/constants';
+import { PublicAssistance as PublicAssistanceModel } from '@/models';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const PublicAssistance = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const navigate = useNavigate();
   const { execute: fetchPublicAssistance, ...getAllPublicAssistance } = useService(PublicAssistanceService.getAll);
@@ -63,15 +68,17 @@ const PublicAssistance = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, PublicAssistanceModel], [DELETE, PublicAssistanceModel], [READ, PublicAssistanceModel])) {
+    Column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.PUBLIC_ASSISTANCE}`}
+            model={PublicAssistanceModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.PUBLIC_ASSISTANCE}`,
@@ -90,10 +97,9 @@ const PublicAssistance = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            title={`Detail ${Modul.PUBLIC_ASSISTANCE}`}
+            model={PublicAssistanceModel}
             onClick={() => {
               modal.show.description({
                 title: record.public_assistance_name,
@@ -140,10 +146,9 @@ const PublicAssistance = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.PUBLIC_ASSISTANCE}`}
+            model={PublicAssistanceModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.PUBLIC_ASSISTANCE}`,
@@ -165,8 +170,42 @@ const PublicAssistance = () => {
           <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/beneficiary`)} />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedData.length} ${Modul.PUBLIC_ASSISTANCE} Yang Dipilih ? `,
+      onSubmit: async () => {
+        const ids = selectedData.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchPublicAssistance.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchPublicAssistance(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.PUBLIC_ASSISTANCE}`,
+      formFields: formFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storePublicAssistance.execute(values, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchPublicAssistance(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <div>
@@ -174,57 +213,7 @@ const PublicAssistance = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.PUBLIC_ASSISTANCE}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedData.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.PUBLIC_ASSISTANCE} Yang Dipilih ? `,
-                    onSubmit: async () => {
-                      const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchPublicAssistance.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchPublicAssistance(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.PUBLIC_ASSISTANCE}
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.PUBLIC_ASSISTANCE}`,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await storePublicAssistance.execute(values, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchPublicAssistance(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.PUBLIC_ASSISTANCE}
-              </Button>
-            </div>
-          </div>
+          <DataTableHeader model={PublicAssistanceModel} modul={Modul.PUBLIC_ASSISTANCE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable data={apbdItem} columns={Column} loading={getAllPublicAssistance.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
           </div>

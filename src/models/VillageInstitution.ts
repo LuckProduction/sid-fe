@@ -1,3 +1,4 @@
+import asset from '@/utils/asset';
 import Model from './Model';
 
 export interface IncomingApiData {
@@ -5,6 +6,8 @@ export interface IncomingApiData {
   nama_lembaga: string;
   kode_lembaga: string;
   status: string;
+  deskripsi: string;
+  foto: string;
 }
 
 export interface OutgoingApiData {
@@ -12,6 +15,8 @@ export interface OutgoingApiData {
   nama_lembaga: string;
   kode_lembaga: string;
   status: string;
+  deskripsi: string;
+  foto: string;
 }
 
 interface FormValue {
@@ -19,6 +24,8 @@ interface FormValue {
   institution_name: string;
   institution_code: string;
   status: string;
+  desc: string;
+  image: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -28,14 +35,16 @@ export default class VillageInstitution extends Model {
     public id: number,
     public institution_name: string,
     public institution_code: string,
-    public status: string
+    public status: string,
+    public desc: string,
+    public image: string
   ) {
     super();
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, VillageInstitution> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, VillageInstitution>;
-    return new VillageInstitution(apiData.id, apiData.nama_lembaga, apiData.kode_lembaga, apiData.status) as ReturnType<T, IncomingApiData, VillageInstitution>;
+    return new VillageInstitution(apiData.id, apiData.nama_lembaga, apiData.kode_lembaga, apiData.status, apiData.deskripsi, asset(apiData.foto)) as ReturnType<T, IncomingApiData, VillageInstitution>;
   }
 
   public static toApiData<T extends FormValue | FormValue[]>(villageInstitution: T): ReturnType<T, FormValue, OutgoingApiData> {
@@ -44,7 +53,9 @@ export default class VillageInstitution extends Model {
       ...(villageInstitution._method ? { _method: villageInstitution._method } : {}),
       nama_lembaga: villageInstitution.institution_name,
       kode_lembaga: villageInstitution.institution_code,
-      status: villageInstitution.status
+      status: villageInstitution.status,
+      deskripsi: villageInstitution.desc,
+      foto: villageInstitution.image
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

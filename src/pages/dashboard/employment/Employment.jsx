@@ -1,14 +1,18 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { EmploymentService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Typography } from 'antd';
+import { Card, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { formFields } from './FormFields';
+import { Action } from '@/constants';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { Employment as EmploymentModel } from '@/models';
+
+const { DELETE, UPDATE, READ } = Action;
 
 const Employment = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { execute: fetchEmployments, ...getAllEmployments } = useService(EmploymentService.getAll);
   const storeEmployment = useService(EmploymentService.store);
@@ -44,15 +48,17 @@ const Employment = () => {
       dataIndex: 'faction',
       sorter: (a, b) => a.faction.length - b.faction.length,
       searchable: true
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, EmploymentModel], [DELETE, EmploymentModel], [READ, EmploymentModel])) {
+    Column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.EMPLOYMENT}`}
+            model={EmploymentModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.EMPLOYMENT}`,
@@ -71,10 +77,9 @@ const Employment = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            title={`Detail ${Modul.EMPLOYMENT}`}
+            model={EmploymentModel}
             onClick={() => {
               modal.show.description({
                 title: record.employment_name,
@@ -103,10 +108,9 @@ const Employment = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.EMPLOYMENT}`}
+            model={EmploymentModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.EMPLOYMENT}`,
@@ -127,8 +131,43 @@ const Employment = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedData.length} ${Modul.EMPLOYMENT} Yang Dipilih ? `,
+      formFields: formFields,
+      onSubmit: async () => {
+        const ids = selectedData.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchEmnployment.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchEmployments(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.EMPLOYMENT}`,
+      formFields: formFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeEmployment.execute(values, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchEmployments(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <div>
@@ -136,58 +175,7 @@ const Employment = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.EMPLOYMENT}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedData.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.EMPLOYMENT} Yang Dipilih ? `,
-                    formFields: formFields,
-                    onSubmit: async () => {
-                      const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await deleteBatchEmnployment.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchEmployments(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.EMPLOYMENT}
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.EMPLOYMENT}`,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeEmployment.execute(values, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchEmployments(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.EMPLOYMENT}
-              </Button>
-            </div>
-          </div>
+          <DataTableHeader model={EmploymentModel} modul={Modul.EMPLOYMENT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               pagination={pagination}

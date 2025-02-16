@@ -11,10 +11,27 @@ export default class LetterAttributeService {
    *  data?: LetterAttribute[];
    * }>}
    * */
-  static async getAll(token) {
-    const response = await api.get('/letter-attribute', {token});
-    if(!response.data) return response;
-    return { ...response, data: LetterAttribute.fromApiData(response.data)};
+  static async getAll({ token, page = null, perPage = null }) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get('/atribut-surat', { token, ...params });
+    if (!response.data) return response;
+    return { ...response, data: LetterAttribute.fromApiData(response.data) };
+  }
+
+  /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: LetterAttribute[];
+   * }>}
+   * */
+  static async getAllByType({ token, page = null, perPage = null, type_id }) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get(`/atribut-surat?jenis_surat_id=${type_id}`, { token, ...params });
+    if (!response.data) return response;
+    return { ...response, data: LetterAttribute.fromApiData(response.data) };
   }
 
   /**
@@ -28,7 +45,7 @@ export default class LetterAttributeService {
    * }}
    */
   static async store(data, token) {
-    return await api.post('/letter-attribute', { body: LetterAttribute.toApiData(data), token });
+    return await api.post('/atribut-surat', { body: LetterAttribute.toApiData(data), token });
   }
 
   /**
@@ -43,7 +60,7 @@ export default class LetterAttributeService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.patch(`/letter-attribute/edit/${id}`, { body: LetterAttribute.toApiData(data), token });
+    return await api.post(`/atribut-surat/edit/${id}`, { body: LetterAttribute.toApiData(data), token });
   }
 
   /**
@@ -56,7 +73,7 @@ export default class LetterAttributeService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/letter-attribute/delete/${id}`, { token });
+    return await api.delete(`/atribut-surat/delete/${id}`, { token });
   }
 
   /**
@@ -69,6 +86,6 @@ export default class LetterAttributeService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/letter-attribute/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/atribut-surat/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }

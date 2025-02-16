@@ -14,7 +14,11 @@ enum Modul {
   APBD_ITEM = 'Item APBD',
   PUBLIC_ASSISTANCE = 'Bantuan',
   BENEFICIARY = 'Peserta Bantuan',
-  LETTER_TYPE = 'Jenis Surat'
+  LETTER_TYPE = 'Jenis Surat',
+  LETTER_ATTRIBUTE = 'Atribut Surat',
+  LETTER_TEMPLATE = 'Template Surat',
+  SUBMIT_LETTER = 'Perrmohonan Surat',
+  PROSPECTIVE_VOTER = 'Calon Pemilih'
 }
 
 export default Modul;

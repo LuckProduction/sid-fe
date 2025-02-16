@@ -21,3 +21,4 @@ export { default as Beneficiary } from './Beneficiary';
 export { default as LetterType } from './LetterType';
 export { default as LetterAttribute } from './LetterAttribute';
 export { default as LetterTemplate } from './LetterTemplate';
+export { default as SubmitLetter } from './SubmitLetter';

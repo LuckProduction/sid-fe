@@ -1,4 +1,4 @@
-import { Article, Speech, VillageInstitution, VillageProfile, VisiMisi } from '@/models';
+import { Article, LetterType, Speech, SubmitLetter, VillageInstitution, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -36,5 +36,29 @@ export default class LandingService {
     const response = await api.get(`/landing/lembaga-desa`, { page, perPage });
     if (!response.data) return response;
     return { ...response, data: VillageInstitution.fromApiData(response.data) };
+  }
+
+  static async getResident(data) {
+    return await api.post(`/landing/cari-penduduk`, { body: data });
+  }
+
+  static async getAllLetterType() {
+    const response = await api.get(`/landing/jenis-surat`);
+    if (!response.data) return response;
+    return { ...response, data: LetterType.fromApiData(response.data) };
+  }
+
+  static async getLetterTypeDetail(id) {
+    const response = await api.get(`/landing/jenis-surat/${id}`);
+    if (!response.data) return response;
+    return { ...response, data: LetterType.fromApiData(response.data) };
+  }
+
+  static async sumbitLetter(data) {
+    return await api.post(`/permohonan-surat`, { body: SubmitLetter.toApiData(data) });
+  }
+
+  static async statusCheck(data) {
+    return await api.post(`/permohonan-surat/cari-surat`, { body: data });
   }
 }

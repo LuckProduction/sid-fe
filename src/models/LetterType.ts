@@ -1,4 +1,5 @@
 import Model from './Model';
+import { IncomingApiData as IncomingLetterAttribut } from './LetterAttribute';
 
 export interface IncomingApiData {
   id: number;
@@ -7,24 +8,25 @@ export interface IncomingApiData {
   tampilkan_header: 'ya' | 'tidak';
   masa_berlaku: number;
   keterangan_tanda_tangan: string;
+  atribut_surat?: IncomingLetterAttribut[];
 }
 
 export interface OutgoingApiData {
   _method?: 'PUT';
   nama_surat: string;
-  kode_surat: string
+  kode_surat: string;
   tampilkan_header: 'ya' | 'tidak';
   masa_berlaku: number;
-  keterangan_tanda_tangan: string
+  keterangan_tanda_tangan: string;
 }
 
 interface FormValue {
   _method?: 'PUT';
-  letter_name: string,
-  letter_code: string,
-  show_header: 'ya' | 'tidak',
-  expired: number,
-  signature_desc: string,
+  letter_name: string;
+  letter_code: string;
+  show_header: 'ya' | 'tidak';
+  expired: number;
+  signature_desc: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -37,10 +39,18 @@ export default class LetterType extends Model {
     public show_header: 'ya' | 'tidak',
     public expired: number,
     public signature_desc: string,
+    public letter_attribut?: {
+      id: number;
+      attribute: string;
+      type: string;
+      label: string;
+      placeholder: string;
+      required: 'ya' | 'tidak';
+      opsi: string | null;
+    }[]
   ) {
     super();
   }
-
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, LetterType> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, LetterType>;
@@ -50,7 +60,18 @@ export default class LetterType extends Model {
       apiData.kode_surat,
       apiData.tampilkan_header,
       apiData.masa_berlaku,
-      apiData.keterangan_tanda_tangan
+      apiData.keterangan_tanda_tangan,
+      apiData.atribut_surat
+        ? apiData.atribut_surat.map((attr) => ({
+            id: attr.id,
+            attribute: attr.nama,
+            type: attr.tipe,
+            label: attr.label,
+            placeholder: attr.placeholder,
+            required: attr.harus_diisi,
+            opsi: attr.opsi
+          }))
+        : undefined
     ) as ReturnType<T, IncomingApiData, LetterType>;
   }
 

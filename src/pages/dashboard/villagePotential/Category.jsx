@@ -1,14 +1,18 @@
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CategoryService } from '@/services';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Typography } from 'antd';
+import { Card, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { categoryFormFields } from './FormFields';
-import { DataTable } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
+import { Delete, Edit } from '@/components/dashboard/button';
+import { Action } from '@/constants';
+import { Category as CategoryModel } from '@/models';
+
+const { DELETE, UPDATE } = Action;
 
 const Category = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
   const updateCategory = useService(CategoryService.update);
@@ -33,22 +37,24 @@ const Category = () => {
       dataIndex: 'category_name',
       sorter: (a, b) => a.category_name.length - b.category_name.length,
       searchable: true
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, CategoryModel], [DELETE, CategoryModel])) {
+    categoryColumn.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.CATEGORY}`}
+            model={CategoryModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.CATEGORY}`,
                 data: record,
                 formFields: categoryFormFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateCategory.execute(record.id, { ...values, type: 'artikel' }, token);
+                  const { message, isSuccess } = await updateCategory.execute(record.id, { ...values, type: 'potensi' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchCategory(token, 'artikel');
@@ -60,10 +66,9 @@ const Category = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.CATEGORY}`}
+            model={CategoryModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.CATEGORY}`,
@@ -84,65 +89,46 @@ const Category = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedCategory.length} ${Modul.CATEGORY} ${Modul.ARTICLE} Yang Dipilih ? `,
+      onSubmit: async () => {
+        const ids = selectedCategory.map((item) => item.id);
+        const { message, isSuccess } = await deleteBatchCategory.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchCategory(token, 'artikel');
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah Kategori`,
+      formFields: categoryFormFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await storeCategory.execute({ ...values, type: 'artikel' }, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchCategory(token, 'artikel');
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <Card className="col-span-4">
-      <div className="mb-6 flex items-center justify-between">
-        <Typography.Title level={5}>
-          Data {Modul.ARTICLE} {Modul.CATEGORY}
-        </Typography.Title>
-        <div className="inline-flex items-center gap-2">
-          <Button
-            variant="outlined"
-            color="danger"
-            disabled={selectedCategory.length <= 0}
-            icon={<DeleteOutlined />}
-            onClick={() => {
-              modal.delete.batch({
-                title: `Hapus ${selectedCategory.length} ${Modul.CATEGORY} ${Modul.ARTICLE} Yang Dipilih ? `,
-                onSubmit: async () => {
-                  const ids = selectedCategory.map((item) => item.id);
-                  const { message, isSuccess } = await deleteBatchCategory.execute(ids, token);
-                  if (isSuccess) {
-                    success('Berhasil', message);
-                    fetchCategory(token, 'artikel');
-                  } else {
-                    error('Gagal', message);
-                  }
-                  return isSuccess;
-                }
-              });
-            }}
-          >
-            {Modul.ARTICLE}
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              modal.create({
-                title: `Tambah Kategori`,
-                formFields: categoryFormFields,
-                onSubmit: async (values) => {
-                  const { message, isSuccess } = await storeCategory.execute({ ...values, type: 'artikel' }, token);
-                  if (isSuccess) {
-                    success('Berhasil', message);
-                    fetchCategory(token, 'artikel');
-                  } else {
-                    error('Gagal', message);
-                  }
-                  return isSuccess;
-                }
-              });
-            }}
-          >
-            {Modul.CATEGORY}
-          </Button>
-        </div>
-      </div>
+      <DataTableHeader model={CategoryModel} modul={Modul.CATEGORY} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedCategory} />
       <div className="w-full max-w-full overflow-x-auto">
         <DataTable
           data={category}

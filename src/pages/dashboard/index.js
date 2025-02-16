@@ -13,7 +13,7 @@ export { default as Employment } from './employment/Employment';
 export { default as VillageOfficials } from './villageOfficials/VillageOfficials';
 export { default as VillagePotential } from './villagePotential/VillagePotential';
 export { default as Hamlet } from './hamlet/Hamlet';
-export { default as LegalProducts } from './LegalProducts';
+export { default as LegalProducts } from './legalProduct/LegalProducts';
 export { default as VisiMisi } from './visiMisi/VisiMisi';
 export { default as VillageInstitution } from './villageInstitution/VillageInstitution';
 export { default as InstitutionMember } from './institutionMember/InstitutionMember';
@@ -23,3 +23,8 @@ export { default as PublicAssistance } from './publicAsistance/PublicAssistance'
 export { default as Beneficiary } from './beneficiary/Beneficiary';
 export { default as LetterType } from './correspondence/LetterType';
 export { default as Lettering } from './correspondence/Lettering';
+export { default as LetterAttribute } from './correspondence/LetterAttribute';
+export { default as LetterTemplate } from './correspondence/LetterTemplate';
+export { default as SubmitLetter } from './correspondence/SubmitLetter';
+
+export { default as ProspectiveVoters } from './ProspectiveVoters';

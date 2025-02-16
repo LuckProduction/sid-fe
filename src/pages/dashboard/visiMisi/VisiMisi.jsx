@@ -1,14 +1,17 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VisiMisiService } from '@/services';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Space, Typography } from 'antd';
+import { Card, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { formFields } from './FormFields';
+import { Action } from '@/constants';
+import { VisiMisi as VisiMisiModel } from '@/models';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 
+const { DELETE, UPDATE, READ } = Action;
 const VisiMisi = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
   const useCrudService = (service) => {
@@ -54,15 +57,17 @@ const VisiMisi = () => {
       dataIndex: 'content',
       sorter: (a, b) => a.content.length - b.content.length,
       searchable: true
-    },
-    {
+    }
+  ];
+
+  if (user && user.eitherCan([UPDATE, VisiMisiModel], [DELETE, VisiMisiModel], [READ, VisiMisiModel])) {
+    Column.push({
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Button
-            icon={<EditOutlined />}
-            variant="outlined"
-            color="primary"
+          <Edit
+            title={`Edit ${Modul.VISI_MISI}`}
+            model={VisiMisiModel}
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.VISI_MISI}`,
@@ -81,10 +86,9 @@ const VisiMisi = () => {
               });
             }}
           />
-          <Button
-            icon={<EyeOutlined />}
-            variant="outlined"
-            color="green"
+          <Detail
+            title={`Detail ${Modul.VISI_MISI}`}
+            model={VisiMisiModel}
             onClick={() => {
               modal.show.description({
                 title: record.type,
@@ -103,10 +107,9 @@ const VisiMisi = () => {
               });
             }}
           />
-          <Button
-            icon={<DeleteOutlined />}
-            variant="outlined"
-            color="danger"
+          <Delete
+            title={`Delete ${Modul.VISI_MISI}`}
+            model={VisiMisiModel}
             onClick={() => {
               modal.delete.default({
                 title: `Delete ${Modul.VISI_MISI}`,
@@ -127,8 +130,43 @@ const VisiMisi = () => {
           />
         </Space>
       )
-    }
-  ];
+    });
+  }
+
+  const onDeleteBatch = () => {
+    modal.delete.batch({
+      title: `Hapus ${selectedData.length} ${Modul.VISI_MISI} Yang Dipilih ? `,
+      formFields: formFields,
+      onSubmit: async () => {
+        const ids = selectedData.map((item) => item.id);
+        const { message, isSuccess } = await visiMisiService.deleteBatch.execute(ids, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVisiMisi(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
+  const onCreate = () => {
+    modal.create({
+      title: `Tambah ${Modul.VISI_MISI}`,
+      formFields: formFields,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await visiMisiService.store.execute(values, token);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchVisiMisi(token);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
 
   return (
     <div>
@@ -136,58 +174,7 @@ const VisiMisi = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6 flex items-center justify-between">
-            <Typography.Title level={5}>Data {Modul.VISI_MISI}</Typography.Title>
-            <div className="inline-flex items-center gap-2">
-              <Button
-                variant="outlined"
-                color="danger"
-                disabled={selectedData.length <= 0}
-                icon={<DeleteOutlined />}
-                onClick={() => {
-                  modal.delete.batch({
-                    title: `Hapus ${selectedData.length} ${Modul.VISI_MISI} Yang Dipilih ? `,
-                    formFields: formFields,
-                    onSubmit: async () => {
-                      const ids = selectedData.map((item) => item.id);
-                      const { message, isSuccess } = await visiMisiService.deleteBatch.execute(ids, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchVisiMisi(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.VISI_MISI}
-              </Button>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.VISI_MISI}`,
-                    formFields: formFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await visiMisiService.store.execute(values, token);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchVisiMisi(token);
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
-                }}
-              >
-                {Modul.VISI_MISI}
-              </Button>
-            </div>
-          </div>
+          <DataTableHeader model={VisiMisiModel} modul={Modul.VISI_MISI} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               data={visiMisi}

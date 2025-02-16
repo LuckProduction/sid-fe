@@ -14,6 +14,17 @@ export const formFields = () => [
     ]
   },
   {
+    label: `Bidang ${Modul.APBD_ITEM}`,
+    name: 'field',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Bidang ${Modul.APBD_ITEM} harus diisi`
+      }
+    ]
+  },
+  {
     label: `Tipe`,
     name: 'type',
     type: InputType.SELECT,
