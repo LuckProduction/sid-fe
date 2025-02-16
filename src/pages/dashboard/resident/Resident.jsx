@@ -23,7 +23,7 @@ const Resident = () => {
   const pagination = usePagination({ totalData: getAllResident.totalData });
 
   const fetchResident = useCallback(() => {
-    execute(token, pagination.page, pagination.perPage);
+    execute({ token: token, page: pagination.page, perPage: pagination.perPage });
   }, [execute, pagination.page, pagination.perPage, token]);
 
   useEffect(() => {

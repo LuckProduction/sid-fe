@@ -8,6 +8,8 @@ import Dragger from 'antd/es/upload/Dragger';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Select } from './input';
+import { debounce } from 'lodash';
+import { useAuth } from '@/hooks';
 
 /**
  * @param {{
@@ -16,8 +18,11 @@ import { Select } from './input';
  * @returns
  */
 export default function CrudModal({ isModalOpen, data: initialData, close, title, formFields, onSubmit, onChange = () => {}, type = CrudModalType.SHOW, isLoading, ...props }) {
+  const { token } = useAuth();
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchOptions, setSearchOptions] = useState(null);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -34,6 +39,24 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
   function handleValuesChange(changedValue) {
     setRealtimeData({ ...realtimeData, ...changedValue });
   }
+
+  const handleSearch = debounce(async (value, field) => {
+    setSearchTerm(value);
+
+    if (field.fetchOptions) {
+      const data = await field.fetchOptions({ token: token, search: searchTerm });
+      setSearchOptions(
+        data.data.map(
+          field.mapOptions
+            ? field.mapOptions
+            : (item) => ({
+                label: item.name,
+                value: item.id
+              })
+        )
+      );
+    }
+  }, 500);
 
   /**
    * @param {import('@/types/FormField').default} field
@@ -69,6 +92,9 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
 
       case InputType.SELECT:
         return <Select {...field} />;
+
+      case InputType.SELECT_FETCH:
+        return <Select showSearch placeholder={`Cari ${field.label}`} filterOption={false} onSearch={(value) => handleSearch(value, field)} options={searchOptions} />;
 
       case InputType.SELECT_LOGO:
         return (
