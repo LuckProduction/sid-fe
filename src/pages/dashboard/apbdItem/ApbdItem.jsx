@@ -52,6 +52,12 @@ const ApbdItem = () => {
       searchable: true
     },
     {
+      title: 'Bidang',
+      dataIndex: 'field',
+      sorter: (a, b) => a.field.length - b.field.length,
+      searchable: true
+    },
+    {
       title: 'Sumber Anggaran',
       dataIndex: 'source_funding',
       sorter: (a, b) => a.source_funding.length - b.source_funding.length,

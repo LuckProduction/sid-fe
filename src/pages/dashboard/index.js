@@ -21,3 +21,10 @@ export { default as ApbdReport } from './apbdReport/ApbdReport';
 export { default as ApbdItem } from './apbdItem/ApbdItem';
 export { default as PublicAssistance } from './publicAsistance/PublicAssistance';
 export { default as Beneficiary } from './beneficiary/Beneficiary';
+export { default as LetterType } from './correspondence/LetterType';
+export { default as Lettering } from './correspondence/Lettering';
+export { default as LetterAttribute } from './correspondence/LetterAttribute';
+export { default as LetterTemplate } from './correspondence/LetterTemplate';
+export { default as SubmitLetter } from './correspondence/SubmitLetter';
+
+export { default as ProspectiveVoters } from './ProspectiveVoters';

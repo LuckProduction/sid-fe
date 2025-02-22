@@ -75,6 +75,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
             ))}
           </div>
         );
+
       case InputType.CONTENT_EDITOR:
         return (
           <Editor
@@ -88,6 +89,114 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
               plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'],
               toolbar: 'undo redo | blocks | ' + 'bold italic forecolor | alignleft aligncenter ' + 'alignright alignjustify | bullist numlist outdent indent | ' + 'removeformat | help',
               content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            }}
+            onInit={(evt, editor) => {
+              editor.on('change', () => handleEditorChange(editor));
+            }}
+            onEditorChange={(content) => {
+              form.setFieldsValue({ content }); // Sinkronisasi dengan form
+            }}
+          />
+        );
+
+      case InputType.DOCUMENT_EDITOR:
+        return (
+          <Editor
+            apiKey="ltsdik9bjzzfm8i8g4ve5b32ii5sz0t7j6g2ag5khxm0bn1y"
+            initialValue={initialData?.content ?? ''}
+            init={{
+              selector: '#editor',
+              toolbar:
+                'undo redo spellcheckdialog | aidialog aishortcuts | blocks fontfamily fontsizeinput | bold italic underline forecolor backcolor | link image addcomment showcomments  | align lineheight checklist bullist numlist | indent outdent | inserttemplate | removeformat typography math',
+              advtemplate_templates: [
+                {
+                  title: 'Without an mce-clipboard marker',
+                  content:
+                    '<p>Hi , Thank you for visiting this page. We truly appreciate and value your feedback and any feature requests you may have While you are here, take a moment to explore mce-cursor, its another powerful tool designed for Templates</p>'
+                },
+                {
+                  title: 'With an mce-clipboard marker',
+                  content:
+                    '<p>Hi {{mce-clipboard}}, Thank you for visiting this page. We truly appreciate and value your feedback and any feature requests you may have While you are here, take a moment to explore mce-cursor {{mce-clipboard}}, its another powerful tool designed for Templates</p>'
+                }
+              ],
+              height: '700px',
+              toolbar_sticky: true,
+              autosave_restore_when_empty: true,
+              spellchecker_active: true,
+              spellchecker_language: 'en_US',
+              spellchecker_languages: 'English (United States)=en_US,English (United Kingdom)=en_GB,Danish=da,French=fr,German=de,Italian=it,Polish=pl,Spanish=es,Swedish=sv',
+              typography_langs: ['en-US'],
+              typography_default_lang: 'en-US',
+              tinycomments_mode: 'embedded',
+              tinycomments_author: 'rmartel',
+              tinycomments_author_name: 'Rosalina Martel',
+              tinycomments_author_avatar: 'https://www.tiny.cloud/images/avatars/avatar-RosalinaMartel.jpg',
+              sidebar_show: 'showcomments',
+              mergetags_list: [
+                {
+                  value: 'Document.Title',
+                  title: 'Document Title'
+                },
+                {
+                  value: 'Publish.Date',
+                  title: 'Publish Date'
+                },
+                {
+                  value: 'Author.Name',
+                  title: 'Author Name'
+                }
+              ],
+              content_style: `
+                body {
+                  background: #fff;
+                }
+
+                /* Disable the blue "focus" border for the editable region */
+                .editable-section:focus-visible {
+                  outline: none !important;
+                }
+
+                .header,
+                .footer {
+                  font-size: 0.8rem;
+                  color: #ddd;
+                }
+
+                .header {
+                  display: flex;
+                  justify-content: space-between;
+                  padding: 0 0 1rem 0;
+                }
+
+                .header .right-text {
+                  text-align: right;
+                }
+
+                .footer {
+                  padding:2rem 0 0 0;
+                  text-align: center;
+                }
+
+                /* Apply page-like styling */
+                @media (min-width: 840px) {
+                  html {
+                    background: #eceef4;
+                    min-height: 100%;
+                    padding: 0.5rem;
+                  }
+
+                  body {
+                    background-color: #fff;
+                    box-shadow: 0 0 4px rgba(0, 0, 0, .15);
+                    box-sizing: border-box;
+                    margin: 1rem auto 0;
+                    max-width: 820px;
+                    min-height: calc(100vh - 1rem);
+                    padding: 2rem 6rem 2rem 6rem;
+                  }
+                }
+              `
             }}
             onInit={(evt, editor) => {
               editor.on('change', () => handleEditorChange(editor));

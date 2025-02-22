@@ -12,13 +12,16 @@ type ModelKeys =
   | 'statistik_penduduk'
   | 'artikel'
   | 'laporan_apbd'
+  | 'item_apbd'
   | 'bantuan'
   | 'anggota_bantuan'
   | 'potensi_desa'
   | 'pemetaan'
   | 'produk_hukum'
   | 'permohonan_surat'
-  | 'jenis_surat';
+  | 'jenis_surat'
+  | 'atribut_surat'
+  | 'template_surat';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -35,13 +38,16 @@ export default abstract class Model {
     statistik_penduduk: undefined,
     artikel: undefined,
     laporan_apbd: undefined,
+    item_apbd: undefined,
     bantuan: undefined,
     anggota_bantuan: undefined,
     potensi_desa: undefined,
     pemetaan: undefined,
     produk_hukum: undefined,
     permohonan_surat: undefined,
-    jenis_surat: undefined
+    jenis_surat: undefined,
+    atribut_surat: undefined,
+    template_surat: undefined
   };
 }
 

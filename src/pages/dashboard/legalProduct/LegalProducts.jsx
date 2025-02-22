@@ -237,7 +237,7 @@ const LegalProducts = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <DataTableHeader model={legalProductsModel} modul={Modul.BENEFICIARY} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+          <DataTableHeader model={legalProductsModel} modul={Modul.LEGAL_PRODUCTS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               data={legalProducts}

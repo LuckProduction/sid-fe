@@ -31,7 +31,7 @@ export default function DataHeader({ modul, subtitle, selectedData, onStore, onD
               Hapus {selectedData?.length || null} Pilihan
             </Button>
           )}
-          {user && user.can(CREATE, model) && (
+          {user && user.can(CREATE, model) && onStore && (
             <Button icon={<PlusOutlined />} type="primary" onClick={onStore}>
               Tambah
             </Button>

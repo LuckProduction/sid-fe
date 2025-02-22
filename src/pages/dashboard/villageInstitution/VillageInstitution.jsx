@@ -94,7 +94,7 @@ const VillageInstitution = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await villageInstitutionService.update.execute(record.id, { ...values, _method: 'PUT' }, token);
+                  const { message, isSuccess } = await villageInstitutionService.update.execute(record.id, { ...values, _method: 'PUT' }, token, values.image.file);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchVillageInstitution(token);
@@ -140,6 +140,11 @@ const VillageInstitution = () => {
                       }
                       return statusTag;
                     })()
+                  },
+                  {
+                    key: 'desc',
+                    label: `Kode ${Modul.VILLAGE_INSTITUTION}`,
+                    children: record.desc
                   }
                 ]
               });
@@ -195,7 +200,7 @@ const VillageInstitution = () => {
       title: `Tambah ${Modul.VILLAGE_INSTITUTION}`,
       formFields: formFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await villageInstitutionService.store.execute(values, token);
+        const { message, isSuccess } = await villageInstitutionService.store.execute(values, token, values.image.file);
         if (isSuccess) {
           success('Berhasil', message);
           fetchVillageInstitution(token);

@@ -45,5 +45,35 @@ export const formFields = () => [
         value: 'nonaktif'
       }
     ]
+  },
+  {
+    label: `Deskripsi ${Modul.VILLAGE_INSTITUTION}`,
+    name: 'desc',
+    type: InputType.LONGTEXT,
+    rules: [
+      {
+        required: true,
+        message: `Deskripsi ${Modul.VILLAGE_INSTITUTION} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Gambar ${Modul.VILLAGE_INSTITUTION}`,
+    name: 'image',
+    type: InputType.UPLOAD,
+    max: 1,
+    beforeUpload: () => {
+      return false;
+    },
+    getFileList: (data) => {
+      return [
+        {
+          url: data?.image,
+          name: data?.name
+        }
+      ];
+    },
+    accept: ['.png', '.jpg', '.jpeg', 'webp'],
+    rules: [{ required: true, message: 'Logo harus diisi' }]
   }
 ];

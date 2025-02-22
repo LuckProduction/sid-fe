@@ -15,6 +15,11 @@ export const landingLink = [
     label: 'Berita',
     key: '/news',
     element: Landing.News
+  },
+  {
+    label: 'Surat Menyurat',
+    key: '/lettering',
+    element: Landing.Lettering
   }
 ];
 
@@ -44,19 +49,19 @@ export const dashboardLink = [
     icon: HomeOutlined,
     children: [
       {
-        path: '/village_profile',
+        path: '/dashboard/village_profile',
         label: 'Profil',
         element: Dashboard.VillageProfile,
         permissions: [[Action.READ, Model.VillageProfile]]
       },
       {
-        path: '/hamlet',
+        path: '/dashboard/hamlet',
         label: 'Dusun',
         element: Dashboard.Hamlet,
         permissions: [[Action.READ, Model.Hamlet]]
       },
       {
-        path: '/visi-misi',
+        path: '/dashboard/visi-misi',
         label: 'Visi Misi',
         element: Dashboard.VisiMisi,
         permissions: [[Action.READ, Model.VisiMisi]]
@@ -68,19 +73,19 @@ export const dashboardLink = [
     icon: IdcardOutlined,
     children: [
       {
-        path: '/employment',
+        path: '/dashboard/employment',
         label: 'Jabatan',
         element: Dashboard.Employment,
         permissions: [[Action.READ, Model.Employment]]
       },
       {
-        path: '/village_officials',
+        path: '/dasboard/village_officials',
         label: 'Perangkat Desa',
         element: Dashboard.VillageOfficials,
-        permissions: [[Action.READ, Model.VillageOfficialse]]
+        permissions: [[Action.READ, Model.VillageOfficials]]
       },
       {
-        path: '/village_institutions',
+        path: '/dashboard/village_institutions',
         label: 'Lembaga Desa',
         element: Dashboard.VillageInstitution,
         permissions: [[Action.READ, Model.VillageInstitution]]
@@ -92,19 +97,24 @@ export const dashboardLink = [
     icon: PartitionOutlined,
     children: [
       {
-        path: '/residential',
+        path: '/dashboard/residential',
         label: 'Kependudukan',
         element: Dashboard.Resident,
         permissions: [[Action.READ, Model.Resident]]
       },
       {
-        path: '/apbd_report',
+        path: '/dashboard/prospective_voter',
+        label: 'Calon Pemilih',
+        element: Dashboard.ProspectiveVoters
+      },
+      {
+        path: '/dashboard/apbd_report',
         label: 'Laporan APBD',
         element: Dashboard.ApbdReport,
         permissions: [[Action.READ, Model.ApbdReport]]
       },
       {
-        path: '/public_assistance',
+        path: '/dashboard/public_assistance',
         label: 'Bantuan',
         element: Dashboard.PublicAssistance,
         permissions: [[Action.READ, Model.PublicAssistance]]
@@ -116,22 +126,34 @@ export const dashboardLink = [
     icon: BookOutlined,
     children: [
       {
-        path: '/article',
+        path: '/dashboard/article',
         label: 'Artikel',
         element: Dashboard.Article,
         permissions: [[Action.READ, Model.Article]]
       },
       {
-        path: '/village_potential',
+        path: '/dashboard/village_potential',
         label: 'Potensi Desa ',
         element: Dashboard.VillagePotential,
         permissions: [[Action.READ, Model.VillagePotential]]
       },
       {
-        path: '/legal_products',
+        path: '/dashboard/legal_products',
         label: 'Produk Hukum ',
         element: Dashboard.LegalProducts,
         permissions: [[Action.READ, Model.LegalProducts]]
+      },
+      {
+        path: '/dashboard/correspondence',
+        label: 'Surat Menyurat',
+        element: Dashboard.LetterType,
+        permissions: [[Action.READ, Model.LetterTemplate]]
+      },
+      {
+        path: '/dashboard/submit_letter',
+        label: 'Permohonan Surat',
+        element: Dashboard.SubmitLetter,
+        permissions: [[Action.READ, Model.SubmitLetter]]
       }
     ]
   }

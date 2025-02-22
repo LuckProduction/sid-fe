@@ -17,7 +17,7 @@ import { useAuth } from '@/hooks';
  * }} props
  * @returns
  */
-export default function CrudModal({ isModalOpen, data: initialData, close, title, formFields, onSubmit, onChange = () => { }, type = CrudModalType.SHOW, isLoading, ...props }) {
+export default function CrudModal({ isModalOpen, data: initialData, close, title, formFields, onSubmit, onChange = () => {}, type = CrudModalType.SHOW, isLoading, ...props }) {
   const { token } = useAuth();
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
@@ -40,6 +40,11 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
   }
 
   const handleSearch = debounce(async (value, field) => {
+    if (!value.trim()) {
+      setSearchOptions([]); // Kosongkan opsi jika value kosong
+      return;
+    }
+
     if (field.fetchOptions) {
       const data = await field.fetchOptions({ token: token, search: value });
       setSearchOptions(
@@ -47,9 +52,9 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
           field.mapOptions
             ? field.mapOptions
             : (item) => ({
-              label: item.name,
-              value: item.id
-            })
+                label: item.name,
+                value: item.id
+              })
         )
       );
     }

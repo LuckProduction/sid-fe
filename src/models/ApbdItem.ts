@@ -1,8 +1,4 @@
-import { DatatableColumn, FormField as FormFieldType, Override } from '@/types';
-import strings from '@/utils/strings';
-import { DescriptionsItemType } from 'antd/es/descriptions';
 import Model from './Model';
-import { InputType } from '@/constants';
 import { IncomingApiData as IncomingApbdReport } from './ApbdReport';
 
 export interface IncomingApiData {
@@ -13,6 +9,7 @@ export interface IncomingApiData {
   sumber_anggaran: string;
   jumlah_anggaran: number;
   total_saldo: number;
+  bidang: string;
 }
 
 export interface OutgoingApiData {
@@ -21,6 +18,7 @@ export interface OutgoingApiData {
   tipe: string;
   sumber_anggaran: string;
   jumlah_anggaran: number;
+  bidang: string;
 }
 
 interface FormValue {
@@ -29,6 +27,7 @@ interface FormValue {
   type: string;
   source_funding: string;
   budget_amount: number;
+  field: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -46,7 +45,8 @@ export default class ApbdItem extends Model {
     public type: string,
     public source_funding: string,
     public budget_amount: number,
-    public total_amount: number
+    public total_amount: number,
+    public field: string
   ) {
     super();
   }
@@ -65,7 +65,8 @@ export default class ApbdItem extends Model {
       apiData.tipe,
       apiData.sumber_anggaran,
       apiData.jumlah_anggaran,
-      apiData.total_saldo
+      apiData.total_saldo,
+      apiData.bidang
     ) as ReturnType<T, IncomingApiData, ApbdItem>;
   }
 
@@ -76,7 +77,8 @@ export default class ApbdItem extends Model {
       laporan_apbd_id: apbdItem.apbd_report,
       jumlah_anggaran: apbdItem.budget_amount,
       sumber_anggaran: apbdItem.component_name,
-      tipe: apbdItem.type
+      tipe: apbdItem.type,
+      bidang: apbdItem.field
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
@@ -84,4 +86,4 @@ export default class ApbdItem extends Model {
 }
 
 // FIXME: you maybe want to change below line. If you don't want to then delete this FIXME line
-// Model.children.laporan_apbd = ApbdItem;
+Model.children.laporan_apbd = ApbdItem;
