@@ -30,6 +30,21 @@ export const landingLink = [
         element: Landing.LegalProducts
       }
     ]
+  },
+  {
+    label: 'Statistik',
+    children: [
+      {
+        label: 'Statistik Penduduk',
+        key: '/resident_statistic',
+        element: Landing.ResidentStatistic
+      },
+      {
+        label: 'Statistik APBD',
+        key: '/apbd_statistik',
+        element: Landing.ApdbStatistic
+      }
+    ]
   }
 ];
 

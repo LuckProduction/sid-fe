@@ -44,7 +44,7 @@ export default class VillageInstitutionService {
    * }}
    */
   static async store(data, token, file) {
-    return await api.post('/lembaga-desa', { body: VillageInstitution.toApiData(data), token, file: { foto: file } });
+    return await api.post('/lembaga-desa', { body: VillageInstitution.toApiData(data), token, file: { logo: file } });
   }
 
   /**
@@ -59,7 +59,7 @@ export default class VillageInstitutionService {
    * }>}
    */
   static async update(id, data, token, file) {
-    return await api.post(`/lembaga-desa/edit/${id}`, { body: VillageInstitution.toApiData(data), token, file: { foto: file } });
+    return await api.post(`/lembaga-desa/edit/${id}`, { body: VillageInstitution.toApiData(data), token, file: { logo: file } });
   }
 
   /**

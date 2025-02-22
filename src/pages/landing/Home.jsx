@@ -199,7 +199,7 @@ const Home = () => {
       </section>
       <section className="w-full bg-blue-500">
         <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 py-24">
-          <div className="flex flex-col items-center justify-center gap-y-2">
+          <div className="flex w-full flex-col gap-y-2">
             <Reveal>
               <h2 className="text-sm font-semibold text-white">Lembaga</h2>
             </Reveal>
@@ -215,10 +215,11 @@ const Home = () => {
                   </Card>
                 ))
               : institution?.data?.map((item) => (
-                  <Card className="col-span-2" key={item.id}>
-                    <div className="flex flex-col gap-y-2">
-                      <Image src="" />
-                      <b>{item.institution_name}</b>
+                  <Card className="col-span-2 h-full" key={item.id}>
+                    <div className="flex flex-col items-center gap-y-4">
+                      <Image width={64} src={item.image} className="mb-4" />
+                      <b className="text-center">{item.institution_name}</b>
+                      <small className="text-center">{item.desc}</small>
                     </div>
                   </Card>
                 ))}

@@ -5,3 +5,5 @@ export { default as Lettering } from './lettering/Lettering';
 export { default as Browse } from './lettering/Browse';
 export { default as SubmitLetter } from './lettering/SubmitLetter';
 export { default as LegalProducts } from './LegalProducts';
+export { default as ResidentStatistic } from './ResidentStatistic';
+export { default as ApdbStatistic } from './ApdbStatistic';
