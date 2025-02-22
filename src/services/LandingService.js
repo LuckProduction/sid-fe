@@ -1,4 +1,4 @@
-import { Article, LetterType, Speech, SubmitLetter, VillageInstitution, VillageProfile, VisiMisi } from '@/models';
+import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageInstitution, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -60,5 +60,12 @@ export default class LandingService {
 
   static async statusCheck(data) {
     return await api.post(`/permohonan-surat/cari-surat`, { body: data });
+  }
+
+  static async getAllLegalProducts(page = null, perPage = null) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get(`/landing/produk-hukum`, { ...params });
+    if (!response.data) return response;
+    return { ...response, data: LegalProducts.fromApiData(response.data) };
   }
 }

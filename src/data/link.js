@@ -17,9 +17,19 @@ export const landingLink = [
     element: Landing.News
   },
   {
-    label: 'Surat Menyurat',
-    key: '/lettering',
-    element: Landing.Lettering
+    label: 'Layanan Administratif',
+    children: [
+      {
+        label: 'Surat Menyurat',
+        key: '/lettering',
+        element: Landing.Lettering
+      },
+      {
+        label: 'Produk Hukum',
+        key: '/legal_products',
+        element: Landing.LegalProducts
+      }
+    ]
   }
 ];
 
