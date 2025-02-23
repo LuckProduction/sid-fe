@@ -68,4 +68,16 @@ export default class LandingService {
     if (!response.data) return response;
     return { ...response, data: LegalProducts.fromApiData(response.data) };
   }
+  
+  static async getAllResidentStatistic() {
+    const response = await api.get(`/statistik/penduduk`);
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
+
+  static async getAllApbdtStatistic() {
+    const response = await api.get(`/statistik/apbd`);
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
 }

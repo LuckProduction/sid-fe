@@ -2,7 +2,7 @@ import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageInstitutionService } from '@/services';
-import { Button, Card, Space, Tag } from 'antd';
+import { Button, Card, Image, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { formFields } from './FormFields';
 import { useNavigate } from 'react-router-dom';
@@ -143,8 +143,13 @@ const VillageInstitution = () => {
                   },
                   {
                     key: 'desc',
-                    label: `Kode ${Modul.VILLAGE_INSTITUTION}`,
+                    label: `Deskripsi ${Modul.VILLAGE_INSTITUTION}`,
                     children: record.desc
+                  },
+                  {
+                    key: 'image',
+                    label: `Logo ${Modul.VILLAGE_INSTITUTION}`,
+                    children: <Image width={50} src={record.image} />
                   }
                 ]
               });

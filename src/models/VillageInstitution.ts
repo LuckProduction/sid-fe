@@ -7,7 +7,7 @@ export interface IncomingApiData {
   kode_lembaga: string;
   status: string;
   deskripsi: string;
-  foto: string;
+  logo: string;
 }
 
 export interface OutgoingApiData {
@@ -16,7 +16,7 @@ export interface OutgoingApiData {
   kode_lembaga: string;
   status: string;
   deskripsi: string;
-  foto: string;
+  logo: string;
 }
 
 interface FormValue {
@@ -44,7 +44,7 @@ export default class VillageInstitution extends Model {
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, VillageInstitution> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, VillageInstitution>;
-    return new VillageInstitution(apiData.id, apiData.nama_lembaga, apiData.kode_lembaga, apiData.status, apiData.deskripsi, asset(apiData.foto)) as ReturnType<T, IncomingApiData, VillageInstitution>;
+    return new VillageInstitution(apiData.id, apiData.nama_lembaga, apiData.kode_lembaga, apiData.status, apiData.deskripsi, asset(apiData.logo)) as ReturnType<T, IncomingApiData, VillageInstitution>;
   }
 
   public static toApiData<T extends FormValue | FormValue[]>(villageInstitution: T): ReturnType<T, FormValue, OutgoingApiData> {
@@ -55,7 +55,7 @@ export default class VillageInstitution extends Model {
       kode_lembaga: villageInstitution.institution_code,
       status: villageInstitution.status,
       deskripsi: villageInstitution.desc,
-      foto: villageInstitution.image
+      logo: villageInstitution.image
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
