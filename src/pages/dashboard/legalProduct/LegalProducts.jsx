@@ -128,7 +128,6 @@ const LegalProducts = () => {
                     label: `Tahun`,
                     children: record.year
                   },
-                  // TODO: PROVIDE SOME DOWNLOAD BUTTON FOR DOWNLOAD THE DOCUMENT
                   {
                     key: 'document',
                     label: `Dokumen`,
