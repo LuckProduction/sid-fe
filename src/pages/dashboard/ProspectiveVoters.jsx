@@ -5,7 +5,7 @@ import { ProspectiveVotersService } from '@/services';
 import { Card, Tag, Typography } from 'antd';
 import { useEffect } from 'react';
 
-const Resident = () => {
+const ProspectiveVoters = () => {
   const { token } = useAuth();
   const { execute: fetchProspectiveVoter, ...getAllProspectiveVoter } = useService(ProspectiveVotersService.getAll);
   const pagination = usePagination({ totalData: getAllProspectiveVoter.totalData });
@@ -71,4 +71,4 @@ const Resident = () => {
   );
 };
 
-export default Resident;
+export default ProspectiveVoters;

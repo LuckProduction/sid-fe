@@ -21,7 +21,8 @@ type ModelKeys =
   | 'permohonan_surat'
   | 'jenis_surat'
   | 'atribut_surat'
-  | 'template_surat';
+  | 'template_surat'
+  | 'pengguna';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -47,7 +48,8 @@ export default abstract class Model {
     permohonan_surat: undefined,
     jenis_surat: undefined,
     atribut_surat: undefined,
-    template_surat: undefined
+    template_surat: undefined,
+    pengguna: undefined
   };
 }
 

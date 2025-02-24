@@ -23,3 +23,4 @@ export { default as LetterAttribute } from './LetterAttribute';
 export { default as LetterTemplate } from './LetterTemplate';
 export { default as SubmitLetter } from './SubmitLetter';
 export { default as Map } from './Map';
+export { default as Officer } from './Officer';

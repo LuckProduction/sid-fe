@@ -14,6 +14,8 @@ export interface IncomingApiData {
   permissions: string[];
 }
 
+export interface untranslatedIncoming { }
+
 interface OutgoingApiData {
   email: IncomingApiData['email'];
 }
@@ -25,6 +27,7 @@ export default class User extends Model {
     public name: string,
     public token: string,
     public role: Role,
+    public roleId: number,
     public permissions: Permission[] = []
   ) {
     super();
@@ -57,7 +60,7 @@ export default class User extends Model {
     };
     const role = roles[apiData.role.name as keyof typeof roles] || null;
     const permissions = Permission.fromApiData([...apiData.role.permissions, ...apiData.permissions]);
-    return new User(apiData.id, apiData.name, apiData.email, token, role, permissions);
+    return new User(apiData.id, apiData.email, apiData.name, token, role, apiData.role.id, permissions);
   }
 
   static toApiData(user: User): OutgoingApiData {
@@ -67,4 +70,4 @@ export default class User extends Model {
   }
 }
 
-// Model.children.user = User;
+Model.children.pengguna = User;
