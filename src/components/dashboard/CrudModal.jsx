@@ -7,9 +7,11 @@ import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { Select } from './input';
+import { CoordinatePicker, Select } from './input';
 import { debounce } from 'lodash';
 import { useAuth } from '@/hooks';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 /**
  * @param {{
@@ -35,9 +37,9 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
     onChange(realtimeData);
   }, [onChange, realtimeData]);
 
-  function handleValuesChange(changedValue) {
-    setRealtimeData({ ...realtimeData, ...changedValue });
-  }
+  const handleValuesChange = (changedValue) => {
+    setRealtimeData((prevData) => ({ ...prevData, ...changedValue }));
+  };
 
   const handleSearch = debounce(async (value, field) => {
     if (!value.trim()) {
@@ -109,6 +111,29 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
                 </label>
               </div>
             ))}
+          </div>
+        );
+
+      case InputType.MAP_PICKER:
+        return (
+          <div style={{ height: '300px', marginBottom: '16px' }}>
+            <MapContainer center={[-0.7893, 113.9213]} zoom={5} style={{ height: '100%', width: '100%' }}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <CoordinatePicker
+                onChange={(coords) => {
+                  form.setFieldsValue({
+                    latitude: coords[0],
+                    longitude: coords[1]
+                  });
+
+                  handleValuesChange({
+                    latitude: coords[0],
+                    longitude: coords[1]
+                  });
+                }}
+                initialPosition={realtimeData?.latitude && realtimeData?.longitude ? [realtimeData.latitude, realtimeData.longitude] : null}
+              />
+            </MapContainer>
           </div>
         );
 

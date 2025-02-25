@@ -1,25 +1,25 @@
-import { Hamlet } from '@/models';
+import { Map } from '@/models';
 import api from '@/utils/api';
 
-export default class HamletService {
+export default class MapService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: Hamlet[];
+   *  data?: Map[];
    * }>}
    * */
   static async getAll(token, page = null, perPage = null) {
     const params = page && perPage ? { page, perPage } : {};
-    const response = await api.get('/dusun', { token, ...params });
+    const response = await api.get('/pemetaan', { token, ...params });
     if (!response.data) return response;
-    return { ...response, data: Hamlet.fromApiData(response.data) };
+    return { ...response, data: Map.fromApiData(response.data) };
   }
 
   /**
-   * @param {Hamlet} data
+   * @param {Map} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -30,19 +30,18 @@ export default class HamletService {
    */
   static async store(data, token, file) {
     const payload = {
-      body: Hamlet.toApiData(data),
+      body: Map.toApiData(data),
       token
     };
     if (file) {
-      payload.file = { file_batas_dusun: file };
+      payload.file = { konten: file };
     }
-
-    return await api.post('/dusun', { body: Hamlet.toApiData(data), token, file: { file_batas_dusun: file } });
+    return await api.post('/pemetaan', payload);
   }
 
   /**
    * @param {number} id
-   * @param {Hamlet} data
+   * @param {Map} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -52,7 +51,14 @@ export default class HamletService {
    * }>}
    */
   static async update(id, data, token, file) {
-    return await api.post(`/dusun/edit/${id}`, { body: Hamlet.toApiData(data), token, file: { file_batas_dusun: file } });
+    const payload = {
+      body: Map.toApiData(data),
+      token
+    };
+    if (file) {
+      payload.file = { konten: file };
+    }
+    return await api.post(`/pemetaan/edit/${id}`, payload);
   }
 
   /**
@@ -65,7 +71,7 @@ export default class HamletService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/dusun/delete/${id}`, { token });
+    return await api.delete(`/pemetaan/delete/${id}`, { token });
   }
 
   /**
@@ -78,6 +84,6 @@ export default class HamletService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/dusun/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/pemetaan/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 }

@@ -26,5 +26,6 @@ export { default as Lettering } from './correspondence/Lettering';
 export { default as LetterAttribute } from './correspondence/LetterAttribute';
 export { default as LetterTemplate } from './correspondence/LetterTemplate';
 export { default as SubmitLetter } from './correspondence/SubmitLetter';
+export { default as Map } from './map/Map';
 
 export { default as ProspectiveVoters } from './ProspectiveVoters';

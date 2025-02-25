@@ -9,7 +9,8 @@ enum InputType {
   SELECT_LOGO = 'select-logo',
   CONTENT_EDITOR = 'content-editor',
   DOCUMENT_EDITOR = 'document-editor',
-  SELECT_SEARCH = 'select-search'
+  SELECT_SEARCH = 'select-search',
+  MAP_PICKER = 'map-picker'
 }
 
 export default InputType;
