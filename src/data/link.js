@@ -90,6 +90,12 @@ export const dashboardLink = [
         label: 'Visi Misi',
         element: Dashboard.VisiMisi,
         permissions: [[Action.READ, Model.VisiMisi]]
+      },
+      {
+        path: '/dashboard/map',
+        label: 'Pemetaan',
+        element: Dashboard.Map,
+        permissions: [[Action.READ, Model.Map]]
       }
     ]
   },
