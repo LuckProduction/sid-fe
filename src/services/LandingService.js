@@ -58,6 +58,10 @@ export default class LandingService {
     return await api.post(`/permohonan-surat`, { body: SubmitLetter.toApiData(data) });
   }
 
+  static async downloadLetter(token) {
+    return await api.post(`/permohonan-surat/download`, { body: { token } });
+  }
+
   static async statusCheck(data) {
     return await api.post(`/permohonan-surat/cari-surat`, { body: data });
   }

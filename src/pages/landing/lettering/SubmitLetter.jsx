@@ -3,9 +3,10 @@ import { useNotification, useService } from '@/hooks';
 import { LandingService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
 import { mapLetterAttributesToFormFields } from '@/utils/letterAttributToForm';
-import { CloseCircleOutlined, LeftOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Form, Input, Modal, Result, Select, Typography } from 'antd';
+import { CloseCircleOutlined, CopyOutlined, LeftOutlined } from '@ant-design/icons';
+import { Button, Card, DatePicker, Form, Input, Modal, Result, Select, Tooltip, Typography } from 'antd';
 import { useEffect, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { useNavigate } from 'react-router-dom';
 
 const SubmitLetter = () => {
@@ -19,6 +20,7 @@ const SubmitLetter = () => {
   const [formData, setFormData] = useState({});
   const [modalStatus, setModalStatus] = useState('initial'); // 'initial' | 'success' | 'error'
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   // Fetch Data
   const { execute: fetchLetterType, ...getAllLetterType } = useService(LandingService.getAllLetterType);
@@ -63,10 +65,11 @@ const SubmitLetter = () => {
           content: values[attr.attribute]
         }))
       };
-      const { message, isSuccess } = await storeSubmitLetter.execute(formattedData);
+      const { message, isSuccess, data } = await storeSubmitLetter.execute(formattedData);
 
       if (isSuccess) {
         success('Berhasil', message);
+        setFormData(isSuccess && data ? { ...formData, token: data.token } : { ...formData });
         setModalStatus('success');
         setIsSubmitted(true); // Hilangkan form setelah submit berhasil
       } else {
@@ -90,16 +93,23 @@ const SubmitLetter = () => {
   const renderModalContent = () => {
     if (modalStatus === 'success') {
       return (
-        <Result
-          status="success"
-          title="Permohonan Berhasil!"
-          subTitle="Surat Anda telah berhasil dibuat dan diproses."
-          extra={
-            <Button type="primary" onClick={handleModalClose}>
-              Oke
-            </Button>
-          }
-        />
+        <Result status="success" title="Permohonan Berhasil!" subTitle="Surat Anda telah berhasil dibuat dan diproses.">
+          <div className="flex flex-col items-center justify-center gap-y-4">
+            <div className="desc inline-flex w-full items-center justify-center gap-x-6">
+              <b className="text-5xl text-gray-500">{formData.token}</b>
+              <CopyToClipboard text={formData.token} onCopy={() => setCopied(true)}>
+                <Tooltip title={copied ? 'Tersalin!' : 'Salin Ke Clipboard'}>
+                  <button
+                    className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-gray-300 text-gray-400"
+                    onMouseLeave={() => setTimeout(() => setCopied(false), 2000)} // Reset tooltip setelah 2 detik
+                  >
+                    <CopyOutlined />
+                  </button>
+                </Tooltip>
+              </CopyToClipboard>
+            </div>
+          </div>
+        </Result>
       );
     }
 
@@ -261,6 +271,7 @@ const SubmitLetter = () => {
           )}
         </div>
       </section>
+
       <Modal width={700} open={isModalOpen} onCancel={handleModalClose} footer={null}>
         {renderModalContent()}
       </Modal>

@@ -30,4 +30,4 @@ export { default as Map } from './map/Map';
 
 export { default as ProspectiveVoters } from './ProspectiveVoters';
 export { default as User } from './user/User';
-export { default as ProfileSettings } from './ProfileSettings'
+export { default as ProfileSettings } from './ProfileSettings';

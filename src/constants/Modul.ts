@@ -17,6 +17,7 @@ enum Modul {
   LETTER_TYPE = 'Jenis Surat',
   LETTER_ATTRIBUTE = 'Atribut Surat',
   LETTER_TEMPLATE = 'Template Surat',
+  LETTER_SUBMIT = 'Permohonan Surat',
   SUBMIT_LETTER = 'Perrmohonan Surat',
   PROSPECTIVE_VOTER = 'Calon Pemilih',
   MAP = 'Pemetaan',

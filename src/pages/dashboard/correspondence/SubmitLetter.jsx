@@ -2,12 +2,13 @@ import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { SubmitLetterService } from '@/services';
-import { Card, Space, Tag } from 'antd';
+import { Button, Card, Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { letterTypeFormFields, submitLetterFormFields } from './FormFields';
 import { SubmitLetter as SubmitLetterModel } from '@/models';
 import { Action } from '@/constants';
 import { Delete, Edit } from '@/components/dashboard/button';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { UPDATE, DELETE } = Action;
 
@@ -75,11 +76,11 @@ const SubmitLetter = () => {
       render: (_, record) => (
         <Space size="small">
           <Edit
-            title={`Edit ${Modul.LETTER_TYPE}`}
+            title={`Edit ${Modul.LETTER_SUBMIT}`}
             model={SubmitLetterModel}
             onClick={() => {
               modal.edit({
-                title: `Edit ${Modul.LETTER_TYPE}`,
+                title: `Edit ${Modul.LETTER_SUBMIT}`,
                 data: record,
                 formFields: submitLetterFormFields,
                 onSubmit: async (values) => {
@@ -96,11 +97,11 @@ const SubmitLetter = () => {
             }}
           />
           <Delete
-            title={`Delete ${Modul.LETTER_TYPE}`}
+            title={`Delete ${Modul.LETTER_SUBMIT}`}
             model={SubmitLetterModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.LETTER_TYPE}`,
+                title: `Delete ${Modul.LETTER_SUBMIT}`,
                 data: record,
                 formFields: submitLetterFormFields,
                 onSubmit: async () => {
@@ -116,6 +117,7 @@ const SubmitLetter = () => {
               });
             }}
           />
+          {record.status === 'selesai' && <Button icon={<DownloadOutlined />} onClick={() => window.open(record.download_link, '_blank')} />}
         </Space>
       )
     });
@@ -123,7 +125,7 @@ const SubmitLetter = () => {
 
   const onDeleteBatch = () => {
     modal.delete.batch({
-      title: `Hapus ${selectedData.length} ${Modul.LETTER_TYPE} Yang Dipilih ? `,
+      title: `Hapus ${selectedData.length} ${Modul.LETTER_SUBMIT} Yang Dipilih ? `,
       formFields: letterTypeFormFields,
       onSubmit: async () => {
         const ids = selectedData.map((item) => item.id);
@@ -145,7 +147,7 @@ const SubmitLetter = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <DataTableHeader model={SubmitLetterModel} modul={Modul.LETTER_TYPE} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+          <DataTableHeader model={SubmitLetterModel} modul={Modul.LETTER_SUBMIT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               data={submitLetter}

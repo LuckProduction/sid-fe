@@ -1,9 +1,9 @@
-import { DataLoader } from "@/components";
-import { useAuth, useNotification, useService } from "@/hooks";
-import { OfficerService } from "@/services";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Button, Card, Form, Input, Menu, Select, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { DataLoader } from '@/components';
+import { useAuth, useNotification, useService } from '@/hooks';
+import { OfficerService } from '@/services';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Form, Input, Menu, Select, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 
 const ProfileSettings = () => {
   const { token, user, isLoading, logout } = useAuth();
@@ -13,7 +13,6 @@ const ProfileSettings = () => {
 
   const updateUserProfil = useService(OfficerService.update);
   const udpateUserPassword = useService(OfficerService.changePassword);
-
 
   useEffect(() => {
     if (user) {
@@ -50,7 +49,7 @@ const ProfileSettings = () => {
             <Card className="w-full" cover={<img src="/image_asset/card_background.png" />}>
               <div className="relative px-4">
                 <div className="absolute -top-16">
-                  <Avatar shape="square" size={90} icon={<UserOutlined />} style={{ backgroundColor: '#fff', padding: '12px', color: "black" }} className="shadow-md" />
+                  <Avatar shape="square" size={90} icon={<UserOutlined />} style={{ backgroundColor: '#fff', padding: '12px', color: 'black' }} className="shadow-md" />
                 </div>
               </div>
               <div className="mt-12 px-4">
@@ -81,12 +80,8 @@ const ProfileSettings = () => {
                   </Form.Item>
                   <Form.Item label="User Role" name="role" rules={[{ required: true, message: 'Field Role harus diisi' }]}>
                     <Select size="large">
-                      <Select.Option value={1}>
-                        Admin
-                      </Select.Option>
-                      <Select.Option value={2}>
-                        Pegawai
-                      </Select.Option>
+                      <Select.Option value={1}>Admin</Select.Option>
+                      <Select.Option value={2}>Pegawai</Select.Option>
                     </Select>
                   </Form.Item>
                   <Form.Item label="Email" name="email">
@@ -126,6 +121,6 @@ const ProfileSettings = () => {
       )}
     </div>
   );
-}
+};
 
-export default ProfileSettings
+export default ProfileSettings;
