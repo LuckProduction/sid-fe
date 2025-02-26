@@ -64,7 +64,7 @@ const Navbar = ({ villageProfile }) => {
           </>
         )}
       </div>
-      <div className="flex w-full items-center justify-end gap-x-4">
+      <div className="flex items-center justify-end gap-x-4">
         <Button variant="solid" color="primary" icon={<UserOutlined />} onClick={() => navigate('/auth/login')}>
           Masuk
         </Button>

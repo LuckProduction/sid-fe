@@ -80,6 +80,11 @@ export const dashboardLink = [
         permissions: [[Action.READ, Model.VillageProfile]]
       },
       {
+        path: '/dashboard/officer',
+        label: 'Pengguna',
+        element: Dashboard.User
+      },
+      {
         path: '/dashboard/hamlet',
         label: 'Dusun',
         element: Dashboard.Hamlet,

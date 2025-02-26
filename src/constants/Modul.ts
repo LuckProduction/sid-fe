@@ -19,7 +19,8 @@ enum Modul {
   LETTER_TEMPLATE = 'Template Surat',
   SUBMIT_LETTER = 'Perrmohonan Surat',
   PROSPECTIVE_VOTER = 'Calon Pemilih',
-  MAP = 'Pemetaan'
+  MAP = 'Pemetaan',
+  USERS = 'Pengguna'
 }
 
 export default Modul;

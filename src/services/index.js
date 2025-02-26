@@ -23,3 +23,4 @@ export { default as LetterTemplateService } from './LetterTemplateService';
 export { default as ProspectiveVotersService } from './ProspectiveVotersService';
 export { default as SubmitLetterService } from './SubmitLetterService';
 export { default as MapService } from './MapService';
+export { default as OfficerService } from './OfficerService';
