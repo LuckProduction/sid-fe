@@ -1,6 +1,7 @@
 import Model from './Model';
 import { IncomingApiData as IncomingLetterType } from './LetterType';
 import { IncomingApiData as IncomingResident } from './Resident';
+import api from '@/utils/api';
 
 export interface IncomingApiData {
   id: number;
@@ -14,6 +15,7 @@ export interface IncomingApiData {
     konten: string;
   }[];
   status: string;
+  link_download: string | null;
 }
 
 export interface OutgoingApiData {
@@ -73,7 +75,8 @@ export default class SubmitLetter extends Model {
       letter_attribute_id: number;
       content: string;
     }[],
-    public status: string
+    public status: string,
+    public download_link: string | null
   ) {
     super();
   }
@@ -108,7 +111,8 @@ export default class SubmitLetter extends Model {
         letter_attribute_id: item.atribut_surat_id,
         content: item.konten
       })),
-      apiData.status
+      apiData.status,
+      apiData.link_download
     ) as ReturnType<T, IncomingApiData, SubmitLetter>;
   }
 

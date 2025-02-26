@@ -14,7 +14,7 @@ export interface IncomingApiData {
   permissions: string[];
 }
 
-export interface untranslatedIncoming { }
+export interface untranslatedIncoming {}
 
 interface OutgoingApiData {
   email: IncomingApiData['email'];

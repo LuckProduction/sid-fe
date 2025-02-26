@@ -129,7 +129,7 @@ export const logoFormFields = () => [
         }
       ];
     },
-    accept: ['.png', '.jpg', '.jpeg', 'webp'],
+    accept: ['.png', '.jpg', '.jpeg'],
     rules: [{ required: true, message: 'Logo harus diisi' }]
   }
 ];

@@ -1,7 +1,6 @@
 import { Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
-import asset from '@/utils/asset';
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Form, Input, Modal, Result, Typography } from 'antd';
 import { useState } from 'react';
@@ -70,7 +69,7 @@ const Browse = () => {
             title="Surat telah selesai dibuat"
             subTitle="Silahkan unduh berkas surat dengan menekan tombol download dibawah"
             extra={
-              <Button icon={<DownloadOutlined />} variant="solid" color="blue" onClick={() => window.open(asset(statusResponse.link_download), '_blank')}>
+              <Button icon={<DownloadOutlined />} variant="solid" color="blue" onClick={() => window.open(statusResponse.link_download, '_blank')}>
                 download
               </Button>
             }

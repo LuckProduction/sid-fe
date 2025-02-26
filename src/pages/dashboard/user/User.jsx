@@ -158,7 +158,7 @@ const User = () => {
       title: `Tambah ${Modul.USERS}`,
       formFields: userFormFields({ options: { permission } }),
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeUser.execute({ ...values, password: "12345678" }, token);
+        const { message, isSuccess } = await storeUser.execute({ ...values, password: '12345678' }, token);
         if (isSuccess) {
           success('Berhasil', message);
           fetchUsers(token, pagination.page, pagination.perPage);

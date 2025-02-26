@@ -104,6 +104,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
           <Editor
             apiKey="ltsdik9bjzzfm8i8g4ve5b32ii5sz0t7j6g2ag5khxm0bn1y"
             initialValue={initialData?.content ?? ''}
+            plugins="table"
             init={{
               selector: '#editor',
               toolbar:
