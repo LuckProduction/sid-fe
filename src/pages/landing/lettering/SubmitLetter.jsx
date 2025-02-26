@@ -1,12 +1,12 @@
 import { Crud, Reveal } from '@/components';
 import { useNotification, useService } from '@/hooks';
 import { LandingService } from '@/services';
+import { copyToClipboard } from '@/utils/clipBoard';
 import dateFormatter from '@/utils/dateFormatter';
 import { mapLetterAttributesToFormFields } from '@/utils/letterAttributToForm';
 import { CloseCircleOutlined, CopyOutlined, LeftOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Form, Input, Modal, Result, Select, Tooltip, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { useNavigate } from 'react-router-dom';
 
 const SubmitLetter = () => {
@@ -20,7 +20,6 @@ const SubmitLetter = () => {
   const [formData, setFormData] = useState({});
   const [modalStatus, setModalStatus] = useState('initial'); // 'initial' | 'success' | 'error'
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   // Fetch Data
   const { execute: fetchLetterType, ...getAllLetterType } = useService(LandingService.getAllLetterType);
@@ -97,16 +96,14 @@ const SubmitLetter = () => {
           <div className="flex flex-col items-center justify-center gap-y-4">
             <div className="desc inline-flex w-full items-center justify-center gap-x-6">
               <b className="text-5xl text-gray-500">{formData.token}</b>
-              <CopyToClipboard text={formData.token} onCopy={() => setCopied(true)}>
-                <Tooltip title={copied ? 'Tersalin!' : 'Salin Ke Clipboard'}>
+                <Tooltip title={'Salin Ke Clipboard'}>
                   <button
+                    onClick={() => copyToClipboard(formData.token)}
                     className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-gray-300 text-gray-400"
-                    onMouseLeave={() => setTimeout(() => setCopied(false), 2000)} // Reset tooltip setelah 2 detik
                   >
                     <CopyOutlined />
                   </button>
                 </Tooltip>
-              </CopyToClipboard>
             </div>
           </div>
         </Result>
