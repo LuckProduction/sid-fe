@@ -122,7 +122,6 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
 
       case InputType.MAP_PICKER:
         return <MapPicker form={form} handleValuesChange={handleValuesChange} realtimeData={realtimeData} />;
-
       default:
         return null;
     }
