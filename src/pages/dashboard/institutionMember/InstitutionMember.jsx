@@ -31,8 +31,8 @@ const InstitutionMember = () => {
   const pagination = usePagination({ totalData: getAllInstitutionMember.totalData });
 
   useEffect(() => {
-    fetchInstitutionMember(token, id, pagination.page, pagination.perPage);
-    fetchResident(token);
+    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
+    fetchResident({ token: token });
     fetchEmployment(token);
     fetchVillageInstitutionById(token, id);
   }, [fetchEmployment, fetchInstitutionMember, fetchResident, fetchVillageInstitutionById, id, pagination.page, pagination.perPage, token]);
@@ -166,9 +166,9 @@ const InstitutionMember = () => {
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.INSTITUTION_MEMBER}`,
-      formFields: institutionMemberFormFields({ options: { employment, resident } }),
+      formFields: institutionMemberFormFields({ options: { employment }, fetchResident }),
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: villageInstitutionById.id }, token, values.foto.file);
+        const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: id }, token, values.foto.file);
         if (isSuccess) {
           success('Berhasil', message);
           fetchInstitutionMember(token);

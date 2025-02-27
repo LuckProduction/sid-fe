@@ -1,7 +1,7 @@
 import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
 
-export const institutionMemberFormFields = ({ options }) => [
+export const institutionMemberFormFields = ({ options, fetchResident }) => [
   {
     label: `${Modul.EMPLOYMENT}`,
     name: 'employment',
@@ -20,20 +20,21 @@ export const institutionMemberFormFields = ({ options }) => [
   {
     label: `Nama Anggota`,
     name: 'resident',
-    type: InputType.SELECT,
+    type: InputType.SELECT_FETCH,
     rules: [
       {
         required: true,
         message: `Nama Anggota harus diisi`
       }
     ],
-    options: options.resident.map((item) => ({
-      label: item.full_name,
+    fetchOptions: fetchResident,
+    mapOptions: (item) => ({
+      label: item.full_name, // Bisa disesuaikan
       value: item.id
-    }))
+    })
   },
   {
-    label: `Gambar ${Modul.ARTICLE}`,
+    label: `Foto Anggota`,
     name: 'foto',
     type: InputType.UPLOAD,
     max: 1,

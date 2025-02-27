@@ -73,11 +73,37 @@ export const dummyApbdStatistic = {
     semua: [
       {
         id: 1,
-        nama_laporan: 'laporan apbd tahun 2025',
+        nama_laporan: 'Laporan APBD Tahun 2023',
+        tahun: '2023',
+        belanja_pendapatan: {
+          belanja: 45000000,
+          pendapatan: 120000000
+        },
+        pembiayaan: {
+          pembiayaan: 25000000,
+          pengeluaran: 20000000
+        }
+      },
+      {
+        id: 2,
+        nama_laporan: 'Laporan APBD Tahun 2024',
+        tahun: '2024',
+        belanja_pendapatan: {
+          belanja: 52000000,
+          pendapatan: 85000000
+        },
+        pembiayaan: {
+          pembiayaan: 28000000,
+          pengeluaran: 25000000
+        }
+      },
+      {
+        id: 3,
+        nama_laporan: 'Laporan APBD Tahun 2025',
         tahun: '2025',
         belanja_pendapatan: {
           belanja: 50000000,
-          pendapatan: 990000000
+          pendapatan: 90000000
         },
         pembiayaan: {
           pembiayaan: 30000000,

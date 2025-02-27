@@ -86,4 +86,4 @@ export default class ApbdItem extends Model {
 }
 
 // FIXME: you maybe want to change below line. If you don't want to then delete this FIXME line
-Model.children.laporan_apbd = ApbdItem;
+Model.children.item_apbd = ApbdItem;

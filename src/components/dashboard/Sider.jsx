@@ -1,7 +1,7 @@
 import { dashboardLink } from '@/data/link';
 import { useAuth, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { Drawer, Grid, Image, Menu } from 'antd';
+import { Drawer, Grid, Image, Menu, Tooltip } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
@@ -36,8 +36,16 @@ const DashboardSider = ({ collapsed, onCloseMenu }) => {
     })
     .map(({ label, children, icon: Icon }) => ({
       key: label,
-      label,
-      icon: <Icon />,
+      label: (
+        <Tooltip title={label} placement="right" color="blue">
+          <span>{label}</span>
+        </Tooltip>
+      ),
+      icon: (
+        <Tooltip title={label} placement="right" color="blue">
+          <Icon />
+        </Tooltip>
+      ),
       children: children
         .filter(({ permissions, roles }) => {
           const hasPermission = !permissions || user?.eitherCan(...permissions);
@@ -46,7 +54,11 @@ const DashboardSider = ({ collapsed, onCloseMenu }) => {
         })
         .map(({ path, label }) => ({
           key: path,
-          label,
+          label: (
+            <Tooltip title={label} placement="right" color="blue">
+              <span>{label}</span>
+            </Tooltip>
+          ),
           onClick: () => navigate(path)
         }))
     }));
