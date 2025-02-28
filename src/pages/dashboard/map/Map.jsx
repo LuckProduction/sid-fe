@@ -165,7 +165,7 @@ const Map = () => {
       formFields: mapFormFields({ key: e.key, options: { category } }),
       onSubmit: async (values) => {
         const { message, isSuccess } =
-          e.key === 'area' ? await storeMap.execute({ ...values, content: `${values.longitude}, ${values.latitude}`, type: 'titik' }, token) : await storeMap.execute({ ...values, type: 'area' }, token, values.content.file);
+          e.key === 'titik' ? await storeMap.execute({ ...values, content: `${values.longitude}, ${values.latitude}`, type: 'titik' }, token) : await storeMap.execute({ ...values, type: 'area' }, token, values.content?.file);
         if (isSuccess) {
           success('Berhasil', message);
           fetchMap(token, pagination.page, pagination.perPage);

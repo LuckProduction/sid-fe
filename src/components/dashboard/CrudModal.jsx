@@ -7,11 +7,9 @@ import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { CoordinatePicker, Select } from './input';
+import { MapPicker, Select } from './input';
 import { debounce } from 'lodash';
 import { useAuth } from '@/hooks';
-import { MapContainer, TileLayer } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 
 /**
  * @param {{
@@ -43,7 +41,7 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
 
   const handleSearch = debounce(async (value, field) => {
     if (!value.trim()) {
-      setSearchOptions([]); // Kosongkan opsi jika value kosong
+      setSearchOptions([]);
       return;
     }
 
@@ -61,6 +59,14 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
       );
     }
   }, 500);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 300);
+    }
+  }, [isModalOpen]);
 
   /**
    * @param {import('@/types/FormField').default} field
@@ -115,27 +121,7 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
         );
 
       case InputType.MAP_PICKER:
-        return (
-          <div style={{ height: '300px', marginBottom: '16px' }}>
-            <MapContainer center={[-0.7893, 113.9213]} zoom={5} style={{ height: '100%', width: '100%' }}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              <CoordinatePicker
-                onChange={(coords) => {
-                  form.setFieldsValue({
-                    latitude: coords[0],
-                    longitude: coords[1]
-                  });
-
-                  handleValuesChange({
-                    latitude: coords[0],
-                    longitude: coords[1]
-                  });
-                }}
-                initialPosition={realtimeData?.latitude && realtimeData?.longitude ? [realtimeData.latitude, realtimeData.longitude] : null}
-              />
-            </MapContainer>
-          </div>
-        );
+        return <MapPicker form={form} handleValuesChange={handleValuesChange} realtimeData={realtimeData} />;
 
       default:
         return null;
