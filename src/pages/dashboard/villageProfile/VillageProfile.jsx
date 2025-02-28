@@ -21,7 +21,7 @@ const VillagePorfile = () => {
   useEffect(() => {
     fetchVillageProfile(token);
     fetchSpeech(token);
-    fetchVillageBoundaries(token)
+    fetchVillageBoundaries(token);
   }, [fetchSpeech, fetchVillageBoundaries, fetchVillageProfile, token]);
 
   const villageProfile = getAll.data ?? [];
@@ -29,7 +29,7 @@ const VillagePorfile = () => {
   const VillageBoundaries = getAllVillageBoundaries.data ?? {};
 
   const handleEditVillageBoundaries = () => {
-    const coordinates = VillageBoundaries?.headvillage_coordinate ?? ''; 
+    const coordinates = VillageBoundaries?.headvillage_coordinate ?? '';
     const [longitude = '', latitude = ''] = coordinates.split(',').map((coord) => coord.trim());
     modal.edit({
       title: 'Perbaharui Batas Desa',
@@ -45,8 +45,8 @@ const VillagePorfile = () => {
         }
         return isSuccess;
       }
-    })
-  }
+    });
+  };
 
   return (
     <>
@@ -190,18 +190,20 @@ const VillagePorfile = () => {
               <Descriptions.Item label="Batas Timur">{VillageBoundaries?.east}</Descriptions.Item>
               <Descriptions.Item label="Batas Barat">{VillageBoundaries?.west}</Descriptions.Item>
               <Descriptions.Item label="File Batas Desa">
-                {
-                  !VillageBoundaries?.adiministrative_file?.length ?
-                    'File Batas Desa Belum Tersedia' :
-                    (
-                      <Button icon={<DownloadOutlined />} onClick={() => window.open(VillageBoundaries.adiministrative_file, '_blank')}>
-                        Download Sumber
-                      </Button>
-                    )
-                }
+                {!VillageBoundaries?.adiministrative_file?.length ? (
+                  'File Batas Desa Belum Tersedia'
+                ) : (
+                  <Button icon={<DownloadOutlined />} onClick={() => window.open(VillageBoundaries.adiministrative_file, '_blank')}>
+                    Download Sumber
+                  </Button>
+                )}
               </Descriptions.Item>
               <Descriptions.Item label="Luas Wilayah">{VillageBoundaries?.area}</Descriptions.Item>
-              <Descriptions.Item label="Edit Batas Desa"><Button icon={<EditOutlined />} onClick={handleEditVillageBoundaries}>Edit</Button></Descriptions.Item>
+              <Descriptions.Item label="Edit Batas Desa">
+                <Button icon={<EditOutlined />} onClick={handleEditVillageBoundaries}>
+                  Edit
+                </Button>
+              </Descriptions.Item>
             </Descriptions>
             <Descriptions column={1} bordered className="mb-6">
               <Descriptions.Item label="Kata Sambutan">

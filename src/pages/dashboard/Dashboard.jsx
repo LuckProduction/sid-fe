@@ -75,7 +75,7 @@ const Dashboard = () => {
 
   return (
     <div className="grid w-full grid-cols-12 gap-4">
-      <Card className="col-span-3 h-fit">
+      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-1">
             <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
@@ -86,7 +86,7 @@ const Dashboard = () => {
           </div>
         </div>
       </Card>
-      <Card className="col-span-3 h-fit">
+      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-1">
             <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
@@ -97,7 +97,7 @@ const Dashboard = () => {
           </div>
         </div>
       </Card>
-      <Card className="col-span-3 h-fit">
+      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-1">
             <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
@@ -108,7 +108,7 @@ const Dashboard = () => {
           </div>
         </div>
       </Card>
-      <Card className="col-span-3 h-fit">
+      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-1">
             <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
@@ -120,17 +120,17 @@ const Dashboard = () => {
         </div>
       </Card>
 
-      <Card className="col-span-6 w-auto">
+      <Card className="col-span-12 w-auto lg:col-span-6">
         <Typography.Title level={5} className="w-full text-center">
           Statistik Penduduk
         </Typography.Title>
-        {chartConfigs.resident ? <Pie {...chartConfigs.resident} className="mt-6 h-auto w-full" /> : <Skeleton active />}
+        {chartConfigs.resident ? <Pie {...chartConfigs.resident} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
       </Card>
-      <Card className="col-span-6 w-auto">
+      <Card className="col-span-12 w-auto lg:col-span-6">
         <Typography.Title level={5} className="w-full text-center">
           Statistik APBD
         </Typography.Title>
-        {chartConfigs.apbd ? <Column {...chartConfigs.apbd} className="mt-6 h-auto w-full" /> : <Skeleton active />}
+        {chartConfigs.apbd ? <Column {...chartConfigs.apbd} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
       </Card>
     </div>
   );

@@ -96,14 +96,11 @@ const SubmitLetter = () => {
           <div className="flex flex-col items-center justify-center gap-y-4">
             <div className="desc inline-flex w-full items-center justify-center gap-x-6">
               <b className="text-5xl text-gray-500">{formData.token}</b>
-                <Tooltip title={'Salin Ke Clipboard'}>
-                  <button
-                    onClick={() => copyToClipboard(formData.token)}
-                    className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-gray-300 text-gray-400"
-                  >
-                    <CopyOutlined />
-                  </button>
-                </Tooltip>
+              <Tooltip title={'Salin Ke Clipboard'}>
+                <button onClick={() => copyToClipboard(formData.token)} className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-gray-300 text-gray-400">
+                  <CopyOutlined />
+                </button>
+              </Tooltip>
             </div>
           </div>
         </Result>
@@ -208,7 +205,7 @@ const SubmitLetter = () => {
       <section className="min-h-screen w-full bg-white">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-y-6 px-6 py-12">
           <Card className="w-full">
-            <Form form={form} className="flex w-full items-center gap-2" onFinish={handleCheckLetter}>
+            <Form form={form} className="flex w-full flex-col items-center gap-2" onFinish={handleCheckLetter}>
               <Form.Item
                 className="col-span-4 m-0 w-full"
                 name="nik"
@@ -255,7 +252,7 @@ const SubmitLetter = () => {
                   ))}
                 </Select>
               </Form.Item>
-              <Button loading={submitLoading} variant="solid" color="primary" size="large" htmlType="submit">
+              <Button className="w-full" loading={submitLoading} variant="solid" color="primary" size="large" htmlType="submit">
                 Proses
               </Button>
             </Form>

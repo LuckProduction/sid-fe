@@ -42,6 +42,14 @@ export const formFields = () => [
       {
         label: 'Pendapatan',
         value: 'pendapatan'
+      },
+      {
+        label: 'Pengeluaran',
+        value: 'pengeluaran'
+      },
+      {
+        label: 'Pembiayaan',
+        value: 'pembiayaan'
       }
     ]
   },

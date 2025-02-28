@@ -28,7 +28,7 @@ const Browse = () => {
 
   return (
     <section className="relative h-screen w-full bg-white">
-      <div className="relative z-10 mx-auto flex h-full max-w-screen-sm flex-col items-center justify-center">
+      <div className="relative z-10 mx-auto flex h-full max-w-screen-sm flex-col items-center justify-center px-6 text-center">
         <Reveal>
           <Typography.Title>
             Pantau Status <span className="text-blue-500">Surat</span> Kamu
@@ -40,7 +40,7 @@ const Browse = () => {
           </div>
         </Reveal>
         <Card className="mt-12 w-full">
-          <Form onFinish={handleStatusCheck} className="inline-flex w-full gap-x-2">
+          <Form onFinish={handleStatusCheck} className="flex w-full flex-col gap-x-2 gap-y-4 lg:flex-row">
             <Form.Item
               className="m-0 w-full"
               name="token"
@@ -54,7 +54,7 @@ const Browse = () => {
               <Input className="w-full" size="large" placeholder="Masukan Token Surat" />
             </Form.Item>
             <Form.Item className="m-0">
-              <Button loading={submitLoading} icon={<SearchOutlined />} size="large" color="primary" variant="solid" htmlType="submit">
+              <Button className="w-full" loading={submitLoading} icon={<SearchOutlined />} size="large" color="primary" variant="solid" htmlType="submit">
                 Cari Surat
               </Button>
             </Form.Item>

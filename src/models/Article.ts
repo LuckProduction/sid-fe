@@ -11,9 +11,11 @@ export interface IncomingApiData {
     nama_kategori: string;
   }[];
   gambar: string;
+  dilihat: number;
   tag: string;
   user_id: number;
   status: string;
+  created_at: string;
 }
 
 export interface OutgoingApiData {
@@ -51,9 +53,11 @@ export default class Article extends Model {
       category_name: string;
     }[] = [],
     public image: string,
+    public seen: number,
     public tag: string,
     public user_id: number,
-    public status: string
+    public status: string,
+    public created_at: string
   ) {
     super();
   }
@@ -70,9 +74,11 @@ export default class Article extends Model {
         category_name: item.nama_kategori
       })),
       asset(apiData.gambar),
+      apiData.dilihat,
       apiData.tag,
       apiData.user_id,
-      apiData.status
+      apiData.status,
+      apiData.created_at
     ) as ReturnType<T, IncomingApiData, Article>;
   }
 

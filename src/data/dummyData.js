@@ -129,3 +129,40 @@ export const dummyApbdStatistic = {
     ]
   }
 };
+
+export const staticTemplateAttr = [
+  'nama_lengkap',
+  'nik',
+  'hubungan_keluarga',
+  'nomor_kk',
+  'jenis_kelamin',
+  'agama',
+  'status_perkawinan',
+  'status_penduduk',
+  'alamat_kk',
+  'dusun_id',
+  'rt',
+  'rw',
+  'alamat_sebelumnya',
+  'nomor_telepon',
+  'email',
+  'tanggal_lahir',
+  'tempat_lahir',
+  'no_akta_kelahiran',
+  'pendidikan_kk',
+  'pendidikan_sedang_ditempuh',
+  'pekerjaan',
+  'nama_ayah',
+  'nama_ibu',
+  'nik_ayah',
+  'nik_ibu',
+  'nama_perangkat_desa',
+  'nip_perangkat_desa',
+  'jenis_kelamin_perangkat_desa',
+  'tempat_lahir_perangkat_desa',
+  'tanggal_lahir_perangkat_desa',
+  'jabatan_id_perangkat_desa',
+  'alamat_perangkat_desa',
+  'status_perangkat_desa',
+  'nama_jabatan_perangkat_desa'
+];

@@ -12,24 +12,34 @@ export const landingLink = [
     element: Landing.Home
   },
   {
-    label: 'Berita',
-    key: '/news',
-    element: Landing.News
-  },
-  {
-    label: 'Layanan Administratif',
+    label: 'Tentang Desa',
     children: [
       {
-        label: 'Surat Menyurat',
-        key: '/lettering',
-        element: Landing.Lettering
+        label: 'Berita',
+        key: '/news',
+        element: Landing.News
       },
       {
         label: 'Produk Hukum',
         key: '/legal_products',
         element: Landing.LegalProducts
+      },
+      {
+        label: 'Perangkat Desa',
+        key: '/village_officials',
+        element: Landing.VillageOfficials
       }
     ]
+  },
+  {
+    label: 'Potensi',
+    key: '/village_potential',
+    element: Landing.VillagePotential
+  },
+  {
+    label: 'Surat Menyurat',
+    key: '/lettering',
+    element: Landing.Lettering
   },
   {
     label: 'Statistik',
@@ -125,6 +135,12 @@ export const dashboardLink = [
         path: '/dashboard/residential',
         label: 'Penduduk',
         element: Dashboard.Resident,
+        permissions: [[Action.READ, Model.Resident]]
+      },
+      {
+        path: '/dashboard/family',
+        label: 'Keluarga',
+        element: Dashboard.Family,
         permissions: [[Action.READ, Model.Resident]]
       },
       {

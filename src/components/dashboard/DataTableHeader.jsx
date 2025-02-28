@@ -26,7 +26,7 @@ export default function DataHeader({ modul, subtitle, selectedData, onStore, onD
       </div>
       {(children || (user && user.eitherCan([DELETE, model], [CREATE, model]))) && (
         <div className="mb-6 flex flex-col-reverse justify-end gap-2 empty:hidden md:flex-row">
-          {user && user.can(DELETE, model) && (
+          {user && user.can(DELETE, model) && onDeleteBatch && (
             <Button className="me-auto" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedData?.length} onClick={onDeleteBatch}>
               Hapus {selectedData?.length || null} Pilihan
             </Button>

@@ -1,5 +1,6 @@
 export { default as Home } from './Home';
 export { default as News } from './News';
+export { default as VillagePotential } from './VillagePotential';
 export { default as DetailNews } from './DetailNews';
 export { default as Lettering } from './lettering/Lettering';
 export { default as Browse } from './lettering/Browse';
@@ -8,3 +9,4 @@ export { default as LegalProducts } from './LegalProducts';
 export { default as ResidentStatistic } from './ResidentStatistic';
 export { default as ApdbStatistic } from './ApdbStatistic';
 export { default as VillageBoundaries } from './VillageBoundaries';
+export { default as VillageOfficials } from './VillageOfficials';

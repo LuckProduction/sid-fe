@@ -2,7 +2,7 @@ import { PAGINATION_ALL } from '@/constants';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const tenant = import.meta.env.VITE_TENANTS;
-export const BASE_URL =  baseUrl.replace('://', `://${tenant}.`) + '/api';
+export const BASE_URL = baseUrl.replace('://', `://${tenant}.`) + '/api';
 
 const controllers = {};
 

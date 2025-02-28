@@ -115,4 +115,11 @@ export default class ResidentService {
   static async export(token) {
     return await api.post('/master-penduduk/export', { token });
   }
+
+  static async getFamily({ token, page = null, perPage = null }) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get('/keluarga', { token, ...params });
+    if (!response.data) return response;
+    return { ...response, data: Resident.fromApiData(response.data) };
+  }
 }

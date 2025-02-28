@@ -103,29 +103,31 @@ const ApdbStatistic = () => {
                 <Typography.Title level={5}>Data APBD Desa</Typography.Title>
                 <p className="mb-6">Dataset ini berisi data statistik APBD desa dimana data statistik APBD desa ini diambil pada saat melakukan penginputan data APBD dalam aplikasi sistem informasi desa</p>
                 <div className="mb-6 grid w-full grid-cols-12 gap-4">
-                  <Card className="col-span-4">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-4">
                     <Statistic title="Jumlah Belanja" value={rupiahFormat(apbdStatistic?.perTahun?.belanja)} prefix={<ShoppingCartOutlined />} />
                   </Card>
-                  <Card className="col-span-4">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-4">
                     <Statistic title="Jumlah Pendapatan" value={rupiahFormat(apbdStatistic?.perTahun?.pendapatan)} prefix={<DollarOutlined />} />
                   </Card>
-                  <Card className="col-span-4">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-4">
                     <Statistic title="Defisit" value={rupiahFormat(apbdStatistic?.perTahun?.defisit)} prefix={<GroupOutlined />} />
                   </Card>
-                  <Card className="col-span-4">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-4">
                     <Statistic title="Pengeluaran" value={rupiahFormat(apbdStatistic?.perTahun?.pengeluaran)} prefix={<ShopOutlined />} />
                   </Card>
-                  <Card className="col-span-4">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-4">
                     <Statistic title="Pembiayaan" value={rupiahFormat(apbdStatistic?.perTahun?.pembiayaan)} prefix={<ExportOutlined />} />
                   </Card>
-                  <Card className="col-span-4">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-4">
                     <Statistic title="Sisa Pembiayaan" value={rupiahFormat(apbdStatistic?.perTahun?.sisa_pembiayaan)} prefix={<WalletOutlined />} />
                   </Card>
                 </div>
                 <div className="w-full p-4">
                   <Tabs>
                     <Tabs.TabPane tab="Raw Data" key="rawdata">
-                      <DataTable loading={getAllApbdStatistic.isLoading} columns={semuaColumns} data={apbdStatistic.semua ?? []} rowKey="id" />
+                      <div className="w-full max-w-full overflow-x-auto">
+                        <DataTable loading={getAllApbdStatistic.isLoading} columns={semuaColumns} data={apbdStatistic.semua ?? []} rowKey="id" />
+                      </div>
                     </Tabs.TabPane>
                     <Tabs.TabPane tab="Visualisasi" key="visualisasi">
                       <Column {...semuaChartConfig} />
@@ -139,15 +141,17 @@ const ApdbStatistic = () => {
                     <Tabs.TabPane tab={key.charAt(0).toUpperCase() + key.slice(1)} key={key}>
                       <Tabs>
                         <Tabs.TabPane tab="Raw Data" key={key + index + 'raw'}>
-                          <DataTable
-                            columns={[
-                              { title: 'Nama Komponen', dataIndex: 'nama_komponen' },
-                              { title: 'Jumlah', dataIndex: 'jumlah_anggaran' }
-                            ]}
-                            loading={getAllApbdStatistic.isLoading}
-                            data={apbdStatistic[key] ?? []}
-                            rowKey="id"
-                          />
+                          <div className="w-full max-w-full overflow-x-auto">
+                            <DataTable
+                              columns={[
+                                { title: 'Nama Komponen', dataIndex: 'nama_komponen' },
+                                { title: 'Jumlah', dataIndex: 'jumlah_anggaran' }
+                              ]}
+                              loading={getAllApbdStatistic.isLoading}
+                              data={apbdStatistic[key] ?? []}
+                              rowKey="id"
+                            />
+                          </div>
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Visualisasi" key={key + index + 'visualisasi'}>
                           <Column {...getChartConfig(apbdStatistic[key])} />

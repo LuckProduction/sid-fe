@@ -29,6 +29,4 @@ export default class VillageBoundariesService {
   static async update(data, token, file) {
     return await api.post('/batas-desa', { body: VillageBoundaries.toApiData(data), token, file: { file_batas_desa: file } });
   }
-
-
 }
