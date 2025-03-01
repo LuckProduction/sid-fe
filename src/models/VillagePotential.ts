@@ -6,12 +6,15 @@ export interface IncomingApiData {
   nama_potensi: string;
   deskripsi: string;
   lokasi: string;
+  slug: string;
   kategori: {
     id: number;
     nama_kategori: string;
   };
   foto: string;
   titik_koordinat: string;
+  dilihat: number;
+  created_at: string;
 }
 
 export interface OutgoingApiData {
@@ -42,12 +45,15 @@ export default class VillagePotential extends Model {
     public potential_name: string,
     public description: string,
     public location: string,
+    public slug: string,
     public category: {
       id: number;
       category_name: string;
     },
     public foto: string,
-    public coordinate: string
+    public coordinate: string,
+    public seen: number,
+    public created_at: string
   ) {
     super();
   }
@@ -59,12 +65,15 @@ export default class VillagePotential extends Model {
       apiData.nama_potensi,
       apiData.deskripsi,
       apiData.lokasi,
+      apiData.slug,
       {
         id: apiData.kategori.id,
         category_name: apiData.kategori.nama_kategori
       },
       asset(apiData.foto),
-      apiData.titik_koordinat
+      apiData.titik_koordinat,
+      apiData.dilihat,
+      apiData.created_at
     ) as ReturnType<T, IncomingApiData, VillagePotential>;
   }
 

@@ -1,10 +1,11 @@
 import { useAuth, useNotification, useService } from '@/hooks';
 import { LetterTemplateService } from '@/services';
-import { Skeleton } from 'antd';
+import { Descriptions, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { letterTempalteFormFields } from './FormFields';
 import { useParams } from 'react-router-dom';
 import { Crud } from '@/components';
+import { staticTemplateAttr } from '@/data/dummyData';
 
 const LetterTemplate = () => {
   const { token } = useAuth();
@@ -41,6 +42,16 @@ const LetterTemplate = () => {
         <div className="grid w-full grid-cols-12 gap-4">
           <div className="col-span-12">
             <Crud formFields={letterTempalteFormFields()} onSubmit={onSubmit} isLoading={submitLoading} type="create" initialData={letterTemplate} />
+          </div>
+
+          <div className="col-span-12">
+            <Descriptions bordered column={1}>
+              {staticTemplateAttr.map((key, index) => (
+                <Descriptions.Item key={index} label={key.replace(/_/g, ' ')}>
+                  [{key}]
+                </Descriptions.Item>
+              ))}
+            </Descriptions>
           </div>
         </div>
       )}

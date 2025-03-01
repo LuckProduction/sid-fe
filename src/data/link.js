@@ -3,7 +3,7 @@ import * as Model from '@/models';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BookOutlined, DashboardOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined } from '@ant-design/icons';
+import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, GiftOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -12,24 +12,34 @@ export const landingLink = [
     element: Landing.Home
   },
   {
-    label: 'Berita',
-    key: '/news',
-    element: Landing.News
-  },
-  {
-    label: 'Layanan Administratif',
+    label: 'Tentang Desa',
     children: [
       {
-        label: 'Surat Menyurat',
-        key: '/lettering',
-        element: Landing.Lettering
+        label: 'Berita',
+        key: '/news',
+        element: Landing.News
       },
       {
         label: 'Produk Hukum',
         key: '/legal_products',
         element: Landing.LegalProducts
+      },
+      {
+        label: 'Perangkat Desa',
+        key: '/village_officials',
+        element: Landing.VillageOfficials
       }
     ]
+  },
+  {
+    label: 'Potensi',
+    key: '/village_potential',
+    element: Landing.VillagePotential
+  },
+  {
+    label: 'Surat Menyurat',
+    key: '/lettering',
+    element: Landing.Lettering
   },
   {
     label: 'Statistik',
@@ -80,27 +90,16 @@ export const dashboardLink = [
         permissions: [[Action.READ, Model.VillageProfile]]
       },
       {
-        path: '/dashboard/officer',
-        label: 'Pengguna',
-        element: Dashboard.User
-      },
-      {
         path: '/dashboard/hamlet',
-        label: 'Dusun',
+        label: 'Wilayah Administratif',
         element: Dashboard.Hamlet,
         permissions: [[Action.READ, Model.Hamlet]]
       },
       {
         path: '/dashboard/visi-misi',
-        label: 'Visi Misi',
+        label: 'Visi Misi Desa',
         element: Dashboard.VisiMisi,
         permissions: [[Action.READ, Model.VisiMisi]]
-      },
-      {
-        path: '/dashboard/map',
-        label: 'Pemetaan',
-        element: Dashboard.Map,
-        permissions: [[Action.READ, Model.Map]]
       }
     ]
   },
@@ -134,21 +133,27 @@ export const dashboardLink = [
     children: [
       {
         path: '/dashboard/residential',
-        label: 'Kependudukan',
+        label: 'Penduduk',
         element: Dashboard.Resident,
+        permissions: [[Action.READ, Model.Resident]]
+      },
+      {
+        path: '/dashboard/family',
+        label: 'Keluarga',
+        element: Dashboard.Family,
         permissions: [[Action.READ, Model.Resident]]
       },
       {
         path: '/dashboard/prospective_voter',
         label: 'Calon Pemilih',
         element: Dashboard.ProspectiveVoters
-      },
-      {
-        path: '/dashboard/apbd_report',
-        label: 'Laporan APBD',
-        element: Dashboard.ApbdReport,
-        permissions: [[Action.READ, Model.ApbdReport]]
-      },
+      }
+    ]
+  },
+  {
+    label: 'Bantuan',
+    icon: GiftOutlined,
+    children: [
       {
         path: '/dashboard/public_assistance',
         label: 'Bantuan',
@@ -158,12 +163,24 @@ export const dashboardLink = [
     ]
   },
   {
+    label: 'Keuangan',
+    icon: DollarOutlined,
+    children: [
+      {
+        path: '/dashboard/apbd_report',
+        label: 'Laporan APBD',
+        element: Dashboard.ApbdReport,
+        permissions: [[Action.READ, Model.ApbdReport]]
+      }
+    ]
+  },
+  {
     label: 'Atikel Desa',
     icon: BookOutlined,
     children: [
       {
         path: '/dashboard/article',
-        label: 'Artikel',
+        label: 'Berita',
         element: Dashboard.Article,
         permissions: [[Action.READ, Model.Article]]
       },
@@ -178,7 +195,13 @@ export const dashboardLink = [
         label: 'Produk Hukum ',
         element: Dashboard.LegalProducts,
         permissions: [[Action.READ, Model.LegalProducts]]
-      },
+      }
+    ]
+  },
+  {
+    label: 'Layanan Administratif',
+    icon: FileOutlined,
+    children: [
       {
         path: '/dashboard/correspondence',
         label: 'Surat Menyurat',

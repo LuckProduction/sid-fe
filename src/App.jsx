@@ -9,6 +9,7 @@ import { ApbdItem, Beneficiary, CreateArticle, EditArticle, EditResident, Instit
 import { flattenLandingLinks } from './utils/landingLink';
 import { Browse, DetailNews, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound } from './pages/result';
+import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 
 function App() {
   const { isLoading, user } = useAuth();
@@ -25,7 +26,8 @@ function App() {
               path,
               element: <Element />
             })),
-            { path: '/article/detail/:id', element: <DetailNews /> },
+            { path: '/article/detail/:slug', element: <DetailNews /> },
+            { path: '/village_potential/detail/:slug', element: <DetailVillagePotential /> },
             { path: '/lettering/browse', element: <Browse /> },
             { path: '/lettering/submitletter', element: <SubmitLetter /> },
             { path: '/villageboundaries', element: <VillageBoundaries /> },

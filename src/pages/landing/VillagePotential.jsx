@@ -7,19 +7,19 @@ import { Reveal } from '@/components';
 import { useNavigate } from 'react-router-dom';
 import { EyeOutlined } from '@ant-design/icons';
 
-const News = () => {
+const VillagePotential = () => {
   const navigate = useNavigate();
-  const { execute: fetchArticle, ...getAllArticle } = useService(LandingService.getAllArticle);
+  const { execute: fetchVillagePotential, ...getAllVillagePotential } = useService(LandingService.getAllVillagePotential);
 
   const [searchValue, setSearchValue] = useState('');
 
-  const pagination = usePagination({ totalData: getAllArticle.totalData });
+  const pagination = usePagination({ totalData: getAllVillagePotential.totalData });
 
   useEffect(() => {
-    fetchArticle({ page: pagination.page, pagination: pagination.perPage, search: searchValue });
-  }, [fetchArticle, pagination.page, pagination.perPage, searchValue]);
+    fetchVillagePotential({ page: pagination.page, pagination: pagination.perPage, search: searchValue });
+  }, [fetchVillagePotential, pagination.page, pagination.perPage, searchValue]);
 
-  const article = getAllArticle.data ?? [];
+  const villagePotential = getAllVillagePotential.data ?? [];
 
   const onSearch = (value) => {
     setSearchValue(value);
@@ -30,33 +30,33 @@ const News = () => {
       <div className="flex flex-col items-end justify-between gap-y-6 md:flex-row">
         <div className="flex w-full flex-col gap-y-2">
           <Reveal>
-            <p className="text-xl font-semibold">Semua Berita:</p>
+            <p className="text-xl font-semibold">Semua Potensi Desa:</p>
           </Reveal>
         </div>
         <div className="inline-flex w-full gap-x-2">
-          <Input.Search placeholder="Cari Berita" size="large" className="w-full" onSearch={onSearch} />
+          <Input.Search placeholder="Cari Potensi Desa" size="large" className="w-full" onSearch={onSearch} />
         </div>
       </div>
       <div className="grid grid-cols-10 gap-4">
-        {getAllArticle.isLoading
+        {getAllVillagePotential.isLoading
           ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
               <Card className="col-span-10 md:col-span-5 lg:col-span-2" key={index}>
                 <Skeleton active />
               </Card>
             ))
-          : article.map((item, index) => (
+          : villagePotential.map((item, index) => (
               <Card
-                onClick={() => navigate(`/article/detail/${item.slug}`)}
+                onClick={() => navigate(`/village_potential/detail/${item.slug}`)}
                 key={index}
                 className="col-span-10 w-full md:col-span-5 lg:col-span-2"
                 hoverable
-                cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}
+                cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.foto} />}
               >
                 <Reveal>
-                  <b className="news-text">{item.title}</b>
+                  <b className="news-text">{item.potential_name}</b>
                 </Reveal>
                 <Reveal>
-                  <p className="news-text mt-2">{parse(item.content)}</p>
+                  <p className="news-text mt-2">{parse(item.description)}</p>
                 </Reveal>
                 <div className="mt-6 flex flex-col gap-y-1">
                   <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
@@ -73,4 +73,4 @@ const News = () => {
   );
 };
 
-export default News;
+export default VillagePotential;

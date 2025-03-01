@@ -143,7 +143,9 @@ const LegalProducts = () => {
             <DataLoader type="datatable" />
           ) : (
             <Card>
-              <DataTable data={legalProducts} columns={Column} pagination={pagination} loading={getAllLegalProducts.isLoading} />
+              <div className="w-full max-w-full overflow-x-auto">
+                <DataTable data={legalProducts} columns={Column} pagination={pagination} loading={getAllLegalProducts.isLoading} />
+              </div>
             </Card>
           )}
         </div>

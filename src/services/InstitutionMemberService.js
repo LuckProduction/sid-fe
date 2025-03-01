@@ -11,7 +11,7 @@ export default class InstitutionMemberService {
    *  data?: InstitutionMember[];
    * }>}
    * */
-  static async getAll(token, lembaga, page = null, perPage = null) {
+  static async getAll({ token, lembaga, page = null, perPage = null }) {
     const params = page && perPage ? { page, perPage } : {};
     const response = await api.get(`/anggota-lembaga?lembaga_desa_id=${lembaga}`, { token, ...params });
     if (!response.data) return response;

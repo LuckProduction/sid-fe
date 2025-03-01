@@ -70,15 +70,20 @@ export const villagePotentialFormFields = ({ options }) => [
     rules: [{ required: true, message: 'Logo harus diisi' }]
   },
   {
-    label: `Titik Koordinat`,
-    name: 'coordinate',
+    label: 'Lokasi',
+    type: InputType.MAP_PICKER // Tipe khusus untuk MapPicker
+  },
+  {
+    label: 'Latitude',
+    name: 'latitude', // Nama field untuk latitude
     type: InputType.TEXT,
-    rules: [
-      {
-        required: true,
-        message: `Titik Koordinat harus diisi`
-      }
-    ]
+    rules: [{ required: true, message: 'Latitude harus diisi' }]
+  },
+  {
+    label: 'Longitude',
+    name: 'longitude', // Nama field untuk longitude
+    type: InputType.TEXT,
+    rules: [{ required: true, message: 'Longitude harus diisi' }]
   }
 ];
 

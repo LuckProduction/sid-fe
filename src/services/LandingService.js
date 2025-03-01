@@ -1,4 +1,4 @@
-import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBoundaries, VillageInstitution, VillageProfile, VisiMisi } from '@/models';
+import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBoundaries, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -8,16 +8,30 @@ export default class LandingService {
     return { ...response, data: VisiMisi.fromApiData(response.data) };
   }
 
-  static async getAllArticle(page = 1, perPage = 10) {
-    const response = await api.get('/landing/artikel', { page, perPage });
+  static async getAllArticle({ page = null, perPage = null, search }) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get(`/landing/artikel?search=${search}`, { ...params });
     if (!response.data) return response;
     return { ...response, data: Article.fromApiData(response.data) };
+  }
+
+  static async getAllVillagePotential({ page = null, perPage = null, search }) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get(`/landing/potensi-desa?search=${search}`, { ...params });
+    if (!response.data) return response;
+    return { ...response, data: VillagePotential.fromApiData(response.data) };
   }
 
   static async getDetailArticle(slug) {
     const response = await api.get(`/landing/artikel/${slug}`);
     if (!response.data) return response;
     return { ...response, data: Article.fromApiData(response.data) };
+  }
+
+  static async getDetailVillagePotential(slug) {
+    const response = await api.get(`/landing/potensi/${slug}`);
+    if (!response.data) return response;
+    return { ...response, data: VillagePotential.fromApiData(response.data) };
   }
 
   static async getSpeech(page = 1, perPage = 10) {
@@ -89,5 +103,11 @@ export default class LandingService {
     const response = await api.get(`/landing/batas-desa`);
     if (!response.data) return response;
     return { ...response, data: VillageBoundaries.fromApiData(response.data) };
+  }
+
+  static async getAllVillageOfficials() {
+    const response = await api.get(`/landing/perangkat-desa`);
+    if (!response.data) return response;
+    return { ...response, data: VillageOfficials.fromApiData(response.data) };
   }
 }

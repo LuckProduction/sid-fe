@@ -93,16 +93,16 @@ const ResidentStatistic = () => {
                 <Typography.Title level={5}>Data Kependudukan Desa</Typography.Title>
                 <p className="mb-6">Dataset ini berisi data statistik kependudukan desa dimana data statistik kependudukan desa ini diambiil pada saat melakukan penginputan data kependudukan dalam aplikasi sistem informasi desa</p>
                 <div className="grid w-full grid-cols-12 gap-4">
-                  <Card className="col-span-3">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-3">
                     <Statistic title="Jumlah Penduduk" value={residentStatistic?.penduduk?.jumlah_penduduk} prefix={<TeamOutlined />} />
                   </Card>
-                  <Card className="col-span-3">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-3">
                     <Statistic title="Jumlah Kepala Keluarga" value={residentStatistic?.penduduk?.jumlah_kepala_keluarga} prefix={<UserOutlined />} />
                   </Card>
-                  <Card className="col-span-3">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-3">
                     <Statistic title="Perempuan" value={residentStatistic?.penduduk?.jumlah_perempuan} prefix={<WomanOutlined />} />
                   </Card>
-                  <Card className="col-span-3">
+                  <Card className="col-span-12 md:col-span-6 lg:col-span-3">
                     <Statistic title="Laki - Laki" value={residentStatistic?.penduduk?.jumlah_laki_laki} prefix={<ManOutlined />} />
                   </Card>
                 </div>

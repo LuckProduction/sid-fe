@@ -60,12 +60,13 @@ const VillagePotential = () => {
             title={`Edit ${Modul.VILLAGE_POTENTIALS}`}
             model={VillagePotentialModel}
             onClick={() => {
+              const [longitude, latitude] = record.coordinate.split(',').map((coord) => coord.trim());
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_POTENTIALS}`,
-                data: { ...record, category: record.category.id },
+                data: { ...record, category: record.category.id, longitude: longitude, latitude: latitude },
                 formFields: villagePotentialFormFields({ options: { category } }).filter((field) => field.name !== 'content'),
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateVillagePotential.execute(record.id, { ...values, _method: 'PUT' }, token, values.foto.file);
+                  const { message, isSuccess } = await updateVillagePotential.execute(record.id, { ...values, _method: 'PUT', coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchVillagePotential(token);
@@ -125,7 +126,7 @@ const VillagePotential = () => {
       title: `Tambah ${Modul.VILLAGE_POTENTIALS}`,
       formFields: villagePotentialFormFields({ options: { category } }).filter((field) => field.name !== 'content'),
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeVillagePotential.execute(values, token, values.foto.file);
+        const { message, isSuccess } = await storeVillagePotential.execute({ ...values, coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
         if (isSuccess) {
           success('Berhasil', message);
           fetchVillagePotential(token);

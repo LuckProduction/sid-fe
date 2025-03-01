@@ -1,49 +1,47 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Image, Pagination, Skeleton, Space, Typography } from 'antd';
+import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Image, Skeleton, Space, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import parse from 'html-react-parser';
 import { Reveal } from '@/components';
 
 const Home = () => {
+  const { villageProfile, speech, visiMisi, institution } = useOutletContext();
+
   const navigate = useNavigate();
-  const { villageProfile, article, speech, visiMisi, institution } = useOutletContext();
 
   const executeVillageProfile = useCallback(() => villageProfile.execute(), [villageProfile]);
   const executeVisiMisi = useCallback(() => visiMisi.execute(), [visiMisi]);
   const executeSpeech = useCallback(() => speech.execute(), [speech]);
-  const executeArticle = useCallback(() => article.execute(), [article]);
   const executeInstitution = useCallback(() => institution.execute(), [institution]);
 
   useEffect(() => {
     executeVillageProfile();
     executeVisiMisi();
     executeSpeech();
-    executeArticle();
     executeInstitution();
   }, []);
 
   return (
     <>
-      <section className="mx-auto grid max-w-screen-xl grid-cols-12 items-center gap-x-10 px-4 py-28">
+      <section className="mx-auto grid w-full max-w-screen-xl grid-cols-6 items-center gap-x-10 px-6 py-28">
         {villageProfile.isLoading ? (
           <>
-            <div className="col-span-6">
+            <div className="col-span-6 lg:col-span-3">
               <Skeleton.Image active size={100} shape="circle" className="mb-6" />
               <Skeleton active className="mb-6" />
               <Skeleton.Button active />
             </div>
-            <div className="col-span-6 flex w-full items-center justify-center">
+            <div className="col-span-3 hidden w-full items-center justify-center lg:flex">
               <Skeleton.Node active style={{ width: '500px', height: '360px' }} />
             </div>
           </>
         ) : (
           <>
-            <div className="col-span-6 flex flex-col gap-y-4">
+            <div className="col-span-6 flex w-full flex-col gap-y-4 lg:col-span-3">
               <Image src={villageProfile?.data?.village_logo} preview={false} width={100} />
               <div>
-                <Typography.Title style={{ margin: 0, marginBottom: 6 }}>
+                <Typography.Title>
                   <Reveal>
                     Sistem Informasi Desa <span className="text-blue-500">{villageProfile?.data?.village_name}</span>
                   </Reveal>
@@ -69,7 +67,7 @@ const Home = () => {
                 </Button>
               </Space>
             </div>
-            <div className="order-last col-span-6 ml-28 grid grid-cols-12 gap-x-4">
+            <div className="order-last col-span-3 hidden grid-cols-12 gap-x-4 lg:grid">
               <div className="col-span-6 flex flex-col gap-y-4">
                 <Reveal>
                   <div className="inline-flex gap-x-4 rounded-xl bg-gray-100 p-5">
@@ -103,25 +101,24 @@ const Home = () => {
           </>
         )}
       </section>
-      <section className="w-full bg-white py-24">
-        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-12 gap-x-24 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 px-20 py-16">
+      <section className="w-full bg-white px-4 py-24">
+        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-4 gap-x-24 gap-y-12 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 px-6 py-12 lg:grid-cols-8 lg:px-20 lg:py-16">
           {visiMisi.isLoading ? (
-            <Skeleton active className="col-span-12" />
+            <Skeleton active className="col-span-4 lg:col-span-8" />
           ) : (
             <>
-              <div className="col-span-4 flex flex-col gap-y-6">
+              <div className="col-span-4 flex flex-col gap-y-6 lg:col-span-3">
                 <div className="flex flex-col gap-y-3">
-                  <h2 className="w-fit rounded-full border border-white px-4 py-2 text-sm font-semibold text-white">Visi dan Misi</h2>
                   <p className="max-w-44 text-xl font-semibold text-white">Visi dan Misi Desa {villageProfile?.data?.village_name} :</p>
                 </div>
                 <p className="text-sm text-white">{visiMisi.data?.find((item) => item.type === 'visi')?.content}</p>
               </div>
-              <div className="col-span-8 grid grid-cols-12 gap-6 p-2">
+              <div className="col-span-4 grid grid-cols-4 gap-6 lg:col-span-5">
                 {visiMisi?.data &&
                   visiMisi?.data
                     .filter((item) => item.type !== 'visi') // Hanya ambil item yang bukan "visi"
                     .map((item, index) => (
-                      <Card key={item.id} className="col-span-6 border-none bg-blue-400 transition-all duration-300 hover:-translate-y-2">
+                      <Card key={item.id} className="col-span-4 border-none bg-blue-400 transition-all duration-300 hover:-translate-y-2 lg:col-span-2">
                         <div className="flex flex-col gap-y-2 p-4">
                           <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-center text-lg font-bold text-blue-500">0{index + 1}</span>
                           <h3 className="text-lg font-semibold text-white">Misi No {index + 1}</h3>
@@ -135,9 +132,9 @@ const Home = () => {
         </div>
       </section>
       <section className="w-full bg-gray-100">
-        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-10 items-center gap-x-10 px-6 py-32">
+        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-8 items-center gap-x-10 gap-y-12 px-6 py-16 lg:py-32">
           {villageProfile.isLoading ? (
-            <div className="col-span-5 flex flex-col gap-y-6">
+            <div className="col-span-8 flex flex-col gap-y-6 lg:col-span-4">
               <div className="flex flex-col gap-y-2">
                 <h2 className="font-semibold text-blue-500">Batas Desa</h2>
                 <p className="text-2xl font-semibold">Batas Desa Sukma</p>
@@ -154,7 +151,7 @@ const Home = () => {
               <Skeleton.Button active />
             </div>
           ) : (
-            <div className="col-span-5 flex flex-col gap-y-6">
+            <div className="col-span-8 flex flex-col gap-y-6 lg:col-span-4">
               <div className="flex flex-col gap-y-2">
                 <Reveal>
                   <h2 className="font-semibold text-blue-500">Batas Desa</h2>
@@ -186,25 +183,19 @@ const Home = () => {
                   </li>
                 </Reveal>
               </ul>
-              <Button
-                 className="mt-2 w-fit" 
-                 variant="solid" 
-                 color="primary" 
-                 size="large" 
-                 icon={<EnvironmentOutlined />} 
-                 onClick={() => navigate('/villageboundaries')}>
+              <Button className="mt-2 w-fit" variant="solid" color="primary" size="large" icon={<EnvironmentOutlined />} onClick={() => navigate('/villageboundaries')}>
                 Lihat Batas Desa
               </Button>
             </div>
           )}
 
-          <div className="col-span-5 flex items-center justify-center">
+          <div className="col-span-8 flex items-center justify-center lg:col-span-4">
             <img src="/illustration/map.png" />
           </div>
         </div>
       </section>
       <section className="w-full bg-blue-500">
-        <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 py-24">
+        <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-6 py-24">
           <div className="flex w-full flex-col gap-y-2">
             <Reveal>
               <h2 className="text-sm font-semibold text-white">Lembaga</h2>
@@ -216,19 +207,19 @@ const Home = () => {
           <div className="grid w-full grid-cols-12 items-center justify-center gap-4">
             {institution.isLoading
               ? Array.from({ length: 6 }, (_, i) => i).map((index) => (
-                <Card className="col-span-2" key={index}>
-                  <Skeleton active />
-                </Card>
-              ))
+                  <Card className="col-span-12 md:col-span-4 lg:col-span-2" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
               : institution?.data?.map((item) => (
-                <Card className="col-span-2 h-full" key={item.id}>
-                  <div className="flex flex-col items-center gap-y-4">
-                    <Image width={64} src={item.image} className="mb-4" />
-                    <b className="text-center">{item.institution_name}</b>
-                    <small className="text-center">{item.desc}</small>
-                  </div>
-                </Card>
-              ))}
+                  <Card className="col-span-12 h-full md:col-span-4 lg:col-span-2" key={item.id}>
+                    <div className="flex flex-col items-center gap-y-4">
+                      <Image width={64} src={item.image} className="mb-4" />
+                      <b className="text-center">{item.institution_name}</b>
+                      <small className="news-text text-center">{item.desc}</small>
+                    </div>
+                  </Card>
+                ))}
           </div>
         </div>
       </section>
@@ -246,7 +237,6 @@ const Home = () => {
             <Skeleton active className="p-16" />
           ) : (
             <>
-              <img src={speech?.data?.village_officials?.foto} className="w-full flex-1 rounded-l-lg object-cover grayscale transition-all duration-300 hover:grayscale-0" />
               <div className="flex-2 flex w-full flex-col p-12">
                 <svg className="h-16 w-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -261,42 +251,6 @@ const Home = () => {
               </div>
             </>
           )}
-        </div>
-      </section>
-      <section className="w-full bg-gray-100">
-        <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-8 px-4 py-20">
-          <div className="flex items-end justify-between">
-            <div className="flex flex-col gap-y-2">
-              <Reveal>
-                <h2 className="text-sm font-semibold text-blue-500">Berita</h2>
-              </Reveal>
-              <Reveal>
-                <p className="max-w-44 text-xl font-semibold">Berita khas desa Sukma terbaru :</p>
-              </Reveal>
-            </div>
-            <Button icon={<RightOutlined />} onClick={() => navigate('/news')} iconPosition="end" variant="solid" color="primary">
-              Lihat Selengkapnya
-            </Button>
-          </div>
-          <div className="grid grid-cols-10 gap-4">
-            {article.isLoading
-              ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
-                <Card className="col-span-2" key={index}>
-                  <Skeleton active />
-                </Card>
-              ))
-              : article?.data?.slice(0, 5).map((item, index) => (
-                <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
-                  <Reveal>
-                    <b className="news-text">{item.title}</b>
-                  </Reveal>
-                  <Reveal>
-                    <p className="news-text mt-2">{parse(item.content)}</p>
-                  </Reveal>
-                </Card>
-              ))}
-          </div>
-          <Pagination />
         </div>
       </section>
     </>
