@@ -1,4 +1,4 @@
-import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageInstitution, VillageProfile, VisiMisi } from '@/models';
+import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBoundaries, VillageInstitution, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -83,5 +83,11 @@ export default class LandingService {
     const response = await api.get(`/statistik/apbd`);
     if (!response.data) return response;
     return { ...response, data: response.data };
+  }
+
+  static async getAllVillageBoundaries() {
+    const response = await api.get(`/landing/batas-desa`);
+    if (!response.data) return response;
+    return { ...response, data: VillageBoundaries.fromApiData(response.data) };
   }
 }

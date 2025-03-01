@@ -7,3 +7,4 @@ export { default as SubmitLetter } from './lettering/SubmitLetter';
 export { default as LegalProducts } from './LegalProducts';
 export { default as ResidentStatistic } from './ResidentStatistic';
 export { default as ApdbStatistic } from './ApdbStatistic';
+export { default as VillageBoundaries } from './VillageBoundaries';

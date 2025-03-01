@@ -147,3 +147,96 @@ export const speechFormFields = () => [
     ]
   }
 ];
+
+export const VillageBoundariesFormFields = () => [
+  {
+    label: 'Batas Utara',
+    name: 'north',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: 'Batas Utara harus diisi'
+      }
+    ]
+  },
+  {
+    label: 'Batas Selatan',
+    name: 'south',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: 'Batas Selatan harus diisi'
+      }
+    ]
+  },
+  {
+    label: 'Batas timur',
+    name: 'east',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: 'Batas timur harus diisi'
+      }
+    ]
+  },
+  {
+    label: 'Batas barat',
+    name: 'west',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: 'Batas barat harus diisi'
+      }
+    ]
+  },
+  {
+    label: 'Luas Wilayah',
+    name: 'area',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: 'Luas Wilayah harus diisi'
+      }
+    ]
+  },
+  {
+    label: 'Lokasi',
+    type: InputType.MAP_PICKER // Tipe khusus untuk MapPicker
+  },
+  {
+    label: 'Latitude',
+    name: 'latitude', // Nama field untuk latitude
+    type: InputType.TEXT,
+    rules: [{ required: true, message: 'Latitude harus diisi' }]
+  },
+  {
+    label: 'Longitude',
+    name: 'longitude', // Nama field untuk longitude
+    type: InputType.TEXT,
+    rules: [{ required: true, message: 'Longitude harus diisi' }]
+  },
+  {
+    label: `File Batas`,
+    name: 'adiministrative_file',
+    type: InputType.UPLOAD,
+    max: 1,
+    beforeUpload: () => {
+      return false;
+    },
+    getFileList: (data) => {
+      return [
+        {
+          url: data?.adiministrative_file,
+          name: data?.name
+        }
+      ];
+    },
+    accept: ['.geojson'],
+    rules: [{ required: true, message: `File Batas harus diisi` }]
+  }
+];

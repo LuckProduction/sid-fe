@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { ApbdItem, Beneficiary, CreateArticle, EditArticle, EditResident, InstitutionMember, Lettering, ProfileSettings } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
-import { Browse, DetailNews, SubmitLetter } from './pages/landing';
+import { Browse, DetailNews, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound } from './pages/result';
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
             { path: '/article/detail/:id', element: <DetailNews /> },
             { path: '/lettering/browse', element: <Browse /> },
             { path: '/lettering/submitletter', element: <SubmitLetter /> },
+            { path: '/villageboundaries', element: <VillageBoundaries /> },
             { path: '*', element: <Notfound /> }
           ]
         },
