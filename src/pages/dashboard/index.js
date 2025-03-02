@@ -7,6 +7,7 @@ export { default as EditArticle } from './article/Edit';
 
 export { default as Resident } from './resident/Resident';
 export { default as Family } from './resident/Family';
+export { default as FamilyDetail } from './resident/FamilyDetail';
 // export { default as CreateResident } from './resident/Create';
 export { default as EditResident } from './resident/Edit';
 

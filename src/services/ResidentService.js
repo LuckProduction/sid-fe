@@ -122,4 +122,11 @@ export default class ResidentService {
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }
+
+  static async getFamilyDetail({ id, token, page = null, perPage = null }) {
+    const params = page && perPage ? { page, perPage } : {};
+    const response = await api.get(`/keluarga/${id}`, { token, ...params });
+    if (!response.data) return response;
+    return { ...response, data: Resident.fromApiData(response.data) };
+  }
 }

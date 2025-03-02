@@ -5,7 +5,7 @@ import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
-import { ApbdItem, Beneficiary, CreateArticle, EditArticle, EditResident, InstitutionMember, Lettering, ProfileSettings } from './pages/dashboard';
+import { ApbdItem, Beneficiary, CreateArticle, EditArticle, EditResident, FamilyDetail, InstitutionMember, Lettering, ProfileSettings } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
 import { Browse, DetailNews, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound } from './pages/result';
@@ -71,7 +71,8 @@ function App() {
             { path: '/dashboard/apbd_report/:id/apbd-item', element: <ApbdItem /> },
             { path: '/dashboard/village_institutions/:id/institution_member', element: <InstitutionMember /> },
             { path: '/dashboard/correspondence/:id/lettering', element: <Lettering /> },
-            { path: '/dashboard/profile-settings', element: <ProfileSettings /> }
+            { path: '/dashboard/profile-settings', element: <ProfileSettings /> },
+            { path: '/dashboard/family/:id/detail', element: <FamilyDetail /> }
           ]
         },
         {

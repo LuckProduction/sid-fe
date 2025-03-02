@@ -35,6 +35,7 @@ export interface IncomingApiData {
     pekerjaan: string;
     pendidikan_sedang_ditempuh: string;
   };
+  keluarga_terkait?: IncomingApiData[];
 }
 
 export interface OutgoingApiData {
@@ -148,7 +149,18 @@ export default class Resident extends Model {
       education_kk: string;
       career: string;
       education_in_progress: string;
-    }
+    },
+    public detail_family?: {
+      id: number;
+      nik: number;
+      full_name: string;
+      family_relation: string;
+      resident_status: 'tetap' | 'tidak tetap';
+      marital_status: 'menikah' | 'belum menikah';
+      kk_number: number;
+      gender: string;
+      religion: string;
+    }[]
   ) {
     super();
   }
@@ -197,6 +209,19 @@ export default class Resident extends Model {
             career: apiData.pekerjaan_pendidikan.pekerjaan,
             education_in_progress: apiData.pekerjaan_pendidikan.pendidikan_sedang_ditempuh
           }
+        : undefined,
+      apiData.keluarga_terkait
+        ? apiData.keluarga_terkait.map((keluarga) => ({
+            id: keluarga.id,
+            nik: keluarga.nik,
+            full_name: keluarga.nama_lengkap,
+            family_relation: keluarga.hubungan_keluarga,
+            resident_status: keluarga.status_penduduk,
+            marital_status: keluarga.status_perkawinan,
+            kk_number: keluarga.nomor_kk,
+            gender: keluarga.jenis_kelamin,
+            religion: keluarga.agama
+          }))
         : undefined
     ) as ReturnType<T, IncomingApiData, Resident>;
   }

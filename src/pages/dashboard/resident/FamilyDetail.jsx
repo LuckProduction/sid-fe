@@ -1,34 +1,39 @@
 import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import { useAuth, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
-import { Button, Card, Tag } from 'antd';
+import { Card, Descriptions, Tag } from 'antd';
 import { useCallback, useEffect } from 'react';
 import Modul from '@/constants/Modul';
 import { Resident as ResidentModel } from '@/models';
-import { DatabaseOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-const Family = () => {
+const FamilyDetail = () => {
   const { token } = useAuth();
-  const navigate = useNavigate();
-  const { execute, ...getAllFamily } = useService(ResidentService.getFamily);
-  const pagination = usePagination({ totalData: getAllFamily.totalData });
+  const { id } = useParams();
+  const { execute, ...getAllFamilyDetail } = useService(ResidentService.getFamilyDetail);
+  const pagination = usePagination({ totalData: getAllFamilyDetail.totalData });
 
-  const fetchFamily = useCallback(() => {
-    execute({ token: token, page: pagination.page, perPage: pagination.perPage });
-  }, [execute, pagination.page, pagination.perPage, token]);
+  const fetchFamilyDetail = useCallback(() => {
+    execute({ id: id, token: token, page: pagination.page, perPage: pagination.perPage });
+  }, [execute, id, pagination.page, pagination.perPage, token]);
 
   useEffect(() => {
-    fetchFamily();
-  }, [fetchFamily]);
+    fetchFamilyDetail();
+  }, [fetchFamilyDetail]);
 
-  const family = getAllFamily.data ?? [];
+  const familyDetail = getAllFamilyDetail.data ?? [];
 
   const column = [
     {
       title: 'Nama Lengkap',
       dataIndex: 'full_name',
       sorter: (a, b) => a.full_name.length - b.full_name.length,
+      searchable: true
+    },
+    {
+      title: 'NIK',
+      dataIndex: 'nik',
+      sorter: (a, b) => a.nik.length - b.nik.length,
       searchable: true
     },
     {
@@ -58,22 +63,26 @@ const Family = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
-    },
-    {
-      title: 'Aksi',
-      render: (_, record) => <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/detail`)} />
     }
   ];
 
   return (
     <>
-      {getAllFamily.isLoading ? (
+      {getAllFamilyDetail.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <DataTableHeader modul={Modul.FAMILY} model={ResidentModel} />
+          <DataTableHeader modul={Modul.FAMILY_DETAIL} model={ResidentModel} />
+
+          <div className="mb-6 w-full">
+            <Descriptions bordered column={1}>
+              <Descriptions.Item label="Nomor Kartu Keluarga">{familyDetail.kk_number}</Descriptions.Item>
+              <Descriptions.Item label="Kepala Keluarga">{familyDetail.full_name}</Descriptions.Item>
+              <Descriptions.Item label="NIK Kepala Keluarga">{familyDetail.nik}</Descriptions.Item>
+            </Descriptions>
+          </div>
           <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={family} columns={column} loading={getAllFamily.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
+            <DataTable data={familyDetail.detail_family ?? []} columns={column} loading={getAllFamilyDetail.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
           </div>
         </Card>
       )}
@@ -81,4 +90,4 @@ const Family = () => {
   );
 };
 
-export default Family;
+export default FamilyDetail;
