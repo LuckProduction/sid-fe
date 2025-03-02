@@ -223,36 +223,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 py-24">
-        <div className="flex flex-col items-center justify-center gap-y-2">
-          <Reveal>
-            <h2 className="text-sm font-semibold text-blue-500">Sambutan</h2>
-          </Reveal>
-          <Reveal>
-            <p className="text-xl font-semibold">Sambutan Kepala Desa</p>
-          </Reveal>
-        </div>
-        <div className="flex w-full max-w-4xl gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md">
-          {speech.isLoading ? (
-            <Skeleton active className="p-16" />
-          ) : (
-            <>
-              <div className="flex-2 flex w-full flex-col p-12">
-                <svg className="h-16 w-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                  <path
-                    fillRule="evenodd"
-                    d="M6 6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3H5a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2H6Zm9 0a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3h-1a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <p className="mb-12 w-full">{speech?.data?.content}</p>
-                <b className="w-full">{speech?.data?.village_officials?.name}</b>
-                <small className="mb-2 w-full">{speech?.data?.village_officials?.employment?.employment_name}</small>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
     </>
   );
 };

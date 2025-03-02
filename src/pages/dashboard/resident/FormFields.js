@@ -359,7 +359,166 @@ export const educationCareerFormFields = () => [
   }
 ];
 
-export const formFields = () => [
+export const formFields = () => {
+  const form = [
+    {
+      label: `NIK`,
+      name: 'nik',
+      type: InputType.TEXT,
+      rules: [
+        {
+          required: true,
+          message: `NIK harus diisi`
+        }
+      ]
+    },
+    {
+      label: `Nomor KK`,
+      name: 'kk_number',
+      type: InputType.TEXT,
+      rules: [
+        {
+          required: true,
+          message: `Nomor KK harus diisi`
+        }
+      ]
+    },
+    {
+      label: `Nama Lengkap`,
+      name: 'full_name',
+      type: InputType.TEXT,
+      rules: [
+        {
+          required: true,
+          message: `Nama Lengkap harus diisi`
+        }
+      ]
+    },
+    {
+      label: `Hubungan Keluarga`,
+      name: 'family_relation',
+      type: InputType.SELECT,
+      rules: [
+        {
+          required: true,
+          message: `Hubungan Keluarga harus diisi`
+        }
+      ],
+      options: [
+        {
+          label: 'Kepala Keluarga',
+          value: 'kepala keluarga'
+        },
+        {
+          label: 'Suami',
+          value: 'suami'
+        },
+        {
+          label: 'Istri',
+          value: 'istri'
+        },
+        {
+          label: 'Anak',
+          value: 'anak'
+        },
+        {
+          label: 'Mantu',
+          value: 'mantu'
+        },
+        {
+          label: 'Cucu',
+          value: 'cucu'
+        }
+      ]
+    },
+    {
+      label: `Status Kependudukan`,
+      name: 'resident_status',
+      type: InputType.SELECT,
+      rules: [
+        {
+          required: true,
+          message: `Status Kependudukan harus diisi`
+        }
+      ],
+      options: [
+        {
+          label: 'Tetap',
+          value: 'tetap'
+        },
+        {
+          label: 'Tidak Tetap',
+          value: 'tidak tetap'
+        }
+      ]
+    },
+    {
+      label: `Status Pernikahan`,
+      name: 'marital_status',
+      type: InputType.SELECT,
+      rules: [
+        {
+          required: true,
+          message: `Status Pernikahan harus diisi`
+        }
+      ],
+      options: [
+        {
+          label: 'Menikah',
+          value: 'telah menikah'
+        },
+        {
+          label: 'Belum Menikah',
+          value: 'belum menikah'
+        },
+        {
+          label: 'Cerai Hidup',
+          value: 'cerai hidup'
+        },
+        {
+          label: 'Cerai Mati',
+          value: 'cerai mati'
+        }
+      ]
+    },
+    {
+      label: `Jenis Kelamin`,
+      name: 'gender',
+      type: InputType.SELECT,
+      rules: [
+        {
+          required: true,
+          message: `Jenis Kelamin harus diisi`
+        }
+      ],
+      options: [
+        {
+          label: 'Laki Laki',
+          value: 'L'
+        },
+        {
+          label: 'Perempuan',
+          value: 'P'
+        }
+      ]
+    },
+    {
+      label: `Agama`,
+      name: 'religion',
+      type: InputType.TEXT,
+      rules: [
+        {
+          required: true,
+          message: `Agama harus diisi`
+        }
+      ]
+    }
+  ];
+
+  return [...form, ...brithFormField()];
+};
+
+export const FamilyDetailFormFields = () => [
   {
     label: `NIK`,
     name: 'nik',
@@ -368,17 +527,6 @@ export const formFields = () => [
       {
         required: true,
         message: `NIK harus diisi`
-      }
-    ]
-  },
-  {
-    label: `Nomor KK`,
-    name: 'kk_number',
-    type: InputType.TEXT,
-    rules: [
-      {
-        required: true,
-        message: `Nomor KK harus diisi`
       }
     ]
   },

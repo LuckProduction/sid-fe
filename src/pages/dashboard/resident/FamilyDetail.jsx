@@ -1,16 +1,27 @@
 import { DataLoader, DataTable, DataTableHeader } from '@/components';
-import { useAuth, usePagination, useService } from '@/hooks';
+import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
-import { Card, Descriptions, Tag } from 'antd';
+import { Button, Card, Descriptions, Space, Tag } from 'antd';
 import { useCallback, useEffect } from 'react';
 import Modul from '@/constants/Modul';
 import { Resident as ResidentModel } from '@/models';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { PlusOutlined } from '@ant-design/icons';
+import { FamilyDetailFormFields } from './FormFields';
+import { Action } from '@/constants';
+import { Delete, Edit } from '@/components/dashboard/button';
+
+const { UPDATE, DELETE } = Action;
 
 const FamilyDetail = () => {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { id } = useParams();
+  const modal = useCrudModal();
+  const navigate = useNavigate();
+  const { success, error } = useNotification();
   const { execute, ...getAllFamilyDetail } = useService(ResidentService.getFamilyDetail);
+  const storeResident = useService(ResidentService.store);
+  const deleteResident = useService(ResidentService.delete);
   const pagination = usePagination({ totalData: getAllFamilyDetail.totalData });
 
   const fetchFamilyDetail = useCallback(() => {
@@ -66,6 +77,44 @@ const FamilyDetail = () => {
     }
   ];
 
+  if (user && user.eitherCan([UPDATE, ResidentModel], [DELETE, ResidentModel])) {
+    column.push({
+      title: 'Aksi',
+      render: (_, record) => (
+        <Space size="small">
+          <Edit
+            model={ResidentModel}
+            title={`Edit ${Modul.RESIDENTIAL}`}
+            onClick={() => {
+              navigate('/dashboard/residential' + '/edit/' + record.id);
+            }}
+          />
+          <Delete
+            model={ResidentModel}
+            title={`Delete ${Modul.RESIDENTIAL}`}
+            onClick={() => {
+              modal.delete.default({
+                title: `Delete ${Modul.RESIDENTIAL}`,
+                data: record,
+                formFields: FamilyDetailFormFields,
+                onSubmit: async () => {
+                  const { isSuccess, message } = await deleteResident.execute(record.id, token);
+                  if (isSuccess) {
+                    success('Berhasil', message);
+                    fetchFamilyDetail();
+                  } else {
+                    error('Gagal', message);
+                  }
+                  return isSuccess;
+                }
+              });
+            }}
+          />
+        </Space>
+      )
+    });
+  }
+
   return (
     <>
       {getAllFamilyDetail.isLoading ? (
@@ -73,12 +122,34 @@ const FamilyDetail = () => {
       ) : (
         <Card>
           <DataTableHeader modul={Modul.FAMILY_DETAIL} model={ResidentModel} />
-
           <div className="mb-6 w-full">
             <Descriptions bordered column={1}>
               <Descriptions.Item label="Nomor Kartu Keluarga">{familyDetail.kk_number}</Descriptions.Item>
               <Descriptions.Item label="Kepala Keluarga">{familyDetail.full_name}</Descriptions.Item>
               <Descriptions.Item label="NIK Kepala Keluarga">{familyDetail.nik}</Descriptions.Item>
+              <Descriptions.Item label="Aksi">
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    modal.create({
+                      title: `Tambah ${Modul.RESIDENTIAL} `,
+                      formFields: FamilyDetailFormFields,
+                      onSubmit: async (values) => {
+                        const { message, isSuccess } = await storeResident.execute({ ...values, kk_number: familyDetail.kk_number }, token);
+                        if (isSuccess) {
+                          success('Berhasil', message);
+                          fetchFamilyDetail();
+                        } else {
+                          error('Gagal', message);
+                        }
+                        return isSuccess;
+                      }
+                    });
+                  }}
+                >
+                  Tambah Data Keluarga
+                </Button>
+              </Descriptions.Item>
             </Descriptions>
           </div>
           <div className="w-full max-w-full overflow-x-auto">

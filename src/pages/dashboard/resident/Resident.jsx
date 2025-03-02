@@ -9,6 +9,7 @@ import { Action, InputType } from '@/constants';
 import { formFields } from './FormFields';
 import { Resident as ResidentModel } from '@/models';
 import { Delete, Edit } from '@/components/dashboard/button';
+import dateFormatter from '@/utils/dateFormatter';
 
 const { UPDATE, DELETE } = Action;
 
@@ -36,7 +37,7 @@ const Resident = () => {
   const resident = getAllResident.data ?? [];
 
   const exportResident = () => {
-    fetch('http://127.0.0.1:8000/api/master-penduduk/export', {
+    fetch('http://desa1.localhost:8000/api/master-penduduk/export?penduduk=true', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -48,7 +49,7 @@ const Resident = () => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'users.xlsx';
+        a.download = 'master_penduduk.xlsx';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -201,7 +202,7 @@ const Resident = () => {
       title: `Tambah ${Modul.RESIDENTIAL} `,
       formFields: formFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeResident.execute(values, token);
+        const { message, isSuccess } = await storeResident.execute({ ...values, birth: { birth_date: dateFormatter(values.birth_date), akta_kelahiran_number: values.akta_kelahiran_number, birth_place: values.birth_place } }, token);
         if (isSuccess) {
           success('Berhasil', message);
           fetchResident(token);

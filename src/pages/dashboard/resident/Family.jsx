@@ -1,5 +1,5 @@
 import { DataLoader, DataTable, DataTableHeader } from '@/components';
-import { useAuth, usePagination, useService } from '@/hooks';
+import { useAuth, useNotification, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
 import { Button, Card, Tag } from 'antd';
 import { useCallback, useEffect } from 'react';
@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 const Family = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
+  const { success, error } = useNotification();
+
   const { execute, ...getAllFamily } = useService(ResidentService.getFamily);
   const pagination = usePagination({ totalData: getAllFamily.totalData });
 
@@ -23,6 +25,27 @@ const Family = () => {
   }, [fetchFamily]);
 
   const family = getAllFamily.data ?? [];
+
+  const exportFamily = () => {
+    fetch('http://desa1.localhost:8000/api/master-penduduk/export?keluarga=true', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'master_keluarga.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => console.error('Export failed:', error));
+  };
 
   const column = [
     {
@@ -65,13 +88,24 @@ const Family = () => {
     }
   ];
 
+  const onExport = () => {
+    const { message, isSuccess } = exportFamily();
+    if (isSuccess) {
+      success('Berhasil', message);
+      fetchFamily(token);
+    } else {
+      error('Gagal', message);
+    }
+    return isSuccess;
+  };
+
   return (
     <>
       {getAllFamily.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <DataTableHeader modul={Modul.FAMILY} model={ResidentModel} />
+          <DataTableHeader modul={Modul.FAMILY} model={ResidentModel} onExport={onExport} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable data={family} columns={column} loading={getAllFamily.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
           </div>

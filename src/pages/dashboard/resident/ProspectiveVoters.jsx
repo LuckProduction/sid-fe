@@ -1,12 +1,14 @@
-import { DataLoader, DataTable } from '@/components';
+import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
-import { useAuth, usePagination, useService } from '@/hooks';
+import { useAuth, useNotification, usePagination, useService } from '@/hooks';
 import { ProspectiveVotersService } from '@/services';
-import { Card, Tag, Typography } from 'antd';
+import { Card, Tag } from 'antd';
 import { useEffect } from 'react';
+import { Resident as ResidentModel } from '@/models';
 
 const ProspectiveVoters = () => {
   const { token } = useAuth();
+  const { success, error } = useNotification();
   const { execute: fetchProspectiveVoter, ...getAllProspectiveVoter } = useService(ProspectiveVotersService.getAll);
   const pagination = usePagination({ totalData: getAllProspectiveVoter.totalData });
 
@@ -15,6 +17,27 @@ const ProspectiveVoters = () => {
   }, [fetchProspectiveVoter, pagination.page, pagination.perPage, token]);
 
   const prospectiveVoter = getAllProspectiveVoter.data ?? [];
+
+  const exportProspectiveVoters = () => {
+    fetch('http://desa1.localhost:8000/api/master-penduduk/export?calon_pemilih=true', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'master_calon_pemilih.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => console.error('Export failed:', error));
+  };
 
   const column = [
     {
@@ -53,15 +76,24 @@ const ProspectiveVoters = () => {
     }
   ];
 
+  const onExport = () => {
+    const { message, isSuccess } = exportProspectiveVoters();
+    if (isSuccess) {
+      success('Berhasil', message);
+      fetchProspectiveVoter(token);
+    } else {
+      error('Gagal', message);
+    }
+    return isSuccess;
+  };
+
   return (
     <>
       {getAllProspectiveVoter.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <div className="mb-6">
-            <Typography.Title level={5}>Data {Modul.PROSPECTIVE_VOTER}</Typography.Title>
-          </div>
+          <DataTableHeader modul={Modul.PROSPECTIVE_VOTER} model={ResidentModel} onExport={onExport} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable data={prospectiveVoter} columns={column} loading={getAllProspectiveVoter.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
           </div>
