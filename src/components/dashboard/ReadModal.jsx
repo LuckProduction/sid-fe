@@ -7,7 +7,7 @@ export default function ReadModal({ title, isModalOpen, close, data, type = Read
     [ReadModalType.PARAGRAPH]: (
       <div className="flex flex-col gap-4">
         {data.title && <Typography.Title level={data.title.level || 1}>{data.title.text}</Typography.Title>}
-        <p>{data.content}</p>
+        <div>{data.content}</div>
       </div>
     ),
     [ReadModalType.LIST]: <List bordered dataSource={data} renderItem={(item) => <List.Item>{item}</List.Item>} />,

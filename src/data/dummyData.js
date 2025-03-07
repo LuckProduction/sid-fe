@@ -166,3 +166,18 @@ export const staticTemplateAttr = [
   'status_perangkat_desa',
   'nama_jabatan_perangkat_desa'
 ];
+
+export const dummyListAnggota = [
+  {
+    title: 'Ant Design Title 1'
+  },
+  {
+    title: 'Ant Design Title 2'
+  },
+  {
+    title: 'Ant Design Title 3'
+  },
+  {
+    title: 'Ant Design Title 4'
+  }
+];

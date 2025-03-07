@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Image, Skeleton, Space, Typography } from 'antd';
+import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
+import { useCrudModal } from '@/hooks';
+import { dummyListAnggota } from '@/data/dummyData';
 
 const Home = () => {
   const { villageProfile, speech, visiMisi, institution } = useOutletContext();
 
   const navigate = useNavigate();
+  const modal = useCrudModal();
 
   const executeVillageProfile = useCallback(() => villageProfile.execute(), [villageProfile]);
   const executeVisiMisi = useCallback(() => visiMisi.execute(), [visiMisi]);
@@ -100,6 +103,37 @@ const Home = () => {
             </div>
           </>
         )}
+      </section>
+      <section className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 py-24">
+        <div className="flex flex-col items-center justify-center gap-y-2">
+          <Reveal>
+            <h2 className="text-sm font-semibold text-blue-500">Sambutan</h2>
+          </Reveal>
+          <Reveal>
+            <p className="text-xl font-semibold">Sambutan Kepala Desa</p>
+          </Reveal>
+        </div>
+        <div className="flex w-full max-w-4xl flex-col gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md lg:flex-row">
+          {speech.isLoading ? (
+            <Skeleton active className="p-16" />
+          ) : (
+            <>
+              <img src={speech?.data?.village_officials?.foto} className="w-full flex-1 rounded-t-lg object-cover transition-all duration-300 lg:h-auto lg:w-56 lg:rounded-l-lg lg:grayscale lg:hover:grayscale-0" />
+              <div className="flex-2 flex w-full flex-col p-12">
+                <svg className="h-16 w-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    fillRule="evenodd"
+                    d="M6 6a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3H5a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2H6Zm9 0a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h3a3 3 0 0 1-3 3h-1a1 1 0 1 0 0 2h1a5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <p className="mb-12 w-full">{speech?.data?.content}</p>
+                <b className="w-full">{speech?.data?.village_officials?.name}</b>
+                <small className="mb-2 w-full">{speech?.data?.village_officials?.employment?.employment_name}</small>
+              </div>
+            </>
+          )}
+        </div>
       </section>
       <section className="w-full bg-white px-4 py-24">
         <div className="mx-auto grid w-full max-w-screen-xl grid-cols-4 gap-x-24 gap-y-12 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 px-6 py-12 lg:grid-cols-8 lg:px-20 lg:py-16">
@@ -212,7 +246,59 @@ const Home = () => {
                   </Card>
                 ))
               : institution?.data?.map((item) => (
-                  <Card className="col-span-12 h-full md:col-span-4 lg:col-span-2" key={item.id}>
+                  <Card
+                    hoverable
+                    className="col-span-12 h-full md:col-span-4 lg:col-span-2"
+                    key={item.id}
+                    onClick={() =>
+                      modal.show.paragraph({
+                        title: item.institution_name,
+                        data: {
+                          content: (
+                            <>
+                              <Card className="mb-6">
+                                <div className="flex flex-col gap-y-2">
+                                  <p>Deskripsi Lembaga: {item.desc}</p>
+                                  <p>
+                                    Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
+                                  </p>
+                                  <p>
+                                    Status:{' '}
+                                    {(() => {
+                                      switch (item.status) {
+                                        case 'aktif':
+                                          return <Tag color="blue">Aktif</Tag>;
+                                        case 'nonaktif':
+                                          return <Tag color="orange">Non-Aktif</Tag>;
+                                        default:
+                                          return <Tag color="red">Undefined</Tag>;
+                                      }
+                                    })()}
+                                  </p>
+                                </div>
+                              </Card>
+
+                              <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
+                                <List
+                                  itemLayout="horizontal"
+                                  dataSource={dummyListAnggota}
+                                  renderItem={(anggota, index) => (
+                                    <List.Item>
+                                      <List.Item.Meta
+                                        avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
+                                        title={<a href="https://ant.design">{anggota.title}</a>}
+                                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                                      />
+                                    </List.Item>
+                                  )}
+                                />
+                              </div>
+                            </>
+                          )
+                        }
+                      })
+                    }
+                  >
                     <div className="flex flex-col items-center gap-y-4">
                       <Image width={64} src={item.image} className="mb-4" />
                       <b className="text-center">{item.institution_name}</b>

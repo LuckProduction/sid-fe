@@ -1,5 +1,6 @@
 import { FacebookFilled, InstagramFilled, YoutubeFilled } from '@ant-design/icons';
-import { Button, Image, Typography } from 'antd';
+import { Button, Image } from 'antd';
+import { NavLink } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -7,8 +8,8 @@ const Footer = () => {
       <div className="mx-auto w-full max-w-screen-xl px-4 pb-4 pt-24">
         <div className="grid w-full grid-cols-6 gap-12">
           <div className="col-span-6 flex flex-col gap-y-6 lg:col-span-2">
-            <Image width={64} src="/logo/bonebolango.jpg" />
-            <small>Melalui misi dan komitmen ganda untuk kemajuan bisnis dan sosial, Danone memiliki tujuan untuk membangun masa depan yang lebih sehat dari gaya hidup sehat</small>
+            <Image width={125} src="/logo/brand_colored.png" />
+            <small>Kelola administrasi desa lebih cepat, mudah, dan transparan dengan Sistem Informasi Desa! Digitalisasi tata kelola desa untuk pelayanan publik yang lebih efisien dan modern.</small>
             <div className="flex items-center gap-x-2">
               <Button type="primary" shape="circle" icon={<InstagramFilled />} />
               <Button type="primary" shape="circle" icon={<FacebookFilled />} />
@@ -18,25 +19,25 @@ const Footer = () => {
           <div className="col-span-6 grid grid-cols-12 gap-y-12 lg:col-span-4">
             <div className="col-span-12 flex flex-col gap-y-3 lg:col-span-4">
               <b>Quick Access</b>
-              <Typography.Text>Home</Typography.Text>
-              <Typography.Text>About</Typography.Text>
-              <Typography.Text>Service</Typography.Text>
-              <Typography.Text>Testimonial</Typography.Text>
-              <Typography.Text>Contact</Typography.Text>
+              <NavLink className="text-sm">Home</NavLink>
+              <NavLink className="text-sm">About</NavLink>
+              <NavLink className="text-sm">Service</NavLink>
+              <NavLink className="text-sm">Testimonial</NavLink>
+              <NavLink className="text-sm">Contact</NavLink>
             </div>
             <div className="col-span-12 flex flex-col gap-y-3 lg:col-span-4">
               <b>Service</b>
-              <Typography.Text>Web Design</Typography.Text>
-              <Typography.Text>Web Development</Typography.Text>
-              <Typography.Text>Seo Optimation</Typography.Text>
-              <Typography.Text>Blog Writing</Typography.Text>
+              <NavLink className="text-sm">Web Design</NavLink>
+              <NavLink className="text-sm">Web Development</NavLink>
+              <NavLink className="text-sm">Seo Optimation</NavLink>
+              <NavLink className="text-sm">Blog Writing</NavLink>
             </div>
             <div className="col-span-12 flex flex-col gap-y-3 lg:col-span-4">
               <b>Help & Support</b>
-              <Typography.Text>Support Center</Typography.Text>
-              <Typography.Text>Live Chat</Typography.Text>
-              <Typography.Text>FAQ</Typography.Text>
-              <Typography.Text>Terms & Condition</Typography.Text>
+              <NavLink className="text-sm">Support Center</NavLink>
+              <NavLink className="text-sm">Live Chat</NavLink>
+              <NavLink className="text-sm">FAQ</NavLink>
+              <NavLink className="text-sm">Terms & Condition</NavLink>
             </div>
           </div>
           <div className="col-span-6 flex items-center justify-center border-t-2 py-6">
