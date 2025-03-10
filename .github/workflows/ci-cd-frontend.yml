@@ -61,7 +61,7 @@ jobs:
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2222 << 'EOF'
+          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2223 << 'EOF'
             rm -rf /home/govz9813/public_html/example/react-staging/*
             mkdir -p /home/govz9813/public_html/example/react-staging
             scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/example/react-staging/
@@ -70,7 +70,7 @@ jobs:
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
-          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2222 << 'EOF'
+          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2223 << 'EOF'
             rm -rf /home/govz9813/public_html/production/react-production/*
             mkdir -p /home/govz9813/public_html/production/react-production
             scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/production/react-production/
