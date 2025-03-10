@@ -1,6 +1,6 @@
 import { usePagination, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { Card, Input, Pagination, Skeleton } from 'antd';
+import { Card, Empty, Input, Pagination, Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import parse from 'html-react-parser';
 import { Reveal } from '@/components';
@@ -37,14 +37,22 @@ const News = () => {
           <Input.Search placeholder="Cari Berita" size="large" className="w-full" onSearch={onSearch} />
         </div>
       </div>
-      <div className="grid grid-cols-10 gap-4">
-        {getAllArticle.isLoading
-          ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
-              <Card className="col-span-10 md:col-span-5 lg:col-span-2" key={index}>
-                <Skeleton active />
-              </Card>
-            ))
-          : article.map((item, index) => (
+      {getAllArticle.isLoading ? (
+        <div className="grid grid-cols-10 gap-4">
+          {Array.from({ length: 5 }, (_, i) => i).map((index) => (
+            <Card className="col-span-10 md:col-span-5 lg:col-span-2" key={index}>
+              <Skeleton active />
+            </Card>
+          ))}
+        </div>
+      ) : article.length === 0 ? (
+        <div className="flex justify-center w-full py-12">
+          <Empty />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-10 gap-4">
+            {article.map((item, index) => (
               <Card
                 onClick={() => navigate(`/article/detail/${item.slug}`)}
                 key={index}
@@ -67,8 +75,16 @@ const News = () => {
                 </div>
               </Card>
             ))}
-      </div>
-      <Pagination current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.perPage} />
+          </div>
+          <Pagination
+            current={pagination.page}
+            total={pagination.totalData}
+            onChange={pagination.onChange}
+            pageSize={pagination.perPage}
+          />
+        </>
+      )}
+
     </section>
   );
 };

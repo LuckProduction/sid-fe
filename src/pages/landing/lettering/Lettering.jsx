@@ -7,8 +7,8 @@ const CariSurat = () => {
   const navigate = useNavigate();
   return (
     <section className="w-full">
-      <div className="grid h-screen w-full grid-cols-12">
-        <div className="col-span-12 flex h-full flex-col items-center justify-center gap-y-6 bg-blue-500 py-32 lg:col-span-6 lg:py-0">
+      <div className="w-full grid-cols-12 flex flex-col lg:flex-row ">
+        <div className="flex-1 w-full flex flex-col items-center justify-center gap-y-6 bg-blue-500 py-32 px-8 ">
           <Reveal>
             <Typography.Title level={2} style={{ color: '#ffff' }}>
               Cari Surat
@@ -24,9 +24,9 @@ const CariSurat = () => {
             </Button>
           </Reveal>
         </div>
-        <div className="col-span-12 flex h-full flex-col items-center justify-center gap-y-6 bg-blue-400 py-32 lg:col-span-6 lg:py-0">
+        <div className="flex-1 w-full flex flex-col items-center justify-center gap-y-6 bg-blue-400 py-32  px-8 ">
           <Reveal>
-            <Typography.Title level={2} style={{ color: '#ffff' }}>
+            <Typography.Title level={2} style={{ color: '#ffff', textAlign: 'center' }}>
               Permohonan Surat
             </Typography.Title>
           </Reveal>

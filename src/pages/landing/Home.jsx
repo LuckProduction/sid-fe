@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
 import { useCrudModal } from '@/hooks';
-import { dummyListAnggota } from '@/data/dummyData';
 
 const Home = () => {
   const { villageProfile, speech, visiMisi, institution } = useOutletContext();
+  const [titleData, setTitleData] = useState({ title: "Loading...", icon: "" })
 
   const navigate = useNavigate();
   const modal = useCrudModal();
@@ -24,6 +24,29 @@ const Home = () => {
     executeSpeech();
     executeInstitution();
   }, []);
+
+  useEffect(() => {
+    if (villageProfile.data) {
+      setTitleData({
+        title: 'GoVillage | ' + villageProfile.data.village_name || "Default Title",
+        icon: villageProfile.data.village_logo || "/vite.svg",
+      });
+    }
+  }, [villageProfile.data]);
+
+  useEffect(() => {
+    document.title = titleData.title;
+
+    if (titleData.icon) {
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "icon";
+        document.head.appendChild(link);
+      }
+      link.href = titleData.icon;
+    }
+  }, [titleData]);
 
   return (
     <>
@@ -241,71 +264,71 @@ const Home = () => {
           <div className="grid w-full grid-cols-12 items-center justify-center gap-4">
             {institution.isLoading
               ? Array.from({ length: 6 }, (_, i) => i).map((index) => (
-                  <Card className="col-span-12 md:col-span-4 lg:col-span-2" key={index}>
-                    <Skeleton active />
-                  </Card>
-                ))
+                <Card className="col-span-12 md:col-span-4 lg:col-span-2" key={index}>
+                  <Skeleton active />
+                </Card>
+              ))
               : institution?.data?.map((item) => (
-                  <Card
-                    hoverable
-                    className="col-span-12 h-full md:col-span-4 lg:col-span-2"
-                    key={item.id}
-                    onClick={() =>
-                      modal.show.paragraph({
-                        title: item.institution_name,
-                        data: {
-                          content: (
-                            <>
-                              <Card className="mb-6">
-                                <div className="flex flex-col gap-y-2">
-                                  <p>Deskripsi Lembaga: {item.desc}</p>
-                                  <p>
-                                    Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
-                                  </p>
-                                  <p>
-                                    Status:{' '}
-                                    {(() => {
-                                      switch (item.status) {
-                                        case 'aktif':
-                                          return <Tag color="blue">Aktif</Tag>;
-                                        case 'nonaktif':
-                                          return <Tag color="orange">Non-Aktif</Tag>;
-                                        default:
-                                          return <Tag color="red">Undefined</Tag>;
-                                      }
-                                    })()}
-                                  </p>
-                                </div>
-                              </Card>
-
-                              <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
-                                <List
-                                  itemLayout="horizontal"
-                                  dataSource={dummyListAnggota}
-                                  renderItem={(anggota, index) => (
-                                    <List.Item>
-                                      <List.Item.Meta
-                                        avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
-                                        title={<a href="https://ant.design">{anggota.title}</a>}
-                                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-                                      />
-                                    </List.Item>
-                                  )}
-                                />
+                <Card
+                  hoverable
+                  className="col-span-12 h-full md:col-span-4 lg:col-span-2"
+                  key={item.id}
+                  onClick={() =>
+                    modal.show.paragraph({
+                      title: item.institution_name,
+                      data: {
+                        content: (
+                          <>
+                            <Card className="mb-6">
+                              <div className="flex flex-col gap-y-2">
+                                <p>Deskripsi Lembaga: {item.desc}</p>
+                                <p>
+                                  Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
+                                </p>
+                                <p>
+                                  Status:{' '}
+                                  {(() => {
+                                    switch (item.status) {
+                                      case 'aktif':
+                                        return <Tag color="blue">Aktif</Tag>;
+                                      case 'nonaktif':
+                                        return <Tag color="orange">Non-Aktif</Tag>;
+                                      default:
+                                        return <Tag color="red">Undefined</Tag>;
+                                    }
+                                  })()}
+                                </p>
                               </div>
-                            </>
-                          )
-                        }
-                      })
-                    }
-                  >
-                    <div className="flex flex-col items-center gap-y-4">
-                      <Image width={64} src={item.image} className="mb-4" />
-                      <b className="text-center">{item.institution_name}</b>
-                      <small className="news-text text-center">{item.desc}</small>
-                    </div>
-                  </Card>
-                ))}
+                            </Card>
+
+                            <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
+                              <List
+                                itemLayout="horizontal"
+                                dataSource={item.member}
+                                renderItem={(anggota) => (
+                                  <List.Item>
+                                    <List.Item.Meta
+                                      avatar={<Avatar src={anggota.foto} />}
+                                      title={anggota.full_name}
+                                      description={anggota.employment}
+                                    />
+                                  </List.Item>
+                                )}
+                              />
+                            </div>
+                          </>
+                        )
+                      }
+                    })
+                  }
+                >
+                  <div className="flex flex-col items-center gap-y-4">
+                    <Image width={64} src={item.image} className="mb-4" />
+                    <b className="text-center">{item.institution_name}</b>
+                    <small className="news-text text-center">{item.desc}</small>
+                  </div>
+                </Card>
+              ))}
           </div>
         </div>
       </section>

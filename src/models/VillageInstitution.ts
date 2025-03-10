@@ -8,6 +8,11 @@ export interface IncomingApiData {
   status: string;
   deskripsi: string;
   logo: string;
+  anggota_lembaga?: {
+    nama_lengkap: string;
+    nama_jabatan: string;
+    foto: string
+  }[]
 }
 
 export interface OutgoingApiData {
@@ -37,14 +42,31 @@ export default class VillageInstitution extends Model {
     public institution_code: string,
     public status: string,
     public desc: string,
-    public image: string
+    public image: string,
+    public member?: {
+      full_name: string,
+      employment: string,
+      foto: string,
+    }[]
   ) {
     super();
   }
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, VillageInstitution> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, VillageInstitution>;
-    return new VillageInstitution(apiData.id, apiData.nama_lembaga, apiData.kode_lembaga, apiData.status, apiData.deskripsi, asset(apiData.logo)) as ReturnType<T, IncomingApiData, VillageInstitution>;
+    return new VillageInstitution(
+      apiData.id,
+      apiData.nama_lembaga,
+      apiData.kode_lembaga,
+      apiData.status,
+      apiData.deskripsi,
+      asset(apiData.logo),
+      apiData.anggota_lembaga?.map(member => ({
+        full_name: member.nama_lengkap,
+        employment: member.nama_jabatan,
+        foto: asset(member.foto),
+      }))
+    ) as ReturnType<T, IncomingApiData, VillageInstitution>;
   }
 
   public static toApiData<T extends FormValue | FormValue[]>(villageInstitution: T): ReturnType<T, FormValue, OutgoingApiData> {

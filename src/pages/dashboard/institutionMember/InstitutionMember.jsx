@@ -80,7 +80,8 @@ const InstitutionMember = () => {
                   const { message, isSuccess } = await updateInstitutionMember.execute(record.id, { ...values, village_institution: villageInstitutionById.id, _method: 'PUT' }, token, values.foto.file);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchInstitutionMember(token);
+                    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
+
                   } else {
                     error('Gagal', message);
                   }
@@ -132,7 +133,8 @@ const InstitutionMember = () => {
                   const { isSuccess, message } = await deleteInstitutionMember.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchInstitutionMember(token);
+                    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
+
                   } else {
                     error('Gagal', message);
                   }
@@ -154,7 +156,7 @@ const InstitutionMember = () => {
         const { message, isSuccess } = await deleteBatchInstitutionMember.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchInstitutionMember(token);
+          fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
         } else {
           error('Gagal', message);
         }
@@ -171,7 +173,7 @@ const InstitutionMember = () => {
         const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: id }, token, values.foto.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchInstitutionMember(token);
+          fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
         } else {
           error('Gagal', message);
         }

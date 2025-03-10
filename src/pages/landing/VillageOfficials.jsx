@@ -2,7 +2,7 @@ import { Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { LeftOutlined } from '@ant-design/icons';
-import { Typography } from 'antd';
+import { Card, Descriptions, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,8 +15,8 @@ const VillageOfficials = () => {
   }, [fetchVillageOfficials]);
 
   const villageOfficials = getAllVillageOfficials.data ?? [];
-  const headVillage = villageOfficials.find((v) => v.employment?.employment_name === 'kepala desa');
-  const otherOfficials = villageOfficials.filter((v) => v.employment?.employment_name !== 'kepala desa');
+  const headVillage = villageOfficials.find((v) => v.employment?.employment_name === 'Kepala Desa');
+  const otherOfficials = villageOfficials.filter((v) => v.employment?.employment_name !== 'Kepala Desa');
 
   return (
     <>
@@ -38,38 +38,53 @@ const VillageOfficials = () => {
         <img src="/illustration/city_sillhoute_transparent.png" className="absolute bottom-0 left-0 z-0 w-full" />
       </section>
       <section>
-        <div className="mx-auto flex max-w-screen-lg flex-col gap-y-6 px-6 py-24">
+        <div className="mx-auto flex items-center max-w-screen-lg flex-col gap-y-6 px-6 py-24">
           {headVillage && (
-            <div className="mb-24 flex w-full items-center gap-x-6">
-              <div className="flex w-full items-center justify-center">
-                <div className="h-64 w-64 overflow-hidden rounded-full border-8 border-gray-200">
-                  <img src={headVillage.image} className="w-full" alt={headVillage.name} />
-                </div>
-              </div>
-              <div className="flex w-full flex-col gap-y-2">
-                <Typography.Title level={2}>{headVillage.name}</Typography.Title>
-                <b>{headVillage.employment.employment_name}</b>
-                <p>NIP : {headVillage.nip}</p>
-                <p>Alamat : {headVillage.address}</p>
-              </div>
-            </div>
-          )}
-          <hr className="mb-24" />
-          <div className="grid w-full grid-cols-12 gap-12">
-            {otherOfficials.map((official) => (
-              <div key={official.id} className="col-span-4 flex flex-col items-center gap-y-2">
-                <div className="flex w-full items-center justify-center">
-                  <div className="h-52 w-52 overflow-hidden rounded-full border-8 border-gray-200">
-                    <img src={official.image} className="w-full" alt={official.name} />
+            <Card className='max-w-2xl w-full'>
+              <div className='w-full flex flex-row gap-x-6'>
+                <div className="flex items-center justify-center">
+                  <div className="h-52 w-52 flex items-center overflow-hidden rounded-lg border-4 border-gray-200">
+                    <img src={headVillage.image} className="w-full rounded-lg" alt={headVillage.name} />
                   </div>
                 </div>
-                <div className="flex flex-col items-center gap-y-2">
-                  <Typography.Title level={4} className="text-center">
-                    {official.name}
-                  </Typography.Title>
-                  <b className="text-center">{official.employment.employment_name}</b>
+                <div className='w-full'>
+                  <Descriptions bordered column={1}>
+                    <Descriptions.Item label="Nama Kepala Desa">
+                      {headVillage.name}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Jenis Kelamin">
+                      {headVillage.gender}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Tempat Lahir">
+                      {headVillage.birth_place}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Kontak">
+                      {headVillage.phone_number}
+                    </Descriptions.Item>
+                  </Descriptions>
                 </div>
               </div>
+            </Card>
+          )}
+          <hr className="mb-6 mt-6 w-full" />
+          <div className="grid w-full grid-cols-12 gap-12">
+            {otherOfficials.map((official) => (
+              <Card key={official.id} className='col-span-4'>
+                <div  className="flex flex-col items-center gap-y-2">
+                  <div className="flex w-full items-center justify-center mb-2">
+                    <div className="h-52 w-52 flex items-center overflow-hidden rounded-lg  border-8 border-gray-200">
+                      <img src={official.image} className="w-full rounded-lg" alt={official.name} />
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-y-2">
+                    <Typography.Title level={4} style={{margin: 0}} className="text-center mb-1">
+                      {official.name}
+                    </Typography.Title>
+                    <p className="text-center">{official.employment.employment_name}</p>
+                  </div>
+                </div>
+              </Card>
+
             ))}
           </div>
         </div>

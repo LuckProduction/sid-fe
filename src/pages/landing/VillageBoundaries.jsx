@@ -1,15 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { DataLoader, Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { LeftOutlined } from '@ant-design/icons';
-import { Card, Descriptions, Typography } from 'antd';
+import { Card, Descriptions, Empty, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 
 const VillageBoundaries = () => {
-  const { execute: fetchVillageBoundaries, ...getAllVillageBoundaries } = useService(LandingService.getAllVillageBoundaries);
+  const { execute: fetchVillageBoundaries, data: villageBoundaries, isLoading } = useService(LandingService.getAllVillageBoundaries);
   const [headVillageCoord, setHeadVillageCoord] = useState(null);
   const [geojsonData, setGeojsonData] = useState(null);
   const navigate = useNavigate();
@@ -18,33 +17,23 @@ const VillageBoundaries = () => {
     fetchVillageBoundaries();
   }, [fetchVillageBoundaries]);
 
-  const villageBoundaries = getAllVillageBoundaries.data ?? {};
-
   const formatGeoJsonUrl = (url) => {
     if (!url) return null;
     const path = url.split('/storage/')[1];
-    return `http://desa1.localhost:8000/geojson?filename=${path}`;
+    return `http://desa1.api-example.govillage.id/geojson?filename=${path}`;
   };
 
   useEffect(() => {
-    if (villageBoundaries && villageBoundaries.administrative_file) {
-      fetch(formatGeoJsonUrl(villageBoundaries.administrative_file), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/geo+json'
-        },
-        mode: 'cors'
-      })
+    if (villageBoundaries?.administrative_file) {
+      fetch(formatGeoJsonUrl(villageBoundaries.administrative_file))
         .then((response) => response.json())
-        .then((data) => {
-          setGeojsonData(data);
-        })
+        .then((data) => setGeojsonData(data))
         .catch((error) => console.error('Error fetching GeoJSON:', error));
     }
   }, [villageBoundaries]);
 
   useEffect(() => {
-    if (villageBoundaries && villageBoundaries.headvillage_coordinate) {
+    if (villageBoundaries?.headvillage_coordinate) {
       const coords = villageBoundaries.headvillage_coordinate.split(', ').map(Number);
       if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
         setHeadVillageCoord([coords[1], coords[0]]);
@@ -72,9 +61,13 @@ const VillageBoundaries = () => {
         <img src="/illustration/city_sillhoute_transparent.png" className="absolute bottom-0 left-0 z-0 w-full" />
       </section>
       <section className="min-h-screen w-full bg-white">
-        {Object.keys(villageBoundaries).length === 0 ? (
+        {isLoading ? (
           <div className="mx-auto max-w-screen-lg px-6 py-12">
             <DataLoader type="datatable" />
+          </div>
+        ) : !villageBoundaries ? (
+          <div className="mx-auto max-w-screen-lg px-6 py-12 text-center">
+            <Empty  />
           </div>
         ) : (
           <div className="mx-auto grid max-w-screen-lg grid-cols-12 gap-4 px-6 py-12">
@@ -90,7 +83,7 @@ const VillageBoundaries = () => {
             <Card className="col-span-6">
               <MapContainer center={[0.693, 122.4704]} zoom={8} style={{ height: '500px', width: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <GeoJSON ref={geojsonData} key={Math.random() + 1} data={geojsonData} />
+                {geojsonData && <GeoJSON key={Math.random()} data={geojsonData} />}
                 {headVillageCoord && (
                   <Marker position={headVillageCoord}>
                     <Popup>Kantor Kepala Desa</Popup>

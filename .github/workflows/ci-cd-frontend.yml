@@ -1,0 +1,77 @@
+name: CI/CD Pipeline for React Frontend
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # Sesuaikan dengan versi Node.js lokalmu
+
+      # Cache Node modules
+      - name: Cache Node Modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test  
+
+      - name: Build React App
+        run: npm run build 
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: react-build
+          path: build/
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: react-build
+          path: build/
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_FRONTEND }}
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: |
+          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2222 << 'EOF'
+            rm -rf /home/govz9813/public_html/example/react-staging/*
+            mkdir -p /home/govz9813/public_html/example/react-staging
+            scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/example/react-staging/
+          EOF
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2222 << 'EOF'
+            rm -rf /home/govz9813/public_html/production/react-production/*
+            mkdir -p /home/govz9813/public_html/production/react-production
+            scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/production/react-production/
+          EOF

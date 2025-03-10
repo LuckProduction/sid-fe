@@ -205,7 +205,7 @@ const SubmitLetter = () => {
       <section className="min-h-screen w-full bg-white">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-y-6 px-6 py-12">
           <Card className="w-full">
-            <Form form={form} className="flex w-full flex-col items-center gap-2" onFinish={handleCheckLetter}>
+            <Form form={form} className="flex w-full flex-col lg:flex-row items-center gap-2" onFinish={handleCheckLetter}>
               <Form.Item
                 className="col-span-4 m-0 w-full"
                 name="nik"
@@ -252,7 +252,7 @@ const SubmitLetter = () => {
                   ))}
                 </Select>
               </Form.Item>
-              <Button className="w-full" loading={submitLoading} variant="solid" color="primary" size="large" htmlType="submit">
+              <Button className="w-full lg:w-fit" loading={submitLoading} variant="solid" color="primary" size="large" htmlType="submit">
                 Proses
               </Button>
             </Form>
