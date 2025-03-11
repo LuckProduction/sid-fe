@@ -11,8 +11,8 @@ export default class LetterAttributeService {
    *  data?: LetterAttribute[];
    * }>}
    * */
-  static async getAll({ token, page = null, perPage = null }) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll({ token, page = null, per_page = null }) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get('/atribut-surat', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: LetterAttribute.fromApiData(response.data) };
@@ -27,8 +27,8 @@ export default class LetterAttributeService {
    *  data?: LetterAttribute[];
    * }>}
    * */
-  static async getAllByType({ token, page = null, perPage = null, type_id }) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAllByType({ token, page = null, per_page = null, type_id }) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/atribut-surat?jenis_surat_id=${type_id}`, { token, ...params });
     if (!response.data) return response;
     return { ...response, data: LetterAttribute.fromApiData(response.data) };

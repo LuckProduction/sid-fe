@@ -31,9 +31,9 @@ const ApbdItem = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchApbdItem(token, id, pagination.page, pagination.perPage);
+    fetchApbdItem(token, id, pagination.page, pagination.per_page);
     fetchApbdReportById(token, id);
-  }, [fetchApbdItem, fetchApbdReportById, id, pagination.page, pagination.perPage, token]);
+  }, [fetchApbdItem, fetchApbdReportById, id, pagination.page, pagination.per_page, token]);
 
   const apbdItem = getAllApbdItem.data ?? [];
   const apbdReportById = getAllApbdReportById.data ?? [];

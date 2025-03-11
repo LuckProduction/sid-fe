@@ -1,4 +1,4 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { HamletService } from '@/services';
@@ -15,6 +15,7 @@ const Hamlet = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
+  const [searchValue, setSearchValue] = useState('');
 
   const useCrudService = (service) => {
     const { execute: fetch, ...getAll } = useService(service.getAll);
@@ -30,15 +31,15 @@ const Hamlet = () => {
     };
   };
 
-  const useFetchData = (fetchFn, pagination) => {
+  const useFetchData = (fetchFn, pagination, searchValue) => {
     return useCallback(() => {
-      fetchFn(token, pagination.page, pagination.perPage);
-    }, [fetchFn, pagination.page, pagination.perPage]);
+      fetchFn({ token, page: pagination.page, per_page: pagination.per_page, search: searchValue });
+    }, [fetchFn, pagination.page, pagination.per_page, searchValue]);
   };
 
   const hamletService = useCrudService(HamletService);
 
-  const fetchHamlets = useFetchData(hamletService.fetch, hamletService.pagination);
+  const fetchHamlets = useFetchData(hamletService.fetch, hamletService.pagination, searchValue);
 
   useEffect(() => {
     fetchHamlets();
@@ -176,25 +177,19 @@ const Hamlet = () => {
   };
 
   return (
-    <div>
-      {hamletService.getAll.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={HamletModel} modul={Modul.HAMLET} onDeleteBatch={onDeleteBatch} onStore={onCreate} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable
-              data={hamlets}
-              columns={Column}
-              loading={hamletService.getAll.isLoading}
-              map={(hamlet) => ({ key: hamlet.id, ...hamlet })}
-              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-              pagination={hamletService.pagination}
-            />
-          </div>
-        </Card>
-      )}
-    </div>
+    <Card>
+      <DataTableHeader model={HamletModel} modul={Modul.HAMLET} onDeleteBatch={onDeleteBatch} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setSearchValue(values)} />
+      <div className="w-full max-w-full overflow-x-auto">
+        <DataTable
+          data={hamlets}
+          columns={Column}
+          loading={hamletService.getAll.isLoading}
+          map={(hamlet) => ({ key: hamlet.id, ...hamlet })}
+          handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+          pagination={hamletService.pagination}
+        />
+      </div>
+    </Card>
   );
 };
 

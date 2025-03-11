@@ -26,8 +26,8 @@ const Category = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchCategory(token, 'pemetaan', pagination.page, pagination.perPage);
-  }, [fetchCategory, pagination.page, pagination.perPage, token]);
+    fetchCategory(token, 'pemetaan', pagination.page, pagination.per_page);
+  }, [fetchCategory, pagination.page, pagination.per_page, token]);
 
   const category = getAllCategory.data ?? [];
 

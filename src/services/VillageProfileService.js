@@ -6,7 +6,7 @@ export default class VillageProfileService {
    * @param {{
    * token: string,
    * page?: number,
-   * perPage?: number
+   * per_page?: number
    * }} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;

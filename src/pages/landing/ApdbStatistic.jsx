@@ -1,6 +1,6 @@
 import { DataLoader, DataTable, Reveal } from '@/components';
 import { useService } from '@/hooks';
-import { LandingService } from '@/services';
+import { StatisticService } from '@/services';
 import { rupiahFormat } from '@/utils/rupiahFormat';
 import { Column } from '@ant-design/charts';
 import { DollarOutlined, ExportOutlined, GroupOutlined, LeftOutlined, ShopOutlined, ShoppingCartOutlined, WalletOutlined } from '@ant-design/icons';
@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 const ApdbStatistic = () => {
   const navigate = useNavigate();
 
-  const { execute: executeApbdStatisticFetch, ...getAllApbdStatistic } = useService(LandingService.getAllApbdtStatistic);
+  const { execute: executeApbdStatisticFetch, ...getAllApbdStatistic } = useService(StatisticService.getAllApbdtStatistic);
 
   useEffect(() => {
     executeApbdStatisticFetch();

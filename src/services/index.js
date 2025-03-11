@@ -25,3 +25,4 @@ export { default as SubmitLetterService } from './SubmitLetterService';
 export { default as MapService } from './MapService';
 export { default as OfficerService } from './OfficerService';
 export { default as VillageBoundariesService } from './VillageBoundariesService';
+export { default as StatisticService } from './StatisticService';

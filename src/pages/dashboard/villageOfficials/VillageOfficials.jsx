@@ -30,10 +30,10 @@ const VillageOfficials = () => {
   const pagination = usePagination({ totalData: getAllVillageOfficials.totalData });
 
   useEffect(() => {
-    fetchVillageOfficials(token, pagination.page, pagination.perPage);
+    fetchVillageOfficials(token, pagination.page, pagination.per_page);
     fetchEmployments(token);
     fetchResidents({ token: token });
-  }, [fetchEmployments, fetchResidents, fetchVillageOfficials, pagination.page, pagination.perPage, token]);
+  }, [fetchEmployments, fetchResidents, fetchVillageOfficials, pagination.page, pagination.per_page, token]);
 
   const menuItems = [
     {

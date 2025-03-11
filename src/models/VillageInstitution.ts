@@ -11,8 +11,8 @@ export interface IncomingApiData {
   anggota_lembaga?: {
     nama_lengkap: string;
     nama_jabatan: string;
-    foto: string
-  }[]
+    foto: string;
+  }[];
 }
 
 export interface OutgoingApiData {
@@ -44,9 +44,9 @@ export default class VillageInstitution extends Model {
     public desc: string,
     public image: string,
     public member?: {
-      full_name: string,
-      employment: string,
-      foto: string,
+      full_name: string;
+      employment: string;
+      foto: string;
     }[]
   ) {
     super();
@@ -61,10 +61,10 @@ export default class VillageInstitution extends Model {
       apiData.status,
       apiData.deskripsi,
       asset(apiData.logo),
-      apiData.anggota_lembaga?.map(member => ({
+      apiData.anggota_lembaga?.map((member) => ({
         full_name: member.nama_lengkap,
         employment: member.nama_jabatan,
-        foto: asset(member.foto),
+        foto: asset(member.foto)
       }))
     ) as ReturnType<T, IncomingApiData, VillageInstitution>;
   }

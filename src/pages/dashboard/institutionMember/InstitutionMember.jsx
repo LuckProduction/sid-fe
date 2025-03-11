@@ -31,11 +31,11 @@ const InstitutionMember = () => {
   const pagination = usePagination({ totalData: getAllInstitutionMember.totalData });
 
   useEffect(() => {
-    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
+    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, per_page: pagination.per_page });
     fetchResident({ token: token });
     fetchEmployment(token);
     fetchVillageInstitutionById(token, id);
-  }, [fetchEmployment, fetchInstitutionMember, fetchResident, fetchVillageInstitutionById, id, pagination.page, pagination.perPage, token]);
+  }, [fetchEmployment, fetchInstitutionMember, fetchResident, fetchVillageInstitutionById, id, pagination.page, pagination.per_page, token]);
 
   const institutionMember = getAllInstitutionMember.data ?? [];
   const villageInstitutionById = getAllVillageInstitutionById.data ?? [];
@@ -80,8 +80,7 @@ const InstitutionMember = () => {
                   const { message, isSuccess } = await updateInstitutionMember.execute(record.id, { ...values, village_institution: villageInstitutionById.id, _method: 'PUT' }, token, values.foto.file);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
-
+                    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -133,8 +132,7 @@ const InstitutionMember = () => {
                   const { isSuccess, message } = await deleteInstitutionMember.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
-
+                    fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -156,7 +154,7 @@ const InstitutionMember = () => {
         const { message, isSuccess } = await deleteBatchInstitutionMember.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
+          fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -173,7 +171,7 @@ const InstitutionMember = () => {
         const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: id }, token, values.foto.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, perPage: pagination.perPage });
+          fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }

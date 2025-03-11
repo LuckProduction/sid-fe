@@ -1,52 +1,105 @@
 import { Action } from '@/constants';
 import { useAuth } from '@/hooks';
-import { DeleteOutlined, ExportOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Skeleton, Typography } from 'antd';
+import { DeleteOutlined, ExportOutlined, ImportOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Input, Skeleton, Typography } from 'antd';
 import PropTypes from 'prop-types';
 
 const { CREATE, DELETE } = Action;
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
-export default function DataHeader({ modul, subtitle, selectedData, onStore, onDeleteBatch, model, children, onImport, onExport }) {
+export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch, model, children, onImport, onExport, onSearch }) {
   const { user } = useAuth();
+
+  const menuItems = [];
+
+  if (user?.can(CREATE, model) && onStore) {
+    menuItems.push({
+      label: 'Tambah',
+      key: 'create',
+      icon: <PlusOutlined />
+    });
+  }
+  if (user?.can(DELETE, model) && onDeleteBatch) {
+    menuItems.push({
+      label: `Hapus ${selectedData?.length || 0} Pilihan`,
+      key: 'deletebatch',
+      icon: <DeleteOutlined />
+    });
+  }
+  if (onImport) {
+    menuItems.push({
+      label: 'Import Data',
+      key: 'import',
+      icon: <ImportOutlined />
+    });
+  }
+  if (onExport) {
+    menuItems.push({
+      label: 'Export Data',
+      key: 'export',
+      icon: <ExportOutlined />
+    });
+  }
+
+  const handleMenuClick = ({ key }) => {
+    switch (key) {
+      case 'create':
+        onStore?.();
+        break;
+      case 'deletebatch':
+        onDeleteBatch?.();
+        break;
+      case 'import':
+        onImport?.();
+        break;
+      case 'export':
+        onExport?.();
+        break;
+      default:
+        console.warn('Unhandled menu action:', key);
+    }
+  };
 
   return (
     <>
-      <div className="mb-6">
-        {modul ? <Title level={5}>Data {modul}</Title> : <Skeleton.Input size="small" />}
-        {subtitle &&
-          (typeof subtitle === 'string' ? (
-            <Text type="secondary" style={{ display: 'block', marginTop: '10px' }}>
-              {subtitle}
-            </Text>
-          ) : (
-            subtitle
-          ))}
+      <div className="flex w-full items-center justify-between lg:mb-6">
+        {modul ? (
+          <Title level={5} style={{ margin: 0 }}>
+            Data {modul}
+          </Title>
+        ) : (
+          <Skeleton.Input size="small" />
+        )}
+        <Dropdown className="lg:hidden" menu={{ items: menuItems, onClick: handleMenuClick }}>
+          <Button color="default" variant="link">
+            <MenuOutlined />
+          </Button>
+        </Dropdown>
       </div>
       {(children || (user && user.eitherCan([DELETE, model], [CREATE, model]))) && (
         <div className="mb-6 flex flex-col-reverse justify-end gap-2 empty:hidden md:flex-row">
           {user && user.can(DELETE, model) && onDeleteBatch && (
-            <Button className="me-auto" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedData?.length} onClick={onDeleteBatch}>
+            <Button className="me-auto hidden lg:flex" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedData?.length} onClick={onDeleteBatch}>
               Hapus {selectedData?.length || null} Pilihan
             </Button>
           )}
           {user && user.can(CREATE, model) && onStore && (
-            <Button icon={<PlusOutlined />} type="primary" onClick={onStore}>
+            <Button className="hidden lg:flex" icon={<PlusOutlined />} type="primary" onClick={onStore}>
               Tambah
             </Button>
           )}
           {onImport && (
-            <Button variant="solid" icon={<ImportOutlined />} onClick={onImport}>
+            <Button className="hidden lg:flex" variant="solid" icon={<ImportOutlined />} onClick={onImport}>
               Import
             </Button>
           )}
           {onExport && (
-            <Button variant="solid" icon={<ExportOutlined />} onClick={onExport}>
+            <Button className="hidden lg:flex" variant="solid" icon={<ExportOutlined />} onClick={onExport}>
               Export
             </Button>
           )}
-
+          {onSearch && <Input.Search onSearch={onSearch} className="mt-6 w-full lg:mt-0 lg:w-fit" placeholder="Cari Data" allowClear />}
           {children}
         </div>
       )}
@@ -56,11 +109,11 @@ export default function DataHeader({ modul, subtitle, selectedData, onStore, onD
 
 DataHeader.propTypes = {
   modul: PropTypes.string,
-  subtitle: PropTypes.node,
   onVerify: PropTypes.func,
   onStore: PropTypes.func,
   onImport: PropTypes.func,
   onExport: PropTypes.func,
+  onSearch: PropTypes.func,
   onDeleteBatch: PropTypes.func,
   selectedData: PropTypes.array,
   model: PropTypes.func,

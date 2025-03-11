@@ -16,8 +16,8 @@ const VillagePotential = () => {
   const pagination = usePagination({ totalData: getAllVillagePotential.totalData });
 
   useEffect(() => {
-    fetchVillagePotential({ page: pagination.page, pagination: pagination.perPage, search: searchValue });
-  }, [fetchVillagePotential, pagination.page, pagination.perPage, searchValue]);
+    fetchVillagePotential({ page: pagination.page, pagination: pagination.per_page, search: searchValue });
+  }, [fetchVillagePotential, pagination.page, pagination.per_page, searchValue]);
 
   const villagePotential = getAllVillagePotential.data ?? [];
 
@@ -46,43 +46,39 @@ const VillagePotential = () => {
           ))}
         </div>
       ) : villagePotential.length === 0 ? (
-        <div className="flex justify-center w-full py-12">
+        <div className="flex w-full justify-center py-12">
           <Empty />
         </div>
       ) : (
         <>
           <div className="grid grid-cols-10 gap-4">
-            {
-              villagePotential.map((item, index) => (
-                <Card
-                  onClick={() => navigate(`/village_potential/detail/${item.slug}`)}
-                  key={index}
-                  className="col-span-10 w-full md:col-span-5 lg:col-span-2"
-                  hoverable
-                  cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.foto} />}
-                >
-                  <Reveal>
-                    <b className="news-text">{item.potential_name}</b>
-                  </Reveal>
-                  <Reveal>
-                    <p className="news-text mt-2">{parse(item.description)}</p>
-                  </Reveal>
-                  <div className="mt-6 flex flex-col gap-y-1">
-                    <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
-                    <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
-                      <EyeOutlined className="text-xs" />
-                      {item.seen}
-                    </div>
+            {villagePotential.map((item, index) => (
+              <Card
+                onClick={() => navigate(`/village_potential/detail/${item.slug}`)}
+                key={index}
+                className="col-span-10 w-full md:col-span-5 lg:col-span-2"
+                hoverable
+                cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.foto} />}
+              >
+                <Reveal>
+                  <b className="news-text">{item.potential_name}</b>
+                </Reveal>
+                <Reveal>
+                  <p className="news-text mt-2">{parse(item.description)}</p>
+                </Reveal>
+                <div className="mt-6 flex flex-col gap-y-1">
+                  <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
+                  <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
+                    <EyeOutlined className="text-xs" />
+                    {item.seen}
                   </div>
-                </Card>
-              ))
-            }
+                </div>
+              </Card>
+            ))}
           </div>
-          <Pagination current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.perPage} />
-
+          <Pagination current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.per_page} />
         </>
-      )
-      }
+      )}
     </section>
   );
 };

@@ -11,8 +11,8 @@ export default class ApbdItemService {
    *  data?: ApbdItem[];
    * }>}
    * */
-  static async getAll(token, laporan, page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll(token, laporan, page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/item-apbd?laporan_apbd_id=${laporan}`, { token, ...params });
     if (!response.data) return response;
     return { ...response, data: ApbdItem.fromApiData(response.data) };

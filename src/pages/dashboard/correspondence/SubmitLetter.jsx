@@ -26,8 +26,8 @@ const SubmitLetter = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchSubmitLetter(token, pagination.page, pagination.perPage);
-  }, [fetchSubmitLetter, pagination.page, pagination.perPage, token]);
+    fetchSubmitLetter(token, pagination.page, pagination.per_page);
+  }, [fetchSubmitLetter, pagination.page, pagination.per_page, token]);
 
   const submitLetter = getAllSubmitLetter.data ?? [];
 

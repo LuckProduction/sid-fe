@@ -1,6 +1,6 @@
 import { DataLoader, DataTable, Reveal } from '@/components';
 import { useService } from '@/hooks';
-import { LandingService } from '@/services';
+import { StatisticService } from '@/services';
 import { Column } from '@ant-design/charts';
 import { LeftOutlined, ManOutlined, TeamOutlined, UserOutlined, WomanOutlined } from '@ant-design/icons';
 import { Card, Statistic, Tabs, Typography } from 'antd';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const ResidentStatistic = () => {
   const navigate = useNavigate();
 
-  const { execute: executeResidentStatisticFetch, ...getAllResidentStatistic } = useService(LandingService.getAllResidentStatistic);
+  const { execute: executeResidentStatisticFetch, ...getAllResidentStatistic } = useService(StatisticService.getAllResidentStatistic);
 
   useEffect(() => {
     executeResidentStatisticFetch();
