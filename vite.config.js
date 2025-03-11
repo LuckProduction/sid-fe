@@ -13,6 +13,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'build', // Pastikan output adalah 'build' sesuai workflow
+    sourcemap: true,
   },
   test: {
     environment: 'jsdom'
