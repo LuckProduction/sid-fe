@@ -62,7 +62,7 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_FRONTEND }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add SSH Host Key
         run: |
@@ -73,22 +73,22 @@ jobs:
         if: github.ref == 'refs/heads/staging'
         run: |
           ssh -p 2223 govz9813@govillage.id << 'EOF'
-            if [ ! -d "/home/govz9813/public_html/example/react-staging" ]; then
-              mkdir -p /home/govz9813/public_html/example/react-staging
+            if [ ! -d "/home/govz9813/public_html/staging/example.govillage.id" ]; then
+              mkdir -p /home/govz9813/public_html/staging/example.govillage.id
             fi
-            rm -rf /home/govz9813/public_html/example/react-staging/*
+            rm -rf /home/govz9813/public_html/staging/example.govillage.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/example/react-staging/
+          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/staging/example.govillage.id/
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
           ssh -p 2223 govz9813@govillage.id << 'EOF'
-            if [ ! -d "/home/govz9813/public_html/production/react-production" ]; then
-              mkdir -p /home/govz9813/public_html/production/react-production
+            if [ ! -d "/home/govz9813/public_html/production/example.govillage.id" ]; then
+              mkdir -p /home/govz9813/public_html/production/example.govillage.id
             fi
-            rm -rf /home/govz9813/public_html/production/react-production/*
+            rm -rf /home/govz9813/public_html/production/example.govillage.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/production/react-production/
+          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/production/example.govillage.id/
