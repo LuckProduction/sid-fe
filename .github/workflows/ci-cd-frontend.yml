@@ -61,17 +61,31 @@ jobs:
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
+<<<<<<< Updated upstream
           ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2222 << 'EOF'
             rm -rf /home/govz9813/public_html/example/react-staging/*
             mkdir -p /home/govz9813/public_html/example/react-staging
             scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/example/react-staging/
+=======
+          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2223 << 'EOF'
+            rm -rf /home/govz9813/public_html/staging/example.govillage.id/*
+            mkdir -p /home/govz9813/public_html/staging/example.govillage.id
+            scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/staging/example.govillage.id/
+>>>>>>> Stashed changes
           EOF
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
+<<<<<<< Updated upstream
           ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2222 << 'EOF'
             rm -rf /home/govz9813/public_html/production/react-production/*
             mkdir -p /home/govz9813/public_html/production/react-production
             scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/production/react-production/
+=======
+          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2223 << 'EOF'
+            rm -rf /home/govz9813/public_html/production/example.govillage.id/*
+            mkdir -p /home/govz9813/public_html/production/example.govillage.id
+            scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/production/example.govillage.id/
+>>>>>>> Stashed changes
           EOF
