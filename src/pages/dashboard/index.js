@@ -1,9 +1,9 @@
 export { default as Dashboard } from './Dashboard';
 export { default as VillageProfile } from './villageProfile/VillageProfile';
 
-export { default as Article } from './article/Article';
-export { default as CreateArticle } from './article/Create';
-export { default as EditArticle } from './article/Edit';
+export { default as Article } from './Article/Article';
+export { default as CreateArticle } from './Article/Create';
+export { default as EditArticle } from './Article/Edit';
 
 export { default as Resident } from './resident/Resident';
 export { default as Family } from './resident/Family';
