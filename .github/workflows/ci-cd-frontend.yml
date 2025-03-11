@@ -67,7 +67,7 @@ jobs:
       - name: Add SSH Host Key
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p 2223 govz9813@govillage.id >> ~/.ssh/known_hosts
+          ssh-keyscan -p 2223 govillage.id >> ~/.ssh/known_hosts
 
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
