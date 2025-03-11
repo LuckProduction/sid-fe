@@ -345,7 +345,7 @@ const Home = () => {
                   }
                 >
                   <div className="flex flex-col items-center gap-y-4">
-                    <Image width={64} src={item.image} className="mb-4" />
+                    <Image preview={false} width={64} src={item.image} className="mb-4" />
                     <b className="text-center">{item.institution_name}</b>
                     <small className="news-text text-center">{item.desc}</small>
                   </div>
