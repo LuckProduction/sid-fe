@@ -53,7 +53,7 @@ const Navbar = ({ villageProfile }) => {
                 </b>
               </>
             )}
-            <Menu style={{ minWidth: 0, flex: 'auto', border: 'none' }} mode="horizontal" items={landingLink} activeKey="" onClick={handleMenuClick} />
+            {/* <Menu style={{ minWidth: 0, flex: 'auto', border: 'none' }} mode="horizontal" items={landingLink} activeKey="" onClick={handleMenuClick} /> */}
           </>
         ) : (
           <>
