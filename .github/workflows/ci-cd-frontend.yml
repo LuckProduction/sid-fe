@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4  # Update ke v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       # Cache Node modules
       - name: Cache Node Modules
