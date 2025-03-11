@@ -70,7 +70,7 @@ const Home = () => {
               <div>
                 <Typography.Title>
                   <Reveal>
-                    Sistem Informasi Desa Tes <span className="text-blue-500">{villageProfile?.data?.village_name}</span>
+                    Sistem Informasi Desa <span className="text-blue-500">{villageProfile?.data?.village_name}</span>
                   </Reveal>
                 </Typography.Title>
                 <Typography.Title level={4} style={{ margin: 0 }}>
