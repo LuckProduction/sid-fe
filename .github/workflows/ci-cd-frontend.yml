@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: dist/
+          path: build/
           retention-days: 1
 
       - name: Debug Artifact Upload
@@ -54,10 +54,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: react-build
-          path: dist/
+          path: build/
 
       - name: Debug Downloaded Artifact
-        run: ls -la dist/ || echo "Downloaded artifact folder not found"
+        run: ls -la build/ || echo "Downloaded artifact folder not found"
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
@@ -79,7 +79,7 @@ jobs:
             rm -rf /home/govz9813/public_html/staging/example.govillage.id/*
             exit
           EOF
-          scp -r -P 2223 dist/* govz9813@govillage.id:/home/govz9813/public_html/staging/example.govillage.id/
+          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/staging/example.govillage.id/
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
@@ -91,4 +91,4 @@ jobs:
             rm -rf /home/govz9813/public_html/production/example.govillage.id/*
             exit
           EOF
-          scp -r -P 2223 dist/* govz9813@govillage.id:/home/govz9813/public_html/production/example.govillage.id/
+          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/production/example.govillage.id/
