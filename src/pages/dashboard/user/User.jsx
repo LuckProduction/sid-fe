@@ -24,9 +24,9 @@ const User = () => {
   const [selectedArticle, setSelectedArticle] = useState([]);
 
   useEffect(() => {
-    fetchUsers(token, pagination.page, pagination.perPage);
-    fetchPermission({ token: token, page: pagination.page, perPage: pagination.perPage, id: 1 });
-  }, [fetchPermission, fetchUsers, pagination.page, pagination.perPage, token]);
+    fetchUsers(token, pagination.page, pagination.per_page);
+    fetchPermission({ token: token, page: pagination.page, per_page: pagination.per_page, id: 1 });
+  }, [fetchPermission, fetchUsers, pagination.page, pagination.per_page, token]);
 
   const user = (getAllUsers.data ?? []).filter((item) => item.name !== 'admin');
   const permission = getAllPermission.data ?? [];
@@ -69,7 +69,7 @@ const User = () => {
                   const { message, isSuccess } = await updateUser.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchUsers(token, pagination.page, pagination.perPage);
+                    fetchUsers(token, pagination.page, pagination.per_page);
                   } else {
                     error('Gagal', message);
                   }
@@ -122,7 +122,7 @@ const User = () => {
                   const { isSuccess, message } = await deleteUser.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchUsers(token, pagination.page, pagination.perPage);
+                    fetchUsers(token, pagination.page, pagination.per_page);
                   } else {
                     error('Gagal', message);
                   }
@@ -144,7 +144,7 @@ const User = () => {
         const { message, isSuccess } = await deleteBatchUser.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchUsers(token, pagination.page, pagination.perPage);
+          fetchUsers(token, pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }
@@ -161,7 +161,7 @@ const User = () => {
         const { message, isSuccess } = await storeUser.execute({ ...values, password: '12345678' }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchUsers(token, pagination.page, pagination.perPage);
+          fetchUsers(token, pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }

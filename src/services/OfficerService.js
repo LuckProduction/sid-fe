@@ -11,8 +11,8 @@ export default class OfficerService {
    *  data?: Officer[];
    * }>}
    * */
-  static async getAll(token, page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll(token, page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get('/pengguna', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: Officer.fromApiData(response.data) };
@@ -27,8 +27,8 @@ export default class OfficerService {
    *  data?: Officer[];
    * }>}
    * */
-  static async getAllPermision({ token, page = null, perPage = null, id }) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAllPermision({ token, page = null, per_page = null, id }) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/pengguna/permissions?id=${id}`, { token, ...params });
     if (!response.data) return response;
     return { ...response, data: response.data };

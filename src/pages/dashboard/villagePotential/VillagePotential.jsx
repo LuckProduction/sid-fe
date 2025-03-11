@@ -29,9 +29,9 @@ const VillagePotential = () => {
   const pagination = usePagination({ totalData: getAllVillagePotential.totalData });
 
   useEffect(() => {
-    fetchVillagePotential(token, pagination.page, pagination.perPage);
+    fetchVillagePotential(token, pagination.page, pagination.per_page);
     fetchCategory(token, 'potensi');
-  }, [fetchCategory, fetchVillagePotential, pagination.page, pagination.perPage, token]);
+  }, [fetchCategory, fetchVillagePotential, pagination.page, pagination.per_page, token]);
 
   const villagePotential = getAllVillagePotential.data ?? [];
   const category = getAllCategory.data ?? [];

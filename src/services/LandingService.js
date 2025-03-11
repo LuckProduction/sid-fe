@@ -2,21 +2,21 @@ import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBounda
 import api from '@/utils/api';
 
 export default class LandingService {
-  static async getAllVisiMisi(page = 1, perPage = 10) {
-    const response = await api.get('/landing/visi-misi', { page, perPage });
+  static async getAllVisiMisi(page = 1, per_page = 10) {
+    const response = await api.get('/landing/visi-misi', { page, per_page });
     if (!response.data) return response;
     return { ...response, data: VisiMisi.fromApiData(response.data) };
   }
 
-  static async getAllArticle({ page = null, perPage = null, search }) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAllArticle({ page = null, per_page = null, search }) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/landing/artikel?search=${search}`, { ...params });
     if (!response.data) return response;
     return { ...response, data: Article.fromApiData(response.data) };
   }
 
-  static async getAllVillagePotential({ page = null, perPage = null, search }) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAllVillagePotential({ page = null, per_page = null, search }) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/landing/potensi-desa?search=${search}`, { ...params });
     if (!response.data) return response;
     return { ...response, data: VillagePotential.fromApiData(response.data) };
@@ -34,20 +34,20 @@ export default class LandingService {
     return { ...response, data: VillagePotential.fromApiData(response.data) };
   }
 
-  static async getSpeech(page = 1, perPage = 10) {
-    const response = await api.get(`/landing/sambutan`, { page, perPage });
+  static async getSpeech(page = 1, per_page = 10) {
+    const response = await api.get(`/landing/sambutan`, { page, per_page });
     if (!response.data) return response;
     return { ...response, data: Speech.fromApiData(response.data) };
   }
 
-  static async getVillageProfile(page = 1, perPage = 10) {
-    const response = await api.get(`/landing/profil-desa`, { page, perPage });
+  static async getVillageProfile(page = 1, per_page = 10) {
+    const response = await api.get(`/landing/profil-desa`, { page, per_page });
     if (!response.data) return response;
     return { ...response, data: VillageProfile.fromApiData(response.data) };
   }
 
-  static async getAllInstitution(page = 1, perPage = 10) {
-    const response = await api.get(`/landing/lembaga-desa`, { page, perPage });
+  static async getAllInstitution(page = 1, per_page = 10) {
+    const response = await api.get(`/landing/lembaga-desa`, { page, per_page });
     if (!response.data) return response;
     return { ...response, data: VillageInstitution.fromApiData(response.data) };
   }
@@ -80,23 +80,11 @@ export default class LandingService {
     return await api.post(`/permohonan-surat/cari-surat`, { body: data });
   }
 
-  static async getAllLegalProducts(page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAllLegalProducts(page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/landing/produk-hukum`, { ...params });
     if (!response.data) return response;
     return { ...response, data: LegalProducts.fromApiData(response.data) };
-  }
-
-  static async getAllResidentStatistic() {
-    const response = await api.get(`/statistik/penduduk`);
-    if (!response.data) return response;
-    return { ...response, data: response.data };
-  }
-
-  static async getAllApbdtStatistic() {
-    const response = await api.get(`/statistik/apbd`);
-    if (!response.data) return response;
-    return { ...response, data: response.data };
   }
 
   static async getAllVillageBoundaries() {

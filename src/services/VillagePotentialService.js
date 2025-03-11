@@ -11,8 +11,8 @@ export default class VillagePotentialService {
    *  data?: VillagePotential[];
    * }>}
    * */
-  static async getAll(token, page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll(token, page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get('/potensi-desa', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: VillagePotential.fromApiData(response.data) };

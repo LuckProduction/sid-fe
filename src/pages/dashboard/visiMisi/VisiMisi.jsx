@@ -1,4 +1,4 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VisiMisiService } from '@/services';
@@ -30,8 +30,8 @@ const VisiMisi = () => {
 
   const useFetchData = (fetchFn, pagination) => {
     return useCallback(() => {
-      fetchFn(token, pagination.page, pagination.perPage);
-    }, [fetchFn, pagination.page, pagination.perPage]);
+      fetchFn({ token: token, page: pagination.page, per_page: pagination.per_page });
+    }, [fetchFn, pagination.page, pagination.per_page]);
   };
 
   const visiMisiService = useCrudService(VisiMisiService);
@@ -170,23 +170,19 @@ const VisiMisi = () => {
 
   return (
     <div>
-      {visiMisiService.getAll.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={VisiMisiModel} modul={Modul.VISI_MISI} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable
-              data={visiMisi}
-              columns={Column}
-              loading={visiMisiService.getAll.isLoading}
-              map={(category) => ({ key: category.id, ...category })}
-              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-              pagination={visiMisiService.pagination}
-            />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader model={VisiMisiModel} modul={Modul.VISI_MISI} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={visiMisi}
+            columns={Column}
+            loading={visiMisiService.getAll.isLoading}
+            map={(category) => ({ key: category.id, ...category })}
+            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+            pagination={visiMisiService.pagination}
+          />
+        </div>
+      </Card>
     </div>
   );
 };

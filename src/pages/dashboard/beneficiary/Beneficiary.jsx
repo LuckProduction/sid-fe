@@ -31,12 +31,12 @@ const Beneficiary = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+    fetchBeneficiary(token, id, pagination.page, pagination.per_page);
     fetchResident({ token: token });
     fetchVillageInstitution(token);
     fetchPublicAssistance(token);
     fetchPublicAssistanceById(token, id);
-  }, [fetchBeneficiary, fetchPublicAssistance, fetchPublicAssistanceById, fetchResident, fetchVillageInstitution, id, pagination.page, pagination.perPage, token]);
+  }, [fetchBeneficiary, fetchPublicAssistance, fetchPublicAssistanceById, fetchResident, fetchVillageInstitution, id, pagination.page, pagination.per_page, token]);
 
   const beneficiary = getAllBeneficiary.data ?? [];
   const resident = getAllResident.data ?? [];
@@ -97,7 +97,7 @@ const Beneficiary = () => {
                     const { message, isSuccess } = await updateBeneficiary.execute(record.id, { ...values, public_assistance: publicAssistanceById?.id }, token);
                     if (isSuccess) {
                       success('Berhasil', message);
-                      fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+                      fetchBeneficiary(token, id, pagination.page, pagination.per_page);
                     } else {
                       error('Gagal', message);
                     }
@@ -169,7 +169,7 @@ const Beneficiary = () => {
                     const { isSuccess, message } = await deleteBeneficiary.execute(record.id, token);
                     if (isSuccess) {
                       success('Berhasil', message);
-                      fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+                      fetchBeneficiary(token, id, pagination.page, pagination.per_page);
                     } else {
                       error('Gagal', message);
                     }
@@ -217,7 +217,7 @@ const Beneficiary = () => {
                     const { message, isSuccess } = await updateBeneficiary.execute(record.id, { ...values, public_assistance: publicAssistanceById?.id }, token);
                     if (isSuccess) {
                       success('Berhasil', message);
-                      fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+                      fetchBeneficiary(token, id, pagination.page, pagination.per_page);
                     } else {
                       error('Gagal', message);
                     }
@@ -277,7 +277,7 @@ const Beneficiary = () => {
                     const { isSuccess, message } = await deleteBeneficiary.execute(record.id, token);
                     if (isSuccess) {
                       success('Berhasil', message);
-                      fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+                      fetchBeneficiary(token, id, pagination.page, pagination.per_page);
                     } else {
                       error('Gagal', message);
                     }
@@ -300,7 +300,7 @@ const Beneficiary = () => {
         const { message, isSuccess } = await deleteBatchBeneficiary.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+          fetchBeneficiary(token, id, pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }
@@ -317,7 +317,7 @@ const Beneficiary = () => {
         const { message, isSuccess } = await storeBeneficiary.execute({ ...values, public_assistance: publicAssistanceById?.id }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchBeneficiary(token, id, pagination.page, pagination.perPage);
+          fetchBeneficiary(token, id, pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }

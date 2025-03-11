@@ -28,9 +28,9 @@ const Map = () => {
   const pagination = usePagination({ totalData: getAllMap.totalData });
 
   useEffect(() => {
-    fetchMap(token, pagination.page, pagination.perPage);
+    fetchMap(token, pagination.page, pagination.per_page);
     fetchCategory(token, 'pemetaan');
-  }, [fetchCategory, fetchMap, pagination.page, pagination.perPage, token]);
+  }, [fetchCategory, fetchMap, pagination.page, pagination.per_page, token]);
 
   const map = getAllMap.data ?? [];
   const category = getAllCategory.data ?? [];
@@ -87,7 +87,7 @@ const Map = () => {
                     const { message, isSuccess } = await updateMap.execute(record.id, { ...values, _method: 'PUT', type: 'area' }, token, values.content.file);
                     if (isSuccess) {
                       success('Berhasil', message);
-                      fetchMap(token, pagination.page, pagination.perPage);
+                      fetchMap(token, pagination.page, pagination.per_page);
                     } else {
                       error('Gagal', message);
                     }
@@ -106,7 +106,7 @@ const Map = () => {
                     const { message, isSuccess } = await updateMap.execute(record.id, { ...values, _method: 'PUT', type: 'titik', content: `${values.longitude}, ${values.latitude}` }, token);
                     if (isSuccess) {
                       success('Berhasil', message);
-                      fetchMap(token, pagination.page, pagination.perPage);
+                      fetchMap(token, pagination.page, pagination.per_page);
                     } else {
                       error('Gagal', message);
                     }
@@ -128,7 +128,7 @@ const Map = () => {
                   const { isSuccess, message } = await deleteMap.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchMap(token, pagination.page, pagination.perPage);
+                    fetchMap(token, pagination.page, pagination.per_page);
                   } else {
                     error('Gagal', message);
                   }
@@ -168,7 +168,7 @@ const Map = () => {
           e.key === 'titik' ? await storeMap.execute({ ...values, content: `${values.longitude}, ${values.latitude}`, type: 'titik' }, token) : await storeMap.execute({ ...values, type: 'area' }, token, values.content?.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchMap(token, pagination.page, pagination.perPage);
+          fetchMap(token, pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }

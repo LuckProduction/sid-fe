@@ -67,7 +67,7 @@ const VillageBoundaries = () => {
           </div>
         ) : !villageBoundaries ? (
           <div className="mx-auto max-w-screen-lg px-6 py-12 text-center">
-            <Empty  />
+            <Empty />
           </div>
         ) : (
           <div className="mx-auto grid max-w-screen-lg grid-cols-12 gap-4 px-6 py-12">

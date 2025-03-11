@@ -29,8 +29,8 @@ const LegalProducts = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchLegalProducts(token, pagination.page, pagination.perPage);
-  }, [fetchLegalProducts, pagination.page, pagination.perPage, token]);
+    fetchLegalProducts(token, pagination.page, pagination.per_page);
+  }, [fetchLegalProducts, pagination.page, pagination.per_page, token]);
 
   const legalProducts = getAllLegalProducts.data ?? [];
 

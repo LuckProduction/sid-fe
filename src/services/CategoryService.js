@@ -11,8 +11,8 @@ export default class CategoryService {
    *  data?: Category[];
    * }>}
    * */
-  static async getAll(token, page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll(token, page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get('/kategori', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: Category.fromApiData(response.data) };
@@ -73,8 +73,8 @@ export default class CategoryService {
     return await api.delete(`/kategori/multi-delete/?ids=${ids.join(',')}`, { token });
   }
 
-  static async getByType(token, type, page = 1, perPage = 10) {
-    const response = await api.get(`/kategori?tipe=${type}`, { token, page, perPage });
+  static async getByType(token, type, page = 1, per_page = 10) {
+    const response = await api.get(`/kategori?tipe=${type}`, { token, page, per_page });
     if (!response.data) return response;
     return { ...response, data: Category.fromApiData(response.data) };
   }

@@ -11,8 +11,8 @@ export default class ApbdReportService {
    *  data?: ApbdReport[];
    * }>}
    * */
-  static async getAll(token, page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll(token, page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get('/laporan-apbd', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: ApbdReport.fromApiData(response.data) };

@@ -27,9 +27,9 @@ const Article = () => {
   const pagination = usePagination({ totalData: getAllArticle.totalData });
 
   useEffect(() => {
-    executeArticleFetch(token, pagination.page, pagination.perPage);
+    executeArticleFetch(token, pagination.page, pagination.per_page);
     fetchCategory(token, 'artikel');
-  }, [executeArticleFetch, fetchCategory, pagination.page, pagination.perPage, token]);
+  }, [executeArticleFetch, fetchCategory, pagination.page, pagination.per_page, token]);
 
   const article = getAllArticle.data ?? [];
   const category = getAllCategory.data ?? [];

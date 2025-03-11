@@ -16,8 +16,8 @@ const News = () => {
   const pagination = usePagination({ totalData: getAllArticle.totalData });
 
   useEffect(() => {
-    fetchArticle({ page: pagination.page, pagination: pagination.perPage, search: searchValue });
-  }, [fetchArticle, pagination.page, pagination.perPage, searchValue]);
+    fetchArticle({ page: pagination.page, pagination: pagination.per_page, search: searchValue });
+  }, [fetchArticle, pagination.page, pagination.per_page, searchValue]);
 
   const article = getAllArticle.data ?? [];
 
@@ -46,7 +46,7 @@ const News = () => {
           ))}
         </div>
       ) : article.length === 0 ? (
-        <div className="flex justify-center w-full py-12">
+        <div className="flex w-full justify-center py-12">
           <Empty />
         </div>
       ) : (
@@ -76,15 +76,9 @@ const News = () => {
               </Card>
             ))}
           </div>
-          <Pagination
-            current={pagination.page}
-            total={pagination.totalData}
-            onChange={pagination.onChange}
-            pageSize={pagination.perPage}
-          />
+          <Pagination current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.per_page} />
         </>
       )}
-
     </section>
   );
 };

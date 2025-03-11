@@ -25,8 +25,8 @@ const FamilyDetail = () => {
   const pagination = usePagination({ totalData: getAllFamilyDetail.totalData });
 
   const fetchFamilyDetail = useCallback(() => {
-    execute({ id: id, token: token, page: pagination.page, perPage: pagination.perPage });
-  }, [execute, id, pagination.page, pagination.perPage, token]);
+    execute({ id: id, token: token, page: pagination.page, per_page: pagination.per_page });
+  }, [execute, id, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
     fetchFamilyDetail();
