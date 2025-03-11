@@ -327,7 +327,6 @@ const Home = () => {
                                 </div>
                               </Card>
 
-<<<<<<< HEAD
                             <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
                               <List
                                 itemLayout="horizontal"
@@ -352,32 +351,6 @@ const Home = () => {
                   </div>
                 </Card>
               ))}
-=======
-                              <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
-                                <List
-                                  itemLayout="horizontal"
-                                  dataSource={item.member}
-                                  renderItem={(anggota) => (
-                                    <List.Item>
-                                      <List.Item.Meta avatar={<Avatar src={anggota.foto} />} title={anggota.full_name} description={anggota.employment} />
-                                    </List.Item>
-                                  )}
-                                />
-                              </div>
-                            </>
-                          )
-                        }
-                      })
-                    }
-                  >
-                    <div className="flex flex-col items-center gap-y-4">
-                      <Image width={64} src={item.image} className="mb-4" />
-                      <b className="text-center">{item.institution_name}</b>
-                      <small className="news-text text-center">{item.desc}</small>
-                    </div>
-                  </Card>
-                ))}
->>>>>>> 8e901bb (fix: make the table header to provide search bar)
           </div>
         </div>
       </section>
