@@ -11,8 +11,8 @@ export default class VillageOfficialsService {
    *  data?: VillageOfficials[];
    * }>}
    * */
-  static async getAll(token, page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll(token, page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get('/perangkat-desa', { token, ...params });
     if (!response.data) return response;
     return { ...response, data: VillageOfficials.fromApiData(response.data) };

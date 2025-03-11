@@ -1,5 +1,5 @@
 import { DataLoader, DataTable, DataTableHeader } from '@/components';
-import { useAuth, useNotification, usePagination, useService } from '@/hooks';
+import { useAuth, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
 import { Button, Card, Tag } from 'antd';
 import { useCallback, useEffect } from 'react';
@@ -11,14 +11,12 @@ import { useNavigate } from 'react-router-dom';
 const Family = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const { success, error } = useNotification();
-
   const { execute, ...getAllFamily } = useService(ResidentService.getFamily);
   const pagination = usePagination({ totalData: getAllFamily.totalData });
 
   const fetchFamily = useCallback(() => {
-    execute({ token: token, page: pagination.page, perPage: pagination.perPage });
-  }, [execute, pagination.page, pagination.perPage, token]);
+    execute({ token: token, page: pagination.page, per_page: pagination.per_page });
+  }, [execute, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
     fetchFamily();
@@ -27,7 +25,7 @@ const Family = () => {
   const family = getAllFamily.data ?? [];
 
   const exportFamily = () => {
-    fetch('http://desa1.localhost:8000/api/master-penduduk/export?keluarga=true', {
+    fetch('http://desa1.api-example.govillage.id/api/master-penduduk/export?keluarga=true', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -88,24 +86,13 @@ const Family = () => {
     }
   ];
 
-  const onExport = () => {
-    const { message, isSuccess } = exportFamily();
-    if (isSuccess) {
-      success('Berhasil', message);
-      fetchFamily(token);
-    } else {
-      error('Gagal', message);
-    }
-    return isSuccess;
-  };
-
   return (
     <>
       {getAllFamily.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <DataTableHeader modul={Modul.FAMILY} model={ResidentModel} onExport={onExport} />
+          <DataTableHeader modul={Modul.FAMILY} model={ResidentModel} onExport={exportFamily} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable data={family} columns={column} loading={getAllFamily.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
           </div>

@@ -34,8 +34,8 @@ const VillageInstitution = () => {
 
   const useFetchData = (fetchFn, pagination) => {
     return useCallback(() => {
-      fetchFn(token, pagination.page, pagination.perPage);
-    }, [fetchFn, pagination.page, pagination.perPage]);
+      fetchFn(token, pagination.page, pagination.per_page);
+    }, [fetchFn, pagination.page, pagination.per_page]);
   };
 
   const villageInstitutionService = useCrudService(VillageInstitutionService);

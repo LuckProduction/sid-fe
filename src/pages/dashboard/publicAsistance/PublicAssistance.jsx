@@ -29,8 +29,8 @@ const PublicAssistance = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchPublicAssistance(token, pagination.page, pagination.perPage);
-  }, [fetchPublicAssistance, pagination.page, pagination.perPage, token]);
+    fetchPublicAssistance(token, pagination.page, pagination.per_page);
+  }, [fetchPublicAssistance, pagination.page, pagination.per_page, token]);
 
   const apbdItem = getAllPublicAssistance.data ?? [];
 

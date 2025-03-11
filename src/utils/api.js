@@ -61,13 +61,13 @@ async function customFetch(endpoint, method, body, token, file, abortController)
  *  token?: string;
  *  file?: object;
  *  page?: number;
- *  perPage?: number;
+ *  per_page?: number;
  *  params?: Record<string, string | number>;
  *  abortController?: AbortController;
  * }) => ReturnType<typeof customFetch>}
  */
 function createCustomFetch(method) {
-  return (endpoint, { body, token, file, page, perPage = 10, params, abortController } = {}) => {
+  return (endpoint, { body, token, file, page, per_page = 10, params, abortController } = {}) => {
     const cleanEndpoint = endpoint.split('?')[0];
     if (!abortController) {
       if (controllers[cleanEndpoint]) controllers[cleanEndpoint].abort();
@@ -79,8 +79,8 @@ function createCustomFetch(method) {
 
     if (page) {
       searchParams.page = page;
-      if (perPage === PAGINATION_ALL) searchParams.per_page = 'all';
-      else searchParams.per_page = perPage;
+      if (per_page === PAGINATION_ALL) searchParams.per_page = 'all';
+      else searchParams.per_page = per_page;
     }
 
     const searchParamsString = Object.entries(searchParams)

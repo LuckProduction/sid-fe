@@ -14,8 +14,8 @@ const LegalProducts = () => {
   const pagination = usePagination({ totalData: getAllLegalProducts.totalData });
 
   useEffect(() => {
-    fetchLegalProducts(pagination.page, pagination.perPage);
-  }, [fetchLegalProducts, pagination.page, pagination.perPage]);
+    fetchLegalProducts(pagination.page, pagination.per_page);
+  }, [fetchLegalProducts, pagination.page, pagination.per_page]);
 
   const legalProducts = getAllLegalProducts.data ?? [];
 

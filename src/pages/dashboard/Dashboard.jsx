@@ -1,24 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Column, Pie } from '@ant-design/charts';
-import { UserOutlined } from '@ant-design/icons';
+import { GiftOutlined, HomeOutlined, MailOutlined, PaperClipOutlined } from '@ant-design/icons';
 import { Card, Skeleton, Typography } from 'antd';
 import { useEffect, useMemo } from 'react';
-import { useService } from '@/hooks';
-import { LandingService } from '@/services';
+import { useAuth, useService } from '@/hooks';
+import { StatisticService } from '@/services';
 
 const Dashboard = () => {
-  const { execute: executeApbdStatisticFetch, ...getAllApbdStatistic } = useService(LandingService.getAllApbdtStatistic);
-  const { execute: executeResidentStatisticFetch, ...getAllResidentStatistic } = useService(LandingService.getAllResidentStatistic);
+  const { token } = useAuth();
+  const { execute: executeApbdStatisticFetch, ...getAllApbdStatistic } = useService(StatisticService.getAllApbdtStatistic);
+  const { execute: executeResidentStatisticFetch, ...getAllResidentStatistic } = useService(StatisticService.getAllResidentStatistic);
+  const { execute: executeOverview, ...getAllOverview } = useService(StatisticService.getAllOverview);
 
   useEffect(() => {
     executeApbdStatisticFetch();
     executeResidentStatisticFetch();
+    executeOverview(token);
   }, []);
 
   const apbdStatistic = getAllApbdStatistic.data ?? {};
   const residentStatistic = getAllResidentStatistic.data ?? {};
+  const overview = getAllOverview.data ?? {};
 
-  // Pemetaan Data ke Chart
   const chartConfigs = useMemo(() => {
     if (!apbdStatistic.semua || !residentStatistic.penduduk) return { resident: null, apbd: null };
 
@@ -75,51 +78,66 @@ const Dashboard = () => {
 
   return (
     <div className="grid w-full grid-cols-12 gap-4">
-      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-1">
-            <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
-            <span className="text-xl font-semibold">10</span>
-          </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
-            <UserOutlined />
-          </div>
-        </div>
-      </Card>
-      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-1">
-            <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
-            <span className="text-xl font-semibold">10</span>
-          </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
-            <UserOutlined />
-          </div>
-        </div>
-      </Card>
-      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-1">
-            <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
-            <span className="text-xl font-semibold">10</span>
-          </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
-            <UserOutlined />
-          </div>
-        </div>
-      </Card>
-      <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-1">
-            <p className="font-semibold capitalize">Total Penduduk Terdaftar</p>
-            <span className="text-xl font-semibold">10</span>
-          </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
-            <UserOutlined />
-          </div>
-        </div>
-      </Card>
-
+      {getAllOverview.isLoading ? (
+        Array.from({ length: 4 }, (_, i) => i).map((index) => (
+          <Card key={index} className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-y-1">
+                <Skeleton.Input active />
+                <Skeleton.Button active />
+              </div>
+              <Skeleton.Node active style={{ width: 24, height: 24 }} />
+            </div>
+          </Card>
+        ))
+      ) : (
+        <>
+          <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-y-1">
+                <p className="font-semibold capitalize">Total Bantuan</p>
+                <span className="text-xl font-semibold">{overview?.bantuan?.total_bantuan}</span>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+                <GiftOutlined />
+              </div>
+            </div>
+          </Card>
+          <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-y-1">
+                <p className="font-semibold capitalize">Total Dusun</p>
+                <span className="text-xl font-semibold">{overview?.dusun?.total_dusun}</span>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+                <HomeOutlined />
+              </div>
+            </div>
+          </Card>
+          <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-y-1">
+                <p className="font-semibold capitalize">Total Artikel</p>
+                <span className="text-xl font-semibold">{overview?.artikel?.total_artikel}</span>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+                <PaperClipOutlined />
+              </div>
+            </div>
+          </Card>
+          <Card className="col-span-12 h-fit md:col-span-6 lg:col-span-3">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-y-1">
+                <p className="font-semibold capitalize">Total Pemohonan Surat</p>
+                <span className="text-xl font-semibold">{overview?.surat?.total_permohonan}</span>
+              </div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+                <MailOutlined />
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
       <Card className="col-span-12 w-auto lg:col-span-6">
         <Typography.Title level={5} className="w-full text-center">
           Statistik Penduduk

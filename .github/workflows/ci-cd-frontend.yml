@@ -11,16 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # Update ke v4 untuk konsistensi
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4  # Update ke v4
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '2'
 
-      # Cache Node modules
       - name: Cache Node Modules
-        uses: actions/cache@v4  # Update ke v4
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -32,24 +31,33 @@ jobs:
         run: npm test
 
       - name: Build React App
-        run: npm run build
+        run: npm run build --verbose  # Tambahkan --verbose untuk debugging
+
+      - name: Debug Build Output
+        run: ls -la build/ || echo "Build folder not found"
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4  # Update ke v4
+        uses: actions/upload-artifact@v4
         with:
           name: react-build
-          path: build/  # Path ke folder build
-          retention-days: 1  # Opsional: Artifact hanya disimpan 1 hari
+          path: build/
+          retention-days: 1
+
+      - name: Debug Artifact Upload
+        run: echo "Artifact uploaded successfully" || echo "Artifact upload failed"
 
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - name: Download Build Artifact
-        uses: actions/download-artifact@v4  # Update ke v4
+        uses: actions/download-artifact@v4
         with:
           name: react-build
           path: build/
+
+      - name: Debug Downloaded Artifact
+        run: ls -la build/ || echo "Downloaded artifact folder not found"
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4

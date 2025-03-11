@@ -11,8 +11,8 @@ export default class BeneficiaryService {
    *  data?: Beneficiary[];
    * }>}
    * */
-  static async getAll(token, id, page = null, perPage = null) {
-    const params = page && perPage ? { page, perPage } : {};
+  static async getAll(token, id, page = null, per_page = null) {
+    const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/peserta-bantuan?bantuan_id=${id}`, { token, ...params });
     if (!response.data) return response;
     return { ...response, data: Beneficiary.fromApiData(response.data) };

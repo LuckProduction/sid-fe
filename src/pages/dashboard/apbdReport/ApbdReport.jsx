@@ -31,8 +31,8 @@ const ApbdReport = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchApbdReport(token, pagination.page, pagination.perPage);
-  }, [fetchApbdReport, pagination.page, pagination.perPage, token]);
+    fetchApbdReport(token, pagination.page, pagination.per_page);
+  }, [fetchApbdReport, pagination.page, pagination.per_page, token]);
 
   const legalProducts = getAllApbdReport.data ?? [];
 

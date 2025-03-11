@@ -28,8 +28,8 @@ const LetterAttribute = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchLetterAttribute({ token: token, page: pagination.page, perPage: pagination.perPage, type_id: id });
-  }, [fetchLetterAttribute, id, pagination.page, pagination.perPage, token]);
+    fetchLetterAttribute({ token: token, page: pagination.page, per_page: pagination.per_page, type_id: id });
+  }, [fetchLetterAttribute, id, pagination.page, pagination.per_page, token]);
 
   const letterAttribut = getAllLetterAttribute.data ?? [];
 
@@ -93,7 +93,7 @@ const LetterAttribute = () => {
                   const { message, isSuccess } = await updateLetterAttribute.execute(record.id, { ...values, letter_type: id, _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchLetterAttribute({ token: token, page: pagination.page, perPage: pagination.perPage, type_id: id });
+                    fetchLetterAttribute({ token: token, page: pagination.page, per_page: pagination.per_page, type_id: id });
                   } else {
                     error('Gagal', message);
                   }
@@ -154,7 +154,7 @@ const LetterAttribute = () => {
         const { message, isSuccess } = await storeLetterAttribute.execute({ ...values, letter_type: id }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchLetterAttribute({ token: token, page: pagination.page, perPage: pagination.perPage, type_id: id });
+          fetchLetterAttribute({ token: token, page: pagination.page, per_page: pagination.per_page, type_id: id });
         } else {
           error('Gagal', message);
         }

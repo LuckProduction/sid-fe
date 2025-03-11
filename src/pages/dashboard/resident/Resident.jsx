@@ -1,4 +1,4 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
 import { Card, Space, Tag } from 'antd';
@@ -25,10 +25,11 @@ const Resident = () => {
   const [selectedResident, setSelectedResident] = useState([]);
   const modal = useCrudModal();
   const pagination = usePagination({ totalData: getAllResident.totalData });
+  const [searchValue, setSearchValue] = useState('');
 
   const fetchResident = useCallback(() => {
-    execute({ token: token, page: pagination.page, perPage: pagination.perPage });
-  }, [execute, pagination.page, pagination.perPage, token]);
+    execute({ token: token, page: pagination.page, per_page: pagination.per_page, search: searchValue });
+  }, [execute, pagination.page, pagination.per_page, searchValue, token]);
 
   useEffect(() => {
     fetchResident();
@@ -37,7 +38,7 @@ const Resident = () => {
   const resident = getAllResident.data ?? [];
 
   const exportResident = () => {
-    fetch('http://desa1.localhost:8000/api/master-penduduk/export?penduduk=true', {
+    fetch('http://desa1.api-example.govillage.id/api/master-penduduk/export?penduduk=true', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -186,17 +187,6 @@ const Resident = () => {
     });
   };
 
-  const onExport = () => {
-    const { message, isSuccess } = exportResident();
-    if (isSuccess) {
-      success('Berhasil', message);
-      fetchResident(token);
-    } else {
-      error('Gagal', message);
-    }
-    return isSuccess;
-  };
-
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.RESIDENTIAL} `,
@@ -215,18 +205,12 @@ const Resident = () => {
   };
 
   return (
-    <>
-      {getAllResident.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader modul={Modul.RESIDENTIAL} model={ResidentModel} onDeleteBatch={onDeleteBatch} onStore={onCreate} onExport={onExport} onImport={onImport} selectedData={selectedResident} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} pagination={pagination} />
-          </div>
-        </Card>
-      )}
-    </>
+    <Card>
+      <DataTableHeader modul={Modul.RESIDENTIAL} model={ResidentModel} onDeleteBatch={onDeleteBatch} onStore={onCreate} onExport={exportResident} onImport={onImport} selectedData={selectedResident} onSearch={(values) => setSearchValue(values)} />
+      <div className="w-full max-w-full overflow-x-auto">
+        <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} pagination={pagination} />
+      </div>
+    </Card>
   );
 };
 

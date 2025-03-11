@@ -25,8 +25,8 @@ const Employment = () => {
   const pagination = usePagination({ totalData: getAllEmployments.totalData });
 
   useEffect(() => {
-    fetchEmployments(token, pagination.page, pagination.perPage);
-  }, [fetchEmployments, pagination.page, pagination.perPage, token]);
+    fetchEmployments(token, pagination.page, pagination.per_page);
+  }, [fetchEmployments, pagination.page, pagination.per_page, token]);
 
   const employments = getAllEmployments.data ?? [];
 

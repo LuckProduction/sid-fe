@@ -30,8 +30,8 @@ const LetterType = () => {
   const modal = useCrudModal();
 
   useEffect(() => {
-    fetchLetterType(token, pagination.page, pagination.perPage);
-  }, [fetchLetterType, pagination.page, pagination.perPage, token]);
+    fetchLetterType(token, pagination.page, pagination.per_page);
+  }, [fetchLetterType, pagination.page, pagination.per_page, token]);
 
   const letterType = getAllLetterType.data ?? [];
 
