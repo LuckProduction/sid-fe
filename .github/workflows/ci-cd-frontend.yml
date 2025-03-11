@@ -11,16 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Update ke v4 untuk konsistensi
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4  # Update ke v4
         with:
-          node-version: '20'  # Sesuaikan dengan versi Node.js lokalmu
+          node-version: '20'
 
       # Cache Node modules
       - name: Cache Node Modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4  # Update ke v4
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('package-lock.json') }}
@@ -29,26 +29,24 @@ jobs:
         run: npm install
 
       - name: Run Tests
-        run: npm test  
+        run: npm test
 
       - name: Build React App
-        run: npm run build 
+        run: npm run build
 
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Update ke v4
         with:
           name: react-build
-          path: build/
+          path: build/  # Path ke folder build
+          retention-days: 1  # Opsional: Artifact hanya disimpan 1 hari
 
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
       - name: Download Build Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4  # Update ke v4
         with:
           name: react-build
           path: build/
@@ -58,20 +56,31 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_FRONTEND }}
 
+      - name: Add SSH Host Key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p 2223 govz9813@govillage.id >> ~/.ssh/known_hosts
+
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2223 << 'EOF'
+          ssh -p 2223 govz9813@govillage.id << 'EOF'
+            if [ ! -d "/home/govz9813/public_html/example/react-staging" ]; then
+              mkdir -p /home/govz9813/public_html/example/react-staging
+            fi
             rm -rf /home/govz9813/public_html/example/react-staging/*
-            mkdir -p /home/govz9813/public_html/example/react-staging
-            scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/example/react-staging/
+            exit
           EOF
+          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/example/react-staging/
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
-          ssh -o StrictHostKeyChecking=no govz9813@govillage.id -p 2223 << 'EOF'
+          ssh -p 2223 govz9813@govillage.id << 'EOF'
+            if [ ! -d "/home/govz9813/public_html/production/react-production" ]; then
+              mkdir -p /home/govz9813/public_html/production/react-production
+            fi
             rm -rf /home/govz9813/public_html/production/react-production/*
-            mkdir -p /home/govz9813/public_html/production/react-production
-            scp -r build/* govz9813@govillage.id:/home/govz9813/public_html/production/react-production/
+            exit
           EOF
+          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/production/react-production/
