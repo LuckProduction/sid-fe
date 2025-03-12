@@ -290,42 +290,42 @@ const Home = () => {
           <div className="grid w-full grid-cols-12 items-center justify-center gap-4">
             {institution.isLoading
               ? Array.from({ length: 6 }, (_, i) => i).map((index) => (
-                <Card className="col-span-12 md:col-span-4 lg:col-span-2" key={index}>
-                  <Skeleton active />
-                </Card>
-              ))
+                  <Card className="col-span-12 md:col-span-4 lg:col-span-2" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
               : institution?.data?.map((item) => (
-                <Card
-                  hoverable
-                  className="col-span-12 h-full md:col-span-4 lg:col-span-2"
-                  key={item.id}
-                  onClick={() =>
-                    modal.show.paragraph({
-                      title: item.institution_name,
-                      data: {
-                        content: (
-                          <>
-                            <Card className="mb-6">
-                              <div className="flex flex-col gap-y-2">
-                                <p>Deskripsi Lembaga: {item.desc}</p>
-                                <p>
-                                  Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
-                                </p>
-                                <p>
-                                  Status:{' '}
-                                  {(() => {
-                                    switch (item.status) {
-                                      case 'aktif':
-                                        return <Tag color="blue">Aktif</Tag>;
-                                      case 'nonaktif':
-                                        return <Tag color="orange">Non-Aktif</Tag>;
-                                      default:
-                                        return <Tag color="red">Undefined</Tag>;
-                                    }
-                                  })()}
-                                </p>
-                              </div>
-                            </Card>
+                  <Card
+                    hoverable
+                    className="col-span-12 h-full md:col-span-4 lg:col-span-2"
+                    key={item.id}
+                    onClick={() =>
+                      modal.show.paragraph({
+                        title: item.institution_name,
+                        data: {
+                          content: (
+                            <>
+                              <Card className="mb-6">
+                                <div className="flex flex-col gap-y-2">
+                                  <p>Deskripsi Lembaga: {item.desc}</p>
+                                  <p>
+                                    Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
+                                  </p>
+                                  <p>
+                                    Status:{' '}
+                                    {(() => {
+                                      switch (item.status) {
+                                        case 'aktif':
+                                          return <Tag color="blue">Aktif</Tag>;
+                                        case 'nonaktif':
+                                          return <Tag color="orange">Non-Aktif</Tag>;
+                                        default:
+                                          return <Tag color="red">Undefined</Tag>;
+                                      }
+                                    })()}
+                                  </p>
+                                </div>
+                              </Card>
 
                             <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
                               <List
