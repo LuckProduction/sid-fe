@@ -8,6 +8,7 @@ const Landing = () => {
   const getAllSpeech = useService(LandingService.getSpeech);
   const getAllInstitution = useService(LandingService.getAllInstitution);
   const getAllVillageProfile = useService(LandingService.getVillageProfile);
+  const getAllArticle = useService(LandingService.getAllArticle);
 
   return (
     <div className="flex h-dvh flex-col font-sans">
@@ -21,7 +22,8 @@ const Landing = () => {
             villageProfile: getAllVillageProfile,
             speech: getAllSpeech,
             visiMisi: getAllVisiMisi,
-            institution: getAllInstitution
+            institution: getAllInstitution,
+            article: getAllArticle
           }}
         />
         <Footer />

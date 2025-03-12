@@ -2,12 +2,15 @@ import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, usePagination, useService } from '@/hooks';
 import { ProspectiveVotersService } from '@/services';
-import { Card, Tag } from 'antd';
+import { Button, Card, Tag } from 'antd';
 import { useEffect } from 'react';
 import { Resident as ResidentModel } from '@/models';
+import { InfoOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const ProspectiveVoters = () => {
   const { token } = useAuth();
+  const navigate = useNavigate();
   const { execute: fetchProspectiveVoter, ...getAllProspectiveVoter } = useService(ProspectiveVotersService.getAll);
   const pagination = usePagination({ totalData: getAllProspectiveVoter.totalData });
 
@@ -72,6 +75,10 @@ const ProspectiveVoters = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
+    },
+    {
+      title: 'Aksi',
+      render: (_, record) => <Button icon={<InfoOutlined />} variant="outlined" color="green" onClick={() => navigate('/dashboard/residential/detail/' + record.id)} />
     }
   ];
 

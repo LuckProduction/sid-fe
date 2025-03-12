@@ -10,6 +10,7 @@ export { default as Family } from './resident/Family';
 export { default as FamilyDetail } from './resident/FamilyDetail';
 // export { default as CreateResident } from './resident/Create';
 export { default as EditResident } from './resident/Edit';
+export { default as DetailResident } from './resident/Detail';
 
 export { default as Employment } from './employment/Employment';
 export { default as VillageOfficials } from './villageOfficials/VillageOfficials';

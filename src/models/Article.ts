@@ -30,7 +30,7 @@ export interface OutgoingApiData {
 }
 
 interface FormValue {
-  _method: 'PUT';
+  _method?: 'PUT';
   title: string;
   content: string;
   category?: number[];

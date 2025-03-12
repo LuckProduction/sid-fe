@@ -9,7 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import { FamilyDetailFormFields } from './FormFields';
 import { Action } from '@/constants';
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 
 const { UPDATE, DELETE } = Action;
 
@@ -87,6 +87,13 @@ const FamilyDetail = () => {
             title={`Edit ${Modul.RESIDENTIAL}`}
             onClick={() => {
               navigate('/dashboard/residential' + '/edit/' + record.id);
+            }}
+          />
+          <Detail
+            model={ResidentModel}
+            title={`Detail ${Modul.RESIDENTIAL}`}
+            onClick={() => {
+              navigate('/dashboard/residential/detail/' + record.id);
             }}
           />
           <Delete

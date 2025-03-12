@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoading }) => {
+const Crud = ({ formFields, initialData, onSubmit = () => { }, type = '', isLoading }) => {
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
   const naviagte = useNavigate();
@@ -94,7 +94,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
               editor.on('change', () => handleEditorChange(editor));
             }}
             onEditorChange={(content) => {
-              form.setFieldsValue({ content }); // Sinkronisasi dengan form
+              form.setFieldsValue({ content });
             }}
           />
         );
@@ -104,11 +104,11 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
           <Editor
             apiKey="ltsdik9bjzzfm8i8g4ve5b32ii5sz0t7j6g2ag5khxm0bn1y"
             initialValue={initialData?.content ?? ''}
-            plugins="table"
+            plugins="table advlist"
             init={{
               selector: '#editor',
               toolbar:
-                'undo redo spellcheckdialog | aidialog aishortcuts | blocks fontfamily fontsizeinput | bold italic underline forecolor backcolor | link image addcomment showcomments  | align lineheight checklist bullist numlist | indent outdent | inserttemplate | removeformat typography math',
+                'undo redo spellcheckdialog | aidialog aishortcuts | blocks fontfamily fontsizeinput | bold italic underline forecolor backcolor | link image addcomment showcomments  | align lineheight checklist bullist numlist | indent outdent | inserttemplate | removeformat typography math | indentFirstLine  ',
               advtemplate_templates: [
                 {
                   title: 'Without an mce-clipboard marker',
@@ -149,6 +149,8 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
                 }
               ],
               content_style: `
+                p.indent-first-line { text-indent: 2em; }
+
                 body {
                   background: #fff;
                 }
@@ -197,10 +199,39 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
                     padding: 2rem 6rem 2rem 6rem;
                   }
                 }
-              `
+              `,
+              style_formats: [
+                { title: 'Indent First Line', block: 'p', classes: 'indent-first-line' }
+              ],
+              setup: (editor) => {
+                editor.ui.registry.addToggleButton('indentFirstLine', {
+                  text: '📏 First Line Indent',
+                  tooltip: 'Indentasi Baris Pertama',
+                  onAction: () => {
+                    editor.execCommand('mceToggleFormat', false, 'indentFirstLine');
+                  },
+                  onSetup: (buttonApi) => {
+                    const updateState = () => {
+                      const node = editor.selection.getNode();
+                      const isIndented = node.classList.contains('indent-first-line');
+                      buttonApi.setActive(isIndented);
+                    };
+                    editor.on('NodeChange', updateState);
+                    return () => editor.off('NodeChange', updateState);
+                  }
+                });
+
+              }
             }}
+
             onInit={(evt, editor) => {
+              editor.formatter.register('indentFirstLine', {
+                block: 'p',
+                classes: 'indent-first-line'
+              });
+
               editor.on('change', () => handleEditorChange(editor));
+
             }}
             onEditorChange={(content) => {
               form.setFieldsValue({ content }); // Sinkronisasi dengan form

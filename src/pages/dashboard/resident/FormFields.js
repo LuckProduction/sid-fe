@@ -121,7 +121,25 @@ export const biodataFormFields = () => [
       }
     ]
   },
-
+  {
+    label: `Foto Penduduk`,
+    name: 'image_profile',
+    type: InputType.UPLOAD,
+    max: 1,
+    beforeUpload: () => {
+      return false;
+    },
+    getFileList: (data) => {
+      return [
+        {
+          url: data?.foto,
+          name: data?.name
+        }
+      ];
+    },
+    accept: ['.png', '.jpg', '.jpeg', 'webp'],
+    rules: [{ required: true, message: 'Foto harus diisi' }]
+  },
   {
     label: `Jenis Kelamin`,
     name: 'gender',

@@ -25,6 +25,7 @@ const Edit = () => {
   const category = getAllCategory.data ?? [];
   const article = getAllArticle.data ?? [];
 
+
   return (
     <div>
       {getAllArticle.data === 0 ? (

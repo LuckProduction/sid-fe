@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { letterTypeFormFields, submitLetterFormFields } from './FormFields';
 import { SubmitLetter as SubmitLetterModel } from '@/models';
 import { Action } from '@/constants';
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DownloadOutlined } from '@ant-design/icons';
 
 const { UPDATE, DELETE } = Action;
@@ -30,6 +30,7 @@ const SubmitLetter = () => {
   }, [fetchSubmitLetter, pagination.page, pagination.per_page, token]);
 
   const submitLetter = getAllSubmitLetter.data ?? [];
+
 
   const Column = [
     {
@@ -93,6 +94,87 @@ const SubmitLetter = () => {
                   }
                   return isSuccess;
                 }
+              });
+            }}
+          />
+          <Detail
+            title={`Detail ${Modul.LETTER_SUBMIT}`}
+            model={SubmitLetterModel}
+            onClick={() => {
+              modal.show.description({
+                title: 'Detail data permohonan surat',
+                data: [
+                  {
+                    key: 'Token Surat',
+                    label: `Token ${Modul.LETTER_SUBMIT}`,
+                    children: record.token
+                  },
+                  {
+                    key: 'status',
+                    label: `Status `,
+                    children: (() => {
+                      let statusTag;
+                      switch (record.status) {
+                        case 'selesai':
+                          statusTag = <Tag color="blue">Selesai</Tag>;
+                          break;
+                        case 'verifikasi':
+                          statusTag = <Tag color="green">Verifikasi</Tag>;
+                          break;
+                        case 'menunggu':
+                          statusTag = <Tag color="yellow">Menunggu</Tag>;
+                          break;
+                        default:
+                          statusTag = <Tag color="error">Undefined</Tag>;
+                      }
+                      return statusTag;
+                    })()
+                  },
+                  {
+                    key: 'Nama Surat',
+                    label: `Nama Surat`,
+                    children: record.letter_type.letter_name
+                  },
+                  {
+                    key: 'Kode Surat',
+                    label: `Kode Surat`,
+                    children: record.letter_type.letter_code
+                  },
+                  {
+                    key: 'Nama Pemohon',
+                    label: `Nama Pemohon`,
+                    children: record.resident.full_name
+                  },
+                  {
+                    key: 'NIK Pemohon',
+                    label: `NIK Pemohon`,
+                    children: record.resident.nik
+                  },
+                  {
+                    key: 'Status Kependudukan',
+                    label: `Status Kependudukan`,
+                    children: record.resident.resident_status
+                  },
+                  {
+                    key: 'Jenis Kelamin',
+                    label: `Jenis Kelamin `,
+                    children: (() => {
+                      let gender;
+                      switch (record.resident.gender) {
+                        case 'L':
+                          gender = 'Laki Laki'
+                          break;
+                        case 'P':
+                          gender = 'Perempuan'
+                          break;
+                        default:
+                          gender = <Tag color="error">Undefined</Tag>;
+                      }
+                      return gender;
+                    })()
+                  },
+
+                ]
               });
             }}
           />

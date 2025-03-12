@@ -1,5 +1,18 @@
 import { InputType } from '@/constants';
 
+
+const validateYouTubeUrl = (_, value) => {
+  const pattern = /^https:\/\/www\.youtube\.com\//;
+  if (!value) {
+    return Promise.reject("URL wajib diisi!");
+  }
+  if (!pattern.test(value)) {
+    return Promise.reject("URL harus diawali dengan https://www.youtube.com/");
+  }
+  return Promise.resolve();
+};
+
+
 export const districtFormFields = () => [
   {
     label: 'Kode Kecamatan',
@@ -55,58 +68,38 @@ export const villageFormFields = () => [
     label: 'Nama Desa',
     name: 'village_name',
     type: InputType.TEXT,
-    rules: [
-      {
-        required: true,
-        message: 'Nama desa harus diisi'
-      }
-    ]
   },
   {
     label: 'Kode Desa',
     name: 'village_code',
     type: InputType.TEXT,
-    rules: [
-      {
-        required: true,
-        message: 'Kode desa harus diisi'
-      }
-    ]
+  
   },
   {
     label: 'Kode Pos',
     name: 'postal_code',
     type: InputType.TEXT,
-    rules: [
-      {
-        required: true,
-        message: 'Kode pos harus diisi'
-      }
-    ]
+  
   },
   {
     label: 'Alamat Kantor',
     name: 'office_address',
     type: InputType.TEXT,
-    rules: [
-      {
-        required: true,
-        message: 'Alamat kantor harus diisi'
-      }
-    ]
+  
   },
   {
     label: 'Email Desa',
     name: 'village_email',
     type: InputType.TEXT,
+   
+  },
+  {
+    label: 'Link Youtube Profile Desa',
+    name: 'profile_video_link',
+    type: InputType.TEXT,
     rules: [
       {
-        required: true,
-        message: 'Email desa harus diisi'
-      },
-      {
-        tyoe: 'email',
-        message: 'Field harus berupa email'
+        validator: validateYouTubeUrl,
       }
     ]
   }

@@ -6,6 +6,7 @@ export default function AntdConfigProviders({ children }) {
   const { styles } = useStyle();
   return (
     <StyleProvider
+      warning={{ strict: false }}
       theme={{
         token: {
           fontFamily: 'Plus Jakarta Sans'

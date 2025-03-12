@@ -193,7 +193,7 @@ export const dashboardLink = [
     ]
   },
   {
-    label: 'Atikel Desa',
+    label: 'Artikel Desa',
     icon: BookOutlined,
     children: [
       {

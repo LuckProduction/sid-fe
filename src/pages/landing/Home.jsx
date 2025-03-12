@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
 import { useCrudModal } from '@/hooks';
+import parse from 'html-react-parser';
 
 const Home = () => {
-  const { villageProfile, speech, visiMisi, institution } = useOutletContext();
+  const { villageProfile, speech, visiMisi, institution, article } = useOutletContext();
   const [titleData, setTitleData] = useState({ title: 'Loading...', icon: '' });
 
   const navigate = useNavigate();
@@ -85,10 +86,35 @@ const Home = () => {
                 </Reveal>
               </Typography.Paragraph>
               <Space size="small">
-                <Button variant="solid" size="large" color="primary">
+                <Button variant="solid" size="large" color="primary" onClick={() => navigate('/news')}>
                   Lihat Berita
                 </Button>
-                <Button size="large" icon={<PlayCircleOutlined />} variant="outlined" color="primary">
+                <Button
+                  size="large"
+                  icon={<PlayCircleOutlined />}
+                  variant="outlined"
+                  color="primary"
+                  onClick={() =>
+                    modal.show.paragraph({
+                      title: "Profil Desa",
+                      data: {
+                        content: (
+                          <>
+                            <iframe
+                              style={{ aspectRatio: 16 / 9, width: "100%" }}
+                              className='w-full h-full'
+                              src={villageProfile?.data?.profile_video_link}
+                              title="YouTube video player"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            ></iframe>
+                          </>
+                        )
+                      }
+                    })
+                  }
+                >
                   Profil Desa
                 </Button>
               </Space>
@@ -264,67 +290,102 @@ const Home = () => {
           <div className="grid w-full grid-cols-12 items-center justify-center gap-4">
             {institution.isLoading
               ? Array.from({ length: 6 }, (_, i) => i).map((index) => (
-                  <Card className="col-span-12 md:col-span-4 lg:col-span-2" key={index}>
-                    <Skeleton active />
-                  </Card>
-                ))
+                <Card className="col-span-12 md:col-span-4 lg:col-span-2" key={index}>
+                  <Skeleton active />
+                </Card>
+              ))
               : institution?.data?.map((item) => (
-                  <Card
-                    hoverable
-                    className="col-span-12 h-full md:col-span-4 lg:col-span-2"
-                    key={item.id}
-                    onClick={() =>
-                      modal.show.paragraph({
-                        title: item.institution_name,
-                        data: {
-                          content: (
-                            <>
-                              <Card className="mb-6">
-                                <div className="flex flex-col gap-y-2">
-                                  <p>Deskripsi Lembaga: {item.desc}</p>
-                                  <p>
-                                    Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
-                                  </p>
-                                  <p>
-                                    Status:{' '}
-                                    {(() => {
-                                      switch (item.status) {
-                                        case 'aktif':
-                                          return <Tag color="blue">Aktif</Tag>;
-                                        case 'nonaktif':
-                                          return <Tag color="orange">Non-Aktif</Tag>;
-                                        default:
-                                          return <Tag color="red">Undefined</Tag>;
-                                      }
-                                    })()}
-                                  </p>
-                                </div>
-                              </Card>
-
-                              <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
-                                <List
-                                  itemLayout="horizontal"
-                                  dataSource={item.member}
-                                  renderItem={(anggota) => (
-                                    <List.Item>
-                                      <List.Item.Meta avatar={<Avatar src={anggota.foto} />} title={anggota.full_name} description={anggota.employment} />
-                                    </List.Item>
-                                  )}
-                                />
+                <Card
+                  hoverable
+                  className="col-span-12 h-full md:col-span-4 lg:col-span-2"
+                  key={item.id}
+                  onClick={() =>
+                    modal.show.paragraph({
+                      title: item.institution_name,
+                      data: {
+                        content: (
+                          <>
+                            <Card className="mb-6">
+                              <div className="flex flex-col gap-y-2">
+                                <p>Deskripsi Lembaga: {item.desc}</p>
+                                <p>
+                                  Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
+                                </p>
+                                <p>
+                                  Status:{' '}
+                                  {(() => {
+                                    switch (item.status) {
+                                      case 'aktif':
+                                        return <Tag color="blue">Aktif</Tag>;
+                                      case 'nonaktif':
+                                        return <Tag color="orange">Non-Aktif</Tag>;
+                                      default:
+                                        return <Tag color="red">Undefined</Tag>;
+                                    }
+                                  })()}
+                                </p>
                               </div>
-                            </>
-                          )
-                        }
-                      })
-                    }
-                  >
-                    <div className="flex flex-col items-center gap-y-4">
-                      <Image width={64} src={item.image} className="mb-4" />
-                      <b className="text-center">{item.institution_name}</b>
-                      <small className="news-text text-center">{item.desc}</small>
-                    </div>
-                  </Card>
-                ))}
+                            </Card>
+
+                            <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
+                              <List
+                                itemLayout="horizontal"
+                                dataSource={item.member}
+                                renderItem={(anggota) => (
+                                  <List.Item>
+                                    <List.Item.Meta avatar={<Avatar src={anggota.foto} />} title={anggota.full_name} description={anggota.employment} />
+                                  </List.Item>
+                                )}
+                              />
+                            </div>
+                          </>
+                        )
+                      }
+                    })
+                  }
+                >
+                  <div className="flex flex-col items-center gap-y-4">
+                    <Image width={64} src={item.image} className="mb-4" />
+                    <b className="text-center">{item.institution_name}</b>
+                    <small className="news-text text-center">{item.desc}</small>
+                  </div>
+                </Card>
+              ))}
+          </div>
+        </div>
+      </section>
+      <section className="w-full bg-gray-100">
+        <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-8 px-4 py-20">
+          <div className="flex items-end justify-between">
+            <div className="flex flex-col gap-y-2">
+              <Reveal>
+                <h2 className="text-sm font-semibold text-blue-500">Berita</h2>
+              </Reveal>
+              <Reveal>
+                <p className="max-w-44 text-xl font-semibold">Berita khas desa Sukma terbaru :</p>
+              </Reveal>
+            </div>
+            <Button icon={<RightOutlined />} onClick={() => navigate('/news')} iconPosition="end" variant="solid" color="primary">
+              Lihat Selengkapnya
+            </Button>
+          </div>
+          <div className="grid grid-cols-10 gap-4">
+            {article.isLoading
+              ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
+                <Card className="col-span-2" key={index}>
+                  <Skeleton active />
+                </Card>
+              ))
+              : article?.data?.slice(0, 5).map((item, index) => (
+                <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
+                  <Reveal>
+                    <b className="news-text">{item.title}</b>
+                  </Reveal>
+                  <Reveal>
+                    <p className="news-text mt-2">{parse(item.content)}</p>
+                  </Reveal>
+                </Card>
+              ))}
           </div>
         </div>
       </section>

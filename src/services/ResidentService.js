@@ -69,8 +69,8 @@ export default class ResidentService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token) {
-    return await api.patch(`/master-penduduk/edit/${id}`, { body: Resident.toApiData(data), token });
+  static async update(id, data, token, file) {
+    return await api.post(`/master-penduduk/edit/${id}`, { body: Resident.toApiData(data), token, file: { foto: file } });
   }
 
   /**

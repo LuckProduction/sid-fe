@@ -1,10 +1,11 @@
 import { DataLoader } from '@/components';
 import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
 import { SpeechService, VillageBoundariesService, VillageProfilService } from '@/services';
-import { DownloadOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DownloadOutlined, EditOutlined, PlayCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Image, Typography } from 'antd';
 import { useEffect } from 'react';
 import { districtFormFields, logoFormFields, regencyFormFields, speechFormFields, VillageBoundariesFormFields, villageFormFields } from './FormFields';
+import { extractVideoId } from '@/utils/extractedYoutubeUrl';
 
 const VillagePorfile = () => {
   const { token } = useAuth();
@@ -27,7 +28,7 @@ const VillagePorfile = () => {
   const villageProfile = getAll.data ?? [];
   const speech = getAllSpeech.data ?? [];
   const VillageBoundaries = getAllVillageBoundaries.data ?? {};
-
+  
   const handleEditVillageBoundaries = () => {
     const coordinates = VillageBoundaries?.headvillage_coordinate ?? '';
     const [longitude = '', latitude = ''] = coordinates.split(',').map((coord) => coord.trim());
@@ -54,7 +55,7 @@ const VillagePorfile = () => {
         <DataLoader type="datatable" />
       ) : (
         <div className="grid grid-cols-12 gap-4">
-          <Card className="col-span-4 h-fit">
+          <Card className="col-span-12 lg:col-span-4 h-fit">
             <div className="flex w-full flex-col gap-y-4">
               <Image src={villageProfile.village_logo} alt={`Logo ${villageProfile.village_name}`} />
               <Button
@@ -84,10 +85,10 @@ const VillagePorfile = () => {
               </Button>
             </div>
           </Card>
-          <Card className="col-span-8">
-            <div className="mb-6 flex items-center justify-between">
+          <Card className="col-span-12 lg:col-span-8">
+            <div className="mb-6 flex flex-col justify-between gap-y-6">
               <Typography.Title level={5}>Data Profil Desa</Typography.Title>
-              <div className="inline-flex items-center gap-x-2">
+              <div className="inline-flex flex-wrap items-center gap-x-2 gap-y-2">
                 <Button
                   icon={<EditOutlined />}
                   onClick={() =>
@@ -141,7 +142,7 @@ const VillagePorfile = () => {
                       data: villageProfile,
                       formFields: villageFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await updateVillageProfile.execute(values, token);
+                        const { message, isSuccess } = await updateVillageProfile.execute({ ...values, profile_video_link: extractVideoId(values.profile_video_link) }, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchVillageProfile(token);
@@ -167,6 +168,40 @@ const VillagePorfile = () => {
               <Descriptions.Item label="Alamat Kantor">{villageProfile.office_address}</Descriptions.Item>
               <Descriptions.Item label="Email Desa">{villageProfile.village_email}</Descriptions.Item>
               <Descriptions.Item label="Kode Pos Desa">{villageProfile.postal_code}</Descriptions.Item>
+              <Descriptions.Item label="Profil Desa">
+                {villageProfile.profile_video_link !== null ? (
+                  <Button
+                    size="large"
+                    icon={<PlayCircleOutlined />}
+                    variant="outlined"
+                    color="primary"
+                    onClick={() =>
+                      modal.show.paragraph({
+                        title: "Profil Desa",
+                        data: {
+                          content: (
+                            <>
+                              <iframe
+                                style={{ aspectRatio: 16 / 9, width: "100%" }}
+                                className='w-full h-full'
+                                src={villageProfile.profile_video_link}
+                                title="YouTube video player"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              ></iframe>
+                            </>
+                          )
+                        }
+                      })
+                    }
+                  >
+                    Profil Desa
+                  </Button>
+                ) : (
+                  <small className='italic'></small>
+                )}
+              </Descriptions.Item>
             </Descriptions>
             <Descriptions column={1} bordered className="mb-6">
               <Descriptions.Item label="Nama Kecamatan">

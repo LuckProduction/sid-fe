@@ -8,7 +8,7 @@ import Modul from '@/constants/Modul';
 import { Action, InputType } from '@/constants';
 import { formFields } from './FormFields';
 import { Resident as ResidentModel } from '@/models';
-import { Delete, Edit } from '@/components/dashboard/button';
+import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import dateFormatter from '@/utils/dateFormatter';
 
 const { UPDATE, DELETE } = Action;
@@ -105,6 +105,13 @@ const Resident = () => {
             title={`Edit ${Modul.RESIDENTIAL}`}
             onClick={() => {
               navigate(window.location.pathname + '/edit/' + record.id);
+            }}
+          />
+          <Detail
+            model={ResidentModel}
+            title={`Detail ${Modul.RESIDENTIAL}`}
+            onClick={() => {
+              navigate(window.location.pathname + '/detail/' + record.id);
             }}
           />
           <Delete

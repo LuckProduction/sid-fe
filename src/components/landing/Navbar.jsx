@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { landingLink } from '@/data/link';
 import { findItemByKey } from '@/utils/landingLink';
@@ -19,6 +20,11 @@ const Navbar = ({ villageProfile }) => {
   const closeDrawer = () => {
     setIsDrawerOpen(false);
   };
+
+  const menuLandingLink = landingLink.map(({ element, children, ...rest }) => ({
+    ...rest,
+    children: children ? children.map(({ element, ...childRest }) => childRest) : undefined
+  }));
 
   const handleMenuClick = (e) => {
     const clickedItem = findItemByKey(landingLink, e.key);
@@ -53,13 +59,13 @@ const Navbar = ({ villageProfile }) => {
                 </b>
               </>
             )}
-            <Menu style={{ minWidth: 0, flex: 'auto', border: 'none' }} mode="horizontal" items={landingLink} activeKey="" onClick={handleMenuClick} />
+            <Menu style={{ minWidth: 0, flex: 'auto', border: 'none' }} mode="horizontal" items={menuLandingLink} activeKey="" onClick={handleMenuClick} />
           </>
         ) : (
           <>
             <Button icon={<MenuOutlined />} onClick={openDrawer} />
-            <Drawer open={isDrawerOpen} onClose={closeDrawer} placement="left" width={300}>
-              <Menu items={landingLink} mode="inline" onClick={handleMenuClick} />
+            <Drawer open={isDrawerOpen} onClose={closeDrawer} placement="left" width={250} >
+              <Menu items={menuLandingLink} onClick={handleMenuClick} className="w-full !border-none font-semibold" theme="light" mode="inline" />
             </Drawer>
           </>
         )}

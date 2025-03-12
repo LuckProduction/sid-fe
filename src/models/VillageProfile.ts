@@ -23,6 +23,7 @@ interface IncomingApiData {
   kode_pos_desa: string;
   alamat_kantor: string;
   email_desa: string;
+  embed_video_profil_desa: string;
   logo_desa: string;
   profil_kecamatan: Kecamatan;
 }
@@ -34,6 +35,7 @@ interface OutgoingApiData {
   kode_pos_desa?: string;
   alamat_kantor?: string;
   email_desa?: string;
+  embed_video_profil_desa?: string;
   logo_desa?: string;
   profil_kecamatan?: {
     nama_camat?: string;
@@ -52,6 +54,7 @@ interface FormValue {
   postal_code?: string;
   office_adress?: string;
   village_email?: string;
+  profile_video_link?: string;
   village_logo?: string;
   district_profile?: {
     districthead_name?: string;
@@ -73,6 +76,7 @@ export default class VillageProfile extends Model {
     public postal_code: string,
     public office_address: string,
     public village_email: string,
+    public profile_video_link: string,
     public village_logo: string,
     public district_profile?: {
       id_district: number;
@@ -100,6 +104,7 @@ export default class VillageProfile extends Model {
       apiData.kode_pos_desa,
       apiData.alamat_kantor,
       apiData.email_desa,
+      apiData.embed_video_profil_desa,
       asset(apiData.logo_desa),
       apiData.profil_kecamatan
         ? {
@@ -127,6 +132,7 @@ export default class VillageProfile extends Model {
       ...(formValue.postal_code ? { kode_pos_desa: formValue.postal_code } : {}),
       ...(formValue.office_adress ? { alamat_kantor: formValue.office_adress } : {}),
       ...(formValue.village_email ? { email_desa: formValue.village_email } : {}),
+      ...(formValue.profile_video_link ? { embed_video_profil_desa: formValue.profile_video_link } : {}),
       profil_kecamatan: formValue.district_profile
         ? {
             kode_kecamatan: formValue.district_profile.district_code,
