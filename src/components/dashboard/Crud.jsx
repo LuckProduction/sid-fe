@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const Crud = ({ formFields, initialData, onSubmit = () => { }, type = '', isLoading }) => {
+const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoading }) => {
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
   const naviagte = useNavigate();
@@ -200,9 +200,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => { }, type = '', isLoad
                   }
                 }
               `,
-              style_formats: [
-                { title: 'Indent First Line', block: 'p', classes: 'indent-first-line' }
-              ],
+              style_formats: [{ title: 'Indent First Line', block: 'p', classes: 'indent-first-line' }],
               setup: (editor) => {
                 editor.ui.registry.addToggleButton('indentFirstLine', {
                   text: '📏 First Line Indent',
@@ -220,10 +218,8 @@ const Crud = ({ formFields, initialData, onSubmit = () => { }, type = '', isLoad
                     return () => editor.off('NodeChange', updateState);
                   }
                 });
-
               }
             }}
-
             onInit={(evt, editor) => {
               editor.formatter.register('indentFirstLine', {
                 block: 'p',
@@ -231,7 +227,6 @@ const Crud = ({ formFields, initialData, onSubmit = () => { }, type = '', isLoad
               });
 
               editor.on('change', () => handleEditorChange(editor));
-
             }}
             onEditorChange={(content) => {
               form.setFieldsValue({ content }); // Sinkronisasi dengan form

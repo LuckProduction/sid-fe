@@ -64,7 +64,7 @@ const Navbar = ({ villageProfile }) => {
         ) : (
           <>
             <Button icon={<MenuOutlined />} onClick={openDrawer} />
-            <Drawer open={isDrawerOpen} onClose={closeDrawer} placement="left" width={250} >
+            <Drawer open={isDrawerOpen} onClose={closeDrawer} placement="left" width={250}>
               <Menu items={menuLandingLink} onClick={handleMenuClick} className="w-full !border-none font-semibold" theme="light" mode="inline" />
             </Drawer>
           </>

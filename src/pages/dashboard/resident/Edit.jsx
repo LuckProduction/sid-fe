@@ -25,7 +25,7 @@ const Edit = () => {
 
   const resident = getAllResident.data ?? [];
   const hamlet = getAllHamlet.data ?? [];
-  
+
   return (
     <div>
       <Card>
@@ -36,7 +36,7 @@ const Edit = () => {
               formFields={biodataFormFields()}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, {...values, _method: 'PUT'}, token, values.image_profile.file);
+                const { message, isSuccess } = await editResident.execute(id, { ...values, _method: 'PUT' }, token, values.image_profile.file);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);

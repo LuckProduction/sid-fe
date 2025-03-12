@@ -96,13 +96,13 @@ const Home = () => {
                   color="primary"
                   onClick={() =>
                     modal.show.paragraph({
-                      title: "Profil Desa",
+                      title: 'Profil Desa',
                       data: {
                         content: (
                           <>
                             <iframe
-                              style={{ aspectRatio: 16 / 9, width: "100%" }}
-                              className='w-full h-full'
+                              style={{ aspectRatio: 16 / 9, width: '100%' }}
+                              className="h-full w-full"
                               src={villageProfile?.data?.profile_video_link}
                               title="YouTube video player"
                               frameBorder="0"
@@ -327,30 +327,30 @@ const Home = () => {
                                 </div>
                               </Card>
 
-                            <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
-                              <List
-                                itemLayout="horizontal"
-                                dataSource={item.member}
-                                renderItem={(anggota) => (
-                                  <List.Item>
-                                    <List.Item.Meta avatar={<Avatar src={anggota.foto} />} title={anggota.full_name} description={anggota.employment} />
-                                  </List.Item>
-                                )}
-                              />
-                            </div>
-                          </>
-                        )
-                      }
-                    })
-                  }
-                >
-                  <div className="flex flex-col items-center gap-y-4">
-                    <Image preview={false} width={64} src={item.image} className="mb-4" />
-                    <b className="text-center">{item.institution_name}</b>
-                    <small className="news-text text-center">{item.desc}</small>
-                  </div>
-                </Card>
-              ))}
+                              <div className="mb-6 max-h-64 w-full overflow-y-auto p-4">
+                                <List
+                                  itemLayout="horizontal"
+                                  dataSource={item.member}
+                                  renderItem={(anggota) => (
+                                    <List.Item>
+                                      <List.Item.Meta avatar={<Avatar src={anggota.foto} />} title={anggota.full_name} description={anggota.employment} />
+                                    </List.Item>
+                                  )}
+                                />
+                              </div>
+                            </>
+                          )
+                        }
+                      })
+                    }
+                  >
+                    <div className="flex flex-col items-center gap-y-4">
+                      <Image preview={false} width={64} src={item.image} className="mb-4" />
+                      <b className="text-center">{item.institution_name}</b>
+                      <small className="news-text text-center">{item.desc}</small>
+                    </div>
+                  </Card>
+                ))}
           </div>
         </div>
       </section>
@@ -372,20 +372,20 @@ const Home = () => {
           <div className="grid grid-cols-10 gap-4">
             {article.isLoading
               ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
-                <Card className="col-span-2" key={index}>
-                  <Skeleton active />
-                </Card>
-              ))
+                  <Card className="col-span-2" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
               : article?.data?.slice(0, 5).map((item, index) => (
-                <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
-                  <Reveal>
-                    <b className="news-text">{item.title}</b>
-                  </Reveal>
-                  <Reveal>
-                    <p className="news-text mt-2">{parse(item.content)}</p>
-                  </Reveal>
-                </Card>
-              ))}
+                  <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
+                    <Reveal>
+                      <b className="news-text">{item.title}</b>
+                    </Reveal>
+                    <Reveal>
+                      <p className="news-text mt-2">{parse(item.content)}</p>
+                    </Reveal>
+                  </Card>
+                ))}
           </div>
         </div>
       </section>

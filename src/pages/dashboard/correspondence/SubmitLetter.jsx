@@ -31,7 +31,6 @@ const SubmitLetter = () => {
 
   const submitLetter = getAllSubmitLetter.data ?? [];
 
-
   const Column = [
     {
       title: 'Token',
@@ -162,18 +161,17 @@ const SubmitLetter = () => {
                       let gender;
                       switch (record.resident.gender) {
                         case 'L':
-                          gender = 'Laki Laki'
+                          gender = 'Laki Laki';
                           break;
                         case 'P':
-                          gender = 'Perempuan'
+                          gender = 'Perempuan';
                           break;
                         default:
                           gender = <Tag color="error">Undefined</Tag>;
                       }
                       return gender;
                     })()
-                  },
-
+                  }
                 ]
               });
             }}

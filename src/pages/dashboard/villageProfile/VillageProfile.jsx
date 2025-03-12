@@ -28,7 +28,7 @@ const VillagePorfile = () => {
   const villageProfile = getAll.data ?? [];
   const speech = getAllSpeech.data ?? [];
   const VillageBoundaries = getAllVillageBoundaries.data ?? {};
-  
+
   const handleEditVillageBoundaries = () => {
     const coordinates = VillageBoundaries?.headvillage_coordinate ?? '';
     const [longitude = '', latitude = ''] = coordinates.split(',').map((coord) => coord.trim());
@@ -55,7 +55,7 @@ const VillagePorfile = () => {
         <DataLoader type="datatable" />
       ) : (
         <div className="grid grid-cols-12 gap-4">
-          <Card className="col-span-12 lg:col-span-4 h-fit">
+          <Card className="col-span-12 h-fit lg:col-span-4">
             <div className="flex w-full flex-col gap-y-4">
               <Image src={villageProfile.village_logo} alt={`Logo ${villageProfile.village_name}`} />
               <Button
@@ -177,13 +177,13 @@ const VillagePorfile = () => {
                     color="primary"
                     onClick={() =>
                       modal.show.paragraph({
-                        title: "Profil Desa",
+                        title: 'Profil Desa',
                         data: {
                           content: (
                             <>
                               <iframe
-                                style={{ aspectRatio: 16 / 9, width: "100%" }}
-                                className='w-full h-full'
+                                style={{ aspectRatio: 16 / 9, width: '100%' }}
+                                className="h-full w-full"
                                 src={villageProfile.profile_video_link}
                                 title="YouTube video player"
                                 frameBorder="0"
@@ -199,7 +199,7 @@ const VillagePorfile = () => {
                     Profil Desa
                   </Button>
                 ) : (
-                  <small className='italic'></small>
+                  <small className="italic"></small>
                 )}
               </Descriptions.Item>
             </Descriptions>

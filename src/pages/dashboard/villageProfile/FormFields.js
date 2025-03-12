@@ -1,17 +1,15 @@
 import { InputType } from '@/constants';
 
-
 const validateYouTubeUrl = (_, value) => {
   const pattern = /^https:\/\/www\.youtube\.com\//;
   if (!value) {
-    return Promise.reject("URL wajib diisi!");
+    return Promise.reject('URL wajib diisi!');
   }
   if (!pattern.test(value)) {
-    return Promise.reject("URL harus diawali dengan https://www.youtube.com/");
+    return Promise.reject('URL harus diawali dengan https://www.youtube.com/');
   }
   return Promise.resolve();
 };
-
 
 export const districtFormFields = () => [
   {
@@ -67,31 +65,27 @@ export const villageFormFields = () => [
   {
     label: 'Nama Desa',
     name: 'village_name',
-    type: InputType.TEXT,
+    type: InputType.TEXT
   },
   {
     label: 'Kode Desa',
     name: 'village_code',
-    type: InputType.TEXT,
-  
+    type: InputType.TEXT
   },
   {
     label: 'Kode Pos',
     name: 'postal_code',
-    type: InputType.TEXT,
-  
+    type: InputType.TEXT
   },
   {
     label: 'Alamat Kantor',
     name: 'office_address',
-    type: InputType.TEXT,
-  
+    type: InputType.TEXT
   },
   {
     label: 'Email Desa',
     name: 'village_email',
-    type: InputType.TEXT,
-   
+    type: InputType.TEXT
   },
   {
     label: 'Link Youtube Profile Desa',
@@ -99,7 +93,7 @@ export const villageFormFields = () => [
     type: InputType.TEXT,
     rules: [
       {
-        validator: validateYouTubeUrl,
+        validator: validateYouTubeUrl
       }
     ]
   }

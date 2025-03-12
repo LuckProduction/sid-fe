@@ -12,6 +12,12 @@ export interface IncomingApiData {
   foto: string;
   jenis_kelamin: string;
   agama: string;
+  bantuan: {
+    nama_bantuan: string;
+    asal_dana: string;
+    status: 'aktif' | 'nonaktif';
+    sasaran_program: string;
+  }[];
   alamat_pendidikan?: {
     alamat_kk: string;
     dusun_id: number;
@@ -130,6 +136,12 @@ export default class Resident extends Model {
     public image_profile: string,
     public gender: string,
     public religion: string,
+    public public_assistance: {
+      public_assistance_name: string;
+      source_funding: string;
+      status: 'aktif' | 'nonaktif';
+      program_target: string;
+    }[],
     public address?: {
       address_kk: string;
       hamlet_id: number;
@@ -183,51 +195,57 @@ export default class Resident extends Model {
       asset(apiData.foto),
       apiData.jenis_kelamin,
       apiData.agama,
+      apiData.bantuan.map((item) => ({
+        public_assistance_name: item.nama_bantuan,
+        source_funding: item.asal_dana,
+        status: item.status,
+        program_target: item.sasaran_program
+      })),
       apiData.alamat_pendidikan
         ? {
-          address_kk: apiData.alamat_pendidikan.alamat_kk,
-          hamlet_id: apiData.alamat_pendidikan.dusun_id,
-          rt: apiData.alamat_pendidikan.rt,
-          rw: apiData.alamat_pendidikan.rw,
-          last_address: apiData.alamat_pendidikan.alamat_sebelumnya,
-          telp: apiData.alamat_pendidikan.nomor_telepon,
-          email: apiData.alamat_pendidikan.email
-        }
+            address_kk: apiData.alamat_pendidikan.alamat_kk,
+            hamlet_id: apiData.alamat_pendidikan.dusun_id,
+            rt: apiData.alamat_pendidikan.rt,
+            rw: apiData.alamat_pendidikan.rw,
+            last_address: apiData.alamat_pendidikan.alamat_sebelumnya,
+            telp: apiData.alamat_pendidikan.nomor_telepon,
+            email: apiData.alamat_pendidikan.email
+          }
         : undefined,
       apiData.kelahiran
         ? {
-          birth_date: apiData.kelahiran.tanggal_lahir,
-          birth_place: apiData.kelahiran.tempat_lahir,
-          akta_kelahiran_number: apiData.kelahiran.no_akta_kelahiran
-        }
+            birth_date: apiData.kelahiran.tanggal_lahir,
+            birth_place: apiData.kelahiran.tempat_lahir,
+            akta_kelahiran_number: apiData.kelahiran.no_akta_kelahiran
+          }
         : undefined,
       apiData.orang_tua
         ? {
-          father_name: apiData.orang_tua.nama_ayah,
-          mother_name: apiData.orang_tua.nama_ibu,
-          father_nik: apiData.orang_tua.nik_ayah,
-          mother_nik: apiData.orang_tua.nik_ibu
-        }
+            father_name: apiData.orang_tua.nama_ayah,
+            mother_name: apiData.orang_tua.nama_ibu,
+            father_nik: apiData.orang_tua.nik_ayah,
+            mother_nik: apiData.orang_tua.nik_ibu
+          }
         : undefined,
       apiData.pekerjaan_pendidikan
         ? {
-          education_kk: apiData.pekerjaan_pendidikan.pendidikan_kk,
-          career: apiData.pekerjaan_pendidikan.pekerjaan,
-          education_in_progress: apiData.pekerjaan_pendidikan.pendidikan_sedang_ditempuh
-        }
+            education_kk: apiData.pekerjaan_pendidikan.pendidikan_kk,
+            career: apiData.pekerjaan_pendidikan.pekerjaan,
+            education_in_progress: apiData.pekerjaan_pendidikan.pendidikan_sedang_ditempuh
+          }
         : undefined,
       apiData.keluarga_terkait
         ? apiData.keluarga_terkait.map((keluarga) => ({
-          id: keluarga.id,
-          nik: keluarga.nik,
-          full_name: keluarga.nama_lengkap,
-          family_relation: keluarga.hubungan_keluarga,
-          resident_status: keluarga.status_penduduk,
-          marital_status: keluarga.status_perkawinan,
-          kk_number: keluarga.nomor_kk,
-          gender: keluarga.jenis_kelamin,
-          religion: keluarga.agama
-        }))
+            id: keluarga.id,
+            nik: keluarga.nik,
+            full_name: keluarga.nama_lengkap,
+            family_relation: keluarga.hubungan_keluarga,
+            resident_status: keluarga.status_penduduk,
+            marital_status: keluarga.status_perkawinan,
+            kk_number: keluarga.nomor_kk,
+            gender: keluarga.jenis_kelamin,
+            religion: keluarga.agama
+          }))
         : undefined
     ) as ReturnType<T, IncomingApiData, Resident>;
   }
@@ -236,39 +254,47 @@ export default class Resident extends Model {
     if (Array.isArray(resident)) return resident.map((object) => this.toApiData(object)) as ReturnType<T, FormValue, OutgoingApiData>;
     const apiData: OutgoingApiData = {
       ...(resident._method ? { _method: resident._method } : {}),
-      ...(resident.address ? {
-        alamat: {
-          alamat_kk: resident.address.address_kk,
-          dusun_id: resident.address.hamlet_id,
-          rt: resident.address.rt,
-          rw: resident.address.rw,
-          alamat_sebelumnya: resident.address.last_address,
-          nomor_telepon: resident.address.telp,
-          email: resident.address.email
-        }
-      } : {}),
-      ...(resident.birth ? {
-        kelahiran: {
-          tanggal_lahir: resident.birth.birth_date,
-          tempat_lahir: resident.birth.birth_place,
-          no_akta_kelahiran: resident.birth.akta_kelahiran_number
-        }
-      } : {}),
-      ...(resident.parents ? {
-        orang_tua: {
-          nama_ayah: resident.parents.father_name,
-          nama_ibu: resident.parents.mother_name,
-          nik_ayah: resident.parents.father_nik,
-          nik_ibu: resident.parents.mother_nik
-        }
-      } : {}),
-      ...(resident.education_career ? {
-        pekerjaan_pendidikan: {
-          pendidikan_kk: resident.education_career.education_kk,
-          pekerjaan: resident.education_career.career,
-          pendidikan_sedang_ditempuh: resident.education_career.education_in_progress
-        }
-      } : {}),
+      ...(resident.address
+        ? {
+            alamat: {
+              alamat_kk: resident.address.address_kk,
+              dusun_id: resident.address.hamlet_id,
+              rt: resident.address.rt,
+              rw: resident.address.rw,
+              alamat_sebelumnya: resident.address.last_address,
+              nomor_telepon: resident.address.telp,
+              email: resident.address.email
+            }
+          }
+        : {}),
+      ...(resident.birth
+        ? {
+            kelahiran: {
+              tanggal_lahir: resident.birth.birth_date,
+              tempat_lahir: resident.birth.birth_place,
+              no_akta_kelahiran: resident.birth.akta_kelahiran_number
+            }
+          }
+        : {}),
+      ...(resident.parents
+        ? {
+            orang_tua: {
+              nama_ayah: resident.parents.father_name,
+              nama_ibu: resident.parents.mother_name,
+              nik_ayah: resident.parents.father_nik,
+              nik_ibu: resident.parents.mother_nik
+            }
+          }
+        : {}),
+      ...(resident.education_career
+        ? {
+            pekerjaan_pendidikan: {
+              pendidikan_kk: resident.education_career.education_kk,
+              pekerjaan: resident.education_career.career,
+              pendidikan_sedang_ditempuh: resident.education_career.education_in_progress
+            }
+          }
+        : {}),
       nik: resident.nik,
       nama_lengkap: resident.full_name,
       hubungan_keluarga: resident.family_relation,
@@ -277,7 +303,7 @@ export default class Resident extends Model {
       nomor_kk: resident.kk_number,
       foto: resident.image_profile,
       jenis_kelamin: resident.gender,
-      agama: resident.religion,
+      agama: resident.religion
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
