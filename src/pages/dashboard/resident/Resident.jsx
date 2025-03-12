@@ -60,6 +60,12 @@ const Resident = () => {
 
   const column = [
     {
+      title: 'NIK',
+      dataIndex: 'nik',
+      sorter: (a, b) => a.nik.length - b.nik.length,
+      searchable: true
+    },
+    {
       title: 'Nama Lengkap',
       dataIndex: 'full_name',
       sorter: (a, b) => a.full_name.length - b.full_name.length,

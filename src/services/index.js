@@ -26,3 +26,4 @@ export { default as MapService } from './MapService';
 export { default as OfficerService } from './OfficerService';
 export { default as VillageBoundariesService } from './VillageBoundariesService';
 export { default as StatisticService } from './StatisticService';
+export { default as ComunityService } from './ComunityService';

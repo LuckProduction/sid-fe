@@ -2,7 +2,7 @@ import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { SubmitLetterService } from '@/services';
-import { Button, Card, Space, Tag } from 'antd';
+import { Button, Card, List, Space, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { letterTypeFormFields, submitLetterFormFields } from './FormFields';
 import { SubmitLetter as SubmitLetterModel } from '@/models';
@@ -171,6 +171,20 @@ const SubmitLetter = () => {
                       }
                       return gender;
                     })()
+                  },
+                  {
+                    key: 'Atribut Surat',
+                    label: 'Atribut Surat',
+                    children: (
+                      <List
+                        dataSource={record.letter_attribute}
+                        renderItem={(item) => (
+                          <List.Item>
+                            <List.Item.Meta title={item.attribute_name} description={item.content} />
+                          </List.Item>
+                        )}
+                      />
+                    )
                   }
                 ]
               });
