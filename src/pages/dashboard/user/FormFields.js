@@ -67,3 +67,28 @@ export const userFormFields = ({ options }) => [
     }))
   }
 ];
+
+export const comunityFormFields = () => [
+  {
+    label: `Nama Lengkap`,
+    name: 'name',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Nama lengkap harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Email`,
+    name: 'email',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Email harus diisi`
+      }
+    ]
+  }
+];

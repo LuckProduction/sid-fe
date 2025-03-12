@@ -55,7 +55,7 @@ const Edit = () => {
               formFields={addressFormField({ options: { hamlet } })}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, address: { ...values } }, token);
+                const { message, isSuccess } = await editResident.execute(id, { ...values, address: { ...values }, _method: 'PUT' }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);
@@ -74,7 +74,7 @@ const Edit = () => {
               formFields={brithFormField()}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, birth: { ...values, birth_date: dateFormatter(values.birth_date) } }, token);
+                const { message, isSuccess } = await editResident.execute(id, { ...values, _method: 'PUT', birth: { ...values, birth_date: dateFormatter(values.birth_date) } }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);
@@ -93,7 +93,7 @@ const Edit = () => {
               formFields={parentFormFields()}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, parents: values }, token);
+                const { message, isSuccess } = await editResident.execute(id, { ...values, parents: values, _method: 'PUT' }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);
@@ -112,7 +112,7 @@ const Edit = () => {
               formFields={educationCareerFormFields()}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, education_career: values }, token);
+                const { message, isSuccess } = await editResident.execute(id, { ...values, education_career: values, _method: 'PUT' }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);

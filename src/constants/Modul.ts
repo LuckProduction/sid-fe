@@ -23,7 +23,8 @@ enum Modul {
   SUBMIT_LETTER = 'Perrmohonan Surat',
   PROSPECTIVE_VOTER = 'Calon Pemilih',
   MAP = 'Pemetaan',
-  USERS = 'Pengguna'
+  USERS = 'Pengguna',
+  COMUNITY = 'Masyarakat'
 }
 
 export default Modul;
