@@ -3,7 +3,7 @@ import * as Model from '@/models';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, GiftOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined } from '@ant-design/icons';
+import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, GiftOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -100,12 +100,24 @@ export const dashboardLink = [
         label: 'Visi Misi Desa',
         element: Dashboard.VisiMisi,
         permissions: [[Action.READ, Model.VisiMisi]]
-      },
+      }
+    ]
+  },
+  {
+    label: 'Pengguna',
+    icon: UserOutlined,
+    children: [
       {
         path: '/dashboard/user',
-        label: 'Pengguna',
+        label: 'Pegawai',
         element: Dashboard.User,
         permissions: [[Action.READ, Model.Officer]]
+      },
+      {
+        path: '/dashboard/comunity',
+        label: 'Masyarakat',
+        element: Dashboard.Comunity,
+        permissions: [[Action.READ, Model.Comunity]]
       }
     ]
   },

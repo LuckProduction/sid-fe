@@ -10,7 +10,7 @@ export interface IncomingApiData {
   master_penduduk_id: IncomingResident;
   atribut_permohonan_surat: {
     id: number;
-    permohonan_surat_id: number;
+    nama_atribut: string;
     atribut_surat_id: number;
     konten: string;
   }[];
@@ -71,7 +71,7 @@ export default class SubmitLetter extends Model {
     },
     public letter_attribute: {
       id: number;
-      submit_letter_id: number;
+      attribute_name: string;
       letter_attribute_id: number;
       content: string;
     }[],
@@ -107,7 +107,7 @@ export default class SubmitLetter extends Model {
       },
       apiData.atribut_permohonan_surat.map((item) => ({
         id: item.id,
-        submit_letter_id: item.permohonan_surat_id,
+        attribute_name: item.nama_atribut,
         letter_attribute_id: item.atribut_surat_id,
         content: item.konten
       })),
