@@ -2,7 +2,7 @@ import { DataLoader } from '@/components';
 import { useAuth, useService } from '@/hooks';
 import { ResidentService } from '@/services';
 import { BookOutlined, GiftOutlined, GroupOutlined, PushpinOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Card, Descriptions, Empty, Menu, Typography } from 'antd';
+import { Card, Descriptions, Empty, Image, Menu, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -28,7 +28,9 @@ const Detail = () => {
             <Card className="w-full" cover={<img src="/image_asset/card_background.png" />}>
               <div className="relative px-4">
                 <div className="absolute -top-16">
-                  <Avatar shape="square" size={90} src={resident?.image_profile} style={{ backgroundColor: '#fff', padding: '12px', color: 'black' }} className="shadow-md" />
+                  <div className="rounded-md bg-white p-3 shadow-md">
+                    <Image width={64} height={64} src={resident?.image_profile} />
+                  </div>
                 </div>
               </div>
               <div className="mt-12 px-4">

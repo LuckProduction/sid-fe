@@ -1,22 +1,38 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, usePagination, useService } from '@/hooks';
-import { ProspectiveVotersService } from '@/services';
+import { ResidentService } from '@/services';
 import { Button, Card, Tag } from 'antd';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Resident as ResidentModel } from '@/models';
 import { InfoOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import dateFormatter from '@/utils/dateFormatter';
+import { ProspectiveVotersFilterFields } from './FormFields';
+import dayjs from 'dayjs';
 
 const ProspectiveVoters = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const { execute: fetchProspectiveVoter, ...getAllProspectiveVoter } = useService(ProspectiveVotersService.getAll);
+  const { execute: fetchProspectiveVoter, ...getAllProspectiveVoter } = useService(ResidentService.getProspectiveVoter);
   const pagination = usePagination({ totalData: getAllProspectiveVoter.totalData });
 
+  const [filterValues, setFilterValues] = useState({
+    tanggal_pemilu: null
+  });
+
+  const fetchData = useCallback(() => {
+    fetchProspectiveVoter({
+      token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      tanggal_pemilu: filterValues.tanggal_pemilu ? dateFormatter(filterValues.tanggal_pemilu) : ''
+    });
+  }, [fetchProspectiveVoter, token, pagination.page, pagination.per_page, filterValues.tanggal_pemilu]);
+
   useEffect(() => {
-    fetchProspectiveVoter(token, pagination.page, pagination.per_page);
-  }, [fetchProspectiveVoter, pagination.page, pagination.per_page, token]);
+    fetchData();
+  }, [fetchData]);
 
   const prospectiveVoter = getAllProspectiveVoter.data ?? [];
 
@@ -82,18 +98,27 @@ const ProspectiveVoters = () => {
     }
   ];
 
+  const filter = {
+    formFields: ProspectiveVotersFilterFields(),
+    initialData: {
+      tanggal_pemilu: filterValues.tanggal_pemilu
+    },
+    isLoading: getAllProspectiveVoter.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        tanggal_pemilu: values.tanggal_pemilu ? dayjs(values.tanggal_pemilu) : null
+      });
+    }
+  };
+
   return (
     <>
-      {getAllProspectiveVoter.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader modul={Modul.PROSPECTIVE_VOTER} model={ResidentModel} onExport={exportProspectiveVoters} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={prospectiveVoter} columns={column} loading={getAllProspectiveVoter.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader modul={Modul.PROSPECTIVE_VOTER} model={ResidentModel} onExport={exportProspectiveVoters} filter={filter} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={prospectiveVoter} columns={column} loading={getAllProspectiveVoter.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
+        </div>
+      </Card>
     </>
   );
 };

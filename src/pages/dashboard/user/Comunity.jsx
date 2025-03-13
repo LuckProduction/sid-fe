@@ -1,12 +1,13 @@
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { ComunityService } from '@/services';
-import { Card, Space } from 'antd';
+import { ComunityService, OfficerService } from '@/services';
+import { Button, Card, Popconfirm, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import Modul from '@/constants/Modul';
 import { Comunity as ComunityModel } from '@/models';
 import { Delete, Detail } from '@/components/dashboard/button';
 import { comunityFormFields } from './FormFields';
 import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { LockOutlined } from '@ant-design/icons';
 
 const Comunity = () => {
   const { token } = useAuth();
@@ -15,6 +16,7 @@ const Comunity = () => {
   const { execute: fetchComunity, ...getAllComunity } = useService(ComunityService.getAll);
   const deleteComunity = useService(ComunityService.delete);
   const deleteBatchComunity = useService(ComunityService.deleteBatch);
+  const resetPassword = useService(OfficerService.resetPassword);
 
   const pagination = usePagination({ totalData: getAllComunity.totalData });
 
@@ -130,6 +132,24 @@ const Comunity = () => {
               });
             }}
           />
+          <Popconfirm
+            title="Reset Passowrd"
+            description="Reset Password Pengguna?"
+            onConfirm={async () => {
+              const { isSuccess, message } = await resetPassword.execute(token, record.user_id.id);
+              if (isSuccess) {
+                success('Berhasil', message);
+                fetchComunity({ token: token, page: pagination.page, per_page: pagination.per_page });
+              } else {
+                error('Gagal', message);
+              }
+              return isSuccess;
+            }}
+            okText="Ok"
+            cancelText="Batal"
+          >
+            <Button loading={resetPassword.isLoading} icon={<LockOutlined />} danger></Button>
+          </Popconfirm>
         </Space>
       )
     });

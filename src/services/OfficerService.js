@@ -92,4 +92,8 @@ export default class OfficerService {
   static async changePassword(token, data) {
     return await api.post('/pengguna/ubah-password', { body: data, token });
   }
+
+  static async resetPassword(token, id) {
+    return await api.post(`/pengguna/reset-password/${id}`, { token });
+  }
 }

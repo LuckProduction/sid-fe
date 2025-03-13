@@ -1,12 +1,12 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { ResidentService } from '@/services';
+import { HamletService, ResidentService } from '@/services';
 import { Card, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modul from '@/constants/Modul';
 import { Action, InputType } from '@/constants';
-import { formFields } from './FormFields';
+import { formFields, residentFilterFields } from './FormFields';
 import { Resident as ResidentModel } from '@/models';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import dateFormatter from '@/utils/dateFormatter';
@@ -18,6 +18,7 @@ const Resident = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const { execute, ...getAllResident } = useService(ResidentService.getAll);
+  const { execute: fetchHamlet, ...getAllHamlet } = useService(HamletService.getAll);
   const storeResident = useService(ResidentService.store);
   const importResident = useService(ResidentService.import);
   const deleteResident = useService(ResidentService.delete);
@@ -25,17 +26,29 @@ const Resident = () => {
   const [selectedResident, setSelectedResident] = useState([]);
   const modal = useCrudModal();
   const pagination = usePagination({ totalData: getAllResident.totalData });
-  const [searchValue, setSearchValue] = useState('');
+  const [filterValues, setFilterValues] = useState({ search: '', jenis_kelamin: null, status_perkawinan: null, status_penduduk: null, hubungan_keluarga: null, dusun: null });
 
   const fetchResident = useCallback(() => {
-    execute({ token: token, page: pagination.page, per_page: pagination.per_page, search: searchValue });
-  }, [execute, pagination.page, pagination.per_page, searchValue, token]);
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search,
+      jenis_kelamin: filterValues.jenis_kelamin,
+      status_perkawinan: filterValues.status_perkawinan,
+      status_penduduk: filterValues.status_penduduk,
+      hubungan_keluarga: filterValues.hubungan_keluarga,
+      dusun: filterValues.dusun
+    });
+  }, [execute, filterValues.dusun, filterValues.hubungan_keluarga, filterValues.jenis_kelamin, filterValues.search, filterValues.status_penduduk, filterValues.status_perkawinan, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
     fetchResident();
-  }, [fetchResident]);
+    fetchHamlet({ token: token, search: '' });
+  }, [fetchHamlet, fetchResident, token]);
 
   const resident = getAllResident.data ?? [];
+  const hamlet = getAllHamlet.data ?? [];
 
   const exportResident = () => {
     fetch('http://desa1.api-example.govillage.id/api/master-penduduk/export?penduduk=true', {
@@ -217,9 +230,42 @@ const Resident = () => {
     });
   };
 
+  const filter = {
+    formFields: residentFilterFields({ options: { hamlet } }),
+    initialData: {
+      jenis_kelamin: filterValues.jenis_kelamin,
+      status_perkawinan: filterValues.status_perkawinan,
+      status_penduduk: filterValues.status_penduduk,
+      hubungan_keluarga: filterValues.hubungan_keluarga,
+      dusun: filterValues.dusun
+    },
+    isLoading: getAllResident.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        jenis_kelamin: values.jenis_kelamin,
+        status_perkawinan: values.status_perkawinan,
+        status_penduduk: values.status_penduduk,
+        hubungan_keluarga: values.hubungan_keluarga,
+        dusun: values.dusun
+      });
+    }
+  };
+
+  console.log(hamlet);
+
   return (
     <Card>
-      <DataTableHeader modul={Modul.RESIDENTIAL} model={ResidentModel} onDeleteBatch={onDeleteBatch} onStore={onCreate} onExport={exportResident} onImport={onImport} selectedData={selectedResident} onSearch={(values) => setSearchValue(values)} />
+      <DataTableHeader
+        modul={Modul.RESIDENTIAL}
+        model={ResidentModel}
+        onDeleteBatch={onDeleteBatch}
+        onStore={onCreate}
+        onExport={exportResident}
+        onImport={onImport}
+        selectedData={selectedResident}
+        onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
+        filter={filter}
+      />
       <div className="w-full max-w-full overflow-x-auto">
         <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} pagination={pagination} />
       </div>

@@ -680,3 +680,107 @@ export const FamilyDetailFormFields = () => [
     ]
   }
 ];
+
+export const ProspectiveVotersFilterFields = () => [
+  {
+    label: `Tanggal Pemilu`,
+    name: 'tanggal_pemilu',
+    type: InputType.DATE
+  }
+];
+
+export const residentFilterFields = ({ options }) => [
+  {
+    label: `Hubungan Keluarga`,
+    name: 'hubungan_keluarga',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Kepala Keluarga',
+        value: 'kepala keluarga'
+      },
+      {
+        label: 'Suami',
+        value: 'suami'
+      },
+      {
+        label: 'Istri',
+        value: 'istri'
+      },
+      {
+        label: 'Anak',
+        value: 'anak'
+      },
+      {
+        label: 'Mantu',
+        value: 'mantu'
+      },
+      {
+        label: 'Cucu',
+        value: 'cucu'
+      }
+    ]
+  },
+  {
+    label: `Status Kependudukan`,
+    name: 'status_penduduk',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Tetap',
+        value: 'tetap'
+      },
+      {
+        label: 'Tidak Tetap',
+        value: 'tidak tetap'
+      }
+    ]
+  },
+  {
+    label: `Status Pernikahan`,
+    name: 'status_perkawinan',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Menikah',
+        value: 'telah menikah'
+      },
+      {
+        label: 'Belum Menikah',
+        value: 'belum menikah'
+      },
+      {
+        label: 'Cerai Hidup',
+        value: 'cerai hidup'
+      },
+      {
+        label: 'Cerai Mati',
+        value: 'cerai mati'
+      }
+    ]
+  },
+  {
+    label: `Jenis Kelamin`,
+    name: 'jenis_kelamin',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Laki Laki',
+        value: 'L'
+      },
+      {
+        label: 'Perempuan',
+        value: 'P'
+      }
+    ]
+  },
+  {
+    label: `Dusun`,
+    name: 'dusun',
+    type: InputType.SELECT,
+    options: options.hamlet.map((item) => ({
+      label: item.hamlet_name,
+      value: item.id
+    }))
+  }
+];

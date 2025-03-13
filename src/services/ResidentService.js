@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Resident } from '@/models';
 import api from '@/utils/api';
 
@@ -11,17 +12,8 @@ export default class ResidentService {
    *  data?: Resident[];
    * }>}
    * */
-  static async getAll({ token, page = null, per_page = null, search = null }) {
-    const params = {};
-
-    if (page && per_page) {
-      params.page = page;
-      params.per_page = per_page;
-    }
-
-    if (search) {
-      params.search = search;
-    }
+  static async getAll({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
 
     const response = await api.get('/master-penduduk', { token, params });
 
@@ -126,6 +118,22 @@ export default class ResidentService {
   static async getFamilyDetail({ id, token, page = null, per_page = null }) {
     const params = page && per_page ? { page, per_page } : {};
     const response = await api.get(`/keluarga/${id}`, { token, ...params });
+    if (!response.data) return response;
+    return { ...response, data: Resident.fromApiData(response.data) };
+  }
+
+  /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: ProspectiveVoters[];
+   * }>}
+   * */
+  static async getProspectiveVoter({ token, page = null, per_page = null, tanggal_pemilu = null }) {
+    const params = page && per_page ? { page, per_page } : {};
+    const response = await api.get(`/calon-pemilih?tangal_pemilu=${tanggal_pemilu}`, { token, ...params });
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }

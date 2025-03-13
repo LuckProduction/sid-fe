@@ -2,11 +2,12 @@ import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { OfficerService } from '@/services';
-import { Card, Space } from 'antd';
+import { Button, Card, Popconfirm, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { Officer as OfficerModel } from '@/models';
 import { userFormFields } from './FormFields';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
+import { LockOutlined } from '@ant-design/icons';
 
 const User = () => {
   const { token } = useAuth();
@@ -18,6 +19,7 @@ const User = () => {
   const updateUser = useService(OfficerService.update);
   const deleteUser = useService(OfficerService.delete);
   const deleteBatchUser = useService(OfficerService.deleteBatch);
+  const resetPassword = useService(OfficerService.resetPassword);
 
   const pagination = usePagination({ totalData: getAllUsers.totalData });
 
@@ -131,6 +133,24 @@ const User = () => {
               });
             }}
           />
+          <Popconfirm
+            title="Reset Passowrd"
+            description="Reset Password Pengguna?"
+            onConfirm={async () => {
+              const { isSuccess, message } = await resetPassword.execute(token, record.id);
+              if (isSuccess) {
+                success('Berhasil', message);
+                fetchUsers(token, pagination.page, pagination.per_page);
+              } else {
+                error('Gagal', message);
+              }
+              return isSuccess;
+            }}
+            okText="Ok"
+            cancelText="Batal"
+          >
+            <Button loading={resetPassword.isLoading} icon={<LockOutlined />} danger></Button>
+          </Popconfirm>
         </Space>
       )
     });

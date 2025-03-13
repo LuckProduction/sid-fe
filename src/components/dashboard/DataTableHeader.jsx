@@ -1,14 +1,15 @@
 import { Action } from '@/constants';
 import { useAuth } from '@/hooks';
-import { DeleteOutlined, ExportOutlined, ImportOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Input, Skeleton, Typography } from 'antd';
+import { DeleteOutlined, ExportOutlined, FilterOutlined, ImportOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Input, Popover, Skeleton, Typography } from 'antd';
 import PropTypes from 'prop-types';
+import Crud from './Crud';
 
 const { CREATE, DELETE } = Action;
 
 const { Title } = Typography;
 
-export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch, model, children, onImport, onExport, onSearch }) {
+export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch, model, children, onImport, onExport, onSearch, filter }) {
   const { user } = useAuth();
 
   const menuItems = [];
@@ -84,6 +85,15 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
               Hapus {selectedData?.length || null} Pilihan
             </Button>
           )}
+          <div className="mt-6 inline-flex items-center gap-x-2 lg:mt-0">
+            {onSearch && <Input.Search style={{ margin: 0 }} onSearch={onSearch} className="mt-6 w-full lg:mt-0 lg:w-fit" placeholder="Cari Data" allowClear />}
+            {filter && (
+              <Popover placement="leftBottom" trigger="click" content={<Crud formFields={filter.formFields} initialData={filter.initialData} isLoading={filter.isLoading} onSubmit={filter.onSubmit} type="create" />}>
+                <Button icon={<FilterOutlined />} />
+              </Popover>
+            )}
+          </div>
+
           {user && user.can(CREATE, model) && onStore && (
             <Button className="hidden lg:flex" icon={<PlusOutlined />} type="primary" onClick={onStore}>
               Tambah
@@ -99,7 +109,7 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
               Export
             </Button>
           )}
-          {onSearch && <Input.Search onSearch={onSearch} className="mt-6 w-full lg:mt-0 lg:w-fit" placeholder="Cari Data" allowClear />}
+
           {children}
         </div>
       )}
@@ -114,6 +124,7 @@ DataHeader.propTypes = {
   onImport: PropTypes.func,
   onExport: PropTypes.func,
   onSearch: PropTypes.func,
+  filter: PropTypes.object,
   onDeleteBatch: PropTypes.func,
   selectedData: PropTypes.array,
   model: PropTypes.func,
