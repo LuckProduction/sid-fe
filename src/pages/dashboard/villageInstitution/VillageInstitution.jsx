@@ -1,10 +1,10 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageInstitutionService } from '@/services';
 import { Button, Card, Image, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { formFields } from './FormFields';
+import { formFields, villageInstitutionFilterFields } from './FormFields';
 import { useNavigate } from 'react-router-dom';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
@@ -17,37 +17,32 @@ const VillageInstitution = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
+  const { execute, ...getAllVillageInstitution } = useService(VillageInstitutionService.getAll);
+  const storeVillageInstitution = useService(VillageInstitutionService.store);
+  const updateVillageInstitution = useService(VillageInstitutionService.update);
+  const deleteVillageInstitution = useService(VillageInstitutionService.delete);
+  const deleteBatchVillageInstitution = useService(VillageInstitutionService.deleteBatch);
+  const [selectedData, setSelectedData] = useState([]);
+  const [filterValues, setFilterValues] = useState({ search: '', status: null });
+  const pagination = usePagination({ totalData: getAllVillageInstitution.totalData });
+
   const navigate = useNavigate();
-  const useCrudService = (service) => {
-    const { execute: fetch, ...getAll } = useService(service.getAll);
-    return {
-      fetch,
-      store: useService(service.store),
-      update: useService(service.update),
-      delete: useService(service.delete),
-      deleteBatch: useService(service.deleteBatch),
-      getAll,
-      pagination: usePagination({ totalData: getAll.totalData }),
-      selected: useState([])
-    };
-  };
 
-  const useFetchData = (fetchFn, pagination) => {
-    return useCallback(() => {
-      fetchFn(token, pagination.page, pagination.per_page);
-    }, [fetchFn, pagination.page, pagination.per_page]);
-  };
-
-  const villageInstitutionService = useCrudService(VillageInstitutionService);
-
-  const fetchVillageInstitution = useFetchData(villageInstitutionService.fetch, villageInstitutionService.pagination);
+  const fetchVillageInstitution = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search,
+      status: filterValues.status
+    });
+  }, [execute, filterValues.search, filterValues.status, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
     fetchVillageInstitution();
-  }, [fetchVillageInstitution]);
+  }, [fetchVillageInstitution, token]);
 
-  const villageInstitution = villageInstitutionService.getAll.data ?? [];
-  const [selectedData, setSelectedData] = useState([]);
+  const villageInstitution = getAllVillageInstitution.data ?? [];
 
   const Column = [
     {
@@ -94,10 +89,10 @@ const VillageInstitution = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await villageInstitutionService.update.execute(record.id, { ...values, _method: 'PUT' }, token, values.image.file);
+                  const { message, isSuccess } = await updateVillageInstitution.execute(record.id, { ...values, _method: 'PUT' }, token, values.image.file);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchVillageInstitution(token);
+                    fetchVillageInstitution({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -164,10 +159,10 @@ const VillageInstitution = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async () => {
-                  const { isSuccess, message } = await villageInstitutionService.delete.execute(record.id, token);
+                  const { isSuccess, message } = await deleteVillageInstitution.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchVillageInstitution(token);
+                    fetchVillageInstitution({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -188,10 +183,10 @@ const VillageInstitution = () => {
       formFields: formFields,
       onSubmit: async () => {
         const ids = selectedData.map((item) => item.id);
-        const { message, isSuccess } = await villageInstitutionService.deleteBatch.execute(ids, token);
+        const { message, isSuccess } = await deleteBatchVillageInstitution.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchVillageInstitution(token);
+          fetchVillageInstitution({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -205,10 +200,10 @@ const VillageInstitution = () => {
       title: `Tambah ${Modul.VILLAGE_INSTITUTION}`,
       formFields: formFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await villageInstitutionService.store.execute(values, token, values.image.file);
+        const { message, isSuccess } = await storeVillageInstitution.execute(values, token, values.image.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchVillageInstitution(token);
+          fetchVillageInstitution({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -217,25 +212,42 @@ const VillageInstitution = () => {
     });
   };
 
+  const filter = {
+    formFields: villageInstitutionFilterFields(),
+    initialData: {
+      status: filterValues.status
+    },
+    isLoading: getAllVillageInstitution.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        status: values.status
+      });
+    }
+  };
+
   return (
     <div>
-      {villageInstitutionService.getAll.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={VillageInstitutionModel} modul={Modul.VILLAGE_INSTITUTION} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable
-              data={villageInstitution}
-              columns={Column}
-              loading={villageInstitutionService.getAll.isLoading}
-              map={(category) => ({ key: category.id, ...category })}
-              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-              pagination={villageInstitutionService.pagination}
-            />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader
+          model={VillageInstitutionModel}
+          modul={Modul.VILLAGE_INSTITUTION}
+          onStore={onCreate}
+          onDeleteBatch={onDeleteBatch}
+          selectedData={selectedData}
+          filter={filter}
+          onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
+        />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={villageInstitution}
+            columns={Column}
+            loading={getAllVillageInstitution.isLoading}
+            map={(category) => ({ key: category.id, ...category })}
+            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+            pagination={pagination}
+          />
+        </div>
+      </Card>
     </div>
   );
 };

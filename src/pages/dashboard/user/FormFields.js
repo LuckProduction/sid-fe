@@ -43,10 +43,6 @@ export const userFormFields = ({ options }) => [
       {
         label: 'Admin',
         value: 'admin'
-      },
-      {
-        label: 'Masyarakat',
-        value: 'masyarakat'
       }
     ]
   },

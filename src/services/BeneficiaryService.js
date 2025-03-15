@@ -87,4 +87,8 @@ export default class BeneficiaryService {
   static async deleteBatch(ids, token) {
     return await api.delete(`/peserta-bantuan/multi-delete/?ids=${ids.join(',')}`, { token });
   }
+
+  static async import(data, token, file) {
+    return await api.post('/peserta-bantuan/import', { body: data, token, file: { file: file } });
+  }
 }

@@ -15,38 +15,29 @@ const Hamlet = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
-  const [searchValue, setSearchValue] = useState('');
+  const { execute, ...getAllHamlets } = useService(HamletService.getAll);
+  const storeHamlet = useService(HamletService.store);
+  const updateHamlet = useService(HamletService.update);
+  const deleteHamlet = useService(HamletService.delete);
+  const deleteBatchHamlet = useService(HamletService.deleteBatch);
+  const [selectedData, setSelectedData] = useState([]);
+  const [filterValues, setFilterValues] = useState({ search: '' });
+  const pagination = usePagination({ totalData: getAllHamlets.totalData });
 
-  const useCrudService = (service) => {
-    const { execute: fetch, ...getAll } = useService(service.getAll);
-    return {
-      fetch,
-      store: useService(service.store),
-      update: useService(service.update),
-      delete: useService(service.delete),
-      deleteBatch: useService(service.deleteBatch),
-      getAll,
-      pagination: usePagination({ totalData: getAll.totalData }),
-      selected: useState([])
-    };
-  };
-
-  const useFetchData = (fetchFn, pagination, searchValue) => {
-    return useCallback(() => {
-      fetchFn({ token, page: pagination.page, per_page: pagination.per_page, search: searchValue });
-    }, [fetchFn, pagination.page, pagination.per_page, searchValue]);
-  };
-
-  const hamletService = useCrudService(HamletService);
-
-  const fetchHamlets = useFetchData(hamletService.fetch, hamletService.pagination, searchValue);
+  const fetchHamlet = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search
+    });
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
-    fetchHamlets();
-  }, [fetchHamlets]);
+    fetchHamlet();
+  }, [fetchHamlet, token]);
 
-  const hamlets = hamletService.getAll.data ?? [];
-  const [selectedData, setSelectedData] = useState([]);
+  const hamlets = getAllHamlets.data ?? [];
 
   const Column = [
     {
@@ -77,10 +68,9 @@ const Hamlet = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await hamletService.update.execute(record.id, { ...values, _method: 'PUT' }, token, values.administrative_area.file);
+                  const { message, isSuccess } = await updateHamlet.execute(record.id, { ...values, _method: 'PUT' }, token, values.administrative_area.file);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchHamlets(token);
                   } else {
                     error('Gagal', message);
                   }
@@ -124,10 +114,10 @@ const Hamlet = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async () => {
-                  const { isSuccess, message } = await hamletService.delete.execute(record.id, token);
+                  const { isSuccess, message } = await deleteHamlet.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchHamlets(token);
+                    fetchHamlet({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -147,10 +137,10 @@ const Hamlet = () => {
       formFields: formFields,
       onSubmit: async () => {
         const ids = selectedData.map((item) => item.id);
-        const { message, isSuccess } = await hamletService.deleteBatch.execute(ids, token);
+        const { message, isSuccess } = await deleteBatchHamlet.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchHamlets(token);
+          fetchHamlet({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -164,10 +154,10 @@ const Hamlet = () => {
       title: `Tambah ${Modul.HAMLET}`,
       formFields: formFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await hamletService.store.execute(values, token, values.administrative_area.file);
+        const { message, isSuccess } = await storeHamlet.execute(values, token, values.administrative_area.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchHamlets(token);
+          fetchHamlet({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -178,16 +168,9 @@ const Hamlet = () => {
 
   return (
     <Card>
-      <DataTableHeader model={HamletModel} modul={Modul.HAMLET} onDeleteBatch={onDeleteBatch} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setSearchValue(values)} />
+      <DataTableHeader model={HamletModel} modul={Modul.HAMLET} onDeleteBatch={onDeleteBatch} onStore={onCreate} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
       <div className="w-full max-w-full overflow-x-auto">
-        <DataTable
-          data={hamlets}
-          columns={Column}
-          loading={hamletService.getAll.isLoading}
-          map={(hamlet) => ({ key: hamlet.id, ...hamlet })}
-          handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-          pagination={hamletService.pagination}
-        />
+        <DataTable data={hamlets} columns={Column} loading={getAllHamlets.isLoading} map={(hamlet) => ({ key: hamlet.id, ...hamlet })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} pagination={pagination} />
       </div>
     </Card>
   );

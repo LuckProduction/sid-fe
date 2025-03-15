@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { VillageOfficials } from '@/models';
 import api from '@/utils/api';
 
@@ -11,9 +12,9 @@ export default class VillageOfficialsService {
    *  data?: VillageOfficials[];
    * }>}
    * */
-  static async getAll(token, page = null, per_page = null) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get('/perangkat-desa', { token, ...params });
+  static async getAll({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get('/perangkat-desa', { token, params });
     if (!response.data) return response;
     return { ...response, data: VillageOfficials.fromApiData(response.data) };
   }

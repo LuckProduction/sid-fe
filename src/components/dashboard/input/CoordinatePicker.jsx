@@ -1,9 +1,18 @@
 import { useState } from 'react';
 import { Marker, useMapEvents } from 'react-leaflet';
-
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
+import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
+import L from 'leaflet';
 /* eslint-disable react/prop-types */
 const CoordinatePicker = ({ onChange, initialPosition }) => {
   const [position, setPosition] = useState(initialPosition || null);
+
+  const customIcon = L.icon({
+    iconUrl: markerIconPng,
+    shadowUrl: markerShadowPng,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  });
 
   useMapEvents({
     click(e) {
@@ -13,7 +22,7 @@ const CoordinatePicker = ({ onChange, initialPosition }) => {
     }
   });
 
-  return position ? <Marker position={position} /> : null;
+  return position ? <Marker position={position} icon={customIcon} /> : null;
 };
 
 export default CoordinatePicker;

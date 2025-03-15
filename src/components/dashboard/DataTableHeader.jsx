@@ -4,6 +4,7 @@ import { DeleteOutlined, ExportOutlined, FilterOutlined, ImportOutlined, MenuOut
 import { Button, Dropdown, Input, Popover, Skeleton, Typography } from 'antd';
 import PropTypes from 'prop-types';
 import Crud from './Crud';
+import { templateDownloader } from '@/utils/templateDownloader';
 
 const { CREATE, DELETE } = Action;
 
@@ -11,6 +12,23 @@ const { Title } = Typography;
 
 export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch, model, children, onImport, onExport, onSearch, filter }) {
   const { user } = useAuth();
+
+  const hasImportCapability = !!onImport && typeof onImport === 'object';
+
+  const importMenuItems = hasImportCapability
+    ? [
+        {
+          key: 'template',
+          label: 'Download Template',
+          onClick: () => templateDownloader(onImport.templateFile)
+        },
+        {
+          key: 'import',
+          label: 'Import Data',
+          onClick: () => onImport.importHandler?.()
+        }
+      ]
+    : [];
 
   const menuItems = [];
 
@@ -93,16 +111,17 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
               </Popover>
             )}
           </div>
-
           {user && user.can(CREATE, model) && onStore && (
             <Button className="hidden lg:flex" icon={<PlusOutlined />} type="primary" onClick={onStore}>
               Tambah
             </Button>
           )}
           {onImport && (
-            <Button className="hidden lg:flex" variant="solid" icon={<ImportOutlined />} onClick={onImport}>
-              Import
-            </Button>
+            <div className="hidden lg:flex">
+              <Dropdown.Button icon={<ImportOutlined />} menu={{ items: importMenuItems }}>
+                Import
+              </Dropdown.Button>
+            </div>
           )}
           {onExport && (
             <Button className="hidden lg:flex" variant="solid" icon={<ExportOutlined />} onClick={onExport}>
@@ -121,7 +140,7 @@ DataHeader.propTypes = {
   modul: PropTypes.string,
   onVerify: PropTypes.func,
   onStore: PropTypes.func,
-  onImport: PropTypes.func,
+  onImport: PropTypes.object,
   onExport: PropTypes.func,
   onSearch: PropTypes.func,
   filter: PropTypes.object,

@@ -1,9 +1,9 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { EmploymentService } from '@/services';
 import { Card, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { formFields } from './FormFields';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
@@ -14,19 +14,29 @@ const { DELETE, UPDATE, READ } = Action;
 const Employment = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchEmployments, ...getAllEmployments } = useService(EmploymentService.getAll);
+  const { execute, ...getAllEmployments } = useService(EmploymentService.getAll);
   const storeEmployment = useService(EmploymentService.store);
   const updateEmployment = useService(EmploymentService.update);
   const deleteEmployment = useService(EmploymentService.delete);
   const deleteBatchEmnployment = useService(EmploymentService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
   const modal = useCrudModal();
+  const [filterValues, setFilterValues] = useState({ search: '' });
 
   const pagination = usePagination({ totalData: getAllEmployments.totalData });
 
+  const fetchEmployments = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search
+    });
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
+
   useEffect(() => {
-    fetchEmployments(token, pagination.page, pagination.per_page);
-  }, [fetchEmployments, pagination.page, pagination.per_page, token]);
+    fetchEmployments();
+  }, [fetchEmployments]);
 
   const employments = getAllEmployments.data ?? [];
 
@@ -68,7 +78,7 @@ const Employment = () => {
                   const { message, isSuccess } = await updateEmployment.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchEmployments(token);
+                    fetchEmployments({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -120,7 +130,7 @@ const Employment = () => {
                   const { isSuccess, message } = await deleteEmployment.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchEmployments(token);
+                    fetchEmployments({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -143,7 +153,7 @@ const Employment = () => {
         const { message, isSuccess } = await deleteBatchEmnployment.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchEmployments(token);
+          fetchEmployments({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -160,7 +170,7 @@ const Employment = () => {
         const { message, isSuccess } = await storeEmployment.execute(values, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchEmployments(token);
+          fetchEmployments({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -171,23 +181,12 @@ const Employment = () => {
 
   return (
     <div>
-      {getAllEmployments.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={EmploymentModel} modul={Modul.EMPLOYMENT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable
-              pagination={pagination}
-              data={employments}
-              columns={Column}
-              loading={getAllEmployments.isLoading}
-              map={(category) => ({ key: category.id, ...category })}
-              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-            />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader model={EmploymentModel} modul={Modul.EMPLOYMENT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} onSearch={(values) => setFilterValues({ search: values })} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable pagination={pagination} data={employments} columns={Column} loading={getAllEmployments.isLoading} map={(category) => ({ key: category.id, ...category })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+        </div>
+      </Card>
     </div>
   );
 };

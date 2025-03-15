@@ -162,7 +162,7 @@ const Home = () => {
             <p className="text-xl font-semibold">Sambutan Kepala Desa</p>
           </Reveal>
         </div>
-        <div className="flex w-full max-w-4xl flex-col gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md lg:flex-row">
+        <div className="flex w-full flex-col gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 px-6 text-white shadow-md lg:flex-row">
           {speech.isLoading ? (
             <Skeleton active className="p-16" />
           ) : (

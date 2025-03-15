@@ -58,7 +58,7 @@ const LetterTemplate = () => {
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <div className="col-span-12">
-            <div className="flex items-center gap-x-2">
+            <div className="mb-6 flex items-center gap-x-2">
               <Button icon={<CopyOutlined />} onClick={handleCopyDefaultTemplate}>
                 Salin Template Default
               </Button>
@@ -84,7 +84,7 @@ const LetterTemplate = () => {
                 Lihat Atribut Template
               </Button>
             </div>
-            {content && <Crud formFields={letterTempalteFormFields()} onSubmit={onSubmit} isLoading={submitLoading} type="create" initialData={content} />}
+            <Crud formFields={letterTempalteFormFields()} onSubmit={onSubmit} isLoading={submitLoading} type="create" initialData={content} />
           </div>
         </div>
       )}

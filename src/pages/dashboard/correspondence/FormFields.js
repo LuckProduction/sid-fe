@@ -113,6 +113,10 @@ export const letterAttributeFormFields = () => [
       {
         label: 'Tanggal',
         value: 'tanggal'
+      },
+      {
+        label: 'Dokumen',
+        value: 'dokumen'
       }
     ]
   },

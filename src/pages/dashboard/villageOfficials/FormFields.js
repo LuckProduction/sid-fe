@@ -144,18 +144,18 @@ export const villageOfficialsFormFields = ({ key, options, fetch }) => {
 
   if (key === 'create_by_resident') {
     form.push({
-      label: `Nama ${Modul.BENEFICIARY}`,
+      label: `Cari Data Penduduk`,
       name: 'resident',
       type: InputType.SELECT_FETCH,
       rules: [
         {
           required: true,
-          message: `Nama ${Modul.BENEFICIARY} harus diisi`
+          message: `Data Penduduk harus diisi`
         }
       ],
       fetchOptions: fetch,
       mapOptions: (item) => ({
-        label: item.full_name, // Bisa disesuaikan
+        label: item.full_name,
         value: item.id
       })
     });
@@ -208,5 +208,32 @@ export const employmentFormFields = () => [
         message: `Golongan ${Modul.EMPLOYMENT} harus diisi`
       }
     ]
+  }
+];
+
+export const villageOfficialsFilterFields = ({ options }) => [
+  {
+    label: `Status ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'status',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Aktif',
+        value: 'aktif'
+      },
+      {
+        label: 'Non-Aktif',
+        value: 'nonaktif'
+      }
+    ]
+  },
+  {
+    label: `Jabatan ${Modul.VILLAGE_OFFICIALS}`,
+    name: 'jabatan_id',
+    type: InputType.SELECT,
+    options: options.employments.map((item) => ({
+      label: item.employment_name,
+      value: item.id
+    }))
   }
 ];

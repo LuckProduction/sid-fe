@@ -182,8 +182,11 @@ export default class Resident extends Model {
     super();
   }
 
-  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, Resident> {
-    if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, Resident>;
+  public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): T extends any[] ? Resident[] : Resident {
+    if (Array.isArray(apiData)) {
+      return apiData.map((object) => this.fromApiData(object)) as T extends any[] ? Resident[] : Resident;
+    }
+
     return new Resident(
       apiData.id,
       apiData.nik,
@@ -192,10 +195,10 @@ export default class Resident extends Model {
       apiData.status_penduduk,
       apiData.status_perkawinan,
       apiData.nomor_kk,
-      asset(apiData.foto),
+      asset(apiData.foto), // Pastikan `asset()` tersedia
       apiData.jenis_kelamin,
       apiData.agama,
-      apiData.bantuan.map((item) => ({
+      apiData.bantuan?.map((item) => ({
         public_assistance_name: item.nama_bantuan,
         source_funding: item.asal_dana,
         status: item.status,
@@ -234,20 +237,18 @@ export default class Resident extends Model {
             education_in_progress: apiData.pekerjaan_pendidikan.pendidikan_sedang_ditempuh
           }
         : undefined,
-      apiData.keluarga_terkait
-        ? apiData.keluarga_terkait.map((keluarga) => ({
-            id: keluarga.id,
-            nik: keluarga.nik,
-            full_name: keluarga.nama_lengkap,
-            family_relation: keluarga.hubungan_keluarga,
-            resident_status: keluarga.status_penduduk,
-            marital_status: keluarga.status_perkawinan,
-            kk_number: keluarga.nomor_kk,
-            gender: keluarga.jenis_kelamin,
-            religion: keluarga.agama
-          }))
-        : undefined
-    ) as ReturnType<T, IncomingApiData, Resident>;
+      apiData.keluarga_terkait?.map((keluarga) => ({
+        id: keluarga.id,
+        nik: keluarga.nik,
+        full_name: keluarga.nama_lengkap,
+        family_relation: keluarga.hubungan_keluarga,
+        resident_status: keluarga.status_penduduk,
+        marital_status: keluarga.status_perkawinan,
+        kk_number: keluarga.nomor_kk,
+        gender: keluarga.jenis_kelamin,
+        religion: keluarga.agama
+      }))
+    ) as T extends any[] ? Resident[] : Resident;
   }
 
   public static toApiData<T extends FormValue | FormValue[]>(resident: T): ReturnType<T, FormValue, OutgoingApiData> {

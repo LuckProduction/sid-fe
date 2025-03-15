@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Hamlet } from '@/models';
 import api from '@/utils/api';
 
@@ -11,9 +12,9 @@ export default class HamletService {
    *  data?: Hamlet[];
    * }>}
    * */
-  static async getAll({ token, page = null, per_page = null, search }) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get(`/dusun?search=${search}`, { token, ...params });
+  static async getAll({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/dusun`, { token, params });
     if (!response.data) return response;
     return { ...response, data: Hamlet.fromApiData(response.data) };
   }

@@ -1,16 +1,16 @@
-import { DataLoader, DataTable } from '@/components';
+import { Crud, DataTable } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { EmploymentService, ResidentService, VillageOfficialsService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
-import { Button, Card, Dropdown, Image, Space, Typography } from 'antd';
+import { Button, Card, Dropdown, Image, Input, Popover, Space, Typography } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
-import { villageOfficialsFormFields } from './FormFields';
+import { useCallback, useEffect, useState } from 'react';
+import { villageOfficialsFilterFields, villageOfficialsFormFields } from './FormFields';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { VillageOfficials as VillageOfficialsModel } from '@/models';
-import { DeleteOutlined, DownOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, FilterOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -18,7 +18,7 @@ const VillageOfficials = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
-  const { execute: fetchVillageOfficials, ...getAllVillageOfficials } = useService(VillageOfficialsService.getAll);
+  const { execute, ...getAllVillageOfficials } = useService(VillageOfficialsService.getAll);
   const { execute: fetchEmployments, ...getAllEmployments } = useService(EmploymentService.getAll);
   const { execute: fetchResidents } = useService(ResidentService.getAll);
   const { ...getAllResidentDetails } = useService(ResidentService.getById);
@@ -26,12 +26,24 @@ const VillageOfficials = () => {
   const updateVillageOfficials = useService(VillageOfficialsService.update);
   const deleteVillageOfficials = useService(VillageOfficialsService.delete);
   const deleteBatchVillageOfficials = useService(VillageOfficialsService.deleteBatch);
+  const [filterValues, setFilterValues] = useState({ search: '', jabatan_id: null, status: null });
 
   const pagination = usePagination({ totalData: getAllVillageOfficials.totalData });
 
+  const fetchVillageOfficials = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search,
+      jabatan_id: filterValues.jabatan_id,
+      status: filterValues.status
+    });
+  }, [execute, filterValues.jabatan_id, filterValues.search, filterValues.status, pagination.page, pagination.per_page, token]);
+
   useEffect(() => {
-    fetchVillageOfficials(token, pagination.page, pagination.per_page);
-    fetchEmployments(token);
+    fetchVillageOfficials();
+    fetchEmployments({ token: token });
     fetchResidents({ token: token });
   }, [fetchEmployments, fetchResidents, fetchVillageOfficials, pagination.page, pagination.per_page, token]);
 
@@ -85,7 +97,7 @@ const VillageOfficials = () => {
                   const { message, isSuccess } = await updateVillageOfficials.execute(record.id, { ...values, birth_date: dateFormatter(values.birth_date), _method: 'PUT', address: '-' }, token, values.image.file);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchVillageOfficials(token);
+                    fetchVillageOfficials({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -157,7 +169,7 @@ const VillageOfficials = () => {
                   const { isSuccess, message } = await deleteVillageOfficials.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchVillageOfficials(token);
+                    fetchVillageOfficials({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -220,7 +232,7 @@ const VillageOfficials = () => {
 
         if (isSuccess) {
           success('Berhasil', message);
-          fetchVillageOfficials(token);
+          fetchVillageOfficials({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -229,47 +241,58 @@ const VillageOfficials = () => {
     });
   };
 
+  const filter = {
+    formFields: villageOfficialsFilterFields({ options: { employments } }),
+    initialData: {
+      jabatan_id: filterValues.jabatan_id,
+      status: filterValues.status
+    },
+    isLoading: getAllVillageOfficials.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        jabatan_id: values.jabatan_id,
+        status: values.status
+      });
+    }
+  };
+
   return (
-    <>
-      {getAllVillageOfficials.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <div className="grid w-full grid-cols-12 gap-4">
-          <Card className="col-span-12">
-            {/* <DataTableHeader model={VillageOfficialsModel} modul={Modul.VILLAGE_OFFICIALS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedVillageOfficials} /> */}
-            <div className="mb-6">
-              <Typography.Title level={5}>Data {Modul.VILLAGE_OFFICIALS}</Typography.Title>
-              <div className="mb-6 mt-6 flex flex-col-reverse justify-end gap-2 empty:hidden md:flex-row">
-                <Button className="me-auto" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedVillageOfficials?.length} onClick={onDeleteBatch}>
-                  Hapus {selectedVillageOfficials?.length || null} Pilihan
-                </Button>
-                {/* <Button icon={<PlusOutlined />} type="primary" onClick={onCreate}>
-                    Tambah
-                  </Button> */}
-                <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }}>
-                  <Button>
-                    <Space>
-                      Tambah
-                      <DownOutlined />
-                    </Space>
-                  </Button>
-                </Dropdown>
-              </div>
+    <div className="grid w-full grid-cols-12 gap-4">
+      <Card className="col-span-12">
+        <div className="mb-6">
+          <Typography.Title level={5}>Data {Modul.VILLAGE_OFFICIALS}</Typography.Title>
+          <div className="mb-6 mt-6 flex flex-col-reverse justify-end gap-2 empty:hidden md:flex-row">
+            <Button className="me-auto" icon={<DeleteOutlined />} variant="solid" color="danger" disabled={!selectedVillageOfficials?.length} onClick={onDeleteBatch}>
+              Hapus {selectedVillageOfficials?.length || null} Pilihan
+            </Button>
+            <div className="mt-6 inline-flex items-center gap-x-2 lg:mt-0">
+              <Input.Search style={{ margin: 0 }} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} className="mt-6 w-full lg:mt-0 lg:w-fit" placeholder="Cari Data" allowClear />
+              <Popover placement="leftBottom" trigger="click" content={<Crud formFields={filter.formFields} initialData={filter.initialData} isLoading={filter.isLoading} onSubmit={filter.onSubmit} type="create" />}>
+                <Button icon={<FilterOutlined />} />
+              </Popover>
             </div>
-            <div className="w-full max-w-full overflow-x-auto">
-              <DataTable
-                data={villageOfficials}
-                pagination={pagination}
-                columns={villageOfficialsColumn}
-                loading={getAllVillageOfficials.isLoading}
-                map={(category) => ({ key: category.id, ...category })}
-                handleSelectedData={(_, selectedRows) => setSelectedVillageOfficials(selectedRows)}
-              />
-            </div>
-          </Card>
+            <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }}>
+              <Button color="primary" variant="solid">
+                <Space>
+                  Tambah
+                  <DownOutlined />
+                </Space>
+              </Button>
+            </Dropdown>
+          </div>
         </div>
-      )}
-    </>
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={villageOfficials}
+            pagination={pagination}
+            columns={villageOfficialsColumn}
+            loading={getAllVillageOfficials.isLoading}
+            map={(category) => ({ key: category.id, ...category })}
+            handleSelectedData={(_, selectedRows) => setSelectedVillageOfficials(selectedRows)}
+          />
+        </div>
+      </Card>
+    </div>
   );
 };
 

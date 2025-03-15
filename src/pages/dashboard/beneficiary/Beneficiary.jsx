@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { institutionFormFields, residentFormFields } from './FormFields';
 import { useParams } from 'react-router-dom';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
-import { Action } from '@/constants';
+import { Action, InputType } from '@/constants';
 import { Beneficiary as BeneficiaryModel } from '@/models';
 
 const { DELETE, UPDATE, READ } = Action;
@@ -25,6 +25,7 @@ const Beneficiary = () => {
   const updateBeneficiary = useService(BeneficiaryService.update);
   const deleteBeneficiary = useService(BeneficiaryService.delete);
   const deleteBatchBeneficiary = useService(BeneficiaryService.deleteBatch);
+  const importBeneficiary = useService(BeneficiaryService.import);
   const [selectedData, setSelectedData] = useState([]);
 
   const pagination = usePagination({ totalData: getAllBeneficiary.totalData });
@@ -33,7 +34,7 @@ const Beneficiary = () => {
   useEffect(() => {
     fetchBeneficiary(token, id, pagination.page, pagination.per_page);
     fetchResident({ token: token });
-    fetchVillageInstitution(token);
+    fetchVillageInstitution({ token: token });
     fetchPublicAssistance(token);
     fetchPublicAssistanceById(token, id);
   }, [fetchBeneficiary, fetchPublicAssistance, fetchPublicAssistanceById, fetchResident, fetchVillageInstitution, id, pagination.page, pagination.per_page, token]);
@@ -43,6 +44,27 @@ const Beneficiary = () => {
   const villageInstitution = getAllVillageInstitution.data ?? [];
   const publicAssistance = getAllPublicAssistance.data ?? [];
   const publicAssistanceById = getAllPublicAssistanceById.data ?? [];
+
+  const exportBeneficiary = () => {
+    fetch(`http://desa1.api-example.govillage.id/api/peserta-bantuan/export?bantuan_id=${id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'peserta_bantuan.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => console.error('Export failed:', error));
+  };
 
   const Column = [];
 
@@ -92,7 +114,7 @@ const Beneficiary = () => {
                 modal.edit({
                   title: `Edit ${Modul.BENEFICIARY}`,
                   data: { ...record, beneficiary: record.beneficiary.id, public_assistance: record.public_assistance.id },
-                  formFields: residentFormFields({ options: { resident, publicAssistance } }),
+                  formFields: residentFormFields({ fetchResident }),
                   onSubmit: async (values) => {
                     const { message, isSuccess } = await updateBeneficiary.execute(record.id, { ...values, public_assistance: publicAssistanceById?.id }, token);
                     if (isSuccess) {
@@ -309,6 +331,43 @@ const Beneficiary = () => {
     });
   };
 
+  const onImport = () => {
+    modal.create({
+      formFields: [
+        {
+          label: `File ${Modul.BENEFICIARY} `,
+          name: 'file',
+          type: InputType.UPLOAD,
+          max: 1,
+          beforeUpload: () => {
+            return false;
+          },
+          getFileList: (data) => {
+            return [
+              {
+                url: data?.file,
+                name: data?.name
+              }
+            ];
+          },
+          accept: ['.xlsx'],
+          rules: [{ required: true, message: 'Logo harus diisi' }]
+        }
+      ],
+      title: `Import ${Modul.BENEFICIARY} `,
+      onSubmit: async (values) => {
+        const { message, isSuccess } = await importBeneficiary.execute({ ...values, bantuan_id: id }, token, values.file.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          fetchBeneficiary(token, id, pagination.page, pagination.per_page);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }
+    });
+  };
+
   const onCreate = () => {
     modal.create({
       title: `Tambah ${Modul.BENEFICIARY}`,
@@ -352,7 +411,22 @@ const Beneficiary = () => {
             </Descriptions>
           </Card>
           <Card className="col-span-12">
-            <DataTableHeader model={BeneficiaryModel} modul={Modul.BENEFICIARY} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+            <DataTableHeader
+              model={BeneficiaryModel}
+              modul={Modul.BENEFICIARY}
+              onStore={onCreate}
+              onDeleteBatch={onDeleteBatch}
+              selectedData={selectedData}
+              onExport={exportBeneficiary}
+              onImport={
+                publicAssistanceById?.program_target === 'penduduk'
+                  ? {
+                      templateFile: 'peserta_bantuan_penduduk.xlsx',
+                      importHandler: onImport
+                    }
+                  : undefined
+              }
+            />
             <div className="w-full max-w-full overflow-x-auto">
               {getAllBeneficiary?.data?.length === 0 ? (
                 <Empty className="mb-4" />

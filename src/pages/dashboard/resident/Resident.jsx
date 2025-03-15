@@ -26,7 +26,7 @@ const Resident = () => {
   const [selectedResident, setSelectedResident] = useState([]);
   const modal = useCrudModal();
   const pagination = usePagination({ totalData: getAllResident.totalData });
-  const [filterValues, setFilterValues] = useState({ search: '', jenis_kelamin: null, status_perkawinan: null, status_penduduk: null, hubungan_keluarga: null, dusun: null });
+  const [filterValues, setFilterValues] = useState({ search: '', jenis_kelamin: null, status_perkawinan: null, status_penduduk: null, hubungan_keluarga: null, dusun_id: null });
 
   const fetchResident = useCallback(() => {
     execute({
@@ -38,9 +38,9 @@ const Resident = () => {
       status_perkawinan: filterValues.status_perkawinan,
       status_penduduk: filterValues.status_penduduk,
       hubungan_keluarga: filterValues.hubungan_keluarga,
-      dusun: filterValues.dusun
+      dusun_id: filterValues.dusun_id
     });
-  }, [execute, filterValues.dusun, filterValues.hubungan_keluarga, filterValues.jenis_kelamin, filterValues.search, filterValues.status_penduduk, filterValues.status_perkawinan, pagination.page, pagination.per_page, token]);
+  }, [execute, filterValues.dusun_id, filterValues.hubungan_keluarga, filterValues.jenis_kelamin, filterValues.search, filterValues.status_penduduk, filterValues.status_perkawinan, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
     fetchResident();
@@ -145,7 +145,7 @@ const Resident = () => {
                   const { isSuccess, message } = await deleteResident.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchResident(token);
+                    fetchResident({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -167,7 +167,7 @@ const Resident = () => {
         const { message, isSuccess } = await deleteBatchResident.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchResident(token);
+          fetchResident({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -204,7 +204,7 @@ const Resident = () => {
         const { message, isSuccess } = await importResident.execute(values, token, values.file.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchResident(token);
+          fetchResident({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -221,7 +221,7 @@ const Resident = () => {
         const { message, isSuccess } = await storeResident.execute({ ...values, birth: { birth_date: dateFormatter(values.birth_date), akta_kelahiran_number: values.akta_kelahiran_number, birth_place: values.birth_place } }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchResident(token);
+          fetchResident({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -237,7 +237,7 @@ const Resident = () => {
       status_perkawinan: filterValues.status_perkawinan,
       status_penduduk: filterValues.status_penduduk,
       hubungan_keluarga: filterValues.hubungan_keluarga,
-      dusun: filterValues.dusun
+      dusun_id: filterValues.dusun_id
     },
     isLoading: getAllResident.isLoading,
     onSubmit: (values) => {
@@ -246,13 +246,10 @@ const Resident = () => {
         status_perkawinan: values.status_perkawinan,
         status_penduduk: values.status_penduduk,
         hubungan_keluarga: values.hubungan_keluarga,
-        dusun: values.dusun
+        dusun_id: values.dusun_id
       });
     }
   };
-
-  console.log(hamlet);
-
   return (
     <Card>
       <DataTableHeader
@@ -261,7 +258,7 @@ const Resident = () => {
         onDeleteBatch={onDeleteBatch}
         onStore={onCreate}
         onExport={exportResident}
-        onImport={onImport}
+        onImport={{ templateFile: 'penduduk.xlsx', importHandler: onImport }}
         selectedData={selectedResident}
         onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
         filter={filter}

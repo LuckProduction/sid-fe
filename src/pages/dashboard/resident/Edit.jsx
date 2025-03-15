@@ -15,12 +15,13 @@ const Edit = () => {
   const { id } = useParams();
   const { execute: fetchResident, ...getAllResident } = useService(ResidentService.getById);
   const { execute: fetchHamlet, ...getAllHamlet } = useService(HamletService.getAll);
-  const editResident = useService(ResidentService.update);
+  const editResident = useService(ResidentService.updateWithImage);
+  const editResidentData = useService(ResidentService.update);
   const [submitLoading, setSubmitLoading] = useState(false);
 
   useEffect(() => {
     fetchResident(token, id);
-    fetchHamlet(token);
+    fetchHamlet({ token: token });
   }, [fetchHamlet, fetchResident, id, token]);
 
   const resident = getAllResident.data ?? [];
@@ -55,7 +56,7 @@ const Edit = () => {
               formFields={addressFormField({ options: { hamlet } })}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, address: { ...values }, _method: 'PUT' }, token);
+                const { message, isSuccess } = await editResidentData.execute(id, { ...values, address: { ...values }, gender: resident.gender }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);
@@ -74,7 +75,7 @@ const Edit = () => {
               formFields={brithFormField()}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, _method: 'PUT', birth: { ...values, birth_date: dateFormatter(values.birth_date) } }, token);
+                const { message, isSuccess } = await editResidentData.execute(id, { ...values, birth: { ...values, birth_date: dateFormatter(values.birth_date) } }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);
@@ -93,7 +94,7 @@ const Edit = () => {
               formFields={parentFormFields()}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, parents: values, _method: 'PUT' }, token);
+                const { message, isSuccess } = await editResidentData.execute(id, { ...values, parents: values }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);
@@ -112,7 +113,7 @@ const Edit = () => {
               formFields={educationCareerFormFields()}
               onSubmit={async (values) => {
                 setSubmitLoading(true);
-                const { message, isSuccess } = await editResident.execute(id, { ...values, education_career: values, _method: 'PUT' }, token);
+                const { message, isSuccess } = await editResidentData.execute(id, { ...values, education_career: values }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
                   navigate(-1);

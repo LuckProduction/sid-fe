@@ -2,7 +2,7 @@ import { DataLoader, DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ResidentService } from '@/services';
 import { Button, Card, Descriptions, Space, Tag } from 'antd';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import Modul from '@/constants/Modul';
 import { Resident as ResidentModel } from '@/models';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,21 +19,16 @@ const FamilyDetail = () => {
   const modal = useCrudModal();
   const navigate = useNavigate();
   const { success, error } = useNotification();
-  const { execute, ...getAllFamilyDetail } = useService(ResidentService.getFamilyDetail);
+  const { execute: fetchFamilyDetail, ...getAllFamilyDetail } = useService(ResidentService.getFamilyDetail);
   const storeResident = useService(ResidentService.store);
   const deleteResident = useService(ResidentService.delete);
   const pagination = usePagination({ totalData: getAllFamilyDetail.totalData });
 
-  const fetchFamilyDetail = useCallback(() => {
-    execute({ id: id, token: token, page: pagination.page, per_page: pagination.per_page });
-  }, [execute, id, pagination.page, pagination.per_page, token]);
-
   useEffect(() => {
-    fetchFamilyDetail();
-  }, [fetchFamilyDetail]);
+    fetchFamilyDetail(id, token);
+  }, [fetchFamilyDetail, id, token]);
 
-  const familyDetail = getAllFamilyDetail.data ?? [];
-
+  const familyDetail = getAllFamilyDetail.data ?? {};
   const column = [
     {
       title: 'Nama Lengkap',
@@ -131,9 +126,9 @@ const FamilyDetail = () => {
           <DataTableHeader modul={Modul.FAMILY_DETAIL} model={ResidentModel} />
           <div className="mb-6 w-full">
             <Descriptions bordered column={1}>
-              <Descriptions.Item label="Nomor Kartu Keluarga">{familyDetail.kk_number}</Descriptions.Item>
-              <Descriptions.Item label="Kepala Keluarga">{familyDetail.full_name}</Descriptions.Item>
-              <Descriptions.Item label="NIK Kepala Keluarga">{familyDetail.nik}</Descriptions.Item>
+              <Descriptions.Item label="Nomor Kartu Keluarga">{familyDetail?.kk_number}</Descriptions.Item>
+              <Descriptions.Item label="Kepala Keluarga">{familyDetail?.full_name}</Descriptions.Item>
+              <Descriptions.Item label="NIK Kepala Keluarga">{familyDetail?.nik}</Descriptions.Item>
               <Descriptions.Item label="Aksi">
                 <Button
                   icon={<PlusOutlined />}

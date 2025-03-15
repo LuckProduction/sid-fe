@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Employment } from '@/models';
 import api from '@/utils/api';
 
@@ -11,9 +12,9 @@ export default class EmploymentService {
    *  data?: Employment[];
    * }>}
    * */
-  static async getAll(token, page = null, per_page = null) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get('/jabatan', { token, ...params });
+  static async getAll({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get('/jabatan', { token, params });
     if (!response.data) return response;
     return { ...response, data: Employment.fromApiData(response.data) };
   }

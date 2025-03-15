@@ -1,7 +1,7 @@
 import { usePagination, useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { Card, Empty, Input, Pagination, Skeleton } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import parse from 'html-react-parser';
 import { Reveal } from '@/components';
 import { useNavigate } from 'react-router-dom';
@@ -15,9 +15,17 @@ const News = () => {
 
   const pagination = usePagination({ totalData: getAllArticle.totalData });
 
-  useEffect(() => {
-    fetchArticle({ page: pagination.page, pagination: pagination.per_page, search: searchValue });
+  const fetchData = useCallback(() => {
+    fetchArticle({
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: searchValue
+    });
   }, [fetchArticle, pagination.page, pagination.per_page, searchValue]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const article = getAllArticle.data ?? [];
 

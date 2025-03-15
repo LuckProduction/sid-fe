@@ -14,7 +14,6 @@ export default class ResidentService {
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-
     const response = await api.get('/master-penduduk', { token, params });
 
     if (!response.data) return response;
@@ -61,8 +60,12 @@ export default class ResidentService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token, file) {
+  static async updateWithImage(id, data, token, file) {
     return await api.post(`/master-penduduk/edit/${id}`, { body: Resident.toApiData(data), token, file: { foto: file } });
+  }
+
+  static async update(id, data, token) {
+    return await api.put(`/master-penduduk/edit/${id}`, { body: Resident.toApiData(data), token });
   }
 
   /**
@@ -108,16 +111,15 @@ export default class ResidentService {
     return await api.post('/master-penduduk/export', { token });
   }
 
-  static async getFamily({ token, page = null, per_page = null }) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get('/keluarga', { token, ...params });
+  static async getFamily({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get('/keluarga', { token, params });
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }
 
-  static async getFamilyDetail({ id, token, page = null, per_page = null }) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get(`/keluarga/${id}`, { token, ...params });
+  static async getFamilyDetail(id, token) {
+    const response = await api.get(`/keluarga/${id}`, { token });
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }
@@ -131,9 +133,9 @@ export default class ResidentService {
    *  data?: ProspectiveVoters[];
    * }>}
    * */
-  static async getProspectiveVoter({ token, page = null, per_page = null, tanggal_pemilu = null }) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get(`/calon-pemilih?tangal_pemilu=${tanggal_pemilu}`, { token, ...params });
+  static async getProspectiveVoter({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/calon-pemilih`, { token, params });
     if (!response.data) return response;
     return { ...response, data: Resident.fromApiData(response.data) };
   }

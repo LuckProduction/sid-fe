@@ -77,3 +77,22 @@ export const formFields = () => [
     rules: [{ required: true, message: 'Logo harus diisi' }]
   }
 ];
+
+export const villageInstitutionFilterFields = () => [
+  {
+    label: `Status ${Modul.VILLAGE_INSTITUTION}`,
+    name: 'status',
+    type: InputType.SELECT,
+    picker: 'select',
+    options: [
+      {
+        label: 'Aktif',
+        value: 'aktif'
+      },
+      {
+        label: 'Non-Aktif',
+        value: 'nonaktif'
+      }
+    ]
+  }
+];

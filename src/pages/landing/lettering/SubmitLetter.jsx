@@ -70,10 +70,11 @@ const SubmitLetter = () => {
         success('Berhasil', message);
         setFormData(isSuccess && data ? { ...formData, token: data.token } : { ...formData });
         setModalStatus('success');
-        setIsSubmitted(true); // Hilangkan form setelah submit berhasil
+        setIsSubmitted(true);
       } else {
         error('Gagal', message);
         setModalStatus('error');
+        setIsSubmitted(false);
       }
     } finally {
       setSubmitLoading(false);
@@ -81,7 +82,6 @@ const SubmitLetter = () => {
     }
   };
 
-  // Handle Close Modal and Reset Form
   const handleModalClose = () => {
     setIsModalOpen(false);
     setModalStatus('initial');

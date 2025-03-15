@@ -1,7 +1,7 @@
 import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, usePagination, useService } from '@/hooks';
-import { ResidentService } from '@/services';
+import { HamletService, ResidentService } from '@/services';
 import { Button, Card, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { Resident as ResidentModel } from '@/models';
@@ -15,10 +15,17 @@ const ProspectiveVoters = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const { execute: fetchProspectiveVoter, ...getAllProspectiveVoter } = useService(ResidentService.getProspectiveVoter);
+  const { execute: fetchHamlet, ...getAllHamlet } = useService(HamletService.getAll);
   const pagination = usePagination({ totalData: getAllProspectiveVoter.totalData });
 
   const [filterValues, setFilterValues] = useState({
-    tanggal_pemilu: null
+    search: '',
+    tanggal_pemilu: null,
+    jenis_kelamin: null,
+    status_perkawinan: null,
+    status_penduduk: null,
+    hubungan_keluarga: null,
+    dusun_id: null
   });
 
   const fetchData = useCallback(() => {
@@ -26,15 +33,35 @@ const ProspectiveVoters = () => {
       token,
       page: pagination.page,
       per_page: pagination.per_page,
-      tanggal_pemilu: filterValues.tanggal_pemilu ? dateFormatter(filterValues.tanggal_pemilu) : ''
+      tanggal_pemilu: filterValues.tanggal_pemilu ? dateFormatter(filterValues.tanggal_pemilu) : '',
+      search: filterValues.search,
+      jenis_kelamin: filterValues.jenis_kelamin,
+      status_perkawinan: filterValues.status_perkawinan,
+      status_penduduk: filterValues.status_penduduk,
+      hubungan_keluarga: filterValues.hubungan_keluarga,
+      dusun_id: filterValues.dusun_id
     });
-  }, [fetchProspectiveVoter, token, pagination.page, pagination.per_page, filterValues.tanggal_pemilu]);
+  }, [
+    fetchProspectiveVoter,
+    token,
+    pagination.page,
+    pagination.per_page,
+    filterValues.tanggal_pemilu,
+    filterValues.search,
+    filterValues.jenis_kelamin,
+    filterValues.status_perkawinan,
+    filterValues.status_penduduk,
+    filterValues.hubungan_keluarga,
+    filterValues.dusun_id
+  ]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchHamlet({ token: token });
+  }, [fetchData, fetchHamlet, token]);
 
   const prospectiveVoter = getAllProspectiveVoter.data ?? [];
+  const hamlet = getAllHamlet.data ?? [];
 
   const exportProspectiveVoters = () => {
     fetch('http://desa1.api-example.govillage.id/api/master-penduduk/export?calon_pemilih=true', {
@@ -99,14 +126,24 @@ const ProspectiveVoters = () => {
   ];
 
   const filter = {
-    formFields: ProspectiveVotersFilterFields(),
+    formFields: ProspectiveVotersFilterFields({ options: { hamlet } }),
     initialData: {
-      tanggal_pemilu: filterValues.tanggal_pemilu
+      tanggal_pemilu: filterValues.tanggal_pemilu,
+      jenis_kelamin: filterValues.jenis_kelamin,
+      status_perkawinan: filterValues.status_perkawinan,
+      status_penduduk: filterValues.status_penduduk,
+      hubungan_keluarga: filterValues.hubungan_keluarga,
+      dusun_id: filterValues.dusun_id
     },
     isLoading: getAllProspectiveVoter.isLoading,
     onSubmit: (values) => {
       setFilterValues({
-        tanggal_pemilu: values.tanggal_pemilu ? dayjs(values.tanggal_pemilu) : null
+        tanggal_pemilu: values.tanggal_pemilu ? dayjs(values.tanggal_pemilu) : null,
+        jenis_kelamin: values.jenis_kelamin,
+        status_perkawinan: values.status_perkawinan,
+        status_penduduk: values.status_penduduk,
+        hubungan_keluarga: values.hubungan_keluarga,
+        dusun_id: values.dusun_id
       });
     }
   };
@@ -114,7 +151,7 @@ const ProspectiveVoters = () => {
   return (
     <>
       <Card>
-        <DataTableHeader modul={Modul.PROSPECTIVE_VOTER} model={ResidentModel} onExport={exportProspectiveVoters} filter={filter} />
+        <DataTableHeader modul={Modul.PROSPECTIVE_VOTER} model={ResidentModel} onExport={exportProspectiveVoters} filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
         <div className="w-full max-w-full overflow-x-auto">
           <DataTable data={prospectiveVoter} columns={column} loading={getAllProspectiveVoter.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} />
         </div>

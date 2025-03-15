@@ -1,9 +1,9 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { OfficerService } from '@/services';
 import { Button, Card, Popconfirm, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Officer as OfficerModel } from '@/models';
 import { userFormFields } from './FormFields';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
@@ -13,20 +13,30 @@ const User = () => {
   const { token } = useAuth();
   const modal = useCrudModal();
   const { success, error } = useNotification();
-  const { execute: fetchUsers, ...getAllUsers } = useService(OfficerService.getAll);
+  const { execute, ...getAllUsers } = useService(OfficerService.getAll);
   const { execute: fetchPermission, ...getAllPermission } = useService(OfficerService.getAllPermision);
   const storeUser = useService(OfficerService.store);
   const updateUser = useService(OfficerService.update);
   const deleteUser = useService(OfficerService.delete);
   const deleteBatchUser = useService(OfficerService.deleteBatch);
   const resetPassword = useService(OfficerService.resetPassword);
+  const [filterValues, setFilterValues] = useState({ search: '' });
 
   const pagination = usePagination({ totalData: getAllUsers.totalData });
 
   const [selectedArticle, setSelectedArticle] = useState([]);
 
+  const fetchUsers = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search
+    });
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
+
   useEffect(() => {
-    fetchUsers(token, pagination.page, pagination.per_page);
+    fetchUsers();
     fetchPermission({ token: token, page: pagination.page, per_page: pagination.per_page, id: 1 });
   }, [fetchPermission, fetchUsers, pagination.page, pagination.per_page, token]);
 
@@ -71,7 +81,7 @@ const User = () => {
                   const { message, isSuccess } = await updateUser.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchUsers(token, pagination.page, pagination.per_page);
+                    fetchUsers({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -124,7 +134,7 @@ const User = () => {
                   const { isSuccess, message } = await deleteUser.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchUsers(token, pagination.page, pagination.per_page);
+                    fetchUsers({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -181,7 +191,7 @@ const User = () => {
         const { message, isSuccess } = await storeUser.execute({ ...values, password: '12345678' }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchUsers(token, pagination.page, pagination.per_page);
+          fetchUsers({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -192,16 +202,12 @@ const User = () => {
 
   return (
     <>
-      {getAllUsers.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={OfficerModel} modul={Modul.USERS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={user} columns={column} loading={getAllUsers.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader model={OfficerModel} modul={Modul.USERS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} onSearch={(values) => setFilterValues({ search: values })} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={user} columns={column} loading={getAllUsers.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
+        </div>
+      </Card>
     </>
   );
 };

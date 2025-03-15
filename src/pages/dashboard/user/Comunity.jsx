@@ -1,30 +1,40 @@
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ComunityService, OfficerService } from '@/services';
 import { Button, Card, Popconfirm, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Modul from '@/constants/Modul';
 import { Comunity as ComunityModel } from '@/models';
 import { Delete, Detail } from '@/components/dashboard/button';
 import { comunityFormFields } from './FormFields';
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import { LockOutlined } from '@ant-design/icons';
 
 const Comunity = () => {
   const { token } = useAuth();
   const modal = useCrudModal();
   const { success, error } = useNotification();
-  const { execute: fetchComunity, ...getAllComunity } = useService(ComunityService.getAll);
+  const { execute, ...getAllComunity } = useService(ComunityService.getAll);
   const deleteComunity = useService(ComunityService.delete);
   const deleteBatchComunity = useService(ComunityService.deleteBatch);
   const resetPassword = useService(OfficerService.resetPassword);
+  const [filterValues, setFilterValues] = useState({ search: '' });
 
   const pagination = usePagination({ totalData: getAllComunity.totalData });
 
   const [selectedArticle, setSelectedArticle] = useState([]);
 
+  const fetchComunity = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search
+    });
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
+
   useEffect(() => {
-    fetchComunity({ token: token, page: pagination.page, per_page: pagination.per_page });
-  }, [fetchComunity, pagination.page, pagination.per_page, token]);
+    fetchComunity();
+  }, [fetchComunity]);
 
   const comunity = getAllComunity.data ?? [];
 
@@ -174,16 +184,12 @@ const Comunity = () => {
 
   return (
     <>
-      {getAllComunity.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={ComunityModel} modul={Modul.COMUNITY} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={comunity} columns={column} loading={getAllComunity.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader model={ComunityModel} modul={Modul.COMUNITY} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} onSearch={(values) => setFilterValues({ search: values })} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={comunity} columns={column} loading={getAllComunity.isLoading} map={(article) => ({ key: article.id, ...article })} pagination={pagination} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
+        </div>
+      </Card>
     </>
   );
 };

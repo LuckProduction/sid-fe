@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBoundaries, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
@@ -8,9 +9,9 @@ export default class LandingService {
     return { ...response, data: VisiMisi.fromApiData(response.data) };
   }
 
-  static async getAllArticle({ page = null, per_page = null, search }) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get(`/landing/artikel?search=${search}`, { ...params });
+  static async getAllArticle({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/landing/artikel`, { params });
     if (!response.data) return response;
     return { ...response, data: Article.fromApiData(response.data) };
   }
@@ -68,8 +69,8 @@ export default class LandingService {
     return { ...response, data: LetterType.fromApiData(response.data) };
   }
 
-  static async sumbitLetter(data) {
-    return await api.post(`/permohonan-surat`, { body: SubmitLetter.toApiData(data) });
+  static async sumbitLetter(data, file) {
+    return await api.post(`/permohonan-surat`, { body: SubmitLetter.toApiData(data), file: { content: file } });
   }
 
   static async downloadLetter(token) {

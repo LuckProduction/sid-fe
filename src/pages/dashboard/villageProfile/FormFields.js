@@ -193,17 +193,17 @@ export const VillageBoundariesFormFields = () => [
   },
   {
     label: 'Lokasi',
-    type: InputType.MAP_PICKER // Tipe khusus untuk MapPicker
+    type: InputType.MAP_PICKER
   },
   {
     label: 'Latitude',
-    name: 'latitude', // Nama field untuk latitude
+    name: 'latitude',
     type: InputType.TEXT,
     rules: [{ required: true, message: 'Latitude harus diisi' }]
   },
   {
     label: 'Longitude',
-    name: 'longitude', // Nama field untuk longitude
+    name: 'longitude',
     type: InputType.TEXT,
     rules: [{ required: true, message: 'Longitude harus diisi' }]
   },
@@ -223,7 +223,6 @@ export const VillageBoundariesFormFields = () => [
         }
       ];
     },
-    accept: ['.geojson'],
-    rules: [{ required: true, message: `File Batas harus diisi` }]
+    accept: ['.geojson']
   }
 ];
