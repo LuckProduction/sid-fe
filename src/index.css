@@ -16,7 +16,7 @@
     background-size: cover;
   }
   b.news-text,
-  p.news-text {
+  .news-text {
     -webkit-line-clamp: 2;
     overflow: hidden;
     display: -webkit-box;

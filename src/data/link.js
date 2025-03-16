@@ -32,14 +32,14 @@ export const landingLink = [
     ]
   },
   {
-    label: 'Potensi',
-    key: '/village_potential',
-    element: Landing.VillagePotential
-  },
-  {
     label: 'Surat Menyurat',
     key: '/lettering',
     element: Landing.Lettering
+  },
+  {
+    label: 'Penerima Bantuan',
+    key: '/beneficiary',
+    element: Landing.BrowseBeneficiary
   },
   {
     label: 'Statistik',
@@ -53,6 +53,11 @@ export const landingLink = [
         label: 'Statistik APBD',
         key: '/apbd_statistik',
         element: Landing.ApbdStatistic
+      },
+      {
+        label: 'Potensi',
+        key: '/village_potential',
+        element: Landing.VillagePotential
       }
     ]
   }

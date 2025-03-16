@@ -16,7 +16,7 @@ const MapPicker = ({ form, handleValuesChange, realtimeData }) => {
 
   return (
     <div style={{ height: '300px', marginBottom: '16px' }}>
-      <MapContainer center={[-0.7893, 113.9213]} zoom={5} style={{ height: '100%', width: '100%' }} whenCreated={(map) => (mapRef.current = map)}>
+      <MapContainer center={[0.556174, 123.058548]} zoom={6} style={{ height: '100%', width: '100%' }} whenCreated={(map) => (mapRef.current = map)}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <CoordinatePicker
           onChange={(coords) => {
