@@ -4,11 +4,12 @@ import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } f
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
-import { useCrudModal } from '@/hooks';
+import { useCrudModal, usePagination, useService } from '@/hooks';
 import parse from 'html-react-parser';
+import { LandingService } from '@/services';
 
 const Home = () => {
-  const { villageProfile, speech, visiMisi, institution, article } = useOutletContext();
+  const { villageProfile, speech, visiMisi, institution } = useOutletContext();
   const [titleData, setTitleData] = useState({ title: 'Loading...', icon: '' });
 
   const navigate = useNavigate();
@@ -48,6 +49,24 @@ const Home = () => {
       link.href = titleData.icon;
     }
   }, [titleData]);
+
+  const { execute: fetchArticle, ...getAllArticle } = useService(LandingService.getAllArticle);
+
+  const pagination = usePagination({ totalData: getAllArticle.totalData });
+
+  const fetchData = useCallback(() => {
+    fetchArticle({
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: ''
+    });
+  }, [fetchArticle, pagination.page, pagination.per_page]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const article = getAllArticle.data ?? [];
 
   return (
     <>
@@ -376,7 +395,7 @@ const Home = () => {
                     <Skeleton active />
                   </Card>
                 ))
-              : article?.data?.slice(0, 5).map((item, index) => (
+              : article?.slice(0, 5).map((item, index) => (
                   <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
                     <Reveal>
                       <b className="news-text">{item.title}</b>

@@ -34,6 +34,27 @@ const PublicAssistance = () => {
 
   const apbdItem = getAllPublicAssistance.data ?? [];
 
+  const exportPublicAssistance = () => {
+    fetch(`https://desa1.api-example.govillage.id/api/peserta-bantuan/export`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'peserta_bantuan_keseluruhan.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch((error) => console.error('Export failed:', error));
+  };
+
   const Column = [
     {
       title: 'Nama Bantuan',
@@ -213,7 +234,7 @@ const PublicAssistance = () => {
         <DataLoader type="datatable" />
       ) : (
         <Card>
-          <DataTableHeader model={PublicAssistanceModel} modul={Modul.PUBLIC_ASSISTANCE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+          <DataTableHeader model={PublicAssistanceModel} modul={Modul.PUBLIC_ASSISTANCE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} onExport={exportPublicAssistance} />
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable data={apbdItem} columns={Column} loading={getAllPublicAssistance.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
           </div>

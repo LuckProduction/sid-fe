@@ -46,7 +46,7 @@ const Beneficiary = () => {
   const publicAssistanceById = getAllPublicAssistanceById.data ?? [];
 
   const exportBeneficiary = () => {
-    fetch(`http://desa1.api-example.govillage.id/api/peserta-bantuan/export?bantuan_id=${id}`, {
+    fetch(`https://desa1.api-example.govillage.id/api/peserta-bantuan/export?bantuan_id=${id}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
