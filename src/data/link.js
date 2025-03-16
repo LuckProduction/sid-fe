@@ -52,7 +52,7 @@ export const landingLink = [
       {
         label: 'Statistik APBD',
         key: '/apbd_statistik',
-        element: Landing.ApdbStatistic
+        element: Landing.ApbdStatistic
       }
     ]
   }

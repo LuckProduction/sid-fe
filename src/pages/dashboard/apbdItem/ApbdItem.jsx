@@ -96,7 +96,7 @@ const ApbdItem = () => {
                   const { message, isSuccess } = await updateApbdItem.execute(record.id, { ...values, apbd_report: apbdReportById.id }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchApbdItem(token);
+                    fetchApbdItem(token, id, pagination.page, pagination.per_page);
                   } else {
                     error('Gagal', message);
                   }
@@ -163,7 +163,7 @@ const ApbdItem = () => {
                   const { isSuccess, message } = await deleteApbdItem.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchApbdItem(token);
+                    fetchApbdItem(token, id, pagination.page, pagination.per_page);
                   } else {
                     error('Gagal', message);
                   }
@@ -185,7 +185,7 @@ const ApbdItem = () => {
         const { message, isSuccess } = await deleteBatchApbdItem.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchApbdItem(token);
+          fetchApbdItem(token, id, pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }
@@ -202,7 +202,7 @@ const ApbdItem = () => {
         const { message, isSuccess } = await storeApbdItem.execute({ ...values, apbd_report: apbdReportById.id }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchApbdItem(token);
+          fetchApbdItem(token, id, pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }
@@ -221,7 +221,7 @@ const ApbdItem = () => {
             <Descriptions bordered>
               <Descriptions.Item label="Nama Bantuan">{apbdReportById.report_name}</Descriptions.Item>
               <Descriptions.Item label="Target Bantuan">{apbdReportById.year}</Descriptions.Item>
-              <Descriptions.Item label="Sumber Dana">
+              <Descriptions.Item label="Dokumen">
                 <Button icon={<DownloadOutlined />} onClick={() => window.open(apbdReportById.document, '_blank')}>
                   Download Sumber
                 </Button>

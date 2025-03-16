@@ -5,74 +5,74 @@ import { rupiahFormat } from '@/utils/rupiahFormat';
 import { Column } from '@ant-design/charts';
 import { DollarOutlined, ExportOutlined, GroupOutlined, LeftOutlined, ShopOutlined, ShoppingCartOutlined, WalletOutlined } from '@ant-design/icons';
 import { Card, Statistic, Tabs, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ApdbStatistic = () => {
+const ApbdStatistic = () => {
   const navigate = useNavigate();
-
   const { execute: executeApbdStatisticFetch, ...getAllApbdStatistic } = useService(StatisticService.getAllApbdtStatistic);
 
   useEffect(() => {
     executeApbdStatisticFetch();
   }, [executeApbdStatisticFetch]);
 
-  const apbdStatistic = getAllApbdStatistic.data ?? [];
-
+  const apbdStatistic = useMemo(() => getAllApbdStatistic.data ?? {}, [getAllApbdStatistic.data]);
   const tabKeys = Object.keys(apbdStatistic).filter((key) => key !== 'perTahun' && key !== 'semua');
   const [activeKey, setActiveKey] = useState(tabKeys[0] || '');
 
-  // DataTable untuk data semua
   const semuaColumns = [
     { title: 'Nama Laporan', dataIndex: 'nama_laporan' },
     { title: 'Tahun', dataIndex: 'tahun' },
-    {
-      title: 'Belanja',
-      dataIndex: 'belanja_pendapatan',
-      render: (bp) => rupiahFormat(bp?.belanja || 0)
-    },
-    {
-      title: 'Pendapatan',
-      dataIndex: 'belanja_pendapatan',
-      render: (bp) => rupiahFormat(bp?.pendapatan || 0)
-    },
-    {
-      title: 'Pengeluaran',
-      dataIndex: 'pembiayaan',
-      render: (pb) => rupiahFormat(pb?.pengeluaran || 0)
-    },
-    {
-      title: 'Pembiayaan',
-      dataIndex: 'pembiayaan',
-      render: (pb) => rupiahFormat(pb?.pembiayaan || 0)
-    }
+    { title: 'Belanja', dataIndex: 'belanja_pendapatan', render: (bp) => rupiahFormat(bp?.belanja || 0) },
+    { title: 'Pendapatan', dataIndex: 'belanja_pendapatan', render: (bp) => rupiahFormat(bp?.pendapatan || 0) },
+    { title: 'Pengeluaran', dataIndex: 'pembiayaan', render: (pb) => rupiahFormat(pb?.pengeluaran || 0) },
+    { title: 'Pembiayaan', dataIndex: 'pembiayaan', render: (pb) => rupiahFormat(pb?.pembiayaan || 0) }
   ];
 
-  // Persiapan data untuk Chart
-  const semuaChartData = apbdStatistic?.semua?.map((item) => ({
-    tahun: item.tahun,
-    nama_laporan: item.nama_laporan,
-    belanja: item.belanja_pendapatan.belanja
-  }));
+  const apbdData = useMemo(() => {
+    return (
+      apbdStatistic.semua?.flatMap((item) => [
+        { tahun: item.tahun, kategori: 'Belanja', nilai: item.belanja_pendapatan?.belanja || 0 },
+        { tahun: item.tahun, kategori: 'Pendapatan', nilai: item.belanja_pendapatan?.pendapatan || 0 },
+        { tahun: item.tahun, kategori: 'Pembiayaan', nilai: item.pembiayaan?.pembiayaan || 0 },
+        { tahun: item.tahun, kategori: 'Pengeluaran', nilai: item.pembiayaan?.pengeluaran || 0 }
+      ]) || []
+    );
+  }, [apbdStatistic.semua]);
 
-  const semuaChartConfig = {
-    data: semuaChartData,
-    xField: 'tahun',
-    yField: 'belanja',
-    seriesField: 'nama_laporan',
-    autoFit: true,
-    padding: 'auto'
-  };
+  const semuaChartConfig = useMemo(() => {
+    const colorMapping = {
+      Belanja: '#FF4D4F',
+      Pendapatan: '#1890FF',
+      Pembiayaan: '#52C41A',
+      Pengeluaran: '#FAAD14'
+    };
 
-  // Chart Config untuk setiap data selain semua dan perTahun
-  const getChartConfig = (data) => ({
-    data,
-    xField: 'nama_komponen',
-    yField: 'jumlah_anggaran',
-    seriesField: 'sumber_anggaran',
-    autoFit: true,
-    padding: 'auto'
-  });
+    return {
+      data: apbdData,
+      xField: 'tahun',
+      yField: 'nilai',
+      seriesField: 'kategori',
+      autoFit: true,
+      padding: 'auto',
+      color: ({ kategori }) => colorMapping[kategori],
+      colorField: 'kategori'
+    };
+  }, [apbdData]);
+
+  const chartConfigs = useMemo(() => {
+    return tabKeys.reduce((acc, key) => {
+      acc[key] = {
+        data: apbdStatistic[key] || [],
+        xField: 'nama_komponen',
+        yField: 'jumlah_anggaran',
+        seriesField: 'sumber_anggaran',
+        autoFit: true,
+        padding: 'auto'
+      };
+      return acc;
+    }, {});
+  }, [apbdStatistic, tabKeys]);
 
   return (
     <>
@@ -154,7 +154,7 @@ const ApdbStatistic = () => {
                           </div>
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Visualisasi" key={key + index + 'visualisasi'}>
-                          <Column {...getChartConfig(apbdStatistic[key])} />
+                          <Column {...chartConfigs[key]} />
                         </Tabs.TabPane>
                       </Tabs>
                     </Tabs.TabPane>
@@ -169,4 +169,4 @@ const ApdbStatistic = () => {
   );
 };
 
-export default ApdbStatistic;
+export default ApbdStatistic;
