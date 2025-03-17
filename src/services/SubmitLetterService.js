@@ -71,6 +71,6 @@ export default class SubmitLetterService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/permohonan-surat/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/permohonan-surat/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

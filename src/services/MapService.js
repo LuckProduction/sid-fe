@@ -84,6 +84,6 @@ export default class MapService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/pemetaan/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/pemetaan/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

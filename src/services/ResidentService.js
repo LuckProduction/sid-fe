@@ -91,7 +91,7 @@ export default class ResidentService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/master-penduduk/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/master-penduduk/multi-delete?ids=${ids.join(',')}`, { token });
   }
 
   /**

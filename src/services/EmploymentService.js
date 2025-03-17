@@ -71,6 +71,6 @@ export default class EmploymentService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/jabatan/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/jabatan/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

@@ -69,6 +69,6 @@ export default class {{name}} {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`{{endpoint}}/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`{{endpoint}}/multi-delete?id=${ids.join(',')}`, { token });
   }
 }

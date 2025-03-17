@@ -79,6 +79,6 @@ export default class HamletService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/dusun/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/dusun/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

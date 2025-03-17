@@ -86,6 +86,6 @@ export default class PublicAssistanceService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/bantuan/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/bantuan/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

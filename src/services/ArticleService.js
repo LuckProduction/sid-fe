@@ -86,6 +86,6 @@ export default class ArticleService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/artikel/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/artikel/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

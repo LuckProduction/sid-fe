@@ -28,6 +28,11 @@ export const landingLink = [
         label: 'Perangkat Desa',
         key: '/village_officials',
         element: Landing.VillageOfficials
+      },
+      {
+        label: 'Potensi',
+        key: '/village_potential',
+        element: Landing.VillagePotential
       }
     ]
   },
@@ -53,11 +58,6 @@ export const landingLink = [
         label: 'Statistik APBD',
         key: '/apbd_statistik',
         element: Landing.ApbdStatistic
-      },
-      {
-        label: 'Potensi',
-        key: '/village_potential',
-        element: Landing.VillagePotential
       }
     ]
   }

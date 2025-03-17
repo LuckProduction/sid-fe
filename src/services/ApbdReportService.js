@@ -86,6 +86,6 @@ export default class ApbdReportService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/laporan-apbd/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/laporan-apbd/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

@@ -70,7 +70,7 @@ export default class CategoryService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/kategori/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/kategori/multi-delete?ids=${ids.join(',')}`, { token });
   }
 
   static async getByType(token, type, page = 1, per_page = 10) {

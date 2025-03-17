@@ -86,6 +86,6 @@ export default class VillageInstitutionService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/lembaga-desa/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/lembaga-desa/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }
