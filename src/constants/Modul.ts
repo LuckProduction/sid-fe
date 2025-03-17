@@ -24,7 +24,8 @@ enum Modul {
   PROSPECTIVE_VOTER = 'Calon Pemilih',
   MAP = 'Pemetaan',
   USERS = 'Pengguna',
-  COMUNITY = 'Masyarakat'
+  COMUNITY = 'Masyarakat',
+  VILLAGE_ENTERPRISE = 'Lapak BUMDes'
 }
 
 export default Modul;

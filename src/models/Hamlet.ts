@@ -74,5 +74,4 @@ export default class Hamlet extends Model {
   }
 }
 
-// FIXME: you maybe want to change below line. If you don't want to then delete this FIXME line
 Model.children.dusun = Hamlet;

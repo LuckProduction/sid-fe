@@ -1,6 +1,6 @@
 import { Result, Skeleton } from 'antd';
 import { authLink, dashboardLink, landingLink } from './data/link';
-import { useAuth } from './hooks';
+import { useAuth, useService } from './hooks';
 import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
@@ -10,10 +10,44 @@ import { flattenLandingLinks } from './utils/landingLink';
 import { Browse, DetailNews, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
+import { LandingService } from './services';
+import { useEffect, useState } from 'react';
 
 function App() {
   const { isLoading, user } = useAuth();
   const flatLandingLinks = flattenLandingLinks(landingLink);
+  const [titleData, setTitleData] = useState({ title: 'Loading...', icon: '' });
+
+  const { execute: fetchVillageProfile, ...getAll } = useService(LandingService.getVillageProfile);
+
+  useEffect(() => {
+    fetchVillageProfile();
+  }, [fetchVillageProfile]);
+
+  const villageProfile = getAll.data ?? {};
+
+  useEffect(() => {
+    if (getAll.data) {
+      setTitleData({
+        title: 'GoVillage | ' + villageProfile.village_name || 'Default Title',
+        icon: villageProfile.village_logo || '/vite.svg'
+      });
+    }
+  }, [getAll.data, villageProfile.village_logo, villageProfile.village_name]);
+
+  useEffect(() => {
+    document.title = titleData.title;
+
+    if (titleData.icon) {
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+      }
+      link.href = titleData.icon;
+    }
+  }, [titleData]);
 
   return (
     <RouterProvider
@@ -42,7 +76,6 @@ function App() {
                 if (isLoading) {
                   return {
                     path,
-                    // TODO: Sekeleton 💀
                     element: <Skeleton active />
                   };
                 }

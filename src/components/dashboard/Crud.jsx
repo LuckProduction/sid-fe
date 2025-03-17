@@ -46,7 +46,6 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
 
       case InputType.UPLOAD:
         return (
-          // FIXME: if readOnly, then show only the file/image and not the drag and drop area
           <Dragger accept={field.accept.join(', ')} name={field.name} maxCount={field.max} beforeUpload={field.beforeUpload} listType="picture" {...field.extra} {...(initialData ? { defaultFileList: field.getFileList(initialData) } : {})}>
             <p className="ant-upload-drag-icon">
               <InboxOutlined />

@@ -35,3 +35,4 @@ export { default as ProspectiveVoters } from './resident/ProspectiveVoters';
 export { default as User } from './user/User';
 export { default as Comunity } from './user/Comunity';
 export { default as ProfileSettings } from './ProfileSettings';
+export { default as VillageEnterprise } from './villageEnterprise/VillageEnterprise';

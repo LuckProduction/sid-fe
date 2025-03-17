@@ -90,6 +90,3 @@ export default class Speech extends Model {
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
   }
 }
-
-// FIXME: you maybe want to change below line. If you don't want to then delete this FIXME line
-// Model.children.sambutan = Speech;

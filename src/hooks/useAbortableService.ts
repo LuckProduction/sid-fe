@@ -76,7 +76,6 @@ export default function useAbortableService<P extends any[], ApiData, Model>(
           if (error.name === 'AbortError') return;
           console.error(error);
         });
-        // TODO: use enum for error messages
         result.message = error instanceof Error ? error.message : 'An error occurred';
         result.isSuccess = false;
       }

@@ -67,7 +67,7 @@ export const formFields = ({ options }) => [
       ];
     },
     accept: ['.png', '.jpg', '.jpeg', 'webp'],
-    rules: [{ required: true, message: 'Logo harus diisi' }]
+    rules: [{ required: true, message: 'Gambar harus diisi' }]
   },
   {
     label: `Tag ${Modul.ARTICLE}`,
