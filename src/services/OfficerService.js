@@ -87,7 +87,7 @@ export default class OfficerService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/pengguna/multi-delete/?id=${ids.join(',')}`, { token });
+    return await api.delete(`/pengguna/multi-delete?id=${ids.join(',')}`, { token });
   }
 
   static async changePassword(token, data) {

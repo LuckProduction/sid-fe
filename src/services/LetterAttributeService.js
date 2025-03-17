@@ -86,6 +86,6 @@ export default class LetterAttributeService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/atribut-surat/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/atribut-surat/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

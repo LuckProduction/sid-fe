@@ -71,6 +71,6 @@ export default class VillageOfficialsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/perangkat-desa/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/perangkat-desa/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

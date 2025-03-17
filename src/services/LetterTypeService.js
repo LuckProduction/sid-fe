@@ -71,6 +71,6 @@ export default class LetterTypeService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/jenis-surat/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/jenis-surat/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

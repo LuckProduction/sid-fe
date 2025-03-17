@@ -70,6 +70,6 @@ export default class InstitutionMemberService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/anggota-lembaga/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/anggota-lembaga/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

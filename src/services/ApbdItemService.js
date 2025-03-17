@@ -70,6 +70,6 @@ export default class ApbdItemService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/item-apbd/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/item-apbd/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

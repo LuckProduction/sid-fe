@@ -42,6 +42,6 @@ export default class ComunityService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/layanan-mandiri/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/layanan-mandiri/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

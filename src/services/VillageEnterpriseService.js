@@ -86,6 +86,6 @@ export default class VillageEnterpriseService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/lapak/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/lapak/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

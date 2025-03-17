@@ -71,6 +71,6 @@ export default class LegalProductsService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/produk-hukum/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/produk-hukum/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

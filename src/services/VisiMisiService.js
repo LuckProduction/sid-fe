@@ -70,6 +70,6 @@ export default class VisiMisiService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/visi-misi/multi-delete/?ids=${ids.join(',')}`, { token });
+    return await api.delete(`/visi-misi/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }
