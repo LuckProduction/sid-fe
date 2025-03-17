@@ -1,4 +1,4 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ApbdReportService } from '@/services';
@@ -6,8 +6,8 @@ import dateFormatter from '@/utils/dateFormatter';
 import { DatabaseOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Button, Card, Space } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
-import { formFields } from './FormFields';
+import { useCallback, useEffect, useState } from 'react';
+import { apbdReportFilterFields, formFields } from './FormFields';
 import { useNavigate } from 'react-router-dom';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { Action } from '@/constants';
@@ -19,20 +19,31 @@ const ApbdReport = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const navigate = useNavigate();
-  const { execute: fetchApbdReport, ...getAllApbdReport } = useService(ApbdReportService.getAll);
+  const { execute, ...getAllApbdReport } = useService(ApbdReportService.getAll);
   const storeApbdReport = useService(ApbdReportService.store);
   const updateApbdReport = useService(ApbdReportService.update);
   const deleteApbdReport = useService(ApbdReportService.delete);
   const deleteBatchApbdReport = useService(ApbdReportService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
+  const [filterValues, setFilterValues] = useState({ search: '', tahun: null });
 
   const pagination = usePagination({ totalData: getAllApbdReport.totalData });
 
   const modal = useCrudModal();
 
+  const fetchApbdReport = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search,
+      tahun: filterValues.tahun ? dateFormatter(filterValues.tahun, 'year') : ''
+    });
+  }, [execute, filterValues.search, filterValues.tahun, pagination.page, pagination.per_page, token]);
+
   useEffect(() => {
-    fetchApbdReport(token, pagination.page, pagination.per_page);
-  }, [fetchApbdReport, pagination.page, pagination.per_page, token]);
+    fetchApbdReport();
+  }, [fetchApbdReport]);
 
   const legalProducts = getAllApbdReport.data ?? [];
 
@@ -68,7 +79,7 @@ const ApbdReport = () => {
                   const { message, isSuccess } = await updateApbdReport.execute(record.id, { ...values, year: dateFormatter(values.year, 'year'), _method: 'PUT' }, token, values.document.file);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchApbdReport(token);
+                    fetchApbdReport({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -119,7 +130,7 @@ const ApbdReport = () => {
                   const { isSuccess, message } = await deleteApbdReport.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchApbdReport(token);
+                    fetchApbdReport({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -143,7 +154,7 @@ const ApbdReport = () => {
         const { message, isSuccess } = await deleteBatchApbdReport.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchApbdReport(token);
+          fetchApbdReport({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -160,7 +171,7 @@ const ApbdReport = () => {
         const { message, isSuccess } = await storeApbdReport.execute({ ...values, year: dateFormatter(values.year, 'year') }, token, values.document.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchApbdReport(token);
+          fetchApbdReport({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -169,18 +180,27 @@ const ApbdReport = () => {
     });
   };
 
+  const filter = {
+    formFields: apbdReportFilterFields(),
+    initialData: {
+      tahun: filterValues.tahun
+    },
+    isLoading: getAllApbdReport.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        tahun: values.tahun ? dayjs(values.tahun) : null
+      });
+    }
+  };
+
   return (
     <div>
-      {getAllApbdReport.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={ApbdReportModel} modul={Modul.APBD_REPORT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={legalProducts} columns={Column} loading={getAllApbdReport.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader model={ApbdReportModel} modul={Modul.APBD_REPORT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} filter={filter} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={legalProducts} columns={Column} loading={getAllApbdReport.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+        </div>
+      </Card>
     </div>
   );
 };

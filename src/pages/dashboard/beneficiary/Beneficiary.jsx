@@ -35,7 +35,7 @@ const Beneficiary = () => {
     fetchBeneficiary(token, id, pagination.page, pagination.per_page);
     fetchResident({ token: token });
     fetchVillageInstitution({ token: token });
-    fetchPublicAssistance(token);
+    fetchPublicAssistance({ token: token });
     fetchPublicAssistanceById(token, id);
   }, [fetchBeneficiary, fetchPublicAssistance, fetchPublicAssistanceById, fetchResident, fetchVillageInstitution, id, pagination.page, pagination.per_page, token]);
 

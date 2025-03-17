@@ -1,8 +1,8 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ArticleService, CategoryService } from '@/services';
 import { Card, Space, Tag } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formFields } from './FormFields';
 import Modul from '@/constants/Modul';
@@ -18,18 +18,28 @@ const Article = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const modal = useCrudModal();
-  const { execute: executeArticleFetch, ...getAllArticle } = useService(ArticleService.getAll);
+  const { execute, ...getAllArticle } = useService(ArticleService.getAll);
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
   const deleteArticle = useService(ArticleService.delete);
   const deleteBatchArticle = useService(ArticleService.deleteBatch);
   const [selectedArticle, setSelectedArticle] = useState([]);
+  const [filterValues, setFilterValues] = useState({ search: '' });
 
   const pagination = usePagination({ totalData: getAllArticle.totalData });
 
+  const fetchArticle = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search
+    });
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
+
   useEffect(() => {
-    executeArticleFetch(token, pagination.page, pagination.per_page);
+    fetchArticle();
     fetchCategory(token, 'artikel');
-  }, [executeArticleFetch, fetchCategory, pagination.page, pagination.per_page, token]);
+  }, [fetchArticle, fetchCategory, token]);
 
   const article = getAllArticle.data ?? [];
   const category = getAllCategory.data ?? [];
@@ -96,7 +106,7 @@ const Article = () => {
                   const { isSuccess, message } = await deleteArticle.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    executeArticleFetch(token);
+                    fetchArticle({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -118,7 +128,7 @@ const Article = () => {
         const { message, isSuccess } = await deleteBatchArticle.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          executeArticleFetch(token);
+          fetchArticle({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -132,21 +142,15 @@ const Article = () => {
   };
 
   return (
-    <>
-      {getAllArticle.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <div className="grid w-full grid-cols-12 gap-4">
-          <Card className="col-span-8">
-            <DataTableHeader model={ArticleModel} modul={Modul.ARTICLE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} />
-            <div className="w-full max-w-full overflow-x-auto">
-              <DataTable data={article} columns={articleColumn} loading={getAllArticle.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
-            </div>
-          </Card>
-          <Category />
+    <div className="grid w-full grid-cols-12 gap-4">
+      <Card className="col-span-12 lg:col-span-8">
+        <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={ArticleModel} modul={Modul.ARTICLE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={article} columns={articleColumn} loading={getAllArticle.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
         </div>
-      )}
-    </>
+      </Card>
+      <Category />
+    </div>
   );
 };
 

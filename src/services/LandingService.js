@@ -69,8 +69,8 @@ export default class LandingService {
     return { ...response, data: LetterType.fromApiData(response.data) };
   }
 
-  static async sumbitLetter(data, file) {
-    return await api.post(`/permohonan-surat`, { body: SubmitLetter.toApiData(data), file: { content: file } });
+  static async sumbitLetter(data) {
+    return await api.post(`/permohonan-surat`, { body: SubmitLetter.toApiData(data) });
   }
 
   static async downloadLetter(token) {

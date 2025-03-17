@@ -8,7 +8,7 @@ import { districtFormFields, logoFormFields, regencyFormFields, speechFormFields
 import { extractVideoId } from '@/utils/extractedYoutubeUrl';
 
 const VillagePorfile = () => {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const modal = useCrudModal();
   const { success, error } = useNotification();
   const { execute: fetchVillageProfile, ...getAll } = useService(VillageProfilService.getAll);
@@ -18,8 +18,6 @@ const VillagePorfile = () => {
   const updateLogoVillageProfile = useService(VillageProfilService.updateLogo);
   const updateSpeech = useService(SpeechService.update);
   const udpateVillageBoundaries = useService(VillageBoundariesService.update);
-
-  console.log(user);
 
   useEffect(() => {
     fetchVillageProfile(token);

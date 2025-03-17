@@ -1,10 +1,10 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { SubmitLetterService } from '@/services';
+import { LetterTypeService, SubmitLetterService } from '@/services';
 import { Button, Card, List, Space, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { letterTypeFormFields, submitLetterFormFields } from './FormFields';
+import { useCallback, useEffect, useState } from 'react';
+import { letterTypeFormFields, submitLetterFilterFields, submitLetterFormFields } from './FormFields';
 import { SubmitLetter as SubmitLetterModel } from '@/models';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
@@ -15,21 +15,34 @@ const { UPDATE, DELETE } = Action;
 const SubmitLetter = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchSubmitLetter, ...getAllSubmitLetter } = useService(SubmitLetterService.getAll);
+  const { execute, ...getAllSubmitLetter } = useService(SubmitLetterService.getAll);
+  const { execute: fetchLetterType, ...getAllLetterType } = useService(LetterTypeService.getAll);
   const updateSubmitLetter = useService(SubmitLetterService.update);
   const deleteSubmitLetter = useService(SubmitLetterService.delete);
   const deleteBatchSubmitLetter = useService(SubmitLetterService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
-
   const pagination = usePagination({ totalData: getAllSubmitLetter.totalData });
-
   const modal = useCrudModal();
+  const [filterValues, setFilterValues] = useState({ search: '', jenis_surat_id: null, status: null });
+
+  const fetchSubmitLetter = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search,
+      jenis_surat_id: filterValues.jenis_surat_id,
+      status: filterValues.status
+    });
+  }, [execute, filterValues.jenis_surat_id, filterValues.search, filterValues.status, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
-    fetchSubmitLetter(token, pagination.page, pagination.per_page);
-  }, [fetchSubmitLetter, pagination.page, pagination.per_page, token]);
+    fetchSubmitLetter();
+    fetchLetterType({ token: token });
+  }, [fetchLetterType, fetchSubmitLetter, token]);
 
   const submitLetter = getAllSubmitLetter.data ?? [];
+  const letterType = getAllLetterType.data ?? [];
 
   const Column = [
     {
@@ -87,7 +100,7 @@ const SubmitLetter = () => {
                   const { message, isSuccess } = await updateSubmitLetter.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchSubmitLetter(token);
+                    fetchSubmitLetter({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -202,7 +215,7 @@ const SubmitLetter = () => {
                   const { isSuccess, message } = await deleteSubmitLetter.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchSubmitLetter(token);
+                    fetchSubmitLetter({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -226,7 +239,7 @@ const SubmitLetter = () => {
         const { message, isSuccess } = await deleteBatchSubmitLetter.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchSubmitLetter(token);
+          fetchSubmitLetter({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -235,25 +248,36 @@ const SubmitLetter = () => {
     });
   };
 
+  const filter = {
+    formFields: submitLetterFilterFields({ options: { letterType } }),
+    initialData: {
+      jenis_surat_id: filterValues.jenis_surat_id,
+      status: filterValues.status
+    },
+    isLoading: getAllSubmitLetter.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        jenis_surat_id: values.jenis_surat_id,
+        status: values.status
+      });
+    }
+  };
+
   return (
     <div>
-      {getAllSubmitLetter.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={SubmitLetterModel} modul={Modul.LETTER_SUBMIT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable
-              data={submitLetter}
-              columns={Column}
-              pagination={pagination}
-              loading={getAllSubmitLetter.isLoading}
-              map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
-              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-            />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={SubmitLetterModel} modul={Modul.LETTER_SUBMIT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={submitLetter}
+            columns={Column}
+            pagination={pagination}
+            loading={getAllSubmitLetter.isLoading}
+            map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
+            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+          />
+        </div>
+      </Card>
     </div>
   );
 };

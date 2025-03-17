@@ -127,7 +127,7 @@ const Category = () => {
   };
 
   return (
-    <Card className="col-span-4">
+    <Card className="col-span-12 lg:col-span-4">
       <DataTableHeader model={CategoryModel} modul={Modul.CATEGORY} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedCategory} />
       <div className="w-full max-w-full overflow-x-auto">
         <DataTable

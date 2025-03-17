@@ -30,7 +30,6 @@ export default class VillageEnterpriseService {
    * */
   static async getById({ token, id }) {
     const response = await api.get(`/lapak/${id}`, { token });
-    console.log(response);
     if (!response.data) return response;
     return { ...response, data: VillageEnterprise.fromApiData(response.data) };
   }

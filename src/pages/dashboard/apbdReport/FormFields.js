@@ -47,3 +47,14 @@ export const formFields = () => [
     rules: [{ required: true, message: 'Dokumen harus diisi' }]
   }
 ];
+
+export const apbdReportFilterFields = () => [
+  {
+    label: `Tahun`,
+    name: 'tahun',
+    extra: {
+      picker: 'year'
+    },
+    type: InputType.DATE
+  }
+];
