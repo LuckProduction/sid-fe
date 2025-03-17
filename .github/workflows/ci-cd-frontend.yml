@@ -85,10 +85,10 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           ssh -p 2223 govy6997@go-village.id << 'EOF'
-            if [ ! -d "/home/govy6997/public_html/production/sukma.go-village.id" ]; then
-              mkdir -p /home/govy6997/public_html/production/sukma.go-village.id
+            if [ ! -d "/home/govy6997/public_html/production/sukma-botupingge.go-village.id" ]; then
+              mkdir -p /home/govy6997/public_html/production/sukma-botupingge.go-village.id
             fi
-            rm -rf /home/govy6997/public_html/production/sukma.go-village.id/*
+            rm -rf /home/govy6997/public_html/production/sukma-botupingge.go-village.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
+          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/production/sukma-botupingge.go-village.id/

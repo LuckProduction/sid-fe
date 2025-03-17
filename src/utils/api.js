@@ -4,6 +4,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const tenant = import.meta.env.VITE_TENANTS;
 export const BASE_URL = baseUrl.replace('://', `://${tenant}.`) + '/api';
 
+console.log(BASE_URL);
 const controllers = {};
 
 /**
