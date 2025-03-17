@@ -85,10 +85,10 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           ssh -p 2223 govz9813@govillage.id << 'EOF'
-            if [ ! -d "/home/govz9813/public_html/production/example.govillage.id" ]; then
-              mkdir -p /home/govz9813/public_html/production/example.govillage.id
+            if [ ! -d "/home/govz9813/public_html/production/sukma.govillage.id" ]; then
+              mkdir -p /home/govz9813/public_html/production/sukma.govillage.id
             fi
-            rm -rf /home/govz9813/public_html/production/example.govillage.id/*
+            rm -rf /home/govz9813/public_html/production/sukma.govillage.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/production/example.govillage.id/
+          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/production/sukma.govillage.id/
