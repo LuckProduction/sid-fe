@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
 import { useCrudModal, usePagination, useService } from '@/hooks';
@@ -10,7 +10,6 @@ import { LandingService } from '@/services';
 
 const Home = () => {
   const { villageProfile, speech, visiMisi, institution } = useOutletContext();
-  const [titleData, setTitleData] = useState({ title: 'Loading...', icon: '' });
 
   const navigate = useNavigate();
   const modal = useCrudModal();
@@ -26,29 +25,6 @@ const Home = () => {
     executeSpeech();
     executeInstitution();
   }, []);
-
-  useEffect(() => {
-    if (villageProfile.data) {
-      setTitleData({
-        title: 'GoVillage | ' + villageProfile.data.village_name || 'Default Title',
-        icon: villageProfile.data.village_logo || '/vite.svg'
-      });
-    }
-  }, [villageProfile.data]);
-
-  useEffect(() => {
-    document.title = titleData.title;
-
-    if (titleData.icon) {
-      let link = document.querySelector("link[rel~='icon']");
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
-      }
-      link.href = titleData.icon;
-    }
-  }, [titleData]);
 
   const { execute: fetchArticle, ...getAllArticle } = useService(LandingService.getAllArticle);
 

@@ -72,6 +72,3 @@ export default class VillageBoundaries extends Model {
     return apiData as ReturnType<T, formValue, OutgoingApiData>;
   }
 }
-
-// FIXME: you maybe want to change below line. If you don't want to then delete this FIXME line
-// Model.children.village_boundaries = VillageBoundaries;

@@ -3,7 +3,7 @@ import * as Model from '@/models';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, GiftOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
+import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, GiftOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -126,10 +126,23 @@ export const dashboardLink = [
     icon: PushpinOutlined,
     children: [
       {
-        path: '/map',
+        path: '/dashboard/map',
         label: 'Pemetaan',
         element: Dashboard.Map,
         permissions: [[Action.READ, Model.Map]]
+      }
+    ]
+  },
+  {
+    label: 'Lapak BUMDes',
+    icon: ShopOutlined,
+    children: [
+      {
+        path: '/dashboard/village_enterprise',
+        label: 'Lapak BUMDes',
+        element: Dashboard.VillageEnterprise,
+        // FIX: UPDATE TO HAVE A PERMISSION
+        permissions: [[Action.READ, Model.VillageEnterprise]]
       }
     ]
   },

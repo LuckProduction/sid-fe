@@ -59,7 +59,6 @@ export default function useService<T, P extends any[]>(serviceMethod: (...params
           if (error.name === 'AbortError') return;
           console.error(error);
         });
-        // TODO: use enum for error messages
         message = error instanceof Error ? error.message : 'An error occurred';
         isSuccess = false;
       } finally {

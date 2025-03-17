@@ -23,7 +23,10 @@ type ModelKeys =
   | 'atribut_surat'
   | 'template_surat'
   | 'pengguna'
-  | 'pengguna_masyarakat';
+  | 'pengguna_masyarakat'
+  | 'lapak'
+  | 'kategori'
+  | 'menu_lapak';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -51,7 +54,10 @@ export default abstract class Model {
     atribut_surat: undefined,
     template_surat: undefined,
     pengguna: undefined,
-    pengguna_masyarakat: undefined
+    pengguna_masyarakat: undefined,
+    lapak: undefined,
+    kategori: undefined,
+    menu_lapak: undefined
   };
 }
 
