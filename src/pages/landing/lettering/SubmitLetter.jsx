@@ -74,7 +74,7 @@ const SubmitLetter = () => {
       } else {
         error('Gagal', message);
         setModalStatus('error');
-        setIsSubmitted(false);
+        setIsSubmitted(true);
       }
     } finally {
       setSubmitLoading(false);

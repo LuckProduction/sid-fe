@@ -108,3 +108,56 @@ export const formFields = () => [
     ]
   }
 ];
+
+export const publicAssistanceFilterFields = () => [
+  {
+    label: `Asal Dana`,
+    name: 'asal_dana',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Pusat',
+        value: 'pusat'
+      },
+      {
+        label: 'Provinsi',
+        value: 'provinsi'
+      },
+      {
+        label: 'Kabupaten',
+        value: 'kabupaten'
+      },
+      {
+        label: 'Kota',
+        value: 'kota'
+      },
+      {
+        label: 'Dana Desa',
+        value: 'dana desa'
+      },
+      {
+        label: 'Lain Lain',
+        value: 'lain-lain'
+      }
+    ]
+  },
+  {
+    label: `Sasaran ${Modul.PUBLIC_ASSISTANCE}`,
+    name: 'sasaran_program',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Penduduk',
+        value: 'penduduk'
+      },
+      {
+        label: 'Kartu Keluarga',
+        value: 'kartu keluarga'
+      },
+      {
+        label: 'Lembaga',
+        value: 'lembaga'
+      }
+    ]
+  }
+];

@@ -34,7 +34,6 @@ export default class AuthService {
   static async me(token) {
     const response = await api.get('/auth/me', { token });
     if (!response.data) return response;
-    console.log(response);
     return { ...response, data: User.fromApiData(response.data, token) };
   }
 

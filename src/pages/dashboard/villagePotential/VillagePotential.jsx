@@ -1,9 +1,9 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CategoryService, VillagePotentialService } from '@/services';
 import { Card, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { villagePotentialFormFields } from './FormFields';
 import Category from './Category';
 import { Delete, Edit } from '@/components/dashboard/button';
@@ -15,23 +15,30 @@ const { DELETE, UPDATE } = Action;
 const VillagePotential = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchVillagePotential, ...getAllVillagePotential } = useService(VillagePotentialService.getAll);
+  const { execute, ...getAllVillagePotential } = useService(VillagePotentialService.getAll);
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
-
   const storeVillagePotential = useService(VillagePotentialService.store);
   const updateVillagePotential = useService(VillagePotentialService.update);
   const deleteVillagePotential = useService(VillagePotentialService.delete);
   const deleteBatchVillagePotential = useService(VillagePotentialService.deleteBatch);
   const [selectedVillagePotential, setSelectedVillagePotential] = useState([]);
-
   const modal = useCrudModal();
-
   const pagination = usePagination({ totalData: getAllVillagePotential.totalData });
+  const [filterValues, setFilterValues] = useState({ search: '' });
+
+  const fetchVillagePotential = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search
+    });
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
-    fetchVillagePotential(token, pagination.page, pagination.per_page);
+    fetchVillagePotential();
     fetchCategory(token, 'potensi');
-  }, [fetchCategory, fetchVillagePotential, pagination.page, pagination.per_page, token]);
+  }, [fetchCategory, fetchVillagePotential, token]);
 
   const villagePotential = getAllVillagePotential.data ?? [];
   const category = getAllCategory.data ?? [];
@@ -139,27 +146,28 @@ const VillagePotential = () => {
   };
 
   return (
-    <>
-      {getAllVillagePotential.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <div className="grid w-full grid-cols-12 gap-4">
-          <Card className="col-span-8">
-            <DataTableHeader model={VillagePotentialModel} modul={Modul.VILLAGE_POTENTIALS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedVillagePotential} />
-            <div className="w-full max-w-full overflow-x-auto">
-              <DataTable
-                data={villagePotential}
-                columns={villagePotentialColumn}
-                loading={getAllVillagePotential.isLoading}
-                map={(article) => ({ key: article.id, ...article })}
-                handleSelectedData={(_, selectedRows) => setSelectedVillagePotential(selectedRows)}
-              />
-            </div>
-          </Card>
-          <Category />
+    <div className="grid w-full grid-cols-12 gap-4">
+      <Card className="col-span-8">
+        <DataTableHeader
+          onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
+          model={VillagePotentialModel}
+          modul={Modul.VILLAGE_POTENTIALS}
+          onStore={onCreate}
+          onDeleteBatch={onDeleteBatch}
+          selectedData={selectedVillagePotential}
+        />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={villagePotential}
+            columns={villagePotentialColumn}
+            loading={getAllVillagePotential.isLoading}
+            map={(article) => ({ key: article.id, ...article })}
+            handleSelectedData={(_, selectedRows) => setSelectedVillagePotential(selectedRows)}
+          />
         </div>
-      )}
-    </>
+      </Card>
+      <Category />
+    </div>
   );
 };
 

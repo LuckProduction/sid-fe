@@ -102,3 +102,31 @@ export const formFields = () => [
     ]
   }
 ];
+
+export const legalProductsFilterFields = () => [
+  {
+    label: `Tahun ${Modul.LEGAL_PRODUCTS}`,
+    name: 'tahun',
+    type: InputType.DATE,
+    extra: {
+      picker: 'year'
+    }
+  },
+
+  {
+    label: `Status ${Modul.LEGAL_PRODUCTS}`,
+    name: 'status',
+    type: InputType.SELECT,
+    picker: 'select',
+    options: [
+      {
+        label: 'Aktif',
+        value: 'aktif'
+      },
+      {
+        label: 'Non-Aktif',
+        value: 'nonaktif'
+      }
+    ]
+  }
+];

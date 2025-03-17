@@ -202,3 +202,34 @@ export const submitLetterFormFields = () => [
     ]
   }
 ];
+
+export const submitLetterFilterFields = ({ options }) => [
+  {
+    label: `Jenis Surat`,
+    name: 'jenis_surat_id',
+    type: InputType.SELECT,
+    options: options.letterType.map((item) => ({
+      label: item.letter_name,
+      value: item.id
+    }))
+  },
+  {
+    label: `Status`,
+    name: 'status',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Menunggu',
+        value: 'menunggu'
+      },
+      {
+        label: 'Verifikasi',
+        value: 'verifikasi'
+      },
+      {
+        label: 'Selesai',
+        value: 'selesai'
+      }
+    ]
+  }
+];

@@ -1,4 +1,4 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LegalProductsService } from '@/services';
@@ -6,8 +6,8 @@ import dateFormatter from '@/utils/dateFormatter';
 import { DownloadOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Tag } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect, useState } from 'react';
-import { formFields } from './FormFields';
+import { useCallback, useEffect, useState } from 'react';
+import { formFields, legalProductsFilterFields } from './FormFields';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { Action } from '@/constants';
 import { LegalProducts as legalProductsModel } from '@/models';
@@ -17,20 +17,30 @@ const { DELETE, UPDATE, READ } = Action;
 const LegalProducts = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
-  const { execute: fetchLegalProducts, ...getAllLegalProducts } = useService(LegalProductsService.getAll);
+  const { execute, ...getAllLegalProducts } = useService(LegalProductsService.getAll);
   const storeLegalProducts = useService(LegalProductsService.store);
   const updateLegalProducts = useService(LegalProductsService.update);
   const deleteLegalProducts = useService(LegalProductsService.delete);
   const deleteBatchLegalProducts = useService(LegalProductsService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
-
   const pagination = usePagination({ totalData: getAllLegalProducts.totalData });
-
   const modal = useCrudModal();
+  const [filterValues, setFilterValues] = useState({ search: '', tahun: null, status: null });
+
+  const fetchLegalProducts = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search,
+      tahun: filterValues.tahun ? dateFormatter(filterValues.tahun, 'year') : '',
+      status: filterValues.status
+    });
+  }, [execute, filterValues.search, filterValues.status, filterValues.tahun, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
-    fetchLegalProducts(token, pagination.page, pagination.per_page);
-  }, [fetchLegalProducts, pagination.page, pagination.per_page, token]);
+    fetchLegalProducts();
+  }, [fetchLegalProducts]);
 
   const legalProducts = getAllLegalProducts.data ?? [];
 
@@ -230,25 +240,44 @@ const LegalProducts = () => {
     });
   };
 
+  const filter = {
+    formFields: legalProductsFilterFields(),
+    initialData: {
+      tahun: filterValues.tahun,
+      status: filterValues.status
+    },
+    isLoading: getAllLegalProducts.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        tahun: values.tahun ? dayjs(values.tahun) : null,
+        status: values.status
+      });
+    }
+  };
+
   return (
     <div>
-      {getAllLegalProducts.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={legalProductsModel} modul={Modul.LEGAL_PRODUCTS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable
-              data={legalProducts}
-              columns={Column}
-              pagination={pagination}
-              loading={getAllLegalProducts.isLoading}
-              map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
-              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-            />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader
+          filter={filter}
+          onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
+          model={legalProductsModel}
+          modul={Modul.LEGAL_PRODUCTS}
+          onStore={onCreate}
+          onDeleteBatch={onDeleteBatch}
+          selectedData={selectedData}
+        />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={legalProducts}
+            columns={Column}
+            pagination={pagination}
+            loading={getAllLegalProducts.isLoading}
+            map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
+            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+          />
+        </div>
+      </Card>
     </div>
   );
 };

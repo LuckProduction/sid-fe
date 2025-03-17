@@ -1,11 +1,11 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { PublicAssistanceService } from '@/services';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { Button, Card, Space, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { formFields } from './FormFields';
+import { useCallback, useEffect, useState } from 'react';
+import { formFields, publicAssistanceFilterFields } from './FormFields';
 import { useNavigate } from 'react-router-dom';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { Action } from '@/constants';
@@ -17,20 +17,32 @@ const PublicAssistance = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const navigate = useNavigate();
-  const { execute: fetchPublicAssistance, ...getAllPublicAssistance } = useService(PublicAssistanceService.getAll);
+  const { execute, ...getAllPublicAssistance } = useService(PublicAssistanceService.getAll);
   const storePublicAssistance = useService(PublicAssistanceService.store);
   const updatePublicAssistance = useService(PublicAssistanceService.update);
   const deletePublicAssistance = useService(PublicAssistanceService.delete);
   const deleteBatchPublicAssistance = useService(PublicAssistanceService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
+  const [filterValues, setFilterValues] = useState({ search: '', sasaran_program: null, asal_dana: null });
 
   const pagination = usePagination({ totalData: getAllPublicAssistance.totalData });
 
   const modal = useCrudModal();
 
+  const fetchPublicAssistance = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search,
+      sasaran_program: filterValues.sasaran_program,
+      asal_dana: filterValues.asal_dana
+    });
+  }, [execute, filterValues.asal_dana, filterValues.sasaran_program, filterValues.search, pagination.page, pagination.per_page, token]);
+
   useEffect(() => {
-    fetchPublicAssistance(token, pagination.page, pagination.per_page);
-  }, [fetchPublicAssistance, pagination.page, pagination.per_page, token]);
+    fetchPublicAssistance();
+  }, [fetchPublicAssistance]);
 
   const apbdItem = getAllPublicAssistance.data ?? [];
 
@@ -109,7 +121,7 @@ const PublicAssistance = () => {
                   const { message, isSuccess } = await updatePublicAssistance.execute(record.id, values, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchPublicAssistance(token);
+                    fetchPublicAssistance({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -179,7 +191,7 @@ const PublicAssistance = () => {
                   const { isSuccess, message } = await deletePublicAssistance.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchPublicAssistance(token);
+                    fetchPublicAssistance({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -202,7 +214,7 @@ const PublicAssistance = () => {
         const { message, isSuccess } = await deleteBatchPublicAssistance.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchPublicAssistance(token);
+          fetchPublicAssistance({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -219,7 +231,7 @@ const PublicAssistance = () => {
         const { message, isSuccess } = await storePublicAssistance.execute(values, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchPublicAssistance(token);
+          fetchPublicAssistance({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -228,18 +240,38 @@ const PublicAssistance = () => {
     });
   };
 
+  const filter = {
+    formFields: publicAssistanceFilterFields(),
+    initialData: {
+      asal_dana: filterValues.asal_dana,
+      sasaran_program: filterValues.sasaran_program
+    },
+    isLoading: getAllPublicAssistance.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        asal_dana: values.asal_dana,
+        sasaran_program: values.sasaran_program
+      });
+    }
+  };
+
   return (
     <div>
-      {getAllPublicAssistance.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={PublicAssistanceModel} modul={Modul.PUBLIC_ASSISTANCE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} onExport={exportPublicAssistance} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable data={apbdItem} columns={Column} loading={getAllPublicAssistance.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader
+          filter={filter}
+          onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
+          model={PublicAssistanceModel}
+          modul={Modul.PUBLIC_ASSISTANCE}
+          onStore={onCreate}
+          onDeleteBatch={onDeleteBatch}
+          selectedData={selectedData}
+          onExport={exportPublicAssistance}
+        />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable data={apbdItem} columns={Column} loading={getAllPublicAssistance.isLoading} map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })} handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)} />
+        </div>
+      </Card>
     </div>
   );
 };

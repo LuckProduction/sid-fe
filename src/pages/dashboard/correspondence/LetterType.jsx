@@ -1,10 +1,10 @@
-import { DataLoader, DataTable, DataTableHeader } from '@/components';
+import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LetterTypeService } from '@/services';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { Button, Card, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { letterTypeFormFields } from './FormFields';
 import { expiredTimeFormat } from '@/utils/expiredTimeFormat';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
@@ -18,20 +18,28 @@ const LetterType = () => {
   const { token, user } = useAuth();
   const { success, error } = useNotification();
   const navigate = useNavigate();
-  const { execute: fetchLetterType, ...getAllLetterType } = useService(LetterTypeService.getAll);
+  const { execute, ...getAllLetterType } = useService(LetterTypeService.getAll);
   const storeLetterType = useService(LetterTypeService.store);
   const updateLetterType = useService(LetterTypeService.update);
   const deleteLetterType = useService(LetterTypeService.delete);
   const deleteBatchLetterType = useService(LetterTypeService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
-
   const pagination = usePagination({ totalData: getAllLetterType.totalData });
-
   const modal = useCrudModal();
+  const [filterValues, setFilterValues] = useState({ search: '' });
+
+  const fetchLetterType = useCallback(() => {
+    execute({
+      token: token,
+      page: pagination.page,
+      per_page: pagination.per_page,
+      search: filterValues.search
+    });
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
-    fetchLetterType(token, pagination.page, pagination.per_page);
-  }, [fetchLetterType, pagination.page, pagination.per_page, token]);
+    fetchLetterType();
+  }, [fetchLetterType]);
 
   const letterType = getAllLetterType.data ?? [];
 
@@ -74,7 +82,7 @@ const LetterType = () => {
                   const { message, isSuccess } = await updateLetterType.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchLetterType(token);
+                    fetchLetterType({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -131,7 +139,7 @@ const LetterType = () => {
                   const { isSuccess, message } = await deleteLetterType.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchLetterType(token);
+                    fetchLetterType({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -155,7 +163,7 @@ const LetterType = () => {
         const { message, isSuccess } = await deleteBatchLetterType.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchLetterType(token);
+          fetchLetterType({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -172,7 +180,7 @@ const LetterType = () => {
         const { message, isSuccess } = await storeLetterType.execute(values, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchLetterType(token);
+          fetchLetterType({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
@@ -183,23 +191,19 @@ const LetterType = () => {
 
   return (
     <div>
-      {getAllLetterType.isLoading ? (
-        <DataLoader type="datatable" />
-      ) : (
-        <Card>
-          <DataTableHeader model={LetterTypeModel} modul={Modul.LETTER_TYPE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-          <div className="w-full max-w-full overflow-x-auto">
-            <DataTable
-              data={letterType}
-              columns={Column}
-              pagination={pagination}
-              loading={getAllLetterType.isLoading}
-              map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
-              handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-            />
-          </div>
-        </Card>
-      )}
+      <Card>
+        <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={LetterTypeModel} modul={Modul.LETTER_TYPE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={letterType}
+            columns={Column}
+            pagination={pagination}
+            loading={getAllLetterType.isLoading}
+            map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
+            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+          />
+        </div>
+      </Card>
     </div>
   );
 };
