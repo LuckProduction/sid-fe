@@ -6,11 +6,21 @@ import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { useParams } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
+import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
+import L from 'leaflet';
 
 const DetailVillagePotential = () => {
   const { slug } = useParams();
   const { execute: fetchVillagePotential, ...getAllVillagePotential } = useService(LandingService.getDetailVillagePotential);
   const [coordinate, setCoodinate] = useState(null);
+
+  const customIcon = L.icon({
+    iconUrl: markerIconPng,
+    shadowUrl: markerShadowPng,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  });
 
   useEffect(() => {
     fetchVillagePotential(slug);
@@ -51,7 +61,7 @@ const DetailVillagePotential = () => {
               <MapContainer center={[0.693, 122.4704]} zoom={8} style={{ height: '500px', width: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {coordinate && (
-                  <Marker position={coordinate}>
+                  <Marker position={coordinate} icon={customIcon}>
                     <Popup>Lokasi Potensi Desa</Popup>
                   </Marker>
                 )}

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
+import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -401,8 +401,15 @@ const Home = () => {
                       <b className="news-text">{item.title}</b>
                     </Reveal>
                     <Reveal>
-                      <p className="news-text mt-2">{parse(item.content)}</p>
+                      <div className="news-text mt-2">{parse(item.content)}</div>
                     </Reveal>
+                    <div className="mt-6 flex flex-col gap-y-1">
+                      <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
+                      <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
+                        <EyeOutlined className="text-xs" />
+                        {item.seen}
+                      </div>
+                    </div>
                   </Card>
                 ))}
           </div>

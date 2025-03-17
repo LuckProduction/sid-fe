@@ -64,7 +64,7 @@ const VillagePotential = () => {
                   <b className="news-text">{item.potential_name}</b>
                 </Reveal>
                 <Reveal>
-                  <p className="news-text mt-2">{parse(item.description)}</p>
+                  <div className="news-text mt-2">{parse(item.description)}</div>
                 </Reveal>
                 <div className="mt-6 flex flex-col gap-y-1">
                   <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>

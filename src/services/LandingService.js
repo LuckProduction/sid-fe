@@ -99,4 +99,8 @@ export default class LandingService {
     if (!response.data) return response;
     return { ...response, data: VillageOfficials.fromApiData(response.data) };
   }
+
+  static async beneficiaryCheck(data) {
+    return await api.post(`/landing/cari-peserta-bantuan`, { body: data });
+  }
 }

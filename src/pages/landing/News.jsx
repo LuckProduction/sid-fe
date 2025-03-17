@@ -72,7 +72,7 @@ const News = () => {
                   <b className="news-text">{item.title}</b>
                 </Reveal>
                 <Reveal>
-                  <p className="news-text mt-2">{parse(item.content)}</p>
+                  <div className="news-text mt-2">{parse(item.content)}</div>
                 </Reveal>
                 <div className="mt-6 flex flex-col gap-y-1">
                   <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>

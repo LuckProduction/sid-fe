@@ -6,12 +6,22 @@ import { Card, Descriptions, Empty, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
+import markerIconPng from 'leaflet/dist/images/marker-icon.png';
+import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
+import L from 'leaflet';
 
 const VillageBoundaries = () => {
   const { execute: fetchVillageBoundaries, data: villageBoundaries, isLoading } = useService(LandingService.getAllVillageBoundaries);
   const [headVillageCoord, setHeadVillageCoord] = useState(null);
   const [geojsonData, setGeojsonData] = useState(null);
   const navigate = useNavigate();
+
+  const customIcon = L.icon({
+    iconUrl: markerIconPng,
+    shadowUrl: markerShadowPng,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  });
 
   useEffect(() => {
     fetchVillageBoundaries();
@@ -71,7 +81,7 @@ const VillageBoundaries = () => {
           </div>
         ) : (
           <div className="mx-auto grid max-w-screen-lg grid-cols-12 gap-4 px-6 py-12">
-            <Card className="col-span-6 h-fit">
+            <Card className="col-span-12 h-fit lg:col-span-6">
               <Descriptions column={1} bordered>
                 <Descriptions.Item label="Batas Utara">{villageBoundaries.north}</Descriptions.Item>
                 <Descriptions.Item label="Batas Selatan">{villageBoundaries.south}</Descriptions.Item>
@@ -80,12 +90,12 @@ const VillageBoundaries = () => {
                 <Descriptions.Item label="Luas Wilayah">{villageBoundaries.area}</Descriptions.Item>
               </Descriptions>
             </Card>
-            <Card className="col-span-6">
+            <Card className="col-span-12 lg:col-span-6">
               <MapContainer center={[0.693, 122.4704]} zoom={8} style={{ height: '500px', width: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {geojsonData && <GeoJSON key={Math.random()} data={geojsonData} />}
                 {headVillageCoord && (
-                  <Marker position={headVillageCoord}>
+                  <Marker position={headVillageCoord} icon={customIcon}>
                     <Popup>Kantor Kepala Desa</Popup>
                   </Marker>
                 )}
