@@ -1,9 +1,8 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { Button, Card, Image, Space, Tag } from 'antd';
+import { Button, Card, Descriptions, Image, Result, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ResidentService, VillageEnterpriseService } from '@/services';
 import { VillageEnterprise as VillageEnterpriseModel } from '@/models';
 import Modul from '@/constants/Modul';
@@ -20,17 +19,17 @@ const VillageEnterprise = () => {
   const { success, error } = useNotification();
   const modal = useCrudModal();
   const { execute, ...getAllVillageEnterprise } = useService(VillageEnterpriseService.getAll);
+  const { execute: fetchDetailEnterprise, data: enterpriseData } = useService(VillageEnterpriseService.getById);
   const { execute: fetchResident } = useService(ResidentService.getAll);
 
   const storeVillageEnterprise = useService(VillageEnterpriseService.store);
   const updateVillageEnterprise = useService(VillageEnterpriseService.update);
   const deleteVillageEnterprise = useService(VillageEnterpriseService.delete);
   const deleteBatchVillageEnterprise = useService(VillageEnterpriseService.deleteBatch);
+  const [enterpriseMenu, setEnterpriseMenu] = useState(null);
   const [selectedData, setSelectedData] = useState([]);
   const [filterValues, setFilterValues] = useState({ search: '' });
   const pagination = usePagination({ totalData: getAllVillageEnterprise.totalData });
-
-  const navigate = useNavigate();
 
   const fetchVillageEnterprise = useCallback(() => {
     execute({
@@ -45,6 +44,42 @@ const VillageEnterprise = () => {
     fetchVillageEnterprise();
     fetchResident({ token: token });
   }, [fetchResident, fetchVillageEnterprise, token]);
+
+  const showEnterpriseModal = useCallback(
+    (data) => {
+      modal.show.paragraph({
+        title: 'Menu Lapak BUMDes',
+        data: {
+          content: (
+            <div className="flex flex-col gap-y-2">
+              {data?.enterprise_menu?.length ? (
+                data.enterprise_menu.map((item, index) => (
+                  <Descriptions key={index} title={item.menu_name} bordered column={1} className="mt-2">
+                    <Descriptions.Item label="Foto Menu">
+                      <Image width={120} src={item.foto} />
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Harga">{item.price}</Descriptions.Item>
+                    <Descriptions.Item label="Status">{item.status}</Descriptions.Item>
+                    <Descriptions.Item label="Dilihat">{item.seen}</Descriptions.Item>
+                  </Descriptions>
+                ))
+              ) : (
+                <Result status="warning" title="Data Tidak Ditemukan" subTitle="Menu pada lapak ini belum tersedia" />
+              )}
+            </div>
+          )
+        }
+      });
+    },
+    [modal.show]
+  );
+
+  useEffect(() => {
+    if (enterpriseData) {
+      setEnterpriseMenu(enterpriseData);
+      showEnterpriseModal(enterpriseMenu);
+    }
+  }, [enterpriseData, enterpriseMenu, showEnterpriseModal]);
 
   const villageEnterprise = getAllVillageEnterprise.data ?? [];
 
@@ -110,42 +145,39 @@ const VillageEnterprise = () => {
                 title: record.institution_name,
                 data: [
                   {
-                    key: 'institution_name',
+                    key: 'enterprise_name',
                     label: `Nama ${Modul.VILLAGE_ENTERPRISE}`,
-                    children: record.institution_name
-                  },
-                  {
-                    key: 'institution_code',
-                    label: `Kode ${Modul.VILLAGE_ENTERPRISE}`,
-                    children: record.institution_code
-                  },
-                  {
-                    key: 'status',
-                    label: `Status `,
-                    children: (() => {
-                      let statusTag;
-                      switch (record.status) {
-                        case 'aktif':
-                          statusTag = <Tag color="blue">Aktif</Tag>;
-                          break;
-                        case 'nonaktif':
-                          statusTag = <Tag color="warning">Non-Aktif</Tag>;
-                          break;
-                        default:
-                          statusTag = <Tag color="error">Undefined</Tag>;
-                      }
-                      return statusTag;
-                    })()
+                    children: record.enterprise_name
                   },
                   {
                     key: 'desc',
-                    label: `Deskripsi ${Modul.VILLAGE_ENTERPRISE}`,
+                    label: `Deskripsi `,
                     children: record.desc
                   },
                   {
-                    key: 'image',
-                    label: `Logo ${Modul.VILLAGE_ENTERPRISE}`,
-                    children: <Image width={50} src={record.image} />
+                    key: 'foto',
+                    label: `Foto `,
+                    children: <Image width={120} src={record.foto} />
+                  },
+                  {
+                    key: 'nama_pemilik',
+                    label: `Nama Pemilik `,
+                    children: record.resident.full_name
+                  },
+                  {
+                    key: 'nik_pemilik',
+                    label: `NIK Pemilik `,
+                    children: record.resident.nik
+                  },
+                  {
+                    key: 'coordinate',
+                    label: `Koordinat`,
+                    children: record.coordinate
+                  },
+                  {
+                    key: 'contact',
+                    label: `Kontak`,
+                    children: record.contact
                   }
                 ]
               });
@@ -174,7 +206,14 @@ const VillageEnterprise = () => {
               });
             }}
           />
-          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/institution_member`)} />
+          <Button
+            icon={<DatabaseOutlined />}
+            variant="solid"
+            color="geekblue"
+            onClick={() => {
+              fetchDetailEnterprise({ token: token, id: record.id });
+            }}
+          />
         </Space>
       )
     });

@@ -20,6 +20,22 @@ export default class VillageEnterpriseService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: VillageEnterprise[];
+   * }>}
+   * */
+  static async getById({ token, id }) {
+    const response = await api.get(`/lapak/${id}`, { token });
+    console.log(response);
+    if (!response.data) return response;
+    return { ...response, data: VillageEnterprise.fromApiData(response.data) };
+  }
+
+  /**
    * @param {VillageEnterprise} data
    * @param {string} token
    * @returns {Promise<{

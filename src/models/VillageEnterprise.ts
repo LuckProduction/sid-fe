@@ -11,6 +11,14 @@ export interface IncomingApiData {
   titik_koordinat: string;
   kontak: string;
   jam_operasional: string;
+  menu_lapak?: {
+    id: number;
+    nama_menu: string;
+    foto: string;
+    harga: number;
+    dilihat: number;
+    status: 'tersedia' | 'habis';
+  }[];
 }
 
 export interface OutgoingApiData {
@@ -56,7 +64,15 @@ export default class VillageEnterprise extends Model {
     },
     public coordinate: string,
     public contact: string,
-    public operational_time: string
+    public operational_time: string,
+    public enterprise_menu?: {
+      id: number;
+      menu_name: string;
+      foto: string;
+      price: number;
+      seen: number;
+      status: 'tersedia' | 'habis';
+    }[]
   ) {
     super();
   }
@@ -81,7 +97,15 @@ export default class VillageEnterprise extends Model {
       },
       apiData.titik_koordinat,
       apiData.kontak,
-      apiData.jam_operasional
+      apiData.jam_operasional,
+      apiData.menu_lapak?.map((menu) => ({
+        id: menu.id,
+        menu_name: menu.nama_menu,
+        foto: asset(menu.foto),
+        price: menu.harga,
+        seen: menu.dilihat,
+        status: menu.status
+      })) ?? []
     ) as ReturnType<T, IncomingApiData, VillageEnterprise>;
   }
 
