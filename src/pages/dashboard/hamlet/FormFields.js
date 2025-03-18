@@ -62,7 +62,6 @@ export const formFields = () => [
         }
       ];
     },
-    accept: ['.geojson'],
-    rules: [{ required: true, message: `File Batas ${Modul.HAMLET} harus diisi` }]
+    accept: ['.geojson']
   }
 ];

@@ -38,7 +38,7 @@ export default class HamletService {
       payload.file = { file_batas_dusun: file };
     }
 
-    return await api.post('/dusun', { body: Hamlet.toApiData(data), token, file: { file_batas_dusun: file } });
+    return await api.post('/dusun', { ...payload });
   }
 
   /**

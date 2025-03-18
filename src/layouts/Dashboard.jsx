@@ -1,10 +1,11 @@
 import { DashboardFooter, DashboardSider } from '@/components';
 import { useAuth } from '@/hooks';
+import generateBreadCrumb from '@/utils/generateBreadCrumb';
 import { LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Dropdown, Layout, Skeleton, Space, theme } from 'antd';
+import { Avatar, Breadcrumb, Button, Dropdown, Layout, Skeleton, Space, theme } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import { useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -17,7 +18,7 @@ const Dashboard = () => {
     navigate(`/auth/login?redirect=${pathname}`);
   }, [navigate, token, pathname]);
 
-  // const breadcrumbItems = generateBreadcrumb(dashboardLink, pathname);
+  const breadcrumbs = generateBreadCrumb(location.pathname);
 
   const items = useMemo(
     () => [
@@ -83,12 +84,11 @@ const Dashboard = () => {
         </Header>
 
         <Content style={{ margin: '24px 16px 0' }}>
-          {/* <Breadcrumb
-                        style={{ margin: '16px 0' }}
-                        items={breadcrumbItems.map((item, index) => ({
-                            title: index < breadcrumbItems.length - 1 ? <Link to={item.path}>{item.title}</Link> : item.title
-                        }))}
-                    /> */}
+          <Breadcrumb className="mb-4 ms-2">
+            {breadcrumbs.map((breadcrumb, index) => (
+              <Breadcrumb.Item key={breadcrumb.path}>{index === breadcrumbs.length - 1 ? <span>{breadcrumb.label}</span> : <Link to={breadcrumb.path}>{breadcrumb.label}</Link>}</Breadcrumb.Item>
+            ))}
+          </Breadcrumb>
 
           <Outlet />
         </Content>

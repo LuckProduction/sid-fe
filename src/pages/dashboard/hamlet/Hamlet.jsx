@@ -68,9 +68,10 @@ const Hamlet = () => {
                 data: record,
                 formFields: formFields,
                 onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateHamlet.execute(record.id, { ...values, _method: 'PUT' }, token, values.administrative_area.file);
+                  const { message, isSuccess } = await updateHamlet.execute(record.id, { ...values, _method: 'PUT' }, token, values.administrative_area?.file ?? undefined);
                   if (isSuccess) {
                     success('Berhasil', message);
+                    fetchHamlet({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -154,7 +155,7 @@ const Hamlet = () => {
       title: `Tambah ${Modul.HAMLET}`,
       formFields: formFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeHamlet.execute(values, token, values.administrative_area.file);
+        const { message, isSuccess } = await storeHamlet.execute(values, token, values.administrative_area?.file ?? null);
         if (isSuccess) {
           success('Berhasil', message);
           fetchHamlet({ token: token, page: pagination.page, per_page: pagination.per_page });
