@@ -55,7 +55,7 @@ export const landingLink = [
         element: Landing.ResidentStatistic
       },
       {
-        label: 'Statistik APBD',
+        label: 'Statistik APBDes',
         key: '/apbd_statistik',
         element: Landing.ApbdStatistic
       }
@@ -216,7 +216,7 @@ export const dashboardLink = [
     children: [
       {
         path: '/dashboard/apbd_report',
-        label: 'Laporan APBD',
+        label: 'Laporan APBDes',
         element: Dashboard.ApbdReport,
         permissions: [[Action.READ, Model.ApbdReport]]
       }
