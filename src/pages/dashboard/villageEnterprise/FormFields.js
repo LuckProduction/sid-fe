@@ -88,7 +88,7 @@ export const formFields = ({ fetchResident }) => [
   },
   {
     label: `Kontak ${Modul.VILLAGE_ENTERPRISE}`,
-    name: 'contact',
+    name: 'contact (WA)',
     type: InputType.NUMBER,
     rules: [
       {

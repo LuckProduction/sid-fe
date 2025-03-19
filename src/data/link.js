@@ -30,6 +30,11 @@ export const landingLink = [
         element: Landing.VillageOfficials
       },
       {
+        label: 'Lapak BUMDes',
+        key: '/village_enterprise',
+        element: Landing.VillageEnterprise
+      },
+      {
         label: 'Potensi',
         key: '/village_potential',
         element: Landing.VillagePotential

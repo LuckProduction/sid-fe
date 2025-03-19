@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBoundaries, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
+import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -102,5 +102,12 @@ export default class LandingService {
 
   static async beneficiaryCheck(data) {
     return await api.post(`/landing/cari-peserta-bantuan`, { body: data });
+  }
+
+  static async getAllEnterprise({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/landing/lapak`, { params });
+    if (!response.data) return response;
+    return { ...response, data: VillageEnterprise.fromApiData(response.data) };
   }
 }
