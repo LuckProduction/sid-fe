@@ -1,8 +1,8 @@
 import { DataLoader, Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { LeftOutlined } from '@ant-design/icons';
-import { Card, Descriptions, Empty, Typography } from 'antd';
+import { LeftOutlined, PushpinOutlined } from '@ant-design/icons';
+import { Button, Card, Descriptions, Empty, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
@@ -88,6 +88,17 @@ const VillageBoundaries = () => {
                 <Descriptions.Item label="Batas Timur">{villageBoundaries.east}</Descriptions.Item>
                 <Descriptions.Item label="Batas Barat">{villageBoundaries.west}</Descriptions.Item>
                 <Descriptions.Item label="Luas Wilayah">{villageBoundaries.area}</Descriptions.Item>
+                <Descriptions.Item label="Lokasi Kantor Desa (GMAPS)">
+                  {villageBoundaries.headvillage_coordinate &&
+                    (() => {
+                      const [longitude, latitude] = villageBoundaries.headvillage_coordinate.split(',').map((coord) => coord.trim());
+                      return (
+                        <Button icon={<PushpinOutlined />} variant="outlined" color="red" onClick={() => window.open(`https://www.google.com/maps?q=${latitude},${longitude}`, '_blank', 'noopener,noreferrer')}>
+                          Google Maps
+                        </Button>
+                      );
+                    })()}
+                </Descriptions.Item>
               </Descriptions>
             </Card>
             <Card className="col-span-12 lg:col-span-6">
