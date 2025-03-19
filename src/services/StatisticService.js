@@ -18,4 +18,10 @@ export default class StatisticService {
     if (!response.data) return response;
     return { ...response, data: response.data };
   }
+
+  static async getAllPublicAssistanceStatistic() {
+    const response = await api.get(`/statistik/bantuan`);
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
 }

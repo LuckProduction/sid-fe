@@ -74,7 +74,7 @@ const User = () => {
             model={OfficerModel}
             onClick={() => {
               modal.edit({
-                title: `Edit ${Modul.LEGAL_PRODUCTS}`,
+                title: `Edit ${Modul.USERS}`,
                 data: { ...record, role: record.role.id },
                 formFields: userFormFields({ options: { permission } }),
                 onSubmit: async (values) => {
@@ -127,7 +127,7 @@ const User = () => {
             model={OfficerModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.LEGAL_PRODUCTS}`,
+                title: `Delete ${Modul.USERS}`,
                 data: { ...record, role: record.role.id },
                 formFields: userFormFields({ options: { permission } }),
                 onSubmit: async () => {

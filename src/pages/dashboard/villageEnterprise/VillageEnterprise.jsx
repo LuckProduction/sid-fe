@@ -142,7 +142,7 @@ const VillageEnterprise = () => {
             model={VillageEnterpriseModel}
             onClick={() => {
               modal.show.description({
-                title: record.institution_name,
+                title: record.enterprise_name,
                 data: [
                   {
                     key: 'enterprise_name',

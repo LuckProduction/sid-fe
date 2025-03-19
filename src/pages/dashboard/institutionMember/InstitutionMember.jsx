@@ -17,8 +17,8 @@ const InstitutionMember = () => {
   const { success, error } = useNotification();
   const { id } = useParams();
   const { execute: fetchInstitutionMember, ...getAllInstitutionMember } = useService(InstitutionMemberService.getAll);
-  const { execute: fetchVillageInstitutionById, ...getAllVillageInstitutionById } = useService(VillageInstitutionService.getAll);
-  const { execute: fetchResident, ...getAllResident } = useService(ResidentService.getAll);
+  const { execute: fetchVillageInstitutionById, ...getAllVillageInstitutionById } = useService(VillageInstitutionService.getById);
+  const { execute: fetchResident } = useService(ResidentService.getAll);
   const { execute: fetchEmployment, ...getAllEmployment } = useService(EmploymentService.getAll);
   const storeInstitutionMember = useService(InstitutionMemberService.store);
   const updateInstitutionMember = useService(InstitutionMemberService.update);
@@ -33,13 +33,12 @@ const InstitutionMember = () => {
   useEffect(() => {
     fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, per_page: pagination.per_page });
     fetchResident({ token: token });
-    fetchEmployment(token);
+    fetchEmployment({ token: token });
     fetchVillageInstitutionById(token, id);
   }, [fetchEmployment, fetchInstitutionMember, fetchResident, fetchVillageInstitutionById, id, pagination.page, pagination.per_page, token]);
 
   const institutionMember = getAllInstitutionMember.data ?? [];
   const villageInstitutionById = getAllVillageInstitutionById.data ?? [];
-  const resident = getAllResident.data ?? [];
   const employment = getAllEmployment.data ?? [];
 
   const column = [
@@ -75,7 +74,7 @@ const InstitutionMember = () => {
               modal.edit({
                 title: `Edit ${Modul.INSTITUTION_MEMBER}`,
                 data: { ...record, village_institution: record.village_institution.id, employment: record.employment.id, resident: record.resident.id },
-                formFields: institutionMemberFormFields({ options: { employment, resident } }),
+                formFields: institutionMemberFormFields({ options: { employment }, fetchResident }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updateInstitutionMember.execute(record.id, { ...values, village_institution: villageInstitutionById.id, _method: 'PUT' }, token, values.foto.file);
                   if (isSuccess) {
@@ -125,9 +124,7 @@ const InstitutionMember = () => {
             model={InstitutionMemberModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.VILLAGE_POTENTIALS}`,
-                data: { ...record, village_institution: record.village_institution.id, employment: record.employment.id, resident: record.resident.id },
-                formFields: institutionMemberFormFields({ options: { employment, resident } }),
+                title: `Delete ${Modul.INSTITUTION_MEMBER}`,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteInstitutionMember.execute(record.id, token);
                   if (isSuccess) {

@@ -2,7 +2,7 @@ import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CategoryService, VillagePotentialService } from '@/services';
-import { Card, Space } from 'antd';
+import { Card, Space, Tabs } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { villagePotentialFormFields } from './FormFields';
 import Category from './Category';
@@ -146,28 +146,32 @@ const VillagePotential = () => {
   };
 
   return (
-    <div className="grid w-full grid-cols-12 gap-4">
-      <Card className="col-span-8">
-        <DataTableHeader
-          onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
-          model={VillagePotentialModel}
-          modul={Modul.VILLAGE_POTENTIALS}
-          onStore={onCreate}
-          onDeleteBatch={onDeleteBatch}
-          selectedData={selectedVillagePotential}
-        />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={villagePotential}
-            columns={villagePotentialColumn}
-            loading={getAllVillagePotential.isLoading}
-            map={(article) => ({ key: article.id, ...article })}
-            handleSelectedData={(_, selectedRows) => setSelectedVillagePotential(selectedRows)}
+    <Card>
+      <Tabs type="card">
+        <Tabs.TabPane tab="Potensi Desa" key="potensi_desa">
+          <DataTableHeader
+            onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
+            model={VillagePotentialModel}
+            modul={Modul.VILLAGE_POTENTIALS}
+            onStore={onCreate}
+            onDeleteBatch={onDeleteBatch}
+            selectedData={selectedVillagePotential}
           />
-        </div>
-      </Card>
-      <Category />
-    </div>
+          <div className="w-full max-w-full overflow-x-auto">
+            <DataTable
+              data={villagePotential}
+              columns={villagePotentialColumn}
+              loading={getAllVillagePotential.isLoading}
+              map={(article) => ({ key: article.id, ...article })}
+              handleSelectedData={(_, selectedRows) => setSelectedVillagePotential(selectedRows)}
+            />
+          </div>
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Kategori Potensi" key="category">
+          <Category />
+        </Tabs.TabPane>
+      </Tabs>
+    </Card>
   );
 };
 

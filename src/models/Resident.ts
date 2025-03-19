@@ -21,6 +21,7 @@ export interface IncomingApiData {
   alamat_pendidikan?: {
     alamat_kk: string;
     dusun_id: number;
+    nama_dusun: string;
     rt: number;
     rw: number;
     alamat_sebelumnya: string;
@@ -145,6 +146,7 @@ export default class Resident extends Model {
     public address?: {
       address_kk: string;
       hamlet_id: number;
+      hamlet_name: string;
       rt: number;
       rw: number;
       last_address: string;
@@ -208,6 +210,7 @@ export default class Resident extends Model {
         ? {
             address_kk: apiData.alamat_pendidikan.alamat_kk,
             hamlet_id: apiData.alamat_pendidikan.dusun_id,
+            hamlet_name: apiData.alamat_pendidikan.nama_dusun,
             rt: apiData.alamat_pendidikan.rt,
             rw: apiData.alamat_pendidikan.rw,
             last_address: apiData.alamat_pendidikan.alamat_sebelumnya,
