@@ -1,7 +1,7 @@
 import { DataLoader, DataTable } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CategoryService, MapService } from '@/services';
-import { AreaChartOutlined, DeleteOutlined, DownOutlined, PushpinOutlined } from '@ant-design/icons';
+import { AreaChartOutlined, DeleteOutlined, DownOutlined, PlusOutlined, PushpinOutlined } from '@ant-design/icons';
 import { Button, Card, Dropdown, Space, Tabs, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { Action } from '@/constants';
@@ -117,11 +117,11 @@ const Map = () => {
             }}
           />
           <Delete
-            title={`Delete ${Modul.LEGAL_PRODUCTS}`}
+            title={`Delete ${Modul.MAP}`}
             model={MapModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.LEGAL_PRODUCTS}`,
+                title: `Delete ${Modul.MAP}`,
                 data: { ...record, category_id: record.category.id },
                 formFields: mapFormFields({ options: { category } }),
                 onSubmit: async () => {
@@ -192,7 +192,7 @@ const Map = () => {
                   Hapus {selectedData?.length || null} Pilihan
                 </Button>
                 <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }}>
-                  <Button>
+                  <Button icon={<PlusOutlined />} color="primary" variant="solid">
                     <Space>
                       Tambah
                       <DownOutlined />

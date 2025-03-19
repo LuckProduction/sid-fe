@@ -10,17 +10,25 @@ const Dashboard = () => {
   const { token } = useAuth();
   const { execute: executeApbdStatisticFetch, ...getAllApbdStatistic } = useService(StatisticService.getAllApbdtStatistic);
   const { execute: executeResidentStatisticFetch, ...getAllResidentStatistic } = useService(StatisticService.getAllResidentStatistic);
+  const { execute: executePublicAssistanceStatistic, ...getAllPublicAssistanceStatistic } = useService(StatisticService.getAllPublicAssistanceStatistic);
   const { execute: executeOverview, ...getAllOverview } = useService(StatisticService.getAllOverview);
 
   useEffect(() => {
-    executeApbdStatisticFetch();
-    executeResidentStatisticFetch();
-    executeOverview(token);
-  }, []);
+    if (token) {
+      if (!getAllApbdStatistic.data) executeApbdStatisticFetch();
+      if (!getAllResidentStatistic.data) executeResidentStatisticFetch();
+      if (!getAllOverview.data) executeOverview(token);
+    }
+    executePublicAssistanceStatistic();
+  }, [token, executeApbdStatisticFetch, executeResidentStatisticFetch, executeOverview, executePublicAssistanceStatistic]);
 
   const apbdStatistic = getAllApbdStatistic.data ?? {};
   const residentStatistic = getAllResidentStatistic.data ?? {};
   const overview = getAllOverview.data ?? {};
+
+  const publicAssistanceStatistic = useMemo(() => {
+    return getAllPublicAssistanceStatistic.data ?? [];
+  }, [getAllPublicAssistanceStatistic.data]);
 
   const chartConfigs = useMemo(() => {
     if (!apbdStatistic.semua || !residentStatistic.penduduk) return { resident: null, apbd: null };
@@ -72,6 +80,33 @@ const Dashboard = () => {
         legend: { position: 'top' },
         color: ({ kategori }) => colorMapping[kategori],
         colorField: 'kategori'
+      },
+      publicAssistance: {
+        data: publicAssistanceStatistic,
+        xField: 'nama_bantuan',
+        yField: 'peserta_bantuan_count',
+        autoFit: true,
+        padding: 'auto',
+        label: {
+          position: 'middle',
+          style: {
+            fill: '#FFFFFF',
+            opacity: 0.6
+          }
+        },
+        xAxis: {
+          label: {
+            autoHide: true,
+            autoRotate: false
+          }
+        },
+        yAxis: {
+          minInterval: 1
+        },
+        meta: {
+          nama_bantuan: { alias: 'Nama Bantuan' },
+          peserta_bantuan_count: { alias: 'Jumlah Peserta' }
+        }
       }
     };
   }, [apbdStatistic, residentStatistic]);
@@ -149,6 +184,12 @@ const Dashboard = () => {
           Statistik APBD
         </Typography.Title>
         {chartConfigs.apbd ? <Column {...chartConfigs.apbd} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
+      </Card>
+      <Card className="col-span-12 w-auto lg:col-span-6">
+        <Typography.Title level={5} className="w-full text-center">
+          Penyaluran Bantuan
+        </Typography.Title>
+        {chartConfigs.publicAssistance ? <Column {...chartConfigs.publicAssistance} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
       </Card>
     </div>
   );

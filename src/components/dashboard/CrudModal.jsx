@@ -131,7 +131,7 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
 
   return (
     <Modal title={type !== CrudModalType.CONFIRM_DELETE ? title : ''} open={isModalOpen} onClose={close} onCancel={close} footer={null} {...props}>
-      {type === CrudModalType.CONFIRM_DELETE ? (
+      {type === CrudModalType.CONFIRM_DELETE || type === CrudModalType.DELETE ? (
         <div className="flex flex-col items-center justify-center gap-y-4">
           <DeleteOutlined style={{ fontSize: '32px' }} />
           <p>{title}</p>
@@ -160,15 +160,9 @@ export default function CrudModal({ isModalOpen, data: initialData, close, title
                 <Button type="default" onClick={close}>
                   Batal
                 </Button>
-                {type === CrudModalType.DELETE ? (
-                  <Button type="primary" danger htmlType="submit" loading={isLoading}>
-                    Hapus
-                  </Button>
-                ) : (
-                  <Button type="primary" htmlType="submit" loading={isLoading}>
-                    Kirim
-                  </Button>
-                )}
+                <Button type="primary" htmlType="submit" loading={isLoading}>
+                  Kirim
+                </Button>
               </div>
             </Form.Item>
           )}

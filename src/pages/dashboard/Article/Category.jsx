@@ -1,7 +1,7 @@
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CategoryService } from '@/services';
-import { Card, Space } from 'antd';
+import { Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { categoryFormFields } from './FormFields';
 import { DataTable, DataTableHeader } from '@/components';
@@ -127,7 +127,7 @@ const Category = () => {
   };
 
   return (
-    <Card className="col-span-12 lg:col-span-4">
+    <>
       <DataTableHeader model={CategoryModel} modul={Modul.CATEGORY} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedCategory} />
       <div className="w-full max-w-full overflow-x-auto">
         <DataTable
@@ -139,7 +139,7 @@ const Category = () => {
           pagination={pagination}
         />
       </div>
-    </Card>
+    </>
   );
 };
 

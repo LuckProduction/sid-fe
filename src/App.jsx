@@ -1,4 +1,4 @@
-import { Result, Skeleton } from 'antd';
+import { Result } from 'antd';
 import { authLink, dashboardLink, landingLink } from './data/link';
 import { useAuth, useService } from './hooks';
 import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
@@ -14,7 +14,7 @@ import { LandingService } from './services';
 import { useEffect, useState } from 'react';
 
 function App() {
-  const { isLoading, user } = useAuth();
+  const { user } = useAuth();
   const flatLandingLinks = flattenLandingLinks(landingLink);
   const [titleData, setTitleData] = useState({ title: 'Loading...', icon: '' });
 
@@ -73,13 +73,6 @@ function App() {
           children: [
             ...dashboardLink.flatMap(({ children }) =>
               children.map(({ permissions, roles, path, element: Element }) => {
-                if (isLoading) {
-                  return {
-                    path,
-                    element: <Skeleton active />
-                  };
-                }
-
                 const hasPermissions = permissions && permissions.length > 0;
                 const hasRoles = roles && roles.length > 0;
                 const userCantDoAnyOfThat = hasPermissions && (!user || user.cantDoAny(...permissions));

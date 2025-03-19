@@ -122,11 +122,11 @@ const Comunity = () => {
           />
 
           <Delete
-            title={`Delete ${Modul.USERS}`}
+            title={`Delete ${Modul.COMUNITY}`}
             model={ComunityModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.LEGAL_PRODUCTS}`,
+                title: `Delete ${Modul.COMUNITY}`,
                 data: { ...record, name: record.resident.full_name, email: record.user_id.email },
                 formFields: comunityFormFields(),
                 onSubmit: async () => {

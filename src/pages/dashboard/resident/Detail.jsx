@@ -79,7 +79,7 @@ const Detail = () => {
               <Card className="w-full" title="Alamat">
                 <Descriptions column={1} bordered>
                   <Descriptions.Item label="Alamat Sesuai KK">{resident?.address?.address_kk}</Descriptions.Item>
-                  <Descriptions.Item label="Dusun">{resident?.address?.hamlet_id}</Descriptions.Item>
+                  <Descriptions.Item label="Dusun">{resident?.address?.hamlet_name}</Descriptions.Item>
                   <Descriptions.Item label="RT">{resident?.address?.rt}</Descriptions.Item>
                   <Descriptions.Item label="RW">{resident?.address?.rw}</Descriptions.Item>
                   <Descriptions.Item label="Alamat Terakhir">{resident?.address?.last_address}</Descriptions.Item>

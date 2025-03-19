@@ -113,7 +113,6 @@ const Hamlet = () => {
               modal.delete.default({
                 title: `Delete ${Modul.HAMLET}`,
                 data: record,
-                formFields: formFields,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteHamlet.execute(record.id, token);
                   if (isSuccess) {

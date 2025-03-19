@@ -1,7 +1,7 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ArticleService, CategoryService } from '@/services';
-import { Card, Space, Tag } from 'antd';
+import { Card, Space, Tabs, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formFields } from './FormFields';
@@ -142,15 +142,19 @@ const Article = () => {
   };
 
   return (
-    <div className="grid w-full grid-cols-12 gap-4">
-      <Card className="col-span-12 lg:col-span-8">
-        <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={ArticleModel} modul={Modul.ARTICLE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable data={article} columns={articleColumn} loading={getAllArticle.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
-        </div>
-      </Card>
-      <Category />
-    </div>
+    <Card className="">
+      <Tabs type="card">
+        <Tabs.TabPane tab="Artikel Desa" key="article">
+          <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={ArticleModel} modul={Modul.ARTICLE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedArticle} />
+          <div className="w-full max-w-full overflow-x-auto">
+            <DataTable data={article} columns={articleColumn} loading={getAllArticle.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedArticle(selectedRows)} />
+          </div>
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Kategori Artikel" key="categoryz">
+          <Category />
+        </Tabs.TabPane>
+      </Tabs>
+    </Card>
   );
 };
 
