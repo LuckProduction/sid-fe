@@ -4,13 +4,12 @@ import { addressFormField, biodataFormFields, brithFormField, educationCareerFor
 import { useAuth, useNotification, useService } from '@/hooks';
 import { HamletService, ResidentService } from '@/services';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import dateFormatter from '@/utils/dateFormatter';
 import dayjs from 'dayjs';
 
 const Edit = () => {
   const { token } = useAuth();
-  const navigate = useNavigate();
   const { success, error } = useNotification();
   const { id } = useParams();
   const { execute: fetchResident, ...getAllResident } = useService(ResidentService.getById);
@@ -40,7 +39,6 @@ const Edit = () => {
                 const { message, isSuccess } = await editResident.execute(id, { ...values, _method: 'PUT' }, token, values.image_profile.file);
                 if (isSuccess) {
                   success('Berhasil', message);
-                  navigate(-1);
                 } else {
                   error('Gagal', message);
                 }
@@ -59,7 +57,6 @@ const Edit = () => {
                 const { message, isSuccess } = await editResidentData.execute(id, { ...values, address: { ...values }, gender: resident.gender }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
-                  navigate(-1);
                 } else {
                   error('Gagal', message);
                 }
@@ -78,7 +75,6 @@ const Edit = () => {
                 const { message, isSuccess } = await editResidentData.execute(id, { ...values, birth: { ...values, birth_date: dateFormatter(values.birth_date) } }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
-                  navigate(-1);
                 } else {
                   error('Gagal', message);
                 }
@@ -97,7 +93,6 @@ const Edit = () => {
                 const { message, isSuccess } = await editResidentData.execute(id, { ...values, parents: values }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
-                  navigate(-1);
                 } else {
                   error('Gagal', message);
                 }
@@ -116,7 +111,6 @@ const Edit = () => {
                 const { message, isSuccess } = await editResidentData.execute(id, { ...values, education_career: values }, token);
                 if (isSuccess) {
                   success('Berhasil', message);
-                  navigate(-1);
                 } else {
                   error('Gagal', message);
                 }

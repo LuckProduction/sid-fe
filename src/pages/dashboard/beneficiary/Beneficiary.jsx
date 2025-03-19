@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { Action, InputType } from '@/constants';
 import { Beneficiary as BeneficiaryModel } from '@/models';
+import { BASE_URL } from '@/utils/api';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -46,7 +47,7 @@ const Beneficiary = () => {
   const publicAssistanceById = getAllPublicAssistanceById.data ?? [];
 
   const exportBeneficiary = () => {
-    fetch(`https://desa1.api-example.govillage.id/api/peserta-bantuan/export?bantuan_id=${id}`, {
+    fetch(`${BASE_URL}/peserta-bantuan/export?bantuan_id=${id}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

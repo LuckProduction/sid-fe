@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { Action } from '@/constants';
 import { PublicAssistance as PublicAssistanceModel } from '@/models';
+import { BASE_URL } from '@/utils/api';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -47,7 +48,7 @@ const PublicAssistance = () => {
   const apbdItem = getAllPublicAssistance.data ?? [];
 
   const exportPublicAssistance = () => {
-    fetch(`https://desa1.api-example.govillage.id/api/peserta-bantuan/export`, {
+    fetch(`${BASE_URL}/peserta-bantuan/export`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

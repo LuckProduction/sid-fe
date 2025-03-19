@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import dateFormatter from '@/utils/dateFormatter';
 import { ProspectiveVotersFilterFields } from './FormFields';
 import dayjs from 'dayjs';
+import { BASE_URL } from '@/utils/api';
 
 const ProspectiveVoters = () => {
   const { token } = useAuth();
@@ -64,7 +65,7 @@ const ProspectiveVoters = () => {
   const hamlet = getAllHamlet.data ?? [];
 
   const exportProspectiveVoters = () => {
-    fetch('http://desa1.api-example.govillage.id/api/master-penduduk/export?calon_pemilih=true', {
+    fetch(`${BASE_URL}/master-penduduk/export?calon_pemilih=true`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

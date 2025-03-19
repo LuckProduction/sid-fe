@@ -8,6 +8,7 @@ import { Resident as ResidentModel } from '@/models';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { residentFilterFields } from './FormFields';
+import { BASE_URL } from '@/utils/api';
 
 const Family = () => {
   const { token } = useAuth();
@@ -40,7 +41,7 @@ const Family = () => {
   const hamlet = getAllHamlet.data ?? [];
 
   const exportFamily = () => {
-    fetch('http://desa1.api-example.govillage.id/api/master-penduduk/export?keluarga=true', {
+    fetch(`${BASE_URL}/master-penduduk/export?keluarga=true`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

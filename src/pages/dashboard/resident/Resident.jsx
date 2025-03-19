@@ -10,6 +10,7 @@ import { formFields, residentFilterFields } from './FormFields';
 import { Resident as ResidentModel } from '@/models';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import dateFormatter from '@/utils/dateFormatter';
+import { BASE_URL } from '@/utils/api';
 
 const { UPDATE, DELETE } = Action;
 
@@ -51,7 +52,7 @@ const Resident = () => {
   const hamlet = getAllHamlet.data ?? [];
 
   const exportResident = () => {
-    fetch('http://desa1.api-example.govillage.id/api/master-penduduk/export?penduduk=true', {
+    fetch(`${BASE_URL}/master-penduduk/export?penduduk=true`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
