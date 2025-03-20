@@ -1,7 +1,6 @@
 import { Reveal } from '@/components';
 import { useCrudModal, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import dateFormatter from '@/utils/dateFormatter';
 import { rupiahFormat } from '@/utils/rupiahFormat';
 import { EyeOutlined, PushpinOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Image, Skeleton, Tag, Typography } from 'antd';
@@ -116,7 +115,7 @@ const DetailVillageEnterprise = () => {
                 <Card
                   key={index}
                   className="col-span-12 w-full md:col-span-6 lg:col-span-3"
-                  cover={<img className={item.status === 'tersedia' ? 'grayscale-0' : 'grayscale'} alt="example" style={{ height: '120px', objectFit: 'cover' }} src="/illustration/coklat.jpg" />}
+                  cover={<img className={item.status === 'tersedia' ? 'grayscale-0' : 'grayscale'} alt="example" style={{ height: '120px', objectFit: 'cover' }} src={item.foto} />}
                 >
                   <Reveal>
                     <b className="news-text">{item.menu_name}</b>
@@ -127,11 +126,10 @@ const DetailVillageEnterprise = () => {
                     </Tag>
                   </Reveal>
                   <Reveal>
-                    <div className="text-xl">{rupiahFormat(item.price)}</div>
+                    <div className="text-xl font-semibold">{rupiahFormat(item.price)}</div>
                   </Reveal>
 
                   <div className="mt-2 flex flex-col gap-y-1">
-                    <div className="inline-flex items-center text-xs text-gray-400">{dateFormatter(item.created_at)}</div>
                     <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
                       <EyeOutlined className="text-xs" />
                       {item.seen}
