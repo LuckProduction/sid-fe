@@ -260,7 +260,22 @@ const SubmitLetter = () => {
           {!isSubmitted && Object.keys(letterTypeDetail).length > 0 && (
             <Card>
               <Typography.Title level={5}>{letterTypeDetail.letter_name}</Typography.Title>
-              <Crud formFields={mapLetterAttributesToFormFields(letterTypeDetail.letter_attribut)} type="create" onSubmit={handleSubmitLetter} isLoading={submitLoading} />
+              {mapLetterAttributesToFormFields(letterTypeDetail.letter_attribut).length === 0 ? (
+                <>
+                  <Result
+                    status="info"
+                    title="Kirim Permohonan Surat!"
+                    subTitle="Surat yang dipilih tidak memiliki atribut surat, silahkan klik tombol kirim untuk melanjutkan"
+                    extra={
+                      <Button type="primary" onClick={handleSubmitLetter}>
+                        Kirim Permohonan
+                      </Button>
+                    }
+                  />
+                </>
+              ) : (
+                <Crud formFields={mapLetterAttributesToFormFields(letterTypeDetail.letter_attribut)} type="create" onSubmit={handleSubmitLetter} isLoading={submitLoading} />
+              )}
             </Card>
           )}
         </div>

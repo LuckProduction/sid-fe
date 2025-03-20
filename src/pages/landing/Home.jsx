@@ -26,23 +26,35 @@ const Home = () => {
     executeInstitution();
   }, []);
 
-  const { execute: fetchArticle, ...getAllArticle } = useService(LandingService.getAllArticle);
+  const { execute: executeFetchArticle, ...getAllArticle } = useService(LandingService.getAllArticle);
+  const { execute: executeFetchVillageEnterprise, ...getAllEnterprise } = useService(LandingService.getAllEnterprise);
 
-  const pagination = usePagination({ totalData: getAllArticle.totalData });
+  const articlePagination = usePagination({ totalData: getAllArticle.totalData });
+  const enterprisePagination = usePagination({ totalData: getAllEnterprise.totalData });
 
-  const fetchData = useCallback(() => {
-    fetchArticle({
-      page: pagination.page,
-      per_page: pagination.per_page,
+  const fetchArticle = useCallback(() => {
+    executeFetchArticle({
+      page: articlePagination.page,
+      per_page: articlePagination.per_page,
       search: ''
     });
-  }, [fetchArticle, pagination.page, pagination.per_page]);
+  }, [executeFetchArticle, articlePagination.page, articlePagination.per_page]);
+
+  const fetchVillageEnterprise = useCallback(() => {
+    executeFetchVillageEnterprise({
+      page: enterprisePagination.page,
+      per_page: enterprisePagination.per_page,
+      search: ''
+    });
+  }, [executeFetchVillageEnterprise, enterprisePagination.page, enterprisePagination.per_page]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchArticle();
+    fetchVillageEnterprise();
+  }, [fetchArticle, fetchVillageEnterprise]);
 
   const article = getAllArticle.data ?? [];
+  const enterpise = getAllEnterprise.data ?? [];
 
   return (
     <>
@@ -350,14 +362,14 @@ const Home = () => {
         </div>
       </section>
       <section className="w-full bg-gray-100">
-        <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-8 px-4 py-20">
+        <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-8 px-4 py-28">
           <div className="flex items-end justify-between">
             <div className="flex flex-col gap-y-2">
               <Reveal>
                 <h2 className="text-sm font-semibold text-blue-500">Berita</h2>
               </Reveal>
               <Reveal>
-                <p className="max-w-44 text-xl font-semibold">Berita khas desa Sukma terbaru :</p>
+                <p className="text-xl font-semibold">Berita desa terbaru :</p>
               </Reveal>
             </div>
             <Button icon={<RightOutlined />} onClick={() => navigate('/news')} iconPosition="end" variant="solid" color="primary">
@@ -367,12 +379,12 @@ const Home = () => {
           <div className="grid grid-cols-10 gap-4">
             {article.isLoading
               ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
-                  <Card className="col-span-2" key={index}>
+                  <Card className="col-span-10 md:col-span-5 lg:col-span-2" key={index}>
                     <Skeleton active />
                   </Card>
                 ))
               : article?.slice(0, 5).map((item, index) => (
-                  <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-2" hoverable style={{ width: 240 }} cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
+                  <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-10 md:col-span-5 lg:col-span-2" hoverable cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
                     <Reveal>
                       <b className="news-text">{item.title}</b>
                     </Reveal>
@@ -385,6 +397,51 @@ const Home = () => {
                         <EyeOutlined className="text-xs" />
                         {item.seen}
                       </div>
+                    </div>
+                  </Card>
+                ))}
+          </div>
+        </div>
+      </section>
+      <section className="w-full bg-blue-500">
+        <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-8 px-4 py-28">
+          <div className="flex items-end justify-between">
+            <div className="flex flex-col gap-y-2">
+              <Reveal>
+                <h2 className="text-sm font-semibold text-white">Lapak BUMDes</h2>
+              </Reveal>
+              <Reveal>
+                <p className="text-xl font-semibold text-white">Lapak Badan Usaha Desa :</p>
+              </Reveal>
+            </div>
+            <Button icon={<RightOutlined />} onClick={() => navigate('/village_enterprise')} iconPosition="end" variant="solid">
+              Lihat Selengkapnya
+            </Button>
+          </div>
+          <div className="grid grid-cols-10 gap-4">
+            {enterpise.isLoading
+              ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
+                  <Card className="col-span-10 md:col-span-5 lg:col-span-2" key={index}>
+                    <Skeleton active />
+                  </Card>
+                ))
+              : enterpise?.slice(0, 5).map((item, index) => (
+                  <Card
+                    onClick={() => navigate(window.location.pathname + `/detail/${item.slug}`)}
+                    key={index}
+                    className="col-span-10 w-full md:col-span-5 lg:col-span-2"
+                    hoverable
+                    cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.foto} />}
+                  >
+                    <div className="flex flex-col gap-y-2">
+                      <Reveal>
+                        <b className="news-text">
+                          {item.enterprise_name} {`(${item.resident.full_name})`}
+                        </b>
+                      </Reveal>
+                      <Reveal>
+                        <small>{item.operational_time}</small>
+                      </Reveal>
                     </div>
                   </Card>
                 ))}

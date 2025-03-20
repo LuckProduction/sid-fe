@@ -12,3 +12,4 @@ export { default as VillageBoundaries } from './VillageBoundaries';
 export { default as VillageOfficials } from './VillageOfficials';
 export { default as BrowseBeneficiary } from './BrowseBeneficiary';
 export { default as VillageEnterprise } from './VillageEnterprise';
+export { default as DetailVillageEnterprise } from './DetailVillageEnterprise';

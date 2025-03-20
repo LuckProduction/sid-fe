@@ -16,7 +16,7 @@ export const formFields = ({ fetchResident }) => [
   {
     label: `Deskripsi ${Modul.VILLAGE_ENTERPRISE}`,
     name: 'desc',
-    type: InputType.TEXT,
+    type: InputType.LONGTEXT,
     rules: [
       {
         required: true,
@@ -32,6 +32,17 @@ export const formFields = ({ fetchResident }) => [
       {
         required: true,
         message: `Jam Operasional ${Modul.VILLAGE_ENTERPRISE} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Alamat ${Modul.VILLAGE_ENTERPRISE}`,
+    name: 'address',
+    type: InputType.LONGTEXT,
+    rules: [
+      {
+        required: true,
+        message: `Alamat ${Modul.VILLAGE_ENTERPRISE} harus diisi`
       }
     ]
   },

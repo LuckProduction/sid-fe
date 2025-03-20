@@ -114,7 +114,7 @@ const LetterAttribute = () => {
                   const { isSuccess, message } = await deleteLetterAttribute.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchLetterAttribute(token);
+                    fetchLetterAttribute({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -137,7 +137,7 @@ const LetterAttribute = () => {
         const { message, isSuccess } = await deleteBatchLetterAttribute.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchLetterAttribute(token);
+          fetchLetterAttribute({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }
