@@ -6,6 +6,8 @@ export interface IncomingApiData {
   id: number;
   nama_lapak: string;
   foto: string;
+  slug: string;
+  lokasi: string;
   deskripsi: string;
   master_penduduk_id: IncomingResident;
   titik_koordinat: string;
@@ -18,6 +20,7 @@ export interface IncomingApiData {
     harga: number;
     dilihat: number;
     status: 'tersedia' | 'habis';
+    created_at: string;
   }[];
 }
 
@@ -26,6 +29,7 @@ export interface OutgoingApiData {
   nama_lapak: string;
   deskripsi: string;
   titik_koordinat: string;
+  lokasi: string;
   foto: string;
   jam_operasional: string;
   kontak: string;
@@ -37,6 +41,7 @@ interface FormValue {
   enterprise_name: string;
   desc: string;
   coordinate: string;
+  address: string;
   foto: string;
   operational_time: string;
   contact: string;
@@ -50,10 +55,13 @@ export default class VillageEnterprise extends Model {
     public id: number,
     public enterprise_name: string,
     public foto: string,
+    public slug: string,
+    public address: string,
     public desc: string,
     public resident: {
       id: number;
       nik: number;
+      foto: string;
       full_name: string;
       family_relation: string;
       resident_status: 'tetap' | 'tidak tetap';
@@ -72,6 +80,7 @@ export default class VillageEnterprise extends Model {
       price: number;
       seen: number;
       status: 'tersedia' | 'habis';
+      created_at: string;
     }[]
   ) {
     super();
@@ -83,10 +92,13 @@ export default class VillageEnterprise extends Model {
       apiData.id,
       apiData.nama_lapak,
       asset(apiData.foto),
+      apiData.slug,
+      apiData.lokasi,
       apiData.deskripsi,
       {
         id: apiData.master_penduduk_id.id,
         nik: apiData.master_penduduk_id.nik,
+        foto: apiData.master_penduduk_id.foto,
         full_name: apiData.master_penduduk_id.nama_lengkap,
         family_relation: apiData.master_penduduk_id.hubungan_keluarga,
         resident_status: apiData.master_penduduk_id.status_penduduk,
@@ -104,7 +116,8 @@ export default class VillageEnterprise extends Model {
         foto: asset(menu.foto),
         price: menu.harga,
         seen: menu.dilihat,
-        status: menu.status
+        status: menu.status,
+        created_at: menu.created_at
       })) ?? []
     ) as ReturnType<T, IncomingApiData, VillageEnterprise>;
   }
@@ -116,6 +129,7 @@ export default class VillageEnterprise extends Model {
       nama_lapak: villageEnterprise.enterprise_name,
       deskripsi: villageEnterprise.desc,
       titik_koordinat: villageEnterprise.coordinate,
+      lokasi: villageEnterprise.address,
       foto: villageEnterprise.foto,
       jam_operasional: villageEnterprise.operational_time,
       kontak: villageEnterprise.contact,

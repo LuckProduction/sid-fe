@@ -7,7 +7,7 @@ import { RouterProvider } from 'react-router';
 import './index.css';
 import { ApbdItem, Beneficiary, CreateArticle, DetailResident, EditArticle, EditResident, FamilyDetail, InstitutionMember, Lettering, ProfileSettings } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
-import { Browse, DetailNews, SubmitLetter, VillageBoundaries } from './pages/landing';
+import { Browse, DetailNews, DetailVillageEnterprise, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { LandingService } from './services';
@@ -61,6 +61,7 @@ function App() {
               element: <Element />
             })),
             { path: '/article/detail/:slug', element: <DetailNews /> },
+            { path: '/village_enterprise/detail/:slug', element: <DetailVillageEnterprise /> },
             { path: '/village_potential/detail/:slug', element: <DetailVillagePotential /> },
             { path: '/lettering/browse', element: <Browse /> },
             { path: '/lettering/submitletter', element: <SubmitLetter /> },

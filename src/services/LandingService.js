@@ -110,4 +110,10 @@ export default class LandingService {
     if (!response.data) return response;
     return { ...response, data: VillageEnterprise.fromApiData(response.data) };
   }
+
+  static async getDetailEnterprise(slug) {
+    const response = await api.get(`/landing/lapak/${slug}`);
+    if (!response.data) return response;
+    return { ...response, data: VillageEnterprise.fromApiData(response.data) };
+  }
 }
