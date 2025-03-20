@@ -39,6 +39,9 @@ const VillageOfficials = () => {
       </section>
       <section>
         <div className="mx-auto flex max-w-screen-lg flex-col items-center gap-y-6 px-6 py-24">
+          <Typography.Title level={4}>
+            Kepala <span className="text-blue-500">Desa</span>{' '}
+          </Typography.Title>
           {headVillage && (
             <Card className="w-full max-w-2xl">
               <div className="flex w-full flex-row gap-x-6">
@@ -49,7 +52,9 @@ const VillageOfficials = () => {
                 </div>
                 <div className="w-full">
                   <Descriptions bordered column={1}>
-                    <Descriptions.Item label="Nama Kepala Desa">{headVillage.name}</Descriptions.Item>
+                    <Descriptions.Item label="Nama Kepala Desa">
+                      <Typography.Title level={5}>{headVillage.name}</Typography.Title>
+                    </Descriptions.Item>
                     <Descriptions.Item label="Jenis Kelamin">{headVillage.gender}</Descriptions.Item>
                     <Descriptions.Item label="Tempat Lahir">{headVillage.birth_place}</Descriptions.Item>
                     <Descriptions.Item label="Kontak">{headVillage.phone_number}</Descriptions.Item>
@@ -59,17 +64,21 @@ const VillageOfficials = () => {
             </Card>
           )}
           <hr className="mb-6 mt-6 w-full" />
+          <Typography.Title level={4}>
+            Perangkat <span className="text-blue-500">Desa </span>{' '}
+          </Typography.Title>
+
           <div className="grid w-full grid-cols-12 gap-12">
             {otherOfficials.map((official) => (
               <Card key={official.id} className="col-span-4">
                 <div className="flex flex-col items-center gap-y-2">
                   <div className="mb-2 flex w-full items-center justify-center">
                     <div className="flex h-52 w-52 items-center overflow-hidden rounded-lg border-8 border-gray-200">
-                      <img src={official.image} className="w-full rounded-lg" alt={official.name} />
+                      <img src={official.image} className="h-full w-full rounded-lg object-cover" alt={official.name} />
                     </div>
                   </div>
                   <div className="flex flex-col items-center gap-y-2">
-                    <Typography.Title level={4} style={{ margin: 0 }} className="mb-1 text-center">
+                    <Typography.Title level={5} style={{ margin: 0 }} className="mb-1 text-center">
                       {official.name}
                     </Typography.Title>
                     <p className="text-center">{official.employment.employment_name}</p>
