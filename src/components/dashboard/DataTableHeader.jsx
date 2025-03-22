@@ -1,6 +1,6 @@
 import { Action } from '@/constants';
 import { useAuth } from '@/hooks';
-import { DeleteOutlined, ExportOutlined, FilterOutlined, ImportOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownloadOutlined, ExportOutlined, FilterOutlined, ImportOutlined, MenuOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, Popover, Skeleton, Typography } from 'antd';
 import PropTypes from 'prop-types';
 import Crud from './Crud';
@@ -47,11 +47,18 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
     });
   }
   if (onImport) {
-    menuItems.push({
-      label: 'Import Data',
-      key: 'import',
-      icon: <ImportOutlined />
-    });
+    menuItems.push(
+      {
+        label: 'Import Data',
+        key: 'import',
+        icon: <ImportOutlined />
+      },
+      {
+        label: 'Download Template',
+        key: 'template',
+        icon: <DownloadOutlined />
+      }
+    );
   }
   if (onExport) {
     menuItems.push({
@@ -70,7 +77,10 @@ export default function DataHeader({ modul, selectedData, onStore, onDeleteBatch
         onDeleteBatch?.();
         break;
       case 'import':
-        onImport?.();
+        onImport?.importHandler?.();
+        break;
+      case 'template':
+        templateDownloader?.(onImport.templateFile);
         break;
       case 'export':
         onExport?.();

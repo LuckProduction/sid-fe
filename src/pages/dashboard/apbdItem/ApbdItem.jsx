@@ -223,7 +223,7 @@ const ApbdItem = () => {
               <Descriptions.Item label="Target Bantuan">{apbdReportById.year}</Descriptions.Item>
               <Descriptions.Item label="Dokumen">
                 <Button icon={<DownloadOutlined />} onClick={() => window.open(apbdReportById.document, '_blank')}>
-                  Download Sumber
+                  Dokumen
                 </Button>
               </Descriptions.Item>
             </Descriptions>

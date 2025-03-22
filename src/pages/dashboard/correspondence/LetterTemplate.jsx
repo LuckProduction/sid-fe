@@ -58,11 +58,12 @@ const LetterTemplate = () => {
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <div className="col-span-12">
-            <div className="mb-6 flex items-center gap-x-2">
-              <Button icon={<CopyOutlined />} onClick={handleCopyDefaultTemplate}>
+            <div className="mb-6 flex flex-col items-center gap-x-2 gap-y-2 lg:flex-row">
+              <Button className="w-full md:w-fit" icon={<CopyOutlined />} onClick={handleCopyDefaultTemplate}>
                 Salin Template Default
               </Button>
               <Button
+                className="w-full md:w-fit"
                 onClick={() =>
                   modal.show.paragraph({
                     title: 'Profil Desa',

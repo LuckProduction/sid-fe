@@ -175,7 +175,7 @@ const Home = () => {
           ) : (
             <>
               <img src={speech?.data?.village_officials?.foto} className="w-full flex-1 rounded-t-lg object-cover transition-all duration-300 lg:h-auto lg:w-56 lg:rounded-l-lg lg:grayscale lg:hover:grayscale-0" />
-              <div className="flex-2 flex w-full flex-col p-12">
+              <div className="flex-2 flex w-full flex-col p-10">
                 <svg className="h-16 w-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path
                     fillRule="evenodd"
@@ -373,7 +373,7 @@ const Home = () => {
               </Reveal>
             </div>
             <Button icon={<RightOutlined />} onClick={() => navigate('/news')} iconPosition="end" variant="solid" color="primary">
-              Lihat Selengkapnya
+              Selengkapnya
             </Button>
           </div>
           <div className="grid grid-cols-10 gap-4">
@@ -415,7 +415,7 @@ const Home = () => {
               </Reveal>
             </div>
             <Button icon={<RightOutlined />} onClick={() => navigate('/village_enterprise')} iconPosition="end" variant="solid">
-              Lihat Selengkapnya
+              Selengkapnya
             </Button>
           </div>
           <div className="grid grid-cols-10 gap-4">

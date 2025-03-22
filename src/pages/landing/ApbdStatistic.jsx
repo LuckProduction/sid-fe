@@ -87,7 +87,7 @@ const ApbdStatistic = () => {
                 kembali
               </button>
               <Reveal>
-                <Typography.Title style={{ color: '#fff' }}>Statistik APBD</Typography.Title>
+                <Typography.Title style={{ color: '#fff' }}>Statistik APBDes</Typography.Title>
               </Reveal>
               <Reveal>
                 <div className="max-w-lg">
@@ -100,8 +100,8 @@ const ApbdStatistic = () => {
           <section className="min-h-screen w-full bg-white">
             <div className="mx-auto flex max-w-screen-lg flex-col gap-y-6 px-6 py-12">
               <Card>
-                <Typography.Title level={5}>Data APBD Desa</Typography.Title>
-                <p className="mb-6">Dataset ini berisi data statistik APBD desa dimana data statistik APBD desa ini diambil pada saat melakukan penginputan data APBD dalam aplikasi sistem informasi desa</p>
+                <Typography.Title level={5}>Data APBDes</Typography.Title>
+                <p className="mb-6">Dataset ini berisi data statistik APBDes dimana data statistik APBDes ini diambil pada saat melakukan penginputan data APBDes dalam aplikasi sistem informasi desa</p>
                 <div className="mb-6 grid w-full grid-cols-12 gap-4">
                   <Card className="col-span-12 md:col-span-6 lg:col-span-4">
                     <Statistic title="Jumlah Belanja" value={rupiahFormat(apbdStatistic?.perTahun?.belanja)} prefix={<ShoppingCartOutlined />} />
