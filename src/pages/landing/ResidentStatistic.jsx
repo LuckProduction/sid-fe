@@ -113,7 +113,9 @@ const ResidentStatistic = () => {
                     <Tabs.TabPane tab={key.charAt(0).toUpperCase() + key.slice(1)} key={key}>
                       <Tabs>
                         <Tabs.TabPane tab="Raw Data" key="rawdata">
-                          <DataTable columns={getColumns(residentStatistic[key])} data={residentStatistic[key] ?? []} loading={getAllResidentStatistic.isLoading} />
+                          <div className="w-full overflow-x-auto">
+                            <DataTable columns={getColumns(residentStatistic[key])} data={residentStatistic[key] ?? []} loading={getAllResidentStatistic.isLoading} />
+                          </div>
                         </Tabs.TabPane>
                         <Tabs.TabPane tab="Visualisasi" key="visualisasi">
                           {chartConfigs && <Column {...chartConfigs} className="mt-6 h-auto w-full" />}

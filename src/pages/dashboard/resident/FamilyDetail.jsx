@@ -149,7 +149,7 @@ const FamilyDetail = () => {
                     });
                   }}
                 >
-                  Tambah Data Keluarga
+                  Tambah
                 </Button>
               </Descriptions.Item>
             </Descriptions>

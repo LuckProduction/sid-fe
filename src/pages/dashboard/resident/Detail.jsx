@@ -24,7 +24,7 @@ const Detail = () => {
         <DataLoader type="profil" />
       ) : (
         <>
-          <div className="col-span-4 flex w-full flex-col gap-y-4">
+          <div className="col-span-12 flex w-full flex-col gap-y-4 lg:col-span-4">
             <Card className="w-full" cover={<img src="/image_asset/card_background.png" />}>
               <div className="relative px-4">
                 <div className="absolute -top-16">
@@ -61,7 +61,7 @@ const Detail = () => {
               </Menu>
             </Card>
           </div>
-          <div className="col-span-8">
+          <div className="col-span-12 lg:col-span-8">
             {activeMenu === 'data_diri' ? (
               <Card className="w-full" title="Data diri penduduk">
                 <Descriptions column={1} bordered>

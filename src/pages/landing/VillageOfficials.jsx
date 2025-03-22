@@ -44,7 +44,7 @@ const VillageOfficials = () => {
           </Typography.Title>
           {headVillage && (
             <Card className="w-full max-w-2xl">
-              <div className="flex w-full flex-row gap-x-6">
+              <div className="flex w-full flex-col gap-x-6 gap-y-6 lg:flex-row">
                 <div className="flex items-center justify-center">
                   <div className="flex h-52 w-52 items-center overflow-hidden rounded-lg border-4 border-gray-200">
                     <img src={headVillage.image} className="w-full rounded-lg" alt={headVillage.name} />
@@ -68,9 +68,9 @@ const VillageOfficials = () => {
             Perangkat <span className="text-blue-500">Desa </span>{' '}
           </Typography.Title>
 
-          <div className="grid w-full grid-cols-12 gap-12">
+          <div className="grid w-full grid-cols-6 gap-12">
             {otherOfficials.map((official) => (
-              <Card key={official.id} className="col-span-4">
+              <Card key={official.id} className="col-span-6 md:col-span-3 lg:col-span-2">
                 <div className="flex flex-col items-center gap-y-2">
                   <div className="mb-2 flex w-full items-center justify-center">
                     <div className="flex h-52 w-52 items-center overflow-hidden rounded-lg border-8 border-gray-200">
