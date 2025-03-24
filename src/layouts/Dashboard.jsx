@@ -1,10 +1,11 @@
-import { DashboardFooter, DashboardSider } from '@/components';
-import { useAuth } from '@/hooks';
+import { DashboardFooter, DashboardSider, Inbox } from '@/components';
+import { useAuth, useService } from '@/hooks';
+import { InboxService } from '@/services';
 import generateBreadCrumb from '@/utils/generateBreadCrumb';
-import { LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Breadcrumb, Button, Dropdown, Layout, Skeleton, Space, theme } from 'antd';
+import { BellOutlined, LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Badge, Breadcrumb, Button, Dropdown, Layout, Popover, Skeleton, Space, theme } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -12,6 +13,18 @@ const Dashboard = () => {
   const { logout, token, user } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { execute, ...getAllInbox } = useService(InboxService.getAll);
+  const readInbox = useService(InboxService.read);
+
+  const fetchInbox = useCallback(() => {
+    execute({
+      token: token
+    });
+  }, [execute, token]);
+
+  useEffect(() => {
+    fetchInbox();
+  }, [fetchInbox]);
 
   useEffect(() => {
     if (token) return;
@@ -19,6 +32,7 @@ const Dashboard = () => {
   }, [navigate, token, pathname]);
 
   const breadcrumbs = generateBreadCrumb(location.pathname);
+  const inbox = getAllInbox.data ?? [];
 
   const items = useMemo(
     () => [
@@ -61,6 +75,21 @@ const Dashboard = () => {
           <div className="flex h-full w-full items-center justify-between px-4">
             <Button type="text" icon={<MenuOutlined />} onClick={() => setCollapsed(!collapsed)} color="default"></Button>
             <div className="flex items-center gap-x-2">
+              <Popover className="max-w-sm" trigger="click" placement="bottomRight" content={<Inbox inbox={inbox} token={token} fetchInbox={fetchInbox} />}>
+                <Button
+                  onClick={async () => {
+                    await readInbox.execute({}, token);
+                    fetchInbox();
+                  }}
+                  icon={
+                    <Badge count={inbox.filter((item) => item.read_at === null).length} size="small">
+                      <BellOutlined />
+                    </Badge>
+                  }
+                  type="text"
+                  color="default"
+                />
+              </Popover>
               {!user ? (
                 <>
                   <Skeleton.Button active className="leading-4" size="small" />

@@ -18,7 +18,7 @@ export interface IncomingApiData {
     nama_menu: string;
     foto: string;
     harga: number;
-    dilihat: number;
+    suka: number;
     status: 'tersedia' | 'habis';
   }[];
 }
@@ -77,7 +77,7 @@ export default class VillageEnterprise extends Model {
       menu_name: string;
       foto: string;
       price: number;
-      seen: number;
+      liked: number;
       status: 'tersedia' | 'habis';
     }[]
   ) {
@@ -113,7 +113,7 @@ export default class VillageEnterprise extends Model {
         menu_name: menu.nama_menu,
         foto: asset(menu.foto),
         price: menu.harga,
-        seen: menu.dilihat,
+        liked: menu.suka,
         status: menu.status
       })) ?? []
     ) as ReturnType<T, IncomingApiData, VillageEnterprise>;
