@@ -1,21 +1,25 @@
 import { Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { CaretRightOutlined, DownloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Card, Collapse, Descriptions, Empty, Form, Input, Modal, Steps, theme, Typography } from 'antd';
+import { CaretRightOutlined, DownloadOutlined, MailOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Card, Collapse, Descriptions, Empty, Form, Input, Modal, Result, Steps, theme, Typography } from 'antd';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Browse = () => {
-  const [modal, setModal] = useState({ type: '', isVisible: false });
+  const [modal, setModal] = useState({ isVisible: false, error: false });
   const [response, setResponse] = useState(null);
   const browseLetter = useService(LandingService.browseLetter);
+  const navigate = useNavigate();
 
   const handleStatusCheck = async (values) => {
     try {
       const { data, isSuccess } = await browseLetter.execute({ ...values });
       setResponse(isSuccess && data ? { ...data } : {});
       if (isSuccess) {
-        setModal({ isVisible: true, type: data.status });
+        setModal({ isVisible: true });
+      } else {
+        setModal({ isVisible: true, error: true });
       }
     } catch (err) {
       console.error('Terjadi kesalahan:', err);
@@ -120,13 +124,13 @@ const Browse = () => {
       </div>
       <img src="/illustration/city_sillhoute.png" className="absolute bottom-0 left-0 z-0 w-full" />
       <Modal footer={null} width={500} open={modal.isVisible} onCancel={() => setModal(false)}>
-        {response && (
+        {response && !modal.error && (
           <Descriptions title="Detail Data Pemohon" bordered column={1}>
-            <Descriptions.Item label="Nama Lengkap">{response.master_penduduk_id.nama_lengkap}</Descriptions.Item>
-            <Descriptions.Item label="NIK">{response.master_penduduk_id.nik}</Descriptions.Item>
-            <Descriptions.Item label="Hubungan Keluarga">{response.master_penduduk_id.hubungan_keluarga}</Descriptions.Item>
-            <Descriptions.Item label="Nomor KK">{response.master_penduduk_id.nomor_kk}</Descriptions.Item>
-            <Descriptions.Item label="Jenis Kelamin">{response.master_penduduk_id.jenis_kelamin}</Descriptions.Item>
+            <Descriptions.Item label="Nama Lengkap">{response?.master_penduduk_id?.nama_lengkap}</Descriptions.Item>
+            <Descriptions.Item label="NIK">{response?.master_penduduk_id?.nik}</Descriptions.Item>
+            <Descriptions.Item label="Hubungan Keluarga">{response?.master_penduduk_id?.hubungan_keluarga}</Descriptions.Item>
+            <Descriptions.Item label="Nomor KK">{response?.master_penduduk_id?.nomor_kk}</Descriptions.Item>
+            <Descriptions.Item label="Jenis Kelamin">{response?.master_penduduk_id?.jenis_kelamin}</Descriptions.Item>
           </Descriptions>
         )}
         {response?.permohonan_surat?.length === 0 ? (
@@ -145,88 +149,18 @@ const Browse = () => {
             />
           </>
         )}
-        {/* {modal.type === 'selesai' && (
-          <>
-            <Result
-              status="success"
-              title="Surat telah selesai dibuat"
-              subTitle="Silahkan unduh berkas surat dengan menekan tombol download dibawah"
-              extra={
-                <Button size="large" icon={<DownloadOutlined />} variant="solid" color="blue" onClick={() => window.open(statusResponse.link_download, '_blank')}>
-                  download
-                </Button>
-              }
-            />
-            <Descriptions bordered column={1} className="mt-4">
-              <Descriptions.Item label="Token Surat">{statusResponse.token}</Descriptions.Item>
-              <Descriptions.Item label="Nama Surat">{statusResponse.jenis_surat_id.nama_surat}</Descriptions.Item>
-              <Descriptions.Item label="Kode Surat">{statusResponse.jenis_surat_id.kode_surat}</Descriptions.Item>
-              <Descriptions.Item label="Nama Pemohon">{statusResponse.master_penduduk_id.nama_lengkap}</Descriptions.Item>
-            </Descriptions>
-          </>
+        {modal.error && (
+          <Result
+            status="error"
+            title="Gagal Mengambil Data"
+            subTitle="Ada kesalahan saat melakukan pencarian permohonan surat, NIK penduduk mungkin belum pernah digunakan untuk melakukan permohonan surat"
+            extra={
+              <Button size="large" icon={<MailOutlined />} variant="solid" color="blue" onClick={() => navigate('/lettering/submitletter')}>
+                Buat Permohonan Surat
+              </Button>
+            }
+          />
         )}
-        {modal.type === 'verifikasi' && (
-          <>
-            <Result
-              status="info"
-              title="Tahap Verifikasi"
-              subTitle="Saat ini permohonan surat masih dalam tahap verifikasi"
-              extra={
-                <Steps
-                  current={1}
-                  items={[
-                    {
-                      title: 'Menunggu'
-                    },
-                    {
-                      title: 'Verifikasi'
-                    },
-                    {
-                      title: 'Selesai'
-                    }
-                  ]}
-                />
-              }
-            />
-            <Descriptions bordered column={1} className="mt-4">
-              <Descriptions.Item label="Token Surat">{statusResponse.token}</Descriptions.Item>
-              <Descriptions.Item label="Nama Surat">{statusResponse.jenis_surat_id.nama_surat}</Descriptions.Item>
-              <Descriptions.Item label="Kode Surat">{statusResponse.jenis_surat_id.kode_surat}</Descriptions.Item>
-              <Descriptions.Item label="Nama Pemohon">{statusResponse.master_penduduk_id.nama_lengkap}</Descriptions.Item>
-            </Descriptions>
-          </>
-        )}
-        {modal.type === 'menunggu' && (
-          <>
-            <Result
-              status="warning"
-              title="Tahap Menunggu"
-              subTitle="Saat ini permohonan surat masih dalam tahap menunggu"
-              extra={
-                <Steps
-                  current={0}
-                  items={[
-                    {
-                      title: 'Menunggu'
-                    },
-                    {
-                      title: 'Verifikasi'
-                    },
-                    {
-                      title: 'Selesai'
-                    }
-                  ]}
-                />
-              }
-            />
-            <Descriptions bordered column={1} className="mt-4">
-              <Descriptions.Item label="Token Surat">{statusResponse.token}</Descriptions.Item>
-              <Descriptions.Item label="Nama Surat">{statusResponse.jenis_surat_id.nama_surat}</Descriptions.Item>
-              <Descriptions.Item label="Kode Surat">{statusResponse.jenis_surat_id.kode_surat}</Descriptions.Item>
-              <Descriptions.Item label="Nama Pemohon">{statusResponse.master_penduduk_id.nama_lengkap}</Descriptions.Item>
-            </Descriptions>
-          </>
-        )} */}
       </Modal>
     </section>
   );
