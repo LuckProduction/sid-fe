@@ -27,3 +27,4 @@ export { default as VillageBoundariesService } from './VillageBoundariesService'
 export { default as StatisticService } from './StatisticService';
 export { default as ComunityService } from './ComunityService';
 export { default as VillageEnterpriseService } from './VillageEnterpriseService';
+export { default as InboxService } from './InboxService';

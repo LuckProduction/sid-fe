@@ -427,7 +427,7 @@ const Home = () => {
                 ))
               : enterpise?.slice(0, 5).map((item, index) => (
                   <Card
-                    onClick={() => navigate(window.location.pathname + `/detail/${item.slug}`)}
+                    onClick={() => navigate(`/village_enterprise/detail/${item.slug}`)}
                     key={index}
                     className="col-span-10 w-full md:col-span-5 lg:col-span-2"
                     hoverable

@@ -2,7 +2,7 @@ import { Reveal } from '@/components';
 import { useCrudModal, useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { rupiahFormat } from '@/utils/rupiahFormat';
-import { EyeOutlined, PushpinOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
+import { LikeOutlined, PushpinOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Image, Skeleton, Tag, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 const DetailVillageEnterprise = () => {
   const { slug } = useParams();
   const { execute: fetchDetailEnterprise, ...getAllDetailEnterprise } = useService(LandingService.getDetailEnterprise);
+  const likeLetter = useService(LandingService.likeLettering);
   const modal = useCrudModal();
 
   useEffect(() => {
@@ -130,10 +131,16 @@ const DetailVillageEnterprise = () => {
                   </Reveal>
 
                   <div className="mt-2 flex flex-col gap-y-1">
-                    <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
-                      <EyeOutlined className="text-xs" />
-                      {item.seen}
-                    </div>
+                    <button
+                      onClick={async () => {
+                        await likeLetter.execute(item.id);
+                        fetchDetailEnterprise(slug);
+                      }}
+                      className="inline-flex items-center gap-x-2 text-xs text-gray-400"
+                    >
+                      <LikeOutlined />
+                      {String(item.liked)}
+                    </button>
                   </div>
                 </Card>
               ))}

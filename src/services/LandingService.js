@@ -74,10 +74,10 @@ export default class LandingService {
   }
 
   static async downloadLetter(token) {
-    return await api.post(`/permohonan-surat/download`, { body: { token } });
+    return await api.get(`/permohonan-surat/download/${token}`);
   }
 
-  static async statusCheck(data) {
+  static async browseLetter(data) {
     return await api.post(`/permohonan-surat/cari-surat`, { body: data });
   }
 
@@ -113,7 +113,12 @@ export default class LandingService {
 
   static async getDetailEnterprise(slug) {
     const response = await api.get(`/landing/lapak/${slug}`);
+
     if (!response.data) return response;
     return { ...response, data: VillageEnterprise.fromApiData(response.data) };
+  }
+
+  static async likeLettering(id) {
+    return await api.put(`/menu-lapak/suka/${id}`);
   }
 }
