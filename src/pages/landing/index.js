@@ -10,6 +10,7 @@ export { default as ResidentStatistic } from './ResidentStatistic';
 export { default as ApbdStatistic } from './ApbdStatistic';
 export { default as VillageBoundaries } from './VillageBoundaries';
 export { default as VillageOfficials } from './VillageOfficials';
-export { default as BrowseBeneficiary } from './BrowseBeneficiary';
+export { default as BrowseBeneficiary } from './PublicAssistance';
 export { default as VillageEnterprise } from './VillageEnterprise';
 export { default as DetailVillageEnterprise } from './DetailVillageEnterprise';
+export { default as Map } from './Map';

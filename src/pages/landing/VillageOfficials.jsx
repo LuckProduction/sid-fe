@@ -46,12 +46,13 @@ const VillageOfficials = () => {
             <Card className="w-full max-w-2xl">
               <div className="flex w-full flex-col gap-x-6 gap-y-6 lg:flex-row">
                 <div className="flex items-center justify-center">
-                  <div className="flex h-52 w-52 items-center overflow-hidden rounded-lg border-4 border-gray-200">
+                  <div className="flex h-52 w-52 items-start justify-center overflow-hidden rounded-lg border-4 border-gray-200">
                     <img src={headVillage.image} className="w-full rounded-lg" alt={headVillage.name} />
                   </div>
                 </div>
                 <div className="w-full">
                   <Descriptions bordered column={1}>
+                    z
                     <Descriptions.Item label="Nama Kepala Desa">
                       <Typography.Title level={5}>{headVillage.name}</Typography.Title>
                     </Descriptions.Item>

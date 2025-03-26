@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CheckCircleFilled, DatabaseOutlined, EnvironmentOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
+import { CheckCircleFilled, DatabaseOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -169,12 +169,12 @@ const Home = () => {
             <p className="text-xl font-semibold">Sambutan Kepala Desa</p>
           </Reveal>
         </div>
-        <div className="flex w-full flex-col gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 px-6 text-white shadow-md lg:flex-row">
+        <div className="flex w-full flex-col gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md lg:flex-row">
           {speech.isLoading ? (
             <Skeleton active className="p-16" />
           ) : (
             <>
-              <img src={speech?.data?.village_officials?.foto} className="w-full flex-1 rounded-t-lg object-cover transition-all duration-300 lg:h-auto lg:w-56 lg:rounded-l-lg lg:grayscale lg:hover:grayscale-0" />
+              <img src={speech?.data?.village_officials?.foto} className="w-full flex-1 rounded-t-lg object-cover transition-all duration-300 lg:h-auto lg:w-60 lg:rounded-l-lg lg:rounded-t-none lg:rounded-tl-lg lg:grayscale lg:hover:grayscale-0" />
               <div className="flex-2 flex w-full flex-col p-10">
                 <svg className="h-16 w-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -244,43 +244,49 @@ const Home = () => {
             <div className="col-span-8 flex flex-col gap-y-6 lg:col-span-4">
               <div className="flex flex-col gap-y-2">
                 <Reveal>
-                  <h2 className="font-semibold text-blue-500">Batas Desa</h2>
+                  <h2 className="font-semibold text-blue-500">Fitur dan Layanan</h2>
                 </Reveal>
                 <Reveal>
-                  <p className="text-2xl font-semibold">Batas Desa Sukma</p>
+                  <p className="text-2xl font-semibold">Fitur Sistem Informasi Desa</p>
                 </Reveal>
               </div>
               <Reveal>
-                <p className="max-w-lg">Batas Desa bukan sekadar garis di peta—ini adalah fondasi untuk membangun desa yang lebih tertata, aman, dan berkembang! Dengan fitur Batas Desa, Anda bisa:</p>
+                <p className="max-w-lg">
+                  Sistem Informasi Desa Digital hadir dengan berbagai fitur yang dirancang khusus untuk mendukung visi desa modern. Dari pemetaan wilayah hingga layanan administrasi berbasis digital, semua disesuaikan untuk meningkatkan efisiensi,
+                  transparansi, dan pembangunan desa yang berkelanjutan!
+                </p>
               </Reveal>
               <ul className="flex flex-col gap-y-3">
                 <Reveal>
                   <li className="inline-flex items-center gap-x-2 font-semibold">
                     <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Menentukan Wilayah dengan Jelas
+                    Update Terkait Berita, Potensi, Dan Lapak BUMDes
                   </li>
                 </Reveal>
                 <Reveal>
                   <li className="inline-flex items-center gap-x-2 font-semibold">
                     <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Mendukung Perencanaan Pembangunan
+                    Layanan Surat Menyurat
                   </li>
                 </Reveal>
                 <Reveal>
                   <li className="inline-flex items-center gap-x-2 font-semibold">
                     <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Mempermudah Pelayanan Publik
+                    Transparansi Statistik Desa
+                  </li>
+                </Reveal>
+                <Reveal>
+                  <li className="inline-flex items-center gap-x-2 font-semibold">
+                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                    Akses Tak Terbatas Data Desa
                   </li>
                 </Reveal>
               </ul>
-              <Button className="mt-2 w-fit" variant="solid" color="primary" size="large" icon={<EnvironmentOutlined />} onClick={() => navigate('/villageboundaries')}>
-                Lihat Batas Desa
-              </Button>
             </div>
           )}
 
           <div className="col-span-8 flex items-center justify-center lg:col-span-4">
-            <img src="/illustration/map.png" />
+            <img src="/illustration/feature.png" />
           </div>
         </div>
       </section>
@@ -384,7 +390,7 @@ const Home = () => {
                   </Card>
                 ))
               : article?.slice(0, 5).map((item, index) => (
-                  <Card onClick={() => navigate(`/article/detail/${item.slug}`)} key={index} className="col-span-10 md:col-span-5 lg:col-span-2" hoverable cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
+                  <Card onClick={() => navigate(`/news/detail/${item.slug}`)} key={index} className="col-span-10 md:col-span-5 lg:col-span-2" hoverable cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}>
                     <Reveal>
                       <b className="news-text">{item.title}</b>
                     </Reveal>
@@ -427,7 +433,7 @@ const Home = () => {
                 ))
               : enterpise?.slice(0, 5).map((item, index) => (
                   <Card
-                    onClick={() => navigate(`/village_enterprise/detail/${item.slug}`)}
+                    onClick={() => navigate(`/village_enterprises/detail/${item.slug}`)}
                     key={index}
                     className="col-span-10 w-full md:col-span-5 lg:col-span-2"
                     hoverable

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Article, LegalProducts, LetterType, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
+import { Article, LegalProducts, LetterType, Map, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -120,5 +120,12 @@ export default class LandingService {
 
   static async likeLettering(id) {
     return await api.put(`/menu-lapak/suka/${id}`);
+  }
+
+  static async getAllMap({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/landing/pemetaan`, { params });
+    if (!response.data) return response;
+    return { ...response, data: Map.fromApiData(response.data) };
   }
 }

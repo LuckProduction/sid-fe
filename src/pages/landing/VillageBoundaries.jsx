@@ -3,12 +3,15 @@ import { useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { LeftOutlined, PushpinOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Empty, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 import L from 'leaflet';
+
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const tenant = import.meta.env.VITE_TENANTS;
 
 const VillageBoundaries = () => {
   const { execute: fetchVillageBoundaries, data: villageBoundaries, isLoading } = useService(LandingService.getAllVillageBoundaries);
@@ -27,11 +30,11 @@ const VillageBoundaries = () => {
     fetchVillageBoundaries();
   }, [fetchVillageBoundaries]);
 
-  const formatGeoJsonUrl = (url) => {
+  const formatGeoJsonUrl = useCallback((url) => {
     if (!url) return null;
     const path = url.split('/storage/')[1];
-    return `http://desa1.api-example.govillage.id/geojson?filename=${path}`;
-  };
+    return baseUrl.replace('://', `://${tenant}.`) + `/geojson?filename=${path}`;
+  }, []);
 
   useEffect(() => {
     if (villageBoundaries?.administrative_file) {
@@ -40,7 +43,7 @@ const VillageBoundaries = () => {
         .then((data) => setGeojsonData(data))
         .catch((error) => console.error('Error fetching GeoJSON:', error));
     }
-  }, [villageBoundaries]);
+  }, [formatGeoJsonUrl, villageBoundaries]);
 
   useEffect(() => {
     if (villageBoundaries?.headvillage_coordinate) {

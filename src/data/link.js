@@ -31,24 +31,24 @@ export const landingLink = [
       },
       {
         label: 'Lapak BUMDes',
-        key: '/village_enterprise',
+        key: '/village_enterprises',
         element: Landing.VillageEnterprise
       },
       {
         label: 'Potensi',
-        key: '/village_potential',
+        key: '/village_potentials',
         element: Landing.VillagePotential
       }
     ]
   },
   {
     label: 'Surat Menyurat',
-    key: '/lettering',
+    key: '/letterings',
     element: Landing.Lettering
   },
   {
-    label: 'Penerima Bantuan',
-    key: '/beneficiary',
+    label: 'Bantuan',
+    key: '/public_assistances',
     element: Landing.BrowseBeneficiary
   },
   {
@@ -56,13 +56,28 @@ export const landingLink = [
     children: [
       {
         label: 'Statistik Penduduk',
-        key: '/resident_statistic',
+        key: '/resident_statistics',
         element: Landing.ResidentStatistic
       },
       {
         label: 'Statistik APBDes',
-        key: '/apbd_statistik',
+        key: '/apbd_statistics',
         element: Landing.ApbdStatistic
+      }
+    ]
+  },
+  {
+    label: 'Pemetaan',
+    children: [
+      {
+        label: 'Pemetaan',
+        key: '/maps',
+        element: Landing.Map
+      },
+      {
+        label: 'Batas Desa',
+        key: '/village_boundaries',
+        element: Landing.VillageBoundaries
       }
     ]
   }
