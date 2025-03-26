@@ -12,6 +12,7 @@ import { Notfound } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { LandingService } from './services';
 import { useEffect, useState } from 'react';
+import { ScrollToTop } from './components';
 
 function App() {
   const { user } = useAuth();
@@ -53,18 +54,22 @@ function App() {
     <RouterProvider
       router={createBrowserRouter([
         {
-          element: <LandingLayout />,
+          element: (
+            <>
+              <LandingLayout />
+              <ScrollToTop />
+            </>
+          ),
           children: [
-            // Tambahkan route dari landingLink
             ...flatLandingLinks.map(({ path, element: Element }) => ({
               path,
               element: <Element />
             })),
-            { path: '/article/detail/:slug', element: <DetailNews /> },
-            { path: '/village_enterprise/detail/:slug', element: <DetailVillageEnterprise /> },
-            { path: '/village_potential/detail/:slug', element: <DetailVillagePotential /> },
-            { path: '/lettering/browse', element: <Browse /> },
-            { path: '/lettering/submitletter', element: <SubmitLetter /> },
+            { path: '/news/detail/:slug', element: <DetailNews /> },
+            { path: '/village_enterprises/detail/:slug', element: <DetailVillageEnterprise /> },
+            { path: '/village_potentials/detail/:slug', element: <DetailVillagePotential /> },
+            { path: '/letterings/browse', element: <Browse /> },
+            { path: '/letterings/submitletter', element: <SubmitLetter /> },
             { path: '/villageboundaries', element: <VillageBoundaries /> },
             { path: '*', element: <Notfound /> }
           ]

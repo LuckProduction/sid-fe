@@ -59,46 +59,48 @@ const DetailNews = () => {
               </>
             )}
           </section>
-          <section className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-6 px-4 py-20">
-            <div className="flex flex-col items-end justify-between gap-y-6 md:flex-row">
-              <div className="flex w-full flex-col gap-y-2">
-                <Reveal>
-                  <p className="text-xl font-semibold">Berita Lainnya:</p>
-                </Reveal>
+          <section className="w-full bg-blue-500">
+            <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-6 px-4 py-20">
+              <div className="flex flex-col items-end justify-between gap-y-6 md:flex-row">
+                <div className="flex w-full flex-col gap-y-2">
+                  <Reveal>
+                    <p className="text-xl font-semibold text-white">Berita Lainnya:</p>
+                  </Reveal>
+                </div>
               </div>
-            </div>
-            <div className="grid grid-cols-10 gap-4">
-              {getAllArticle.isLoading
-                ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
-                    <Card className="col-span-10 md:col-span-5 lg:col-span-2" key={index}>
-                      <Skeleton active />
-                    </Card>
-                  ))
-                : article.map((item, index) => (
-                    <Card
-                      onClick={() => navigate(`/article/detail/${item.slug}`)}
-                      key={index}
-                      className="col-span-10 w-full md:col-span-5 lg:col-span-2"
-                      hoverable
-                      cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}
-                    >
-                      <Reveal>
-                        <b className="news-text">{item.title}</b>
-                      </Reveal>
-                      <Reveal>
-                        <div className="news-text mt-2">{parse(item.content)}</div>
-                      </Reveal>
-                      <div className="mt-6 flex flex-col gap-y-1">
-                        <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
-                        <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
-                          <EyeOutlined className="text-xs" />
-                          {item.seen}
+              <div className="grid grid-cols-10 gap-4">
+                {getAllArticle.isLoading
+                  ? Array.from({ length: 5 }, (_, i) => i).map((index) => (
+                      <Card className="col-span-10 md:col-span-5 lg:col-span-2" key={index}>
+                        <Skeleton active />
+                      </Card>
+                    ))
+                  : article.map((item, index) => (
+                      <Card
+                        onClick={() => navigate(`/news/detail/${item.slug}`)}
+                        key={index}
+                        className="col-span-10 w-full md:col-span-5 lg:col-span-2"
+                        hoverable
+                        cover={<img alt="example" style={{ height: '180px', objectFit: 'cover' }} src={item.image} />}
+                      >
+                        <Reveal>
+                          <b className="news-text">{item.title}</b>
+                        </Reveal>
+                        <Reveal>
+                          <div className="news-text mt-2">{parse(item.content)}</div>
+                        </Reveal>
+                        <div className="mt-6 flex flex-col gap-y-1">
+                          <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
+                          <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
+                            <EyeOutlined className="text-xs" />
+                            {item.seen}
+                          </div>
                         </div>
-                      </div>
-                    </Card>
-                  ))}
+                      </Card>
+                    ))}
+              </div>
+              <Pagination current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.per_page} />
             </div>
-            <Pagination current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.per_page} />
           </section>
         </>
       )}

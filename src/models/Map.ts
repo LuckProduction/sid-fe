@@ -12,6 +12,8 @@ export interface IncomingApiData {
   };
   deskripsi: string;
   konten: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface OutgoingApiData {
@@ -45,7 +47,9 @@ export default class Map extends Model {
       type: string;
     },
     public desc: string,
-    public content: string
+    public content: string,
+    public created_at: string,
+    public updated_at: string
   ) {
     super();
   }
@@ -62,7 +66,9 @@ export default class Map extends Model {
         type: apiData.kategori.tipe
       },
       apiData.deskripsi,
-      apiData.tipe === 'area' ? asset(apiData.konten) : apiData.konten
+      apiData.tipe === 'area' ? asset(apiData.konten) : apiData.konten,
+      apiData.created_at,
+      apiData.updated_at
     ) as ReturnType<T, IncomingApiData, Map>;
   }
 

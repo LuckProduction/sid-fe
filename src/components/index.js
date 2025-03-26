@@ -12,3 +12,4 @@ export { default as Footer } from './landing/Footer';
 
 export { default as DataLoader } from './DataLoader';
 export { default as Reveal } from './landing/Reveal';
+export { default as ScrollToTop } from './ScrollTop';

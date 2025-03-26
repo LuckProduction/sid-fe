@@ -7,7 +7,7 @@ import { Button, Card, Descriptions, Form, Input, Modal, Result, Tabs, Tag, Typo
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const BrowseBeneficiary = () => {
+const PublicAssistance = () => {
   const [modal, setModal] = useState({ isVisible: false, type: '' });
   const { execute: executePublicAssistanceStatistic, ...getAllPublicAssistanceStatistic } = useService(StatisticService.getAllPublicAssistanceStatistic);
   const [response, setResponse] = useState(null);
@@ -110,7 +110,7 @@ const BrowseBeneficiary = () => {
             kembali
           </button>
           <Reveal>
-            <Typography.Title style={{ color: '#fff' }}>Cari Penerima Bantuan</Typography.Title>
+            <Typography.Title style={{ color: '#fff' }}>Bantuan</Typography.Title>
           </Reveal>
           <Reveal>
             <div className="max-w-lg">
@@ -196,4 +196,4 @@ const BrowseBeneficiary = () => {
   );
 };
 
-export default BrowseBeneficiary;
+export default PublicAssistance;

@@ -62,7 +62,7 @@ const News = () => {
           <div className="grid grid-cols-10 gap-4">
             {article.map((item, index) => (
               <Card
-                onClick={() => navigate(`/article/detail/${item.slug}`)}
+                onClick={() => navigate(window.location.pathname + `/detail/${item.slug}`)}
                 key={index}
                 className="col-span-10 w-full md:col-span-5 lg:col-span-2"
                 hoverable
