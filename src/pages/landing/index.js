@@ -14,3 +14,4 @@ export { default as BrowseBeneficiary } from './PublicAssistance';
 export { default as VillageEnterprise } from './VillageEnterprise';
 export { default as DetailVillageEnterprise } from './DetailVillageEnterprise';
 export { default as Map } from './Map';
+export { default as CitizenReport } from './CitizenReport';

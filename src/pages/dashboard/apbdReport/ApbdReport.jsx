@@ -139,7 +139,7 @@ const ApbdReport = () => {
               });
             }}
           />
-          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/apbd-item`)} />
+          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/apbd-item/${record.id}`)} />
         </Space>
       )
     });

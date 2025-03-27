@@ -185,7 +185,7 @@ const Map = () => {
       </section>
       <section>
         <div className="mx-auto grid w-full max-w-screen-lg grid-cols-6 gap-4 px-6 py-24">
-          <Card className="col-span-2">
+          <Card className="col-span-6 lg:col-span-2">
             <div className="flex w-full flex-col">
               <div className="inline-flex items-center justify-between">
                 <div className="font-semibold">
@@ -205,7 +205,7 @@ const Map = () => {
               </div>
             </div>
           </Card>
-          <Card className="col-span-4">
+          <Card className="col-span-6 lg:col-span-4">
             <MapContainer center={[0.5, 122.5]} zoom={6} style={{ height: '500px', width: '100%' }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               {markerPoints.map((marker) => (
@@ -233,7 +233,7 @@ const Map = () => {
         }}
       >
         <div className="mt-4 grid w-full grid-cols-6 gap-4 p-2">
-          <div className="col-span-2 flex flex-col gap-y-2">
+          <div className="col-span-6 flex flex-col gap-y-2 lg:col-span-2">
             <div className="flex items-center">
               <Input.Search style={{ margin: 0 }} placeholder="Cari Data" allowClear onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
             </div>
@@ -253,7 +253,7 @@ const Map = () => {
               })}
             </div>
           </div>
-          <div className="col-span-4">
+          <div className="col-span-6 lg:col-span-4">
             {!tempSelectedMap ? (
               <Empty description="Tidak ada dataset yang dipilih" />
             ) : (

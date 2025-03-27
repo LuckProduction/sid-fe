@@ -3,7 +3,7 @@ import { useAuth, useService } from '@/hooks';
 import { InboxService } from '@/services';
 import generateBreadCrumb from '@/utils/generateBreadCrumb';
 import { BellOutlined, LogoutOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Badge, Breadcrumb, Button, Dropdown, Layout, Popover, Skeleton, Space, theme } from 'antd';
+import { Avatar, Badge, Breadcrumb, Button, Dropdown, Grid, Layout, Popover, Skeleton, Space, theme } from 'antd';
 import { Content, Header } from 'antd/es/layout/layout';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ const Dashboard = () => {
   const { pathname } = useLocation();
   const { execute, ...getAllInbox } = useService(InboxService.getAll);
   const readInbox = useService(InboxService.read);
+  const breakpoints = Grid.useBreakpoint();
 
   const fetchInbox = useCallback(() => {
     execute({
@@ -62,6 +63,8 @@ const Dashboard = () => {
     token: { colorBgContainer }
   } = theme.useToken();
 
+  const isDesktop = breakpoints.lg || breakpoints.xl || breakpoints.xxl;
+
   return (
     <Layout className="min-h-screen font-sans">
       <DashboardSider collapsed={collapsed} onCloseMenu={() => setCollapsed(true)} />
@@ -75,7 +78,7 @@ const Dashboard = () => {
           <div className="flex h-full w-full items-center justify-between px-4">
             <Button type="text" icon={<MenuOutlined />} onClick={() => setCollapsed(!collapsed)} color="default"></Button>
             <div className="flex items-center gap-x-2">
-              <Popover className="max-w-sm" trigger="click" placement="bottomRight" content={<Inbox inbox={inbox} token={token} fetchInbox={fetchInbox} />}>
+              <Popover className="max-w-sm" trigger="click" placement={isDesktop ? 'bottomLeft' : 'bottom'} content={<Inbox inbox={inbox} token={token} fetchInbox={fetchInbox} />}>
                 <Button
                   onClick={async () => {
                     await readInbox.execute({}, token);

@@ -25,7 +25,8 @@ enum Modul {
   MAP = 'Pemetaan',
   USERS = 'Pengguna',
   COMUNITY = 'Masyarakat',
-  VILLAGE_ENTERPRISE = 'Lapak BUMDes'
+  VILLAGE_ENTERPRISE = 'Lapak BUMDes',
+  CITIZEN_REPORT = 'Layanan Pengaduan Masyarakat'
 }
 
 export default Modul;

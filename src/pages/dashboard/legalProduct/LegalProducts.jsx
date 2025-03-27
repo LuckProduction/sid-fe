@@ -97,7 +97,7 @@ const LegalProducts = () => {
                   );
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchLegalProducts(token);
+                    fetchLegalProducts({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -191,7 +191,7 @@ const LegalProducts = () => {
                   const { isSuccess, message } = await deleteLegalProducts.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchLegalProducts(token);
+                    fetchLegalProducts({ token: token, page: pagination.page, per_page: pagination.per_page });
                   } else {
                     error('Gagal', message);
                   }
@@ -214,7 +214,6 @@ const LegalProducts = () => {
         const { message, isSuccess } = await deleteBatchLegalProducts.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchLegalProducts(token);
         } else {
           error('Gagal', message);
         }
@@ -231,7 +230,7 @@ const LegalProducts = () => {
         const { message, isSuccess } = await storeLegalProducts.execute({ ...values, assignment_date: dateFormatter(values.assignment_date), year: dateFormatter(values.year, 'year') }, token, values.document.file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchLegalProducts(token);
+          fetchLegalProducts({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }

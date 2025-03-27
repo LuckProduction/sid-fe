@@ -80,6 +80,11 @@ export const landingLink = [
         element: Landing.VillageBoundaries
       }
     ]
+  },
+  {
+    label: 'Pengaduan',
+    key: '/citizen_reports',
+    element: Landing.CitizenReport
   }
 ];
 
@@ -281,6 +286,12 @@ export const dashboardLink = [
         label: 'Permohonan Surat',
         element: Dashboard.SubmitLetter,
         permissions: [[Action.READ, Model.SubmitLetter]]
+      },
+      {
+        path: '/dashboard/citizen_report',
+        label: 'Pengaduan Masyarakat',
+        element: Dashboard.CitizenReport,
+        permissions: [[Action.READ, Model.CitizenReport]]
       }
     ]
   }

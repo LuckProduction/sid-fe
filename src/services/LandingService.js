@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Article, LegalProducts, LetterType, Map, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
+import { Article, CitizenReport, LegalProducts, LetterType, Map, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -127,5 +127,20 @@ export default class LandingService {
     const response = await api.get(`/landing/pemetaan`, { params });
     if (!response.data) return response;
     return { ...response, data: Map.fromApiData(response.data) };
+  }
+
+  static async getAllCitizenReports({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/layanan-pengaduan/landing`, { params });
+    if (!response.data) return response;
+    return { ...response, data: CitizenReport.fromApiData(response.data) };
+  }
+
+  static async storeCitizenReport(data, file) {
+    return await api.post(`/layanan-pengaduan`, { body: CitizenReport.toApiData(data), file: { dokumen: file } });
+  }
+
+  static async likeCitizenReport(id) {
+    return await api.put(`/layanan-pengaduan/suka/${id}`);
   }
 }

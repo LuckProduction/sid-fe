@@ -171,7 +171,7 @@ const VillageInstitution = () => {
               });
             }}
           />
-          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/institution_member`)} />
+          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/institution_member/${record.id}`)} />
         </Space>
       )
     });

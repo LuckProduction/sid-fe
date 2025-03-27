@@ -201,7 +201,7 @@ const PublicAssistance = () => {
               });
             }}
           />
-          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/beneficiary`)} />
+          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/beneficiary/${record.id}`)} />
         </Space>
       )
     });

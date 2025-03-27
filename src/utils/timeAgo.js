@@ -1,6 +1,6 @@
 function timeAgo(dateString) {
   const now = new Date();
-  const past = new Date(dateString);
+  const past = new Date(dateString + 'Z');
   const diffInSeconds = Math.floor((now - past) / 1000);
 
   const intervals = [
