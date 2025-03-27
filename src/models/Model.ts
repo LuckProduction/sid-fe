@@ -26,7 +26,8 @@ type ModelKeys =
   | 'pengguna_masyarakat'
   | 'lapak'
   | 'kategori'
-  | 'menu_lapak';
+  | 'menu_lapak'
+  | 'pengaduan';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -57,7 +58,8 @@ export default abstract class Model {
     pengguna_masyarakat: undefined,
     lapak: undefined,
     kategori: undefined,
-    menu_lapak: undefined
+    menu_lapak: undefined,
+    pengaduan: undefined
   };
 }
 

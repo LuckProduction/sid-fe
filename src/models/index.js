@@ -27,3 +27,4 @@ export { default as Officer } from './Officer';
 export { default as VillageBoundaries } from './VillageBoundaries';
 export { default as Comunity } from './Comunity';
 export { default as VillageEnterprise } from './VillageEnterprise';
+export { default as CitizenReport } from './CitizenReport';

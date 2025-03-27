@@ -98,7 +98,7 @@ const Family = () => {
     },
     {
       title: 'Aksi',
-      render: (_, record) => <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/detail`)} />
+      render: (_, record) => <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/detail/${record.id}`)} />
     }
   ];
 

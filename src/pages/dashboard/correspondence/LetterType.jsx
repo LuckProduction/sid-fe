@@ -148,7 +148,7 @@ const LetterType = () => {
               });
             }}
           />
-          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/${record.id}/lettering`)} />
+          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/lettering/${record.id}`)} />
         </Space>
       )
     });
