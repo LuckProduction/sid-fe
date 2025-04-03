@@ -1,186 +1,134 @@
 import { Crud, Reveal } from '@/components';
 import { useNotification, useService } from '@/hooks';
 import { LandingService } from '@/services';
+import { BASE_URL } from '@/utils/api';
 import { copyToClipboard } from '@/utils/clipBoard';
 import dateFormatter from '@/utils/dateFormatter';
+import helperJsonApi from '@/utils/helperJsonApi';
 import { mapLetterAttributesToFormFields } from '@/utils/letterAttributToForm';
-import { CloseCircleOutlined, CopyOutlined, LeftOutlined } from '@ant-design/icons';
+import { CopyOutlined, LeftOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Form, Input, Modal, Result, Select, Tooltip, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+const initialState = {
+  isModalOpen: false,
+  submitLoading: false,
+  formData: {},
+  modalStatus: 'initial',
+  isSubmitted: false,
+  letterTypeDetail: {}
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_MODAL_OPEN':
+      return { ...state, isModalOpen: action.payload };
+    case 'SET_SUBMIT_LOADING':
+      return { ...state, submitLoading: action.payload };
+    case 'SET_FORM_DATA':
+      return { ...state, formData: action.payload };
+    case 'SET_MODAL_STATUS':
+      return { ...state, modalStatus: action.payload };
+    case 'SET_IS_SUBMITTED':
+      return { ...state, isSubmitted: action.payload };
+    case 'SET_LETTER_TYPE_DETAIL':
+      return { ...state, letterTypeDetail: action.payload };
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
+};
 
 const SubmitLetter = () => {
   const navigate = useNavigate();
   const { error, success } = useNotification();
   const [form] = Form.useForm();
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  // State Management
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [modalStatus, setModalStatus] = useState('initial'); // 'initial' | 'success' | 'error'
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // Fetch Data
   const { execute: fetchLetterType, ...getAllLetterType } = useService(LandingService.getAllLetterType);
   const { execute: fetchLetterTypeDetail, ...getLetterTypeDetail } = useService(LandingService.getLetterTypeDetail);
   const searchResident = useService(LandingService.getResident);
-  const storeSubmitLetter = useService(LandingService.sumbitLetter);
 
   useEffect(() => {
     fetchLetterType();
   }, [fetchLetterType]);
 
   const LetterType = getAllLetterType.data ?? [];
-  const letterTypeDetail = getLetterTypeDetail.data ?? {};
 
-  // Handle Check Letter
+  useEffect(() => {
+    dispatch({ type: 'SET_LETTER_TYPE_DETAIL', payload: getLetterTypeDetail.data ?? {} });
+  }, [getLetterTypeDetail.data]);
+
   const handleCheckLetter = async (values) => {
-    setSubmitLoading(true);
     try {
       const { data, isSuccess } = await searchResident.execute({
         ...values,
         tanggal_lahir: dateFormatter(values.tanggal_lahir)
       });
-      setFormData(isSuccess && data ? { ...data, jenis_surat: values.jenis_surat } : {});
-      setModalStatus('initial');
-      setIsModalOpen(true);
+
+      dispatch({
+        type: 'SET_FORM_DATA',
+        payload: isSuccess && data ? { ...data, jenis_surat: values.jenis_surat } : {}
+      });
+
+      dispatch({ type: 'SET_MODAL_STATUS', payload: 'initial' });
+      dispatch({ type: 'SET_MODAL_OPEN', payload: true });
     } catch (err) {
       console.error('Terjadi kesalahan:', err);
-    } finally {
-      setSubmitLoading(false);
     }
   };
 
-  // Handle Submit Letter
   const handleSubmitLetter = async (values) => {
-    setSubmitLoading(true);
+    dispatch({ type: 'SET_SUBMIT_LOADING', payload: true });
+
     try {
       const formattedData = {
-        resident: formData.id,
-        letter_type: letterTypeDetail.id,
-        letter_attribute: letterTypeDetail.letter_attribut.map((attr) => ({
-          letter_attribute_id: attr.id,
-          content: values[attr.attribute]
-        }))
-      };
-      const { message, isSuccess, data } = await storeSubmitLetter.execute(formattedData);
+        master_penduduk_id: state.formData.id,
+        jenis_surat_id: state.letterTypeDetail.id,
+        atribut_permohonan_surat: await Promise.all(
+          state.letterTypeDetail.letter_attribut.map(async (attr) => {
+            const content = values[attr.attribute];
 
-      if (isSuccess) {
-        success('Berhasil', message);
-        setFormData(isSuccess && data ? { ...formData, token: data.token } : { ...formData });
-        setModalStatus('success');
-        setIsSubmitted(true);
+            if (content?.fileList?.length > 0) {
+              return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(content.fileList[0].originFileObj);
+                reader.onload = () => {
+                  resolve({
+                    atribut_surat_id: attr.id,
+                    konten: reader.result.split(',')[1]
+                  });
+                };
+              });
+            }
+            return { atribut_surat_id: attr.id, konten: values[attr.attribute] };
+          })
+        )
+      };
+
+      const response = await helperJsonApi(BASE_URL + '/permohonan-surat', formattedData);
+
+      if (response.status) {
+        success('Berhasil', response.message);
+        dispatch({ type: 'SET_FORM_DATA', payload: { ...state.formData, token: response.data.token } });
+        dispatch({ type: 'SET_MODAL_STATUS', payload: 'success' });
+        dispatch({ type: 'SET_IS_SUBMITTED', payload: true });
       } else {
-        error('Gagal', message);
-        setModalStatus('error');
-        setIsSubmitted(true);
+        error('Gagal', response.message);
+        dispatch({ type: 'SET_MODAL_STATUS', payload: 'error' });
+        dispatch({ type: 'SET_IS_SUBMITTED', payload: true });
       }
     } finally {
-      setSubmitLoading(false);
-      setIsModalOpen(true);
+      dispatch({ type: 'SET_SUBMIT_LOADING', payload: false });
+      dispatch({ type: 'SET_MODAL_OPEN', payload: true });
     }
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
-    setModalStatus('initial');
-    setFormData({});
+    dispatch({ type: 'RESET' });
     form.resetFields();
-  };
-
-  const renderModalContent = () => {
-    if (modalStatus === 'success') {
-      return (
-        <Result status="success" title="Permohonan Berhasil!" subTitle="Surat Anda telah berhasil dibuat dan diproses.">
-          <div className="flex flex-col items-center justify-center gap-y-4">
-            <div className="desc inline-flex w-full items-center justify-center gap-x-6">
-              <b className="text-5xl text-gray-500">{formData.token}</b>
-              <Tooltip title={'Salin Ke Clipboard'}>
-                <button onClick={() => copyToClipboard(formData.token)} className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-gray-300 text-gray-400">
-                  <CopyOutlined />
-                </button>
-              </Tooltip>
-            </div>
-          </div>
-        </Result>
-      );
-    }
-
-    if (modalStatus === 'error') {
-      return (
-        <Result
-          status="error"
-          title="Permohonan Gagal!"
-          subTitle="Terjadi kesalahan dalam proses pengajuan surat. Coba lagi."
-          extra={
-            <Button type="primary" onClick={handleModalClose}>
-              Coba Lagi
-            </Button>
-          }
-        />
-      );
-    }
-
-    return Object.keys(formData).length === 0 ? (
-      <>
-        <Result status="error" title="Gagal Mengambil Data" subTitle="Kami tidak dapat menemukan data kependudukan Anda. Coba lagi.">
-          <div>
-            <Typography.Paragraph
-              strong
-              style={{
-                fontSize: 16
-              }}
-            >
-              Terdapat kesalahan dalam pengajuan Anda:
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              <CloseCircleOutlined className="me-2 text-red-500" />
-              Data yang Anda masukkan mungkin salah. Silakan periksa kembali.
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              <CloseCircleOutlined className="me-2 text-red-500" />
-              Anda tidak terdaftar dalam database kependudukan. Hubungi petugas untuk langkah lebih lanjut.
-            </Typography.Paragraph>
-            <Typography.Paragraph>
-              <CloseCircleOutlined className="me-2 text-red-500" />
-              Server sedang mengalami masalah. Silakan coba lagi nanti.
-            </Typography.Paragraph>
-          </div>
-        </Result>
-        <div className="flex w-full items-center justify-end gap-x-2">
-          <Button type="default" onClick={() => setIsModalOpen(false)}>
-            Batal
-          </Button>
-          <Button
-            variant="solid"
-            color="primary"
-            onClick={() => {
-              setIsModalOpen(false);
-            }}
-          >
-            Coba Lagi
-          </Button>
-        </div>
-      </>
-    ) : (
-      <Result
-        status="success"
-        title="Lanjutkan Membuat Surat"
-        subTitle="Anda terdaftar dalam database kependudukan desa. Silakan lanjutkan."
-        extra={
-          <Button
-            type="primary"
-            onClick={() => {
-              fetchLetterTypeDetail(formData.jenis_surat);
-              setIsModalOpen(false);
-            }}
-          >
-            Lanjutkan
-          </Button>
-        }
-      />
-    );
   };
 
   return (
@@ -252,37 +200,76 @@ const SubmitLetter = () => {
                   ))}
                 </Select>
               </Form.Item>
-              <Button className="w-full lg:w-fit" loading={submitLoading} variant="solid" color="primary" size="large" htmlType="submit">
+              <Button className="w-full lg:w-fit" loading={searchResident.isLoading} variant="solid" color="primary" size="large" htmlType="submit">
                 Proses
               </Button>
             </Form>
           </Card>
-          {!isSubmitted && Object.keys(letterTypeDetail).length > 0 && (
+          {!state.isSubmitted && Object.keys(state.letterTypeDetail).length > 0 && (
             <Card>
-              <Typography.Title level={5}>{letterTypeDetail.letter_name}</Typography.Title>
-              {mapLetterAttributesToFormFields(letterTypeDetail.letter_attribut).length === 0 ? (
-                <>
-                  <Result
-                    status="info"
-                    title="Kirim Permohonan Surat!"
-                    subTitle="Surat yang dipilih tidak memiliki atribut surat, silahkan klik tombol kirim untuk melanjutkan"
-                    extra={
-                      <Button type="primary" onClick={handleSubmitLetter}>
-                        Kirim Permohonan
-                      </Button>
-                    }
-                  />
-                </>
+              <Typography.Title level={5}>{state.letterTypeDetail.letter_name}</Typography.Title>
+              {mapLetterAttributesToFormFields(state.letterTypeDetail.letter_attribut).length === 0 ? (
+                <Result
+                  status="info"
+                  title="Kirim Permohonan Surat!"
+                  subTitle="Surat yang dipilih tidak memiliki atribut surat, silahkan klik tombol kirim untuk melanjutkan"
+                  extra={
+                    <Button type="primary" onClick={handleSubmitLetter}>
+                      Kirim Permohonan
+                    </Button>
+                  }
+                />
               ) : (
-                <Crud formFields={mapLetterAttributesToFormFields(letterTypeDetail.letter_attribut)} type="create" onSubmit={handleSubmitLetter} isLoading={submitLoading} />
+                <Crud formFields={mapLetterAttributesToFormFields(state.letterTypeDetail.letter_attribut)} type="create" onSubmit={handleSubmitLetter} isLoading={state.submitLoading} />
               )}
             </Card>
           )}
         </div>
       </section>
 
-      <Modal width={700} open={isModalOpen} onCancel={handleModalClose} footer={null}>
-        {renderModalContent()}
+      <Modal width={700} open={state.isModalOpen} onCancel={handleModalClose} footer={null}>
+        {state.modalStatus === 'success' ? (
+          <Result status="success" title="Permohonan Berhasil!" subTitle="Surat Anda telah berhasil dibuat dan diproses.">
+            <div className="flex flex-col items-center justify-center gap-y-4">
+              <div className="desc inline-flex w-full items-center justify-center gap-x-6">
+                <b className="text-5xl text-gray-500">{state.formData.token}</b>
+                <Tooltip title="Salin Ke Clipboard">
+                  <button onClick={() => copyToClipboard(state.formData.token)} className="flex h-12 w-12 items-center justify-center rounded-md border-2 border-gray-300 text-gray-400">
+                    <CopyOutlined />
+                  </button>
+                </Tooltip>
+              </div>
+            </div>
+          </Result>
+        ) : state.modalStatus === 'error' ? (
+          <Result
+            status="error"
+            title="Permohonan Gagal!"
+            subTitle="Terjadi kesalahan dalam proses pengajuan surat. Coba lagi."
+            extra={
+              <Button type="primary" onClick={handleModalClose}>
+                Coba Lagi
+              </Button>
+            }
+          />
+        ) : (
+          <Result
+            status="success"
+            title="Lanjutkan Membuat Surat"
+            subTitle="Anda terdaftar dalam database kependudukan desa. Silakan lanjutkan."
+            extra={
+              <Button
+                type="primary"
+                onClick={() => {
+                  fetchLetterTypeDetail(state.formData.jenis_surat);
+                  dispatch({ type: 'SET_MODAL_OPEN', payload: false });
+                }}
+              >
+                Lanjutkan
+              </Button>
+            }
+          />
+        )}
       </Modal>
     </>
   );
