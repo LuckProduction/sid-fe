@@ -54,7 +54,7 @@ const Browse = () => {
               className="text-xs"
               color="primary"
               variant="solid"
-              onClick={() => window.open(`https://desa1.api-example.govillage.id/api/permohonan-surat/download/${item.token}`, '_blank')}
+              onClick={() => window.open(`https://desa1.api-example.go-village.id/api/permohonan-surat/download/${item.token}`, '_blank')}
             >
               Unduh
             </Button>

@@ -62,33 +62,33 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_NEW }}
 
       - name: Add SSH Host Key
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p 2223 govillage.id >> ~/.ssh/known_hosts
+          ssh-keyscan -p 2223 go-village.id >> ~/.ssh/known_hosts
 
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          ssh -p 2223 govz9813@govillage.id << 'EOF'
-            if [ ! -d "/home/govz9813/public_html/staging/example.govillage.id" ]; then
-              mkdir -p /home/govz9813/public_html/staging/example.govillage.id
+          ssh -p 2223 govy6997@go-village.id << 'EOF'
+            if [ ! -d "/home/govy6997/public_html/staging/example.go-village.id" ]; then
+              mkdir -p /home/govy6997/public_html/staging/example.go-village.id
             fi
-            rm -rf /home/govz9813/public_html/staging/example.govillage.id/*
+            rm -rf /home/govy6997/public_html/staging/example.go-village.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/staging/example.govillage.id/
+          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
-          ssh -p 2223 govz9813@govillage.id << 'EOF'
-            if [ ! -d "/home/govz9813/public_html/production/sukma.govillage.id" ]; then
-              mkdir -p /home/govz9813/public_html/production/sukma.govillage.id
+          ssh -p 2223 govy6997@go-village.id << 'EOF'
+            if [ ! -d "/home/govy6997/public_html/production/sukma.go-village.id" ]; then
+              mkdir -p /home/govy6997/public_html/production/sukma.go-village.id
             fi
-            rm -rf /home/govz9813/public_html/production/sukma.govillage.id/*
+            rm -rf /home/govy6997/public_html/production/sukma.go-village.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govz9813@govillage.id:/home/govz9813/public_html/production/sukma.govillage.id/
+          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
