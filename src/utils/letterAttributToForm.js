@@ -17,7 +17,6 @@ const getInputType = (type) => {
 
 export const mapLetterAttributesToFormFields = (letter_attribut) => {
   return letter_attribut.map((attr) => {
-    // Khusus untuk type 'dokumen'
     if (attr.type === 'dokumen') {
       return {
         label: attr.label,
@@ -35,12 +34,11 @@ export const mapLetterAttributesToFormFields = (letter_attribut) => {
             }
           ];
         },
-        accept: ['.png', '.jpg', '.jpeg', 'webp'],
+        accept: ['.pdf'],
         rules: attr.required === 'ya' ? [{ required: true, message: `${attr.label} harus diisi` }] : []
       };
     }
 
-    // Untuk type selain 'dokumen'
     return {
       label: attr.label,
       name: attr.attribute,

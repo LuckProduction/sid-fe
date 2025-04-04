@@ -1,6 +1,7 @@
 import { Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
+import { BASE_URL } from '@/utils/api';
 import { CaretRightOutlined, DownloadOutlined, MailOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Collapse, Descriptions, Empty, Form, Input, Modal, Result, Steps, theme, Typography } from 'antd';
 import { useState } from 'react';
@@ -47,15 +48,7 @@ const Browse = () => {
               <b>{item.token}</b>
               <small>{item.jenis_surat.nama_surat}</small>
             </div>
-            <Button
-              disabled={item.status !== 'selesai'}
-              icon={<DownloadOutlined />}
-              size="small"
-              className="text-xs"
-              color="primary"
-              variant="solid"
-              onClick={() => window.open(`https://desa1.api-example.go-village.id/api/permohonan-surat/download/${item.token}`, '_blank')}
-            >
+            <Button disabled={item.status !== 'selesai'} icon={<DownloadOutlined />} size="small" className="text-xs" color="primary" variant="solid" onClick={() => window.open(`${BASE_URL}/permohonan-surat/download/${item.token}`, '_blank')}>
               Unduh
             </Button>
           </div>

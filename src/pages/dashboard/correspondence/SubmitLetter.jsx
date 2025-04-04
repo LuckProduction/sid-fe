@@ -9,6 +9,7 @@ import { SubmitLetter as SubmitLetterModel } from '@/models';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DownloadOutlined } from '@ant-design/icons';
+import asset from '@/utils/asset';
 
 const { UPDATE, DELETE } = Action;
 
@@ -43,6 +44,12 @@ const SubmitLetter = () => {
 
   const submitLetter = getAllSubmitLetter.data ?? [];
   const letterType = getAllLetterType.data ?? [];
+
+  const isDocumentPath = (content) => {
+    // eslint-disable-next-line no-useless-escape
+    const regex = /^(.*\/)?[^\/]+\.(pdf|docx?|xlsx?|pptx?)$/i;
+    return regex.test(content);
+  };
 
   const Column = [
     {
@@ -80,6 +87,12 @@ const SubmitLetter = () => {
             return <Tag color="error">Undifined</Tag>;
         }
       }
+    },
+    {
+      title: 'Dibuat',
+      dataIndex: 'created_at',
+      sorter: (a, b) => a.created_at.length - b.created_at.length,
+      searchable: true
     }
   ];
 
@@ -193,7 +206,20 @@ const SubmitLetter = () => {
                         dataSource={record.letter_attribute}
                         renderItem={(item) => (
                           <List.Item>
-                            <List.Item.Meta title={item.attribute_name} description={item.content} />
+                            <List.Item.Meta
+                              title={item.attribute_name}
+                              description={
+                                isDocumentPath(item.content) ? (
+                                  <a href={asset(item.content)} download>
+                                    <Button type="primary" icon={<DownloadOutlined />}>
+                                      Download Dokumen
+                                    </Button>
+                                  </a>
+                                ) : (
+                                  item.content
+                                )
+                              }
+                            />
                           </List.Item>
                         )}
                       />

@@ -19,7 +19,7 @@ const CariSurat = () => {
             <p className="max-w-xs text-center text-sm text-white">Cek status surat Anda kapan saja dengan token unik—mudah, cepat, tanpa ribet!</p>
           </Reveal>
           <Reveal>
-            <Button onClick={() => navigate('/lettering/browse')} shape="round" variant="solid" size="large" icon={<SearchOutlined />}>
+            <Button onClick={() => navigate(window.location.pathname + '/browse')} shape="round" variant="solid" size="large" icon={<SearchOutlined />}>
               Mulai Cari Surat
             </Button>
           </Reveal>

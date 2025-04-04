@@ -3,7 +3,7 @@ import * as Model from '@/models';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
-import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, GiftOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
+import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 
 export const landingLink = [
   {
@@ -164,19 +164,6 @@ export const dashboardLink = [
     ]
   },
   {
-    label: 'Lapak BUMDes',
-    icon: ShopOutlined,
-    children: [
-      {
-        path: '/dashboard/village_enterprise',
-        label: 'Lapak BUMDes',
-        element: Dashboard.VillageEnterprise,
-        // FIX: UPDATE TO HAVE A PERMISSION
-        permissions: [[Action.READ, Model.VillageEnterprise]]
-      }
-    ]
-  },
-  {
     label: 'Perangkat Desa',
     icon: IdcardOutlined,
     children: [
@@ -224,18 +211,6 @@ export const dashboardLink = [
     ]
   },
   {
-    label: 'Bantuan',
-    icon: GiftOutlined,
-    children: [
-      {
-        path: '/dashboard/public_assistance',
-        label: 'Bantuan',
-        element: Dashboard.PublicAssistance,
-        permissions: [[Action.READ, Model.PublicAssistance]]
-      }
-    ]
-  },
-  {
     label: 'Keuangan',
     icon: DollarOutlined,
     children: [
@@ -272,12 +247,12 @@ export const dashboardLink = [
     ]
   },
   {
-    label: 'Layanan Administratif',
+    label: 'Layanan Masyarakat',
     icon: FileOutlined,
     children: [
       {
         path: '/dashboard/correspondence',
-        label: 'Surat Menyurat',
+        label: 'Jenis Surat',
         element: Dashboard.LetterType,
         permissions: [[Action.READ, Model.LetterTemplate]]
       },
@@ -292,6 +267,18 @@ export const dashboardLink = [
         label: 'Pengaduan Masyarakat',
         element: Dashboard.CitizenReport,
         permissions: [[Action.READ, Model.CitizenReport]]
+      },
+      {
+        path: '/dashboard/village_enterprise',
+        label: 'Lapak BUMDes',
+        element: Dashboard.VillageEnterprise,
+        permissions: [[Action.READ, Model.VillageEnterprise]]
+      },
+      {
+        path: '/dashboard/public_assistance',
+        label: 'Bantuan Masyarakat',
+        element: Dashboard.PublicAssistance,
+        permissions: [[Action.READ, Model.PublicAssistance]]
       }
     ]
   }

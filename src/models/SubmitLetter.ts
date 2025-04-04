@@ -16,6 +16,7 @@ export interface IncomingApiData {
   }[];
   status: string;
   link_download: string | null;
+  created_at: string;
 }
 
 export interface OutgoingApiData {
@@ -76,7 +77,8 @@ export default class SubmitLetter extends Model {
       content: string;
     }[],
     public status: string,
-    public download_link: string | null
+    public download_link: string | null,
+    public created_at: string
   ) {
     super();
   }
@@ -112,7 +114,8 @@ export default class SubmitLetter extends Model {
         content: item.konten
       })),
       apiData.status,
-      apiData.link_download
+      apiData.link_download,
+      apiData.created_at
     ) as ReturnType<T, IncomingApiData, SubmitLetter>;
   }
 

@@ -1,7 +1,7 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CitizenReportService } from '@/services';
-import { Card, Space, Tag } from 'antd';
+import { Card, Space, Tag, Tooltip } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { CitizenReport as CitizenReportModel } from '@/models';
 import Modul from '@/constants/Modul';
@@ -62,7 +62,7 @@ const CitizenReport = () => {
       dataIndex: 'created_at',
       sorter: (a, b) => a.created_at.length - b.created_at.length,
       searchable: true,
-      render: (_, record) => timeAgo(record.created_at)
+      render: (record) => <Tooltip title={record}>{timeAgo(record)}</Tooltip>
     },
     {
       title: 'Status',
