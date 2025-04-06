@@ -187,7 +187,7 @@ const CitizenReport = () => {
                       title: `Buat Pengaduan`,
                       formFields: createFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await storeCitizenReport.execute(values, values.doc.file);
+                        const { message, isSuccess } = await storeCitizenReport.execute(values, values.doc?.file ? values.doc.file : null);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchCitizenReport({ page: pagination.page, per_page: pagination.per_page });

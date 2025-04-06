@@ -137,7 +137,12 @@ export default class LandingService {
   }
 
   static async storeCitizenReport(data, file) {
-    return await api.post(`/layanan-pengaduan`, { body: CitizenReport.toApiData(data), file: { dokumen: file } });
+    const payload = {
+      body: CitizenReport.toApiData(data),
+      ...(file && { file: { dokumen: file } })
+    };
+
+    return await api.post(`/layanan-pengaduan`, payload);
   }
 
   static async likeCitizenReport(id) {

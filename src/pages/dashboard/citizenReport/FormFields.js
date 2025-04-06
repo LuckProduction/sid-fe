@@ -23,10 +23,6 @@ export const statusFormFields = () => [
         value: 'verifikasi'
       },
       {
-        label: 'Publikasi',
-        value: 'publikasi'
-      },
-      {
         label: 'Diproses',
         value: 'diproses'
       },
@@ -77,18 +73,13 @@ export const createFormFields = () => [
         }
       ];
     },
-    accept: ['.png', '.jpg', '.jpeg', 'webp', '.pdf'],
-    rules: [{ required: true, message: 'Dokumen harus diisi' }]
+    accept: ['.png', '.jpg', '.jpeg', 'webp', '.pdf']
   },
   {
     label: `NIK Pengadu `,
     name: 'nik',
     type: InputType.TEXT,
     rules: [
-      {
-        required: true,
-        message: 'NIK wajib di isi!'
-      },
       {
         pattern: /^[0-9]+$/,
         message: 'NIK harus berupa angka !'

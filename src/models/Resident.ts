@@ -18,6 +18,13 @@ export interface IncomingApiData {
     status: 'aktif' | 'nonaktif';
     sasaran_program: string;
   }[];
+  wajib_pajak: {
+    nama_pajak: string;
+    status: 'lunas' | 'belum bayar';
+    tahun: string;
+    tanggal_mulai: string;
+    tanggal_akhir: string;
+  }[];
   alamat_pendidikan?: {
     alamat_kk: string;
     dusun_id: number;
@@ -143,6 +150,13 @@ export default class Resident extends Model {
       status: 'aktif' | 'nonaktif';
       program_target: string;
     }[],
+    public tax: {
+      tax_name: string;
+      status: 'lunas' | 'belum bayar';
+      year: string;
+      date_start: string;
+      date_end: string;
+    }[],
     public address?: {
       address_kk: string;
       hamlet_id: number;
@@ -205,6 +219,13 @@ export default class Resident extends Model {
         source_funding: item.asal_dana,
         status: item.status,
         program_target: item.sasaran_program
+      })),
+      apiData.wajib_pajak?.map((item) => ({
+        tax_name: item.nama_pajak,
+        year: item.tahun,
+        status: item.status,
+        date_start: item.tanggal_mulai,
+        date_end: item.tanggal_akhir
       })),
       apiData.alamat_pendidikan
         ? {

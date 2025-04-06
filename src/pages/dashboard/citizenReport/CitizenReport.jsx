@@ -80,7 +80,7 @@ const CitizenReport = () => {
           case 'diproses':
             return <Tag color="blue-inverse">Diproses</Tag>;
           case 'selesai':
-            return <Tag color="geekblue ">Selesai</Tag>;
+            return <Tag color="geekblue">Selesai</Tag>;
           default:
             return <Tag color="error">Undifined</Tag>;
         }

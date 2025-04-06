@@ -1,8 +1,8 @@
 import { DataLoader } from '@/components';
 import { useAuth, useService } from '@/hooks';
 import { ResidentService } from '@/services';
-import { BookOutlined, GiftOutlined, GroupOutlined, PushpinOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
-import { Card, Descriptions, Empty, Image, Menu, Typography } from 'antd';
+import { BookOutlined, DollarOutlined, GiftOutlined, GroupOutlined, PushpinOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Card, Descriptions, Empty, Image, Menu, Tag, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -57,6 +57,9 @@ const Detail = () => {
                 </Menu.Item>
                 <Menu.Item key="bantuan" icon={<GiftOutlined />}>
                   Bantuan
+                </Menu.Item>
+                <Menu.Item key="wajib_pajak" icon={<DollarOutlined />}>
+                  Wajib Pajak
                 </Menu.Item>
               </Menu>
             </Card>
@@ -125,6 +128,26 @@ const Detail = () => {
                         <Descriptions.Item label="Sumber Dana Bantuan">{item.source_funding}</Descriptions.Item>
                         <Descriptions.Item label="Target Program Bantuan">{item.program_target}</Descriptions.Item>
                         <Descriptions.Item label="Status Bantuan">{item.status}</Descriptions.Item>
+                      </Descriptions>
+                    </Card>
+                  ))}
+                </div>
+              )
+            ) : activeMenu === 'wajib_pajak' ? (
+              resident?.tax?.length === 0 ? (
+                <Card>
+                  <Empty />
+                </Card>
+              ) : (
+                <div className="flex flex-col gap-y-2">
+                  {resident?.tax?.map((item, index) => (
+                    <Card key={index} className="w-full" title={`${item.tax_name} - ${item.year}`}>
+                      <Descriptions column={1} bordered>
+                        <Descriptions.Item label="Status Pajak">
+                          {item.status === 'lunas' ? <Tag color="blue">Lunas</Tag> : item.status === 'belum bayar' ? <Tag color="warning">Belum Lunas</Tag> : <Tag color="error">Undefined</Tag>}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Tanggal Mulai Pajak">{item.date_start}</Descriptions.Item>
+                        <Descriptions.Item label="Tanggal Akhir Pajak">{item.date_end}</Descriptions.Item>
                       </Descriptions>
                     </Card>
                   ))}

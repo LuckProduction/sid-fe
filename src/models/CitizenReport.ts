@@ -27,7 +27,7 @@ export interface IncomingApiData {
 export interface OutgoingApiData {
   judul_pengaduan: string;
   deskripsi: string;
-  dokumen: string;
+  dokumen?: string;
   nik?: string;
   status: string;
 }
@@ -35,7 +35,7 @@ export interface OutgoingApiData {
 interface FormValues {
   report_title: string;
   desc: string;
-  doc: string;
+  doc?: string;
   nik?: string;
   status: string;
 }
@@ -113,8 +113,8 @@ export default class CitizenReport extends Model {
     const apiData: OutgoingApiData = {
       judul_pengaduan: citizenReport.report_title,
       deskripsi: citizenReport.desc,
-      dokumen: citizenReport.doc,
-      ...(citizenReport.nik ? { _method: citizenReport.nik } : {}),
+      ...(citizenReport.doc ? { dokumen: citizenReport.doc } : {}),
+      ...(citizenReport.nik ? { nik: citizenReport.nik } : {}),
       status: citizenReport.status
     };
 
