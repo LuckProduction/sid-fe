@@ -26,7 +26,10 @@ enum Modul {
   USERS = 'Pengguna',
   COMUNITY = 'Masyarakat',
   VILLAGE_ENTERPRISE = 'Lapak BUMDes',
-  CITIZEN_REPORT = 'Layanan Pengaduan Masyarakat'
+  CITIZEN_REPORT = 'Pengaduan',
+  TAX = 'Pajak',
+  TAX_PERIOD = 'Periode Pajak',
+  TAX_PARTICIPANT = 'Wajib Pajak'
 }
 
 export default Modul;

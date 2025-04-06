@@ -76,11 +76,11 @@ const CitizenReport = () => {
           case 'verifikasi':
             return <Tag color="warning">Verifikasi</Tag>;
           case 'publikasi':
-            return <Tag color="warning">Publikasi</Tag>;
+            return <Tag color="green">Publikasi</Tag>;
           case 'diproses':
-            return <Tag color="warning">Diproses</Tag>;
+            return <Tag color="blue-inverse">Diproses</Tag>;
           case 'selesai':
-            return <Tag color="warning">Selesai</Tag>;
+            return <Tag color="geekblue ">Selesai</Tag>;
           default:
             return <Tag color="error">Undifined</Tag>;
         }

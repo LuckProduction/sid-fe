@@ -28,7 +28,7 @@ export interface OutgoingApiData {
   judul_pengaduan: string;
   deskripsi: string;
   dokumen: string;
-  nik: string;
+  nik?: string;
   status: string;
 }
 
@@ -36,7 +36,7 @@ interface FormValues {
   report_title: string;
   desc: string;
   doc: string;
-  nik: string;
+  nik?: string;
   status: string;
 }
 
@@ -114,7 +114,7 @@ export default class CitizenReport extends Model {
       judul_pengaduan: citizenReport.report_title,
       deskripsi: citizenReport.desc,
       dokumen: citizenReport.doc,
-      nik: citizenReport.nik,
+      ...(citizenReport.nik ? { _method: citizenReport.nik } : {}),
       status: citizenReport.status
     };
 

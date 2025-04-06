@@ -1,10 +1,9 @@
 import { Reveal } from '@/components';
-import Modul from '@/constants/Modul';
-import { useCrudModal, useNotification, useService } from '@/hooks';
+import { useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { DownloadOutlined, LeftOutlined, LikeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Input, Skeleton, Timeline, Tooltip, Typography } from 'antd';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { DownloadOutlined, InfoCircleFilled, LeftOutlined, LikeOutlined, PlusOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Image, Input, Modal, Pagination, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createFormFields } from '../dashboard/citizenReport/FormFields';
 import timeAgo from '@/utils/timeAgo';
@@ -15,12 +14,11 @@ const CitizenReport = () => {
   const { success, error } = useNotification();
   const { execute, ...getAllCitizenReport } = useService(LandingService.getAllCitizenReports);
   const [filterValues, setFilterValues] = useState({ search: '', status: null });
-  const [pagination, setPagination] = useState({ page: 1, per_page: 10 });
   const [showReplies, setShowReplies] = useState({});
+  const pagination = usePagination({ totalData: getAllCitizenReport.totalData });
   const storeCitizenReport = useService(LandingService.storeCitizenReport);
   const likeCitizenReport = useService(LandingService.likeCitizenReport);
-
-  const sentinelRef = useRef(null);
+  const [clueModal, setClueModal] = useState({ isModalOpen: false });
 
   const fetchCitizenReport = useCallback(() => {
     execute({
@@ -43,32 +41,6 @@ const CitizenReport = () => {
       [reportId]: !prevState[reportId]
     }));
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setPagination((prev) => ({
-            ...prev,
-            per_page: prev.per_page + 10 // Tambah jumlah data yang diambil
-          }));
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    const currentSentinel = sentinelRef.current;
-
-    if (currentSentinel) {
-      observer.observe(currentSentinel);
-    }
-
-    return () => {
-      if (currentSentinel) {
-        observer.unobserve(currentSentinel);
-      }
-    };
-  }, []);
 
   return (
     <>
@@ -100,20 +72,7 @@ const CitizenReport = () => {
                 variant="solid"
                 color="primary"
                 onClick={() => {
-                  modal.create({
-                    title: `Tambah ${Modul.CITIZEN_REPORT}`,
-                    formFields: createFormFields,
-                    onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeCitizenReport.execute(values, values.doc.file);
-                      if (isSuccess) {
-                        success('Berhasil', message);
-                        fetchCitizenReport({ page: pagination.page, per_page: pagination.per_page });
-                      } else {
-                        error('Gagal', message);
-                      }
-                      return isSuccess;
-                    }
-                  });
+                  setClueModal({ isModalOpen: true });
                 }}
               />
             </Tooltip>
@@ -183,9 +142,70 @@ const CitizenReport = () => {
             ))}
           </div>
           {getAllCitizenReport.isLoading && <Skeleton active className="mt-4" />}
+          <div className="flex w-full items-center justify-center">
+            <Pagination current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.per_page} />
+          </div>
         </div>
+        <Modal width={700} open={clueModal.isModalOpen} onCancel={() => setClueModal({ ...clueModal, isModalOpen: false })} footer={null}>
+          <Result status="info" title="Buat Pengaduan" subTitle="Silakan buat pengaduan Anda dengan penuh tanggung jawab.">
+            <div className="desc">
+              <Typography.Paragraph>
+                <Typography.Text
+                  strong
+                  style={{
+                    fontSize: 16
+                  }}
+                >
+                  Hal-hal yang perlu diperhatikan sebelum membuat pengaduan:
+                </Typography.Text>
+              </Typography.Paragraph>
+              <Typography.Paragraph>
+                <InfoCircleFilled className="text-blue-500" /> Pastikan pengaduan berkaitan dengan kejadian yang <b>aktual</b> atau benar-benar terjadi.
+              </Typography.Paragraph>
+              <Typography.Paragraph>
+                <InfoCircleFilled className="text-blue-500" /> Sampaikan informasi secara <b>jelas dan informatif</b>, agar mudah dipahami dan ditindaklanjuti.
+              </Typography.Paragraph>
+              <Typography.Paragraph>
+                <InfoCircleFilled className="text-blue-500" /> Isi kolom NIK jika Anda ingin pengaduan disampaikan secara <b>non-anonim</b> (dengan identitas).
+                <br />
+                <Image src="/illustration/pengaduan-nonanonim.png" />
+              </Typography.Paragraph>
+              <Typography.Paragraph>
+                <InfoCircleFilled className="text-blue-500" /> Biarkan kolom NIK kosong jika Anda ingin pengaduan tetap <b>anonim</b> (tanpa menyebut identitas).
+                <br />
+                <Image src="/illustration/pengaduan-anonim.png" />
+              </Typography.Paragraph>
+              <div className="flex w-full items-center justify-center">
+                <Button
+                  className="mt-4 w-full"
+                  color="primary"
+                  variant="solid"
+                  size="large"
+                  onClick={() => {
+                    setClueModal({ isModalOpen: false });
+                    modal.create({
+                      title: `Buat Pengaduan`,
+                      formFields: createFormFields,
+                      onSubmit: async (values) => {
+                        const { message, isSuccess } = await storeCitizenReport.execute(values, values.doc.file);
+                        if (isSuccess) {
+                          success('Berhasil', message);
+                          fetchCitizenReport({ page: pagination.page, per_page: pagination.per_page });
+                        } else {
+                          error('Gagal', message);
+                        }
+                        return isSuccess;
+                      }
+                    });
+                  }}
+                >
+                  Saya Siap Mengajukan Pengaduan
+                </Button>
+              </div>
+            </div>
+          </Result>
+        </Modal>
       </section>
-      <div ref={sentinelRef} className="h-10 w-full"></div>
     </>
   );
 };

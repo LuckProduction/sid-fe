@@ -1,22 +1,22 @@
 /* eslint-disable no-unused-vars */
-import { CitizenReport } from '@/models';
+import { TaxPeriod } from '@/models';
 import api from '@/utils/api';
 
-export default class CitizenReportService {
+export default class TaxPeriodService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: CitizenReport[];
+   *  data?: TaxPeriod[];
    * }>}
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/layanan-pengaduan', { token, params });
+    const response = await api.get('/periode-pajak', { token, params });
     if (!response.data) return response;
-    return { ...response, data: CitizenReport.fromApiData(response.data) };
+    return { ...response, data: TaxPeriod.fromApiData(response.data) };
   }
 
   /**
@@ -25,17 +25,17 @@ export default class CitizenReportService {
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: CitizenReport[];
+   *  data?: PublicTax[];
    * }>}
    * */
-  static async getById(id, token) {
-    const response = await api.get(`/layanan-pengaduan/${id}`, { token });
+  static async getById(token, id) {
+    const response = await api.get(`/periode-pajak/${id}`, { token });
     if (!response.data) return response;
-    return { ...response, data: CitizenReport.fromApiData(response.data) };
+    return { ...response, data: TaxPeriod.fromApiData(response.data) };
   }
 
   /**
-   * @param {CitizenReport} data
+   * @param {TaxPeriod} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -45,12 +45,12 @@ export default class CitizenReportService {
    * }}
    */
   static async store(data, token) {
-    return await api.post('/layanan-pengaduan', { body: CitizenReport.toApiData(data), token });
+    return await api.post('/periode-pajak', { body: TaxPeriod.toApiData(data), token });
   }
 
   /**
    * @param {number} id
-   * @param {CitizenReport} data
+   * @param {TaxPeriod} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -60,7 +60,7 @@ export default class CitizenReportService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.patch(`/layanan-pengaduan/edit/${id}`, { body: CitizenReport.toApiData(data), token });
+    return await api.put(`/periode-pajak/edit/${id}`, { body: TaxPeriod.toApiData(data), token });
   }
 
   /**
@@ -73,7 +73,7 @@ export default class CitizenReportService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/layanan-pengaduan/delete/${id}`, { token });
+    return await api.delete(`/periode-pajak/delete/${id}`, { token });
   }
 
   /**
@@ -86,20 +86,6 @@ export default class CitizenReportService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/layanan-pengaduan/multi-delete?ids=${ids.join(',')}`, { token });
-  }
-
-  /**
-   * @param {CitizenReport} data
-   * @param {string} token
-   * @returns {Promise<{
-   *  code: HTTPStatusCode;
-   *  status: boolean;
-   *  message: string;
-   *  errors?: { [key: string]: string[] };
-   * }}
-   */
-  static async verification(id, data, token) {
-    return await api.post(`/layanan-pengaduan/verifikasi/${id}`, { body: data, token });
+    return await api.delete(`/periode-pajak/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

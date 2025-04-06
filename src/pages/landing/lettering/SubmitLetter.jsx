@@ -80,32 +80,44 @@ const SubmitLetter = () => {
     }
   };
 
+  async function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
   const handleSubmitLetter = async (values) => {
     dispatch({ type: 'SET_SUBMIT_LOADING', payload: true });
-
     try {
       const formattedData = {
         master_penduduk_id: state.formData.id,
         jenis_surat_id: state.letterTypeDetail.id,
-        atribut_permohonan_surat: await Promise.all(
-          state.letterTypeDetail.letter_attribut.map(async (attr) => {
-            const content = values[attr.attribute];
+        atribut_permohonan_surat: (
+          await Promise.all(
+            state.letterTypeDetail.letter_attribut.flatMap(async (attr) => {
+              const content = values[attr.attribute];
+              if (content?.fileList?.length > 0) {
+                return Promise.all(
+                  content.fileList.map(async (file) => {
+                    const base64String = await readFileAsBase64(file.originFileObj);
+                    return {
+                      atribut_surat_id: attr.id,
+                      konten: base64String
+                    };
+                  })
+                );
+              }
 
-            if (content?.fileList?.length > 0) {
-              return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(content.fileList[0].originFileObj);
-                reader.onload = () => {
-                  resolve({
-                    atribut_surat_id: attr.id,
-                    konten: reader.result.split(',')[1]
-                  });
-                };
-              });
-            }
-            return { atribut_surat_id: attr.id, konten: values[attr.attribute] };
-          })
-        )
+              return {
+                atribut_surat_id: attr.id,
+                konten: values[attr.attribute]
+              };
+            })
+          )
+        ).flat()
       };
 
       const response = await helperJsonApi(BASE_URL + '/permohonan-surat', formattedData);
