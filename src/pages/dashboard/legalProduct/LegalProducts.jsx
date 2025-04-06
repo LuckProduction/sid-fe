@@ -214,6 +214,7 @@ const LegalProducts = () => {
         const { message, isSuccess } = await deleteBatchLegalProducts.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
+          fetchLegalProducts({ token: token, page: pagination.page, per_page: pagination.per_page });
         } else {
           error('Gagal', message);
         }

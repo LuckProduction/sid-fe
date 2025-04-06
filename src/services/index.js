@@ -29,3 +29,5 @@ export { default as ComunityService } from './ComunityService';
 export { default as VillageEnterpriseService } from './VillageEnterpriseService';
 export { default as InboxService } from './InboxService';
 export { default as CitizenReportService } from './CitizenReportService';
+export { default as TaxPeriodService } from './TaxPeriodService';
+export { default as PublicTaxService } from './PublicTaxService';

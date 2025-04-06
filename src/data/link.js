@@ -126,7 +126,7 @@ export const dashboardLink = [
         permissions: [[Action.READ, Model.Hamlet]]
       },
       {
-        path: '/dashboard/visi-misi',
+        path: '/dashboard/visi_misi',
         label: 'Visi Misi Desa',
         element: Dashboard.VisiMisi,
         permissions: [[Action.READ, Model.VisiMisi]]
@@ -279,6 +279,12 @@ export const dashboardLink = [
         label: 'Bantuan Masyarakat',
         element: Dashboard.PublicAssistance,
         permissions: [[Action.READ, Model.PublicAssistance]]
+      },
+      {
+        path: '/dashboard/tax_period',
+        label: 'Wajib Pajak',
+        element: Dashboard.TaxPeriod,
+        permissions: [[Action.READ, Model.TaxPeriod]]
       }
     ]
   }

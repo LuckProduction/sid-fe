@@ -9,7 +9,7 @@ import { SubmitLetter as SubmitLetterModel } from '@/models';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DownloadOutlined } from '@ant-design/icons';
-import asset from '@/utils/asset';
+import { BASE_URL } from '@/utils/asset';
 
 const { UPDATE, DELETE } = Action;
 
@@ -210,11 +210,9 @@ const SubmitLetter = () => {
                               title={item.attribute_name}
                               description={
                                 isDocumentPath(item.content) ? (
-                                  <a href={asset(item.content)} download>
-                                    <Button type="primary" icon={<DownloadOutlined />}>
-                                      Download Dokumen
-                                    </Button>
-                                  </a>
+                                  <Button icon={<DownloadOutlined />} size="small" className="text-xs" color="primary" variant="solid" onClick={() => window.open(`${BASE_URL}/${item.content}`, '_blank')}>
+                                    Dokumen
+                                  </Button>
                                 ) : (
                                   item.content
                                 )

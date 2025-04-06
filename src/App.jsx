@@ -13,6 +13,7 @@ import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { LandingService } from './services';
 import { useEffect, useState } from 'react';
 import { ScrollToTop } from './components';
+import PublicTax from './pages/dashboard/publicTax/PublicTax';
 
 function App() {
   const { user } = useAuth();
@@ -106,7 +107,8 @@ function App() {
             { path: '/dashboard/correspondence/lettering/:id', element: <Lettering /> },
             { path: '/dashboard/profile-settings', element: <ProfileSettings /> },
             { path: '/dashboard/family/detail/:id', element: <FamilyDetail /> },
-            { path: '/dashboard/citizen_report/detail/:id', element: <DetailCitizenReport /> }
+            { path: '/dashboard/citizen_report/detail/:id', element: <DetailCitizenReport /> },
+            { path: '/dashboard/tax_period/public_tax/:id', element: <PublicTax /> }
           ]
         },
         {
