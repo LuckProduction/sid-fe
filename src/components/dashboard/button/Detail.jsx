@@ -11,7 +11,7 @@ export default function Detail({ title = strings('detail'), onClick, model, acti
 
   return (
     <Tooltip title={title}>
-      <Button variant="outlined" color="green" onClick={onClick} size="middle" icon={<InfoOutlined />} />
+      <Button variant="text" color="green" onClick={onClick} size="middle" icon={<InfoOutlined />} />
     </Tooltip>
   );
 }

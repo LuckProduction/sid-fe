@@ -45,7 +45,7 @@ export default class InstitutionMember extends Model {
       nik: number;
       full_name: string;
       family_relation: string;
-      resident_status: 'tetap' | 'tidak tetap';
+      resident_status: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
       marital_status: 'menikah' | 'belum menikah';
       kk_number: number;
       gender: string;

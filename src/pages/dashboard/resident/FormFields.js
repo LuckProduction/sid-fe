@@ -83,12 +83,20 @@ export const biodataFormFields = () => [
     ],
     options: [
       {
-        label: 'Tetap',
-        value: 'tetap'
+        label: 'Aktif',
+        value: 'aktif'
       },
       {
-        label: 'Tidak Tetap',
-        value: 'tidak tetap'
+        label: 'Meninggal',
+        value: 'meninggal'
+      },
+      {
+        label: 'Pindah',
+        value: 'pindah'
+      },
+      {
+        label: 'Masuk',
+        value: 'masuk'
       }
     ]
   },
@@ -461,12 +469,20 @@ export const formFields = () => {
       ],
       options: [
         {
-          label: 'Tetap',
-          value: 'tetap'
+          label: 'Aktif',
+          value: 'aktif'
         },
         {
-          label: 'Tidak Tetap',
-          value: 'tidak tetap'
+          label: 'Meninggal',
+          value: 'meninggal'
+        },
+        {
+          label: 'Pindah',
+          value: 'pindah'
+        },
+        {
+          label: 'Masuk',
+          value: 'masuk'
         }
       ]
     },
@@ -608,12 +624,20 @@ export const FamilyDetailFormFields = () => [
     ],
     options: [
       {
-        label: 'Tetap',
-        value: 'tetap'
+        label: 'Aktif',
+        value: 'aktif'
       },
       {
-        label: 'Tidak Tetap',
-        value: 'tidak tetap'
+        label: 'Meninggal',
+        value: 'meninggal'
+      },
+      {
+        label: 'Pindah',
+        value: 'pindah'
+      },
+      {
+        label: 'Masuk',
+        value: 'masuk'
       }
     ]
   },
@@ -724,12 +748,20 @@ export const ProspectiveVotersFilterFields = ({ options }) => [
     type: InputType.SELECT,
     options: [
       {
-        label: 'Tetap',
-        value: 'tetap'
+        label: 'Aktif',
+        value: 'aktif'
       },
       {
-        label: 'Tidak Tetap',
-        value: 'tidak tetap'
+        label: 'Meninggal',
+        value: 'meninggal'
+      },
+      {
+        label: 'Pindah',
+        value: 'pindah'
+      },
+      {
+        label: 'Masuk',
+        value: 'masuk'
       }
     ]
   },
@@ -820,12 +852,20 @@ export const residentFilterFields = ({ options }) => [
     type: InputType.SELECT,
     options: [
       {
-        label: 'Tetap',
-        value: 'tetap'
+        label: 'Aktif',
+        value: 'aktif'
       },
       {
-        label: 'Tidak Tetap',
-        value: 'tidak tetap'
+        label: 'Meninggal',
+        value: 'meninggal'
+      },
+      {
+        label: 'Pindah',
+        value: 'pindah'
+      },
+      {
+        label: 'Masuk',
+        value: 'masuk'
       }
     ]
   },

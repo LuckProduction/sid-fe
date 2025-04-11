@@ -30,3 +30,4 @@ export { default as VillageEnterprise } from './VillageEnterprise';
 export { default as CitizenReport } from './CitizenReport';
 export { default as TaxPeriod } from './TaxPeriod';
 export { default as PublicTax } from './PublicTax';
+export { default as CitizenReportReply } from './CitizenReportReply';

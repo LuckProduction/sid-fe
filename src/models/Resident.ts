@@ -6,7 +6,7 @@ export interface IncomingApiData {
   nik: number;
   nama_lengkap: string;
   hubungan_keluarga: string;
-  status_penduduk: 'tetap' | 'tidak tetap';
+  status_penduduk: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
   status_perkawinan: 'menikah' | 'belum menikah';
   nomor_kk: number;
   foto: string;
@@ -59,7 +59,7 @@ export interface OutgoingApiData {
   nik: number;
   nama_lengkap: string;
   hubungan_keluarga: string;
-  status_penduduk: 'tetap' | 'tidak tetap';
+  status_penduduk: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
   status_perkawinan: 'menikah' | 'belum menikah';
   nomor_kk: number;
   foto: string;
@@ -97,7 +97,7 @@ interface FormValue {
   nik: number;
   full_name: string;
   family_relation: string;
-  resident_status: 'tetap' | 'tidak tetap';
+  resident_status: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
   marital_status: 'menikah' | 'belum menikah';
   kk_number: number;
   image_profile: string;
@@ -138,7 +138,7 @@ export default class Resident extends Model {
     public nik: number,
     public full_name: string,
     public family_relation: string,
-    public resident_status: 'tetap' | 'tidak tetap',
+    public resident_status: 'aktif' | 'meninggal' | 'pindah' | 'masuk',
     public marital_status: 'menikah' | 'belum menikah',
     public kk_number: number,
     public image_profile: string,
@@ -188,7 +188,7 @@ export default class Resident extends Model {
       nik: number;
       full_name: string;
       family_relation: string;
-      resident_status: 'tetap' | 'tidak tetap';
+      resident_status: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
       marital_status: 'menikah' | 'belum menikah';
       kk_number: number;
       gender: string;

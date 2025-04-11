@@ -31,3 +31,4 @@ export { default as InboxService } from './InboxService';
 export { default as CitizenReportService } from './CitizenReportService';
 export { default as TaxPeriodService } from './TaxPeriodService';
 export { default as PublicTaxService } from './PublicTaxService';
+export { default as CitizenReportReplyService } from './CitizenReportReplyService';

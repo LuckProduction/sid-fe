@@ -61,12 +61,16 @@ const FamilyDetail = () => {
       searchable: true,
       render: (record) => {
         switch (record) {
-          case 'tetap':
-            return <Tag color="blue">Tetap</Tag>;
-          case 'tidak tetap':
-            return <Tag color="green">Tidak Tetap</Tag>;
+          case 'aktif':
+            return <Tag color="blue-inverse">Aktif</Tag>;
+          case 'meninggal':
+            return <Tag color="red">Meninggal</Tag>;
+          case 'pindah':
+            return <Tag color="warning">Pindah</Tag>;
+          case 'masuk':
+            return <Tag color="green-inverse">Tetap</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="default">Undifined</Tag>;
         }
       }
     }

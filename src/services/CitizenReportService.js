@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { CitizenReport } from '@/models';
+import { CitizenReport, CitizenReportReply } from '@/models';
 import api from '@/utils/api';
 
 export default class CitizenReportService {
@@ -101,5 +101,24 @@ export default class CitizenReportService {
    */
   static async verification(id, data, token) {
     return await api.post(`/layanan-pengaduan/verifikasi/${id}`, { body: data, token });
+  }
+
+  /**
+   * @param {CitizenReport} data
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  errors?: { [key: string]: string[] };
+   * }}
+   */
+  static async reply(data, token, file) {
+    const payload = {
+      body: CitizenReportReply.toApiData(data),
+      token,
+      ...(file && { file: { dokumen: file } })
+    };
+    return await api.post(`/balasan-pengaduan`, payload);
   }
 }

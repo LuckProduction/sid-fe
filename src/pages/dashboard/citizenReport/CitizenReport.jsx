@@ -1,15 +1,17 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CitizenReportService } from '@/services';
-import { Card, Space, Tag, Tooltip } from 'antd';
+import { Button, Card, Space, Tag, Tooltip } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { CitizenReport as CitizenReportModel } from '@/models';
 import Modul from '@/constants/Modul';
-import { citizenReportsFilterFields, statusFormFields } from './FormFields';
+import { citizenReportsFilterFields, replyFormFields, statusFormFields } from './FormFields';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { useNavigate } from 'react-router-dom';
 import timeAgo from '@/utils/timeAgo';
+import dateFormatter from '@/utils/dateFormatter';
+import { CommentOutlined } from '@ant-design/icons';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -26,6 +28,7 @@ const CitizenReport = () => {
   const deleteBatchCitizenReport = useService(CitizenReportService.deleteBatch);
   const deleteCitizenReport = useService(CitizenReportService.delete);
   const verifCitizenReport = useService(CitizenReportService.verification);
+  const replyCitizenReport = useService(CitizenReportService.reply);
 
   const fetchCitizenReport = useCallback(() => {
     execute({
@@ -58,11 +61,11 @@ const CitizenReport = () => {
       searchable: true
     },
     {
-      title: 'Tanggal Dibuat',
+      title: 'Dibuat',
       dataIndex: 'created_at',
       sorter: (a, b) => a.created_at.length - b.created_at.length,
       searchable: true,
-      render: (record) => <Tooltip title={record}>{timeAgo(record)}</Tooltip>
+      render: (record) => <Tooltip title={dateFormatter(record)}>{timeAgo(record)}</Tooltip>
     },
     {
       title: 'Status',
@@ -125,6 +128,27 @@ const CitizenReport = () => {
                 formFields: statusFormFields,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteCitizenReport.execute(record.id, token);
+                  if (isSuccess) {
+                    success('Berhasil', message);
+                    fetchCitizenReport({ token: token, page: pagination.page, per_page: pagination.per_page });
+                  } else {
+                    error('Gagal', message);
+                  }
+                  return isSuccess;
+                }
+              });
+            }}
+          />
+          <Button
+            icon={<CommentOutlined />}
+            color="primary"
+            variant="text"
+            onClick={() => {
+              modal.create({
+                title: `Balas ${Modul.CITIZEN_REPORT}`,
+                formFields: replyFormFields,
+                onSubmit: async (values) => {
+                  const { message, isSuccess } = await replyCitizenReport.execute({ ...values, citizen_report: record.id }, token, values.doc?.file ? values.doc.file : null);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchCitizenReport({ token: token, page: pagination.page, per_page: pagination.per_page });

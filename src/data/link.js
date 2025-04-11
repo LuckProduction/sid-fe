@@ -269,6 +269,12 @@ export const dashboardLink = [
         permissions: [[Action.READ, Model.CitizenReport]]
       },
       {
+        path: '/dashboard/citizen_report_replies',
+        label: 'Balasan Pengaduan Masyarakat',
+        element: Dashboard.CitizenReportReply,
+        permissions: [[Action.READ, Model.CitizenReportReply]]
+      },
+      {
         path: '/dashboard/village_enterprise',
         label: 'Lapak BUMDes',
         element: Dashboard.VillageEnterprise,

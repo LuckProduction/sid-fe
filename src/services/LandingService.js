@@ -148,4 +148,8 @@ export default class LandingService {
   static async likeCitizenReport(id) {
     return await api.put(`/layanan-pengaduan/suka/${id}`);
   }
+
+  static async likeCitizenReportReply(id) {
+    return await api.put(`/balasan-pengaduan/suka/${id}`);
+  }
 }
