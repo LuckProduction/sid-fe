@@ -15,7 +15,7 @@ const Family = () => {
   const navigate = useNavigate();
   const { execute, ...getAllFamily } = useService(ResidentService.getFamily);
   const { execute: fetchHamlet, ...getAllHamlet } = useService(HamletService.getAll);
-  const [filterValues, setFilterValues] = useState({ search: '', jenis_kelamin: null, status_perkawinan: null, status_penduduk: null, hubungan_keluarga: null, dusun_id: null });
+  const [filterValues, setFilterValues] = useState({ search: '', jenis_kelamin: null, status_perkawinan: null, status_penduduk: null, dusun_id: null });
   const pagination = usePagination({ totalData: getAllFamily.totalData });
 
   const fetchFamily = useCallback(() => {
@@ -87,12 +87,16 @@ const Family = () => {
       searchable: true,
       render: (record) => {
         switch (record) {
-          case 'tetap':
-            return <Tag color="blue">Tetap</Tag>;
-          case 'tidak tetap':
-            return <Tag color="green">Tidak Tetap</Tag>;
+          case 'aktif':
+            return <Tag color="blue-inverse">Aktif</Tag>;
+          case 'meninggal':
+            return <Tag color="red">Meninggal</Tag>;
+          case 'pindah':
+            return <Tag color="warning">Pindah</Tag>;
+          case 'masuk':
+            return <Tag color="green-inverse">Tetap</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="default">Undifined</Tag>;
         }
       }
     },
@@ -108,7 +112,6 @@ const Family = () => {
       jenis_kelamin: filterValues.jenis_kelamin,
       status_perkawinan: filterValues.status_perkawinan,
       status_penduduk: filterValues.status_penduduk,
-      hubungan_keluarga: filterValues.hubungan_keluarga,
       dusun_id: filterValues.dusun_id
     },
     isLoading: getAllFamily.isLoading,
@@ -117,7 +120,6 @@ const Family = () => {
         jenis_kelamin: values.jenis_kelamin,
         status_perkawinan: values.status_perkawinan,
         status_penduduk: values.status_penduduk,
-        hubungan_keluarga: values.hubungan_keluarga,
         dusun_id: values.dusun_id
       });
     }

@@ -17,9 +17,12 @@ export interface IncomingApiData {
     tipe_balasan: string;
     status_publikasi: string;
     created_at: string;
+    suka: number;
+    has_like: boolean;
   }[];
   status: string;
   suka: number;
+  has_like: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -66,9 +69,12 @@ export default class CitizenReport extends Model {
       reply_type: string;
       publication_status: string;
       created_at: string;
+      liked: number;
+      has_like: boolean;
     }[],
     public status: string,
     public liked: number,
+    public has_like: boolean,
     public created_at: string,
     public updated_at: string
   ) {
@@ -96,13 +102,16 @@ export default class CitizenReport extends Model {
         },
         citizen_report_id: item.layanan_pengaduan_id,
         content: item.konten,
-        doc: asset(item.dokumen),
+        doc: item.dokumen,
         reply_type: item.tipe_balasan,
         publication_status: item.status_publikasi,
-        created_at: item.created_at
+        created_at: item.created_at,
+        liked: item.suka,
+        has_like: item.has_like
       })),
       apiData.status,
       apiData.suka,
+      apiData.has_like,
       apiData.created_at,
       apiData.updated_at
     ) as ReturnType<T, IncomingApiData, CitizenReport>;

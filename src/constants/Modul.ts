@@ -27,6 +27,7 @@ enum Modul {
   COMUNITY = 'Masyarakat',
   VILLAGE_ENTERPRISE = 'Lapak BUMDes',
   CITIZEN_REPORT = 'Pengaduan',
+  CITIZEN_REPORT_REPLIES = 'Balasan Pengaduan',
   TAX = 'Pajak',
   TAX_PERIOD = 'Periode Pajak',
   TAX_PARTICIPANT = 'Wajib Pajak'

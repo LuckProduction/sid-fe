@@ -38,5 +38,6 @@ export { default as ProfileSettings } from './ProfileSettings';
 export { default as VillageEnterprise } from './villageEnterprise/VillageEnterprise';
 
 export { default as CitizenReport } from './citizenReport/CitizenReport';
+export { default as CitizenReportReply } from './citizenReport/Replies';
 export { default as DetailCitizenReport } from './citizenReport/DetailCitizenReport';
 export { default as TaxPeriod } from './publicTax/TaxPeriod';

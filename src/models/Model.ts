@@ -29,7 +29,8 @@ type ModelKeys =
   | 'menu_lapak'
   | 'pengaduan'
   | 'periode_pajak'
-  | 'wajib_pajak';
+  | 'wajib_pajak'
+  | 'balasan_pengaduan';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -63,7 +64,8 @@ export default abstract class Model {
     menu_lapak: undefined,
     pengaduan: undefined,
     periode_pajak: undefined,
-    wajib_pajak: undefined
+    wajib_pajak: undefined,
+    balasan_pengaduan: undefined
   };
 }
 
