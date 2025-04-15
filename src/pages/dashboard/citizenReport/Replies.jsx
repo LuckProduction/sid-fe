@@ -5,12 +5,12 @@ import { Button, Card, Descriptions, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { CitizenReportReply as citizenReportReplyModel } from '@/models';
 import Modul from '@/constants/Modul';
-import { repliesFilterFields, replyFormFields } from './FormFields';
+import { repliesFilterFields, replyFormFields, statusFormFields } from './FormFields';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DataTable, DataTableHeader } from '@/components';
 import timeAgo from '@/utils/timeAgo';
 import asset from '@/utils/asset';
-import { DownloadOutlined } from '@ant-design/icons';
+import { CheckOutlined, DownloadOutlined } from '@ant-design/icons';
 import dateFormatter from '@/utils/dateFormatter';
 
 const { UPDATE, DELETE, READ } = Action;
@@ -26,6 +26,7 @@ const Replies = () => {
   const editCitizenReportReply = useService(CitizenReportReplyService.update);
   const deleteBatchCitizenReportReplies = useService(CitizenReportReplyService.deleteBatch);
   const deleteCitizenReportReply = useService(CitizenReportReplyService.delete);
+  const verifyCitizenReportReply = useService(CitizenReportReplyService.verification);
 
   const fetchCitizenReportReplies = useCallback(() => {
     execute({
@@ -52,11 +53,11 @@ const Replies = () => {
       searchable: true
     },
     {
-      title: 'Judul Pengaduan',
-      dataIndex: ['citizen_report', 'report_title'],
-      sorter: (a, b) => a.citizen_report.report_titlelength - b.citizen_report.report_titlelength,
+      title: 'Balasan',
+      dataIndex: 'content',
+      sorter: (a, b) => a.content.length - b.content.length,
       searchable: true,
-      render: (_, record) => <div className="news-text">{record.citizen_report.report_title}</div>
+      render: (_, record) => <div className="news-text">{record.content}</div>
     },
     {
       title: 'Tipe Balasan',
@@ -94,11 +95,11 @@ const Replies = () => {
       render: (_, record) => (
         <Space size="small">
           <Edit
-            title={`Edit ${Modul.CITIZEN_REPORT}`}
+            title={`Edit ${Modul.CITIZEN_REPORT_REPLIES}`}
             model={citizenReportReplyModel}
             onClick={() => {
               modal.edit({
-                title: `Edit Status ${Modul.CITIZEN_REPORT}`,
+                title: `Edit ${Modul.CITIZEN_REPORT_REPLIES}`,
                 data: record,
                 formFields: replyFormFields,
                 onSubmit: async (values) => {
@@ -115,7 +116,7 @@ const Replies = () => {
             }}
           />
           <Detail
-            title={`Detail ${Modul.LEGAL_PRODUCTS}`}
+            title={`Detail ${Modul.CITIZEN_REPORT_REPLIES}`}
             model={citizenReportReplyModel}
             onClick={() => {
               modal.show.paragraph({
@@ -147,6 +148,7 @@ const Replies = () => {
                         <Descriptions.Item label="Suka">{record.liked}</Descriptions.Item>
                         <Descriptions.Item label="Dibuat">{dateFormatter(record.created_at)}</Descriptions.Item>
                         <Descriptions.Item label="Disukai">{record.has_like ? 'Disukai' : 'Tidak Disukai'}</Descriptions.Item>
+                        <Descriptions.Item label="Konten Pengaduan">{record.citizen_report.desc}</Descriptions.Item>
                       </Descriptions>
                     </>
                   )
@@ -155,14 +157,36 @@ const Replies = () => {
             }}
           />
           <Delete
-            title={`Delete ${Modul.CITIZEN_REPORT}`}
+            title={`Delete ${Modul.CITIZEN_REPORT_REPLIES}`}
             model={citizenReportReplyModel}
             onClick={() => {
               modal.delete.default({
-                title: `Delete ${Modul.CITIZEN_REPORT}`,
+                title: `Delete ${Modul.CITIZEN_REPORT_REPLIES}`,
                 data: record,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteCitizenReportReply.execute(record.id, token);
+                  if (isSuccess) {
+                    success('Berhasil', message);
+                    fetchCitizenReportReplies({ token: token, page: pagination.page, per_page: pagination.per_page });
+                  } else {
+                    error('Gagal', message);
+                  }
+                  return isSuccess;
+                }
+              });
+            }}
+          />
+          <Button
+            icon={<CheckOutlined />}
+            color="primary"
+            variant="outlined"
+            onClick={() => {
+              modal.edit({
+                title: `Edit Status ${Modul.CITIZEN_REPORT_REPLIES}`,
+                data: record,
+                formFields: statusFormFields,
+                onSubmit: async (values) => {
+                  const { message, isSuccess } = await verifyCitizenReportReply.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
                     fetchCitizenReportReplies({ token: token, page: pagination.page, per_page: pagination.per_page });

@@ -142,7 +142,7 @@ const CitizenReport = () => {
           <Button
             icon={<CommentOutlined />}
             color="primary"
-            variant="text"
+            variant="outlined"
             onClick={() => {
               modal.create({
                 title: `Balas ${Modul.CITIZEN_REPORT}`,

@@ -41,3 +41,7 @@ export { default as CitizenReport } from './citizenReport/CitizenReport';
 export { default as CitizenReportReply } from './citizenReport/Replies';
 export { default as DetailCitizenReport } from './citizenReport/DetailCitizenReport';
 export { default as TaxPeriod } from './publicTax/TaxPeriod';
+
+export { default as VillageReport } from './villageReport/VillageReport';
+export { default as ReportAttribute } from './villageReport/ReportAttribute';
+export { default as SubmitReport } from './villageReport/SubmitReport';

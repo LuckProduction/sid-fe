@@ -1,8 +1,7 @@
 import { Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { BASE_URL } from '@/utils/api';
-import { CaretRightOutlined, DownloadOutlined, MailOutlined, SearchOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, MailOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Card, Collapse, Descriptions, Empty, Form, Input, Modal, Result, Steps, theme, Typography } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const Browse = () => {
   const [modal, setModal] = useState({ isVisible: false, error: false });
   const [response, setResponse] = useState(null);
-  const browseLetter = useService(LandingService.browseLetter);
+  const browseLetter = useService(LandingService.browseReport);
   const navigate = useNavigate();
 
   const handleStatusCheck = async (values) => {
@@ -40,39 +39,45 @@ const Browse = () => {
 
     return data.map((item, index) => ({
       key: String(index + 1),
-      label: item.jenis_surat.nama_surat,
+      label: item.nama_laporan,
       children: (
         <div className="flex w-full flex-col gap-y-2">
           <div className="flex w-full items-center">
             <div className="flex w-full flex-col">
               <b>{item.token}</b>
-              <small>{item.jenis_surat.nama_surat}</small>
+              <small>{item.nama_laporan}</small>
             </div>
-            <Button disabled={item.status !== 'selesai'} icon={<DownloadOutlined />} size="small" className="text-xs" color="primary" variant="solid" onClick={() => window.open(`${BASE_URL}/permohonan-surat/download/${item.token}`, '_blank')}>
+            {/* <Button disabled={item.status !== 'selesai'} icon={<DownloadOutlined />} size="small" className="text-xs" color="primary" variant="solid" onClick={() => window.open(`${BASE_URL}/permohonan-surat/download/${item.token}`, '_blank')}>
               Unduh
-            </Button>
+            </Button> */}
           </div>
           <hr className="mt-4" />
           <div className="w-full">
             <Steps
               className="mt-4"
+              status={item.status === 'tolak' ? 'error' : item.status === 'terima' ? 'finish' : 'process'}
               direction="vertical"
               size="small"
-              current={item.status === 'menunggu' ? 1 : item.status === 'verifikasi' ? 2 : 3}
-              items={[
-                {
-                  title: 'Menunggu',
-                  description: 'Permohonan surat masih dalam proses menunggu'
-                },
-                {
-                  title: 'Verifikasi',
-                  description: 'Permohonan surat masih dalam prose verifikasi oleh admin'
-                },
-                {
-                  title: 'Selesai',
-                  description: 'Permohonan surat berhasil disetujui'
-                }
-              ]}
+              current={item.status === 'proses' ? 0 : item.status === 'terima' ? 1 : 0}
+              items={
+                item.status === 'tolak'
+                  ? [
+                      {
+                        title: 'Proses',
+                        description: 'Laporan ditolak. Silakan perbaiki dan kirim ulang.'
+                      }
+                    ]
+                  : [
+                      {
+                        title: 'Proses',
+                        description: 'Laporan masih diproses.'
+                      },
+                      {
+                        title: 'Terima',
+                        description: 'Laporan sudah diterima.'
+                      }
+                    ]
+              }
             />
           </div>
         </div>
@@ -85,12 +90,12 @@ const Browse = () => {
       <div className="relative z-10 mx-auto flex h-full max-w-screen-sm flex-col items-center justify-center px-6 text-center">
         <Reveal>
           <Typography.Title>
-            Pantau Status <span className="text-blue-500">Surat</span> Kamu
+            Pantau Status <span className="text-blue-500">Laporan</span> Kamu
           </Typography.Title>
         </Reveal>
         <Reveal>
           <div className="flex items-center justify-center">
-            <small className="text-center">Cek status surat Anda dengan mudah! Masukkan NIK yang diberikan saat pengajuan untuk mengetahui perkembangan permohonan Anda secara real-time.</small>
+            <small className="text-center">Cek Laporan Anda dengan mudah! Masukkan NIK yang diberikan saat pengajuan untuk mengetahui perkembangan Laporan Anda secara real-time.</small>
           </div>
         </Reveal>
         <Card className="mt-12 w-full">
@@ -105,11 +110,11 @@ const Browse = () => {
                 }
               ]}
             >
-              <Input className="w-full" size="large" placeholder="Masukan NIK Pemohon" />
+              <Input className="w-full" size="large" placeholder="Masukan NIK" />
             </Form.Item>
             <Form.Item className="m-0">
               <Button className="w-full" loading={browseLetter.isLoading} icon={<SearchOutlined />} size="large" color="primary" variant="solid" htmlType="submit">
-                Cari Surat
+                Cari Laporan
               </Button>
             </Form.Item>
           </Form>
@@ -118,7 +123,7 @@ const Browse = () => {
       <img src="/illustration/city_sillhoute.png" className="absolute bottom-0 left-0 z-0 w-full" />
       <Modal footer={null} width={500} open={modal.isVisible} onCancel={() => setModal(false)}>
         {response && !modal.error && (
-          <Descriptions title="Detail Data Pemohon" bordered column={1}>
+          <Descriptions title="Detail Data" bordered column={1}>
             <Descriptions.Item label="Nama Lengkap">{response?.master_penduduk_id?.nama_lengkap}</Descriptions.Item>
             <Descriptions.Item label="NIK">{response?.master_penduduk_id?.nik}</Descriptions.Item>
             <Descriptions.Item label="Hubungan Keluarga">{response?.master_penduduk_id?.hubungan_keluarga}</Descriptions.Item>
@@ -126,8 +131,8 @@ const Browse = () => {
             <Descriptions.Item label="Jenis Kelamin">{response?.master_penduduk_id?.jenis_kelamin}</Descriptions.Item>
           </Descriptions>
         )}
-        {response?.permohonan_surat?.length === 0 ? (
-          <Empty description="Tidak ada permohonan surat" />
+        {response?.laporan_penduduk?.length === 0 ? (
+          <Empty description="Tidak ada Laporan " />
         ) : (
           <>
             <Collapse
@@ -138,7 +143,7 @@ const Browse = () => {
               style={{
                 background: token.colorBgContainer
               }}
-              items={renderLetterItem({ panelStyle: panelStyle, data: response?.permohonan_surat })}
+              items={renderLetterItem({ panelStyle: panelStyle, data: response?.laporan_penduduk })}
             />
           </>
         )}
@@ -146,10 +151,10 @@ const Browse = () => {
           <Result
             status="error"
             title="Gagal Mengambil Data"
-            subTitle="Ada kesalahan saat melakukan pencarian permohonan surat, NIK penduduk mungkin belum pernah digunakan untuk melakukan permohonan surat"
+            subTitle="Ada kesalahan saat melakukan pencarian laporan, NIK penduduk mungkin belum pernah digunakan untuk melakukan pengajuan laporan"
             extra={
-              <Button size="large" icon={<MailOutlined />} variant="solid" color="blue" onClick={() => navigate('/lettering/submitletter')}>
-                Buat Permohonan Surat
+              <Button size="large" icon={<MailOutlined />} variant="solid" color="blue" onClick={() => navigate('/submit_report')}>
+                Buat Laporan Penduduk
               </Button>
             }
           />

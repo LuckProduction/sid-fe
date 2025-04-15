@@ -8,7 +8,7 @@ import helperJsonApi from '@/utils/helperJsonApi';
 import { mapAttributesToFormFields } from '@/utils/attributToForm';
 import { CopyOutlined, LeftOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Form, Input, Modal, Result, Select, Tooltip, Typography } from 'antd';
-import { useEffect, useReducer } from 'react';
+import { useReducer, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const initialState = {
@@ -17,7 +17,7 @@ const initialState = {
   formData: {},
   modalStatus: 'initial',
   isSubmitted: false,
-  letterTypeDetail: {}
+  villageReportDetail: {}
 };
 
 const reducer = (state, action) => {
@@ -33,7 +33,7 @@ const reducer = (state, action) => {
     case 'SET_IS_SUBMITTED':
       return { ...state, isSubmitted: action.payload };
     case 'SET_LETTER_TYPE_DETAIL':
-      return { ...state, letterTypeDetail: action.payload };
+      return { ...state, villageReportDetail: action.payload };
     case 'RESET':
       return initialState;
     default:
@@ -41,25 +41,25 @@ const reducer = (state, action) => {
   }
 };
 
-const SubmitLetter = () => {
+const SubmitReport = () => {
   const navigate = useNavigate();
   const { error, success } = useNotification();
   const [form] = Form.useForm();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { execute: fetchLetterType, ...getAllLetterType } = useService(LandingService.getAllLetterType);
-  const { execute: fetchLetterTypeDetail, ...getLetterTypeDetail } = useService(LandingService.getLetterTypeDetail);
+  const { execute: fetchVillageReport, ...getAllVillageReport } = useService(LandingService.getAllVillageReport);
+  const { execute: fetchVillageReportDetail, ...getVillageReportDetail } = useService(LandingService.getVillageReportDetail);
   const searchResident = useService(LandingService.getResident);
 
   useEffect(() => {
-    fetchLetterType();
-  }, [fetchLetterType]);
+    fetchVillageReport();
+  }, [fetchVillageReport]);
 
-  const LetterType = getAllLetterType.data ?? [];
+  const villageReport = getAllVillageReport.data ?? [];
 
   useEffect(() => {
-    dispatch({ type: 'SET_LETTER_TYPE_DETAIL', payload: getLetterTypeDetail.data ?? {} });
-  }, [getLetterTypeDetail.data]);
+    dispatch({ type: 'SET_LETTER_TYPE_DETAIL', payload: getVillageReportDetail.data ?? {} });
+  }, [getVillageReportDetail.data]);
 
   const handleCheckLetter = async (values) => {
     try {
@@ -70,7 +70,7 @@ const SubmitLetter = () => {
 
       dispatch({
         type: 'SET_FORM_DATA',
-        payload: isSuccess && data ? { ...data, jenis_surat: values.jenis_surat } : {}
+        payload: isSuccess && data ? { ...data, nama_laporan: values.nama_laporan } : {}
       });
 
       dispatch({ type: 'SET_MODAL_STATUS', payload: 'initial' });
@@ -91,20 +91,23 @@ const SubmitLetter = () => {
 
   const handleSubmitLetter = async (values) => {
     dispatch({ type: 'SET_SUBMIT_LOADING', payload: true });
+
     try {
       const formattedData = {
-        master_penduduk_id: state.formData.id,
-        jenis_surat_id: state.letterTypeDetail.id,
-        atribut_permohonan_surat: (
+        nik: state.formData.nik,
+        master_laporan_id: state.villageReportDetail.id,
+        tipe_pelapor: 'diri sendiri',
+        atribut_laporan_penduduk: (
           await Promise.all(
-            state.letterTypeDetail.letter_attribut.flatMap(async (attr) => {
+            state.villageReportDetail.report_attribute.flatMap(async (attr) => {
               const content = values[attr.attribute];
+
               if (content?.fileList?.length > 0) {
                 return Promise.all(
                   content.fileList.map(async (file) => {
                     const base64String = await readFileAsBase64(file.originFileObj);
                     return {
-                      atribut_surat_id: attr.id,
+                      atribut_master_laporan_id: attr.id,
                       konten: base64String
                     };
                   })
@@ -112,7 +115,7 @@ const SubmitLetter = () => {
               }
 
               return {
-                atribut_surat_id: attr.id,
+                atribut_master_laporan_id: attr.id,
                 konten: values[attr.attribute]
               };
             })
@@ -120,7 +123,7 @@ const SubmitLetter = () => {
         ).flat()
       };
 
-      const response = await helperJsonApi(BASE_URL + '/permohonan-surat', formattedData);
+      const response = await helperJsonApi(BASE_URL + '/lapor-penduduk', formattedData);
 
       if (response.status) {
         success('Berhasil', response.message);
@@ -152,11 +155,11 @@ const SubmitLetter = () => {
             kembali
           </button>
           <Reveal>
-            <Typography.Title style={{ color: '#fff' }}>Permohonan Surat</Typography.Title>
+            <Typography.Title style={{ color: '#fff' }}>Laporan Penduduk</Typography.Title>
           </Reveal>
           <Reveal>
             <div className="max-w-lg">
-              <small>Ajukan surat sesuai kebutuhan Anda dalam hitungan menit. Isi detail yang diperlukan, dan biarkan sistem kami mengurus sisanya dengan cepat dan efisien!</small>
+              <small>Ajukan Laporan sesuai kebutuhan Anda dalam hitungan menit. Isi detail yang diperlukan, dan biarkan sistem kami mengurus sisanya dengan cepat dan efisien!</small>
             </div>
           </Reveal>
         </div>
@@ -196,18 +199,18 @@ const SubmitLetter = () => {
               </Form.Item>
               <Form.Item
                 className="col-span-4 m-0 w-full"
-                name="jenis_surat"
+                name="nama_laporan"
                 rules={[
                   {
                     required: true,
-                    message: 'Jenis Surat wajib diisi!'
+                    message: 'Nama laporan wajib diisi!'
                   }
                 ]}
               >
-                <Select className="w-full" size="large" placeholder="Pilih Jenis Surat">
-                  {LetterType?.map((item) => (
+                <Select className="w-full" size="large" placeholder="Pilih Laporan">
+                  {villageReport?.map((item) => (
                     <Select.Option key={item.id} value={item.id}>
-                      {item.letter_name}
+                      {item.report_name}
                     </Select.Option>
                   ))}
                 </Select>
@@ -217,22 +220,22 @@ const SubmitLetter = () => {
               </Button>
             </Form>
           </Card>
-          {!state.isSubmitted && Object.keys(state.letterTypeDetail).length > 0 && (
+          {!state.isSubmitted && Object.keys(state.villageReportDetail).length > 0 && (
             <Card>
-              <Typography.Title level={5}>{state.letterTypeDetail.letter_name}</Typography.Title>
-              {mapAttributesToFormFields(state.letterTypeDetail.letter_attribut).length === 0 ? (
+              <Typography.Title level={5}>{state.villageReportDetail.letter_name}</Typography.Title>
+              {mapAttributesToFormFields(state.villageReportDetail.report_attribute).length === 0 ? (
                 <Result
                   status="info"
-                  title="Kirim Permohonan Surat!"
-                  subTitle="Surat yang dipilih tidak memiliki atribut surat, silahkan klik tombol kirim untuk melanjutkan"
+                  title="Kirim Laporan!"
+                  subTitle="Laporan yang dipilih tidak memiliki atribut, silahkan klik tombol kirim untuk melanjutkan"
                   extra={
                     <Button type="primary" onClick={handleSubmitLetter}>
-                      Kirim Permohonan
+                      Kirim Laporan
                     </Button>
                   }
                 />
               ) : (
-                <Crud formFields={mapAttributesToFormFields(state.letterTypeDetail.letter_attribut)} type="create" onSubmit={handleSubmitLetter} isLoading={state.submitLoading} />
+                <Crud formFields={mapAttributesToFormFields(state.villageReportDetail.report_attribute)} type="create" onSubmit={handleSubmitLetter} isLoading={state.submitLoading} />
               )}
             </Card>
           )}
@@ -241,7 +244,7 @@ const SubmitLetter = () => {
 
       <Modal width={700} open={state.isModalOpen} onCancel={handleModalClose} footer={null}>
         {state.modalStatus === 'success' ? (
-          <Result status="success" title="Permohonan Berhasil!" subTitle="Surat Anda telah berhasil dibuat dan diproses.">
+          <Result status="success" title="Laporan Berhasil!" subTitle="Laporan Anda telah berhasil dibuat dan diproses.">
             <div className="flex flex-col items-center justify-center gap-y-4">
               <div className="desc inline-flex w-full items-center justify-center gap-x-6">
                 <b className="text-5xl text-gray-500">{state.formData.token}</b>
@@ -256,8 +259,8 @@ const SubmitLetter = () => {
         ) : state.modalStatus === 'error' ? (
           <Result
             status="error"
-            title="Permohonan Gagal!"
-            subTitle="Terjadi kesalahan dalam proses pengajuan surat. Coba lagi."
+            title="Laporan Gagal!"
+            subTitle="Terjadi kesalahan dalam proses pengajuan Laporan. Coba lagi."
             extra={
               <Button type="primary" onClick={handleModalClose}>
                 Coba Lagi
@@ -267,13 +270,13 @@ const SubmitLetter = () => {
         ) : (
           <Result
             status="success"
-            title="Lanjutkan Membuat Surat"
+            title="Lanjutkan Membuat Laporan"
             subTitle="Anda terdaftar dalam database kependudukan desa. Silakan lanjutkan."
             extra={
               <Button
                 type="primary"
                 onClick={() => {
-                  fetchLetterTypeDetail(state.formData.jenis_surat);
+                  fetchVillageReportDetail(state.formData.nama_laporan);
                   dispatch({ type: 'SET_MODAL_OPEN', payload: false });
                 }}
               >
@@ -287,4 +290,4 @@ const SubmitLetter = () => {
   );
 };
 
-export default SubmitLetter;
+export default SubmitReport;
