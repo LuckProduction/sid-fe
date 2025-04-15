@@ -47,6 +47,21 @@ export const landingLink = [
     element: Landing.Lettering
   },
   {
+    label: 'Lapor Penduduk',
+    children: [
+      {
+        label: 'Cari Laporan',
+        key: '/browse_report',
+        element: Landing.BrowseReport
+      },
+      {
+        label: 'Buat Laporan',
+        key: '/submit_report',
+        element: Landing.SubmitReport
+      }
+    ]
+  },
+  {
     label: 'Bantuan',
     key: '/public_assistances',
     element: Landing.BrowseBeneficiary
@@ -291,6 +306,18 @@ export const dashboardLink = [
         label: 'Wajib Pajak',
         element: Dashboard.TaxPeriod,
         permissions: [[Action.READ, Model.TaxPeriod]]
+      },
+      {
+        path: '/dashboard/village_report',
+        label: 'Laporan Desa',
+        element: Dashboard.VillageReport,
+        permissions: [[Action.READ, Model.VillageReport]]
+      },
+      {
+        path: '/dashboard/resident_report',
+        label: 'Laporan Penduduk',
+        element: Dashboard.SubmitReport,
+        permissions: [[Action.READ, Model.SubmitReport]]
       }
     ]
   }

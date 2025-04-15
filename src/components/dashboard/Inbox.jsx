@@ -48,7 +48,7 @@ const Inbox = ({ inbox, token, fetchInbox }) => {
 
   return (
     <div className="flex max-h-80 flex-col p-2">
-      <div className="flex flex-1 flex-col divide-y overflow-y-auto">
+      <div className="flex flex-1 flex-col divide-y overflow-y-auto overflow-x-hidden">
         {inbox && inbox.map((item) => <div key={item.id}>{renderNotification(item)}</div>)}
         {inbox.length === 0 && <Empty description="Tidak ada Notifikasi" />}
       </div>

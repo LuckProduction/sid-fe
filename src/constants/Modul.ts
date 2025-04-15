@@ -30,7 +30,8 @@ enum Modul {
   CITIZEN_REPORT_REPLIES = 'Balasan Pengaduan',
   TAX = 'Pajak',
   TAX_PERIOD = 'Periode Pajak',
-  TAX_PARTICIPANT = 'Wajib Pajak'
+  VILLAGE_REPORT = 'Laporan Penduduk',
+  REPORT_ATTRIBUTE = 'Atribut Laporan'
 }
 
 export default Modul;

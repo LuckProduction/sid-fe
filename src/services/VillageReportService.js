@@ -1,25 +1,26 @@
 /* eslint-disable no-unused-vars */
-import { CitizenReportReply } from '@/models';
+import { VillageReport } from '@/models';
 import api from '@/utils/api';
 
-export default class CitizenReportReplyService {
+export default class VillageReportService {
   /**
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
    *  status: boolean;
    *  message: string;
-   *  data?: CitizenReportReply[];
+   *  data?: VillageReport[];
    * }>}
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/balasan-pengaduan', { token, params });
-    return { ...response, data: CitizenReportReply.fromApiData(response.data) };
+    const response = await api.get('/master-laporan', { token, params });
+    if (!response.data) return response;
+    return { ...response, data: VillageReport.fromApiData(response.data) };
   }
 
   /**
-   * @param {CitizenReportReply} data
+   * @param {VillageReport} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -29,12 +30,12 @@ export default class CitizenReportReplyService {
    * }}
    */
   static async store(data, token) {
-    return await api.post('/balasan-pengaduan', { body: CitizenReportReply.toApiData(data), token });
+    return await api.post('/master-laporan', { body: VillageReport.toApiData(data), token });
   }
 
   /**
    * @param {number} id
-   * @param {CitizenReportReply} data
+   * @param {VillageReport} data
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
@@ -43,13 +44,8 @@ export default class CitizenReportReplyService {
    *  errors?: { [key: string]: string[] };
    * }>}
    */
-  static async update(id, data, token, file) {
-    const payload = {
-      body: CitizenReportReply.toApiData(data),
-      token,
-      ...(file && { file: { dokumen: file } })
-    };
-    return await api.post(`/balasan-pengaduan/edit/${id}`, payload);
+  static async update(id, data, token) {
+    return await api.put(`/master-laporan/edit/${id}`, { body: VillageReport.toApiData(data), token });
   }
 
   /**
@@ -62,7 +58,7 @@ export default class CitizenReportReplyService {
    * }>}
    */
   static async delete(id, token) {
-    return await api.delete(`/balasan-pengaduan/delete/${id}`, { token });
+    return await api.delete(`/master-laporan/delete/${id}`, { token });
   }
 
   /**
@@ -75,10 +71,6 @@ export default class CitizenReportReplyService {
    * }>}
    */
   static async deleteBatch(ids, token) {
-    return await api.delete(`/balasan-pengaduan/multi-delete?ids=${ids.join(',')}`, { token });
-  }
-
-  static async verification(id, data, token) {
-    return await api.post(`/balasan-pengaduan/verifikasi/${id}`, { body: data, token });
+    return await api.delete(`/master-laporan/multi-delete?ids=${ids.join(',')}`, { token });
   }
 }

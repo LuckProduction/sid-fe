@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Article, CitizenReport, LegalProducts, LetterType, Map, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VisiMisi } from '@/models';
+import { Article, CitizenReport, LegalProducts, LetterType, Map, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VillageReport, VisiMisi } from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -63,10 +63,22 @@ export default class LandingService {
     return { ...response, data: LetterType.fromApiData(response.data) };
   }
 
+  static async getAllVillageReport() {
+    const response = await api.get(`/master-laporan`);
+    if (!response.data) return response;
+    return { ...response, data: VillageReport.fromApiData(response.data) };
+  }
+
   static async getLetterTypeDetail(id) {
     const response = await api.get(`/landing/jenis-surat/${id}`);
     if (!response.data) return response;
     return { ...response, data: LetterType.fromApiData(response.data) };
+  }
+
+  static async getVillageReportDetail(id) {
+    const response = await api.get(`/master-laporan/${id}`);
+    if (!response.data) return response;
+    return { ...response, data: VillageReport.fromApiData(response.data) };
   }
 
   static async sumbitLetter(data) {
@@ -151,5 +163,9 @@ export default class LandingService {
 
   static async likeCitizenReportReply(id) {
     return await api.put(`/balasan-pengaduan/suka/${id}`);
+  }
+
+  static async browseReport(data) {
+    return await api.post(`/lapor-penduduk/cari-laporan`, { body: data });
   }
 }

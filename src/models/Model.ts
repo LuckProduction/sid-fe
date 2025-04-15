@@ -30,7 +30,10 @@ type ModelKeys =
   | 'pengaduan'
   | 'periode_pajak'
   | 'wajib_pajak'
-  | 'balasan_pengaduan';
+  | 'balasan_pengaduan'
+  | 'lapor_penduduk'
+  | 'master_laporan'
+  | 'atribut_master_laporan';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -65,7 +68,10 @@ export default abstract class Model {
     pengaduan: undefined,
     periode_pajak: undefined,
     wajib_pajak: undefined,
-    balasan_pengaduan: undefined
+    balasan_pengaduan: undefined,
+    lapor_penduduk: undefined,
+    master_laporan: undefined,
+    atribut_master_laporan: undefined
   };
 }
 

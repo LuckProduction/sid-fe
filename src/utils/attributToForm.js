@@ -15,7 +15,7 @@ const getInputType = (type) => {
   }
 };
 
-export const mapLetterAttributesToFormFields = (letter_attribut) => {
+export const mapAttributesToFormFields = (letter_attribut) => {
   return letter_attribut.map((attr) => {
     if (attr.type === 'dokumen') {
       return {
