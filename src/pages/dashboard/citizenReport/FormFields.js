@@ -15,20 +15,12 @@ export const statusFormFields = () => [
     ],
     options: [
       {
-        label: 'Privasi',
-        value: 'privasi'
-      },
-      {
         label: 'Verifikasi',
         value: 'verifikasi'
       },
       {
-        label: 'Diproses',
-        value: 'diproses'
-      },
-      {
-        label: 'Selesai',
-        value: 'selesai'
+        label: 'Publikasi',
+        value: 'publikasi'
       }
     ]
   }

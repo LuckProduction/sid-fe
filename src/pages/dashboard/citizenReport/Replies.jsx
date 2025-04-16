@@ -60,10 +60,11 @@ const Replies = () => {
       render: (_, record) => <div className="news-text">{record.content}</div>
     },
     {
-      title: 'Tipe Balasan',
-      dataIndex: 'reply_type',
-      sorter: (a, b) => a.reply_type.length - b.reply_type.length,
-      searchable: true
+      title: 'Judul Balasan',
+      dataIndex: ['citizen_report', 'report_title'],
+      sorter: (a, b) => a.citizen_report.report_title.length - b.citizen_report.report_title.length,
+      searchable: true,
+      render: (_, record) => <div className="news-text max-w-80">{record}</div>
     },
     {
       title: 'Status',
@@ -236,21 +237,19 @@ const Replies = () => {
   };
 
   return (
-    <div>
-      <Card>
-        <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={citizenReportReplyModel} modul={Modul.CITIZEN_REPORT_REPLIES} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={citizenReportReplies}
-            columns={Column}
-            pagination={pagination}
-            loading={getAllCitizenReportReplies.isLoading}
-            map={(citizenReport) => ({ key: citizenReport.id, ...citizenReport })}
-            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-          />
-        </div>
-      </Card>
-    </div>
+    <>
+      <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={citizenReportReplyModel} modul={Modul.CITIZEN_REPORT_REPLIES} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+      <div className="w-full max-w-full overflow-x-auto">
+        <DataTable
+          data={citizenReportReplies}
+          columns={Column}
+          pagination={pagination}
+          loading={getAllCitizenReportReplies.isLoading}
+          map={(citizenReport) => ({ key: citizenReport.id, ...citizenReport })}
+          handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+        />
+      </div>
+    </>
   );
 };
 

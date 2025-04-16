@@ -2,7 +2,7 @@ import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LetterTypeService, SubmitLetterService } from '@/services';
-import { Button, Card, List, Space, Tag } from 'antd';
+import { Button, List, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { letterTypeFormFields, submitLetterFilterFields, submitLetterFormFields } from './FormFields';
 import { SubmitLetter as SubmitLetterModel } from '@/models';
@@ -288,21 +288,19 @@ const SubmitLetter = () => {
   };
 
   return (
-    <div>
-      <Card>
-        <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={SubmitLetterModel} modul={Modul.LETTER_SUBMIT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={submitLetter}
-            columns={Column}
-            pagination={pagination}
-            loading={getAllSubmitLetter.isLoading}
-            map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
-            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-          />
-        </div>
-      </Card>
-    </div>
+    <>
+      <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={SubmitLetterModel} modul={Modul.LETTER_SUBMIT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+      <div className="w-full max-w-full overflow-x-auto">
+        <DataTable
+          data={submitLetter}
+          columns={Column}
+          pagination={pagination}
+          loading={getAllSubmitLetter.isLoading}
+          map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
+          handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+        />
+      </div>
+    </>
   );
 };
 

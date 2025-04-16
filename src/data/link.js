@@ -88,13 +88,8 @@ export const landingLink = [
   },
   {
     label: 'Pemetaan',
-    children: [
-      {
-        label: 'Pemetaan',
-        key: '/maps',
-        element: Landing.Map
-      }
-    ]
+    key: '/maps',
+    element: Landing.Map
   },
   {
     label: 'Pengaduan',
@@ -272,22 +267,10 @@ export const dashboardLink = [
         permissions: [[Action.READ, Model.LetterTemplate]]
       },
       {
-        path: '/dashboard/submit_letter',
-        label: 'Permohonan Surat',
-        element: Dashboard.SubmitLetter,
-        permissions: [[Action.READ, Model.SubmitLetter]]
-      },
-      {
         path: '/dashboard/citizen_report',
         label: 'Pengaduan Masyarakat',
         element: Dashboard.CitizenReport,
         permissions: [[Action.READ, Model.CitizenReport]]
-      },
-      {
-        path: '/dashboard/citizen_report_replies',
-        label: 'Balasan Pengaduan Masyarakat',
-        element: Dashboard.CitizenReportReply,
-        permissions: [[Action.READ, Model.CitizenReportReply]]
       },
       {
         path: '/dashboard/village_enterprise',
@@ -312,12 +295,6 @@ export const dashboardLink = [
         label: 'Laporan Desa',
         element: Dashboard.VillageReport,
         permissions: [[Action.READ, Model.VillageReport]]
-      },
-      {
-        path: '/dashboard/resident_report',
-        label: 'Laporan Penduduk',
-        element: Dashboard.SubmitReport,
-        permissions: [[Action.READ, Model.SubmitReport]]
       }
     ]
   }

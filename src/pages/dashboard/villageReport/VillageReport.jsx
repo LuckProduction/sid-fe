@@ -1,6 +1,6 @@
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageReportService } from '@/services';
-import { Button, Card, List, Space, Tag } from 'antd';
+import { Button, Card, List, Space, Tabs, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { VillageReport as VillageReportModel } from '@/models';
 import { Action } from '@/constants';
@@ -10,6 +10,7 @@ import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DataTable, DataTableHeader } from '@/components';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import SubmitReport from './SubmitReport';
 
 const { UPDATE, READ, DELETE } = Action;
 
@@ -255,17 +256,24 @@ const VillageReport = () => {
   return (
     <div>
       <Card>
-        <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={VillageReportModel} modul={Modul.VILLAGE_REPORT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={villageReports}
-            columns={Column}
-            pagination={pagination}
-            loading={getAllVillageReports.isLoading}
-            map={(villageReports) => ({ key: villageReports.id, ...villageReports })}
-            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-          />
-        </div>
+        <Tabs type="card">
+          <Tabs.TabPane key="master-laporan" tab="Master Laporan">
+            <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={VillageReportModel} modul={Modul.VILLAGE_REPORT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+            <div className="w-full max-w-full overflow-x-auto">
+              <DataTable
+                data={villageReports}
+                columns={Column}
+                pagination={pagination}
+                loading={getAllVillageReports.isLoading}
+                map={(villageReports) => ({ key: villageReports.id, ...villageReports })}
+                handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+              />
+            </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane key="laporan-penduduk" tab="Laporan Penduduk">
+            <SubmitReport />
+          </Tabs.TabPane>
+        </Tabs>
       </Card>
     </div>
   );

@@ -70,13 +70,18 @@ const SubmitReport = () => {
 
       const { data, isSuccess } = isNik ? await searchResident.execute(requestData) : await fetchVillageReportDetail(requestData.nama_laporan);
 
-      dispatch({
-        type: 'SET_FORM_DATA',
-        payload: isSuccess && data ? { ...data, nama_laporan: values.nama_laporan } : {}
-      });
+      if (isSuccess) {
+        dispatch({
+          type: 'SET_FORM_DATA',
+          payload: isSuccess && data ? { ...data, nama_laporan: values.nama_laporan, report_type: values.report_type } : {}
+        });
 
-      dispatch({ type: 'SET_MODAL_STATUS', payload: 'initial' });
-      dispatch({ type: 'SET_MODAL_OPEN', payload: isNik ? true : false });
+        dispatch({ type: 'SET_MODAL_STATUS', payload: 'initial' });
+        dispatch({ type: 'SET_MODAL_OPEN', payload: isNik ? true : false });
+      } else {
+        dispatch({ type: 'SET_MODAL_STATUS', payload: 'error' });
+        dispatch({ type: 'SET_MODAL_OPEN', payload: isNik ? true : false });
+      }
     } catch (err) {
       console.error('Error fetching report data:', err);
     }
@@ -98,7 +103,7 @@ const SubmitReport = () => {
       const formattedData = {
         nik: state.formData.nik ?? null,
         master_laporan_id: state.villageReportDetail.id,
-        tipe_pelapor: 'diri sendiri',
+        tipe_pelapor: state.formData.report_type,
         atribut_laporan_penduduk: (
           await Promise.all(
             state.villageReportDetail.report_attribute.flatMap(async (attr) => {
@@ -202,6 +207,22 @@ const SubmitReport = () => {
                       ))}
                     </Select>
                   </Form.Item>
+                  <Form.Item
+                    className="col-span-4 m-0 w-full"
+                    name="report_type"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Tipe Laporan wajib diisi!'
+                      }
+                    ]}
+                  >
+                    <Select className="w-full" size="large" placeholder="Pilih Tipe Laporan">
+                      <Select.Option value="diri sendiri">Diri Sendiri</Select.Option>
+                      <Select.Option value="keluarga">Keluarga</Select.Option>
+                      <Select.Option value="lainnya">Lainnya</Select.Option>
+                    </Select>
+                  </Form.Item>
                   <Button className="w-full lg:w-fit" loading={getVillageReportDetail.isLoading} variant="solid" color="primary" size="large" htmlType="submit">
                     Proses
                   </Button>
@@ -253,6 +274,22 @@ const SubmitReport = () => {
                           {item.report_name}
                         </Select.Option>
                       ))}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    className="col-span-4 m-0 w-full"
+                    name="report_type"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Tipe Laporan wajib diisi!'
+                      }
+                    ]}
+                  >
+                    <Select className="w-full" size="large" placeholder="Pilih Tipe Laporan">
+                      <Select.Option value="diri sendiri">Diri Sendiri</Select.Option>
+                      <Select.Option value="keluarga">Keluarga</Select.Option>
+                      <Select.Option value="lainnya">Lainnya</Select.Option>
                     </Select>
                   </Form.Item>
                   <Button className="w-full lg:w-fit" loading={searchResident.isLoading} variant="solid" color="primary" size="large" htmlType="submit">

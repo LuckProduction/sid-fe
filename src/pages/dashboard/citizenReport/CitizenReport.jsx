@@ -1,7 +1,7 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { CitizenReportService } from '@/services';
-import { Button, Card, Space, Tag, Tooltip } from 'antd';
+import { Button, Card, Space, Tabs, Tag, Tooltip } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { CitizenReport as CitizenReportModel } from '@/models';
 import Modul from '@/constants/Modul';
@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import timeAgo from '@/utils/timeAgo';
 import dateFormatter from '@/utils/dateFormatter';
 import { CommentOutlined } from '@ant-design/icons';
+import Replies from './Replies';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -52,7 +53,7 @@ const CitizenReport = () => {
       dataIndex: 'report_title',
       sorter: (a, b) => a.report_titlelength - b.report_titlelength,
       searchable: true,
-      render: (_, record) => <div className="news-text">{record.report_title}</div>
+      render: (_, record) => <div className="news-text max-w-80">{record.report_title}</div>
     },
     {
       title: 'Nama Pengadu',
@@ -198,17 +199,24 @@ const CitizenReport = () => {
   return (
     <div>
       <Card>
-        <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={CitizenReportModel} modul={Modul.CITIZEN_REPORT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={citizenReport}
-            columns={Column}
-            pagination={pagination}
-            loading={getAllCitizenReport.isLoading}
-            map={(citizenReport) => ({ key: citizenReport.id, ...citizenReport })}
-            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-          />
-        </div>
+        <Tabs type="card">
+          <Tabs.TabPane key="pengaduan" tab="Pengaduan">
+            <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={CitizenReportModel} modul={Modul.CITIZEN_REPORT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+            <div className="w-full max-w-full overflow-x-auto">
+              <DataTable
+                data={citizenReport}
+                columns={Column}
+                pagination={pagination}
+                loading={getAllCitizenReport.isLoading}
+                map={(citizenReport) => ({ key: citizenReport.id, ...citizenReport })}
+                handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+              />
+            </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane key="balasan" tab="Balasan">
+            <Replies />
+          </Tabs.TabPane>
+        </Tabs>
       </Card>
     </div>
   );

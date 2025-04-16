@@ -3,7 +3,7 @@ import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LetterTypeService } from '@/services';
 import { DatabaseOutlined } from '@ant-design/icons';
-import { Button, Card, Space } from 'antd';
+import { Button, Card, Space, Tabs } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { letterTypeFormFields } from './FormFields';
 import { expiredTimeFormat } from '@/utils/expiredTimeFormat';
@@ -11,6 +11,7 @@ import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { useNavigate } from 'react-router-dom';
 import { Action } from '@/constants';
 import { LetterType as LetterTypeModel } from '@/models';
+import SubmitLetter from './SubmitLetter';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -192,17 +193,24 @@ const LetterType = () => {
   return (
     <div>
       <Card>
-        <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={LetterTypeModel} modul={Modul.LETTER_TYPE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={letterType}
-            columns={Column}
-            pagination={pagination}
-            loading={getAllLetterType.isLoading}
-            map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
-            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-          />
-        </div>
+        <Tabs type="card">
+          <Tabs.TabPane key="jenis-laporan" tab="Jenis Laporan">
+            <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={LetterTypeModel} modul={Modul.LETTER_TYPE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+            <div className="w-full max-w-full overflow-x-auto">
+              <DataTable
+                data={letterType}
+                columns={Column}
+                pagination={pagination}
+                loading={getAllLetterType.isLoading}
+                map={(legalProducts) => ({ key: legalProducts.id, ...legalProducts })}
+                handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+              />
+            </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane key="permohonan surat" tab="Permohonan Surat">
+            <SubmitLetter />
+          </Tabs.TabPane>
+        </Tabs>
       </Card>
     </div>
   );

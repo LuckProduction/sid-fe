@@ -2,7 +2,7 @@ import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageReportService, SubmitReportService } from '@/services';
-import { Button, Card, List, Space, Tag } from 'antd';
+import { Button, List, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { statusSubmitFormFields, submitReportFilterFields } from './FormFields';
 import { Action } from '@/constants';
@@ -298,21 +298,19 @@ const SubmitReport = () => {
   };
 
   return (
-    <div>
-      <Card>
-        <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={SubmitReportModel} modul={Modul.VILLAGE_REPORT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
-        <div className="w-full max-w-full overflow-x-auto">
-          <DataTable
-            data={submitReport}
-            columns={Column}
-            pagination={pagination}
-            loading={getAllSubmitReports.isLoading}
-            map={(villageReport) => ({ key: villageReport.id, ...villageReport })}
-            handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
-          />
-        </div>
-      </Card>
-    </div>
+    <>
+      <DataTableHeader filter={filter} onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={SubmitReportModel} modul={Modul.VILLAGE_REPORT} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
+      <div className="w-full max-w-full overflow-x-auto">
+        <DataTable
+          data={submitReport}
+          columns={Column}
+          pagination={pagination}
+          loading={getAllSubmitReports.isLoading}
+          map={(villageReport) => ({ key: villageReport.id, ...villageReport })}
+          handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
+        />
+      </div>
+    </>
   );
 };
 
