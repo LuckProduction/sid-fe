@@ -31,7 +31,7 @@ jobs:
         run: npm test
 
       - name: Build React App
-        run: npm run build --verbose # Tambahkan --verbose untuk debugging
+        run: npm run build --verbose
 
       - name: Debug Build Output
         run: ls -la build/ || echo "Build folder not found"
@@ -64,10 +64,18 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_NEW }}
 
+      - name: Debug Runner IP
+        run: |
+          curl -s https://api.ipify.org || echo "Failed to get runner IP"
+
       - name: Add SSH Host Key
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p 2223 go-village.id >> ~/.ssh/known_hosts
+
+      - name: Debug Connection Before Deploy
+        run: |
+          ssh -p 2223 -v -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id "echo Test connection" || echo "SSH connection failed"
 
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
@@ -79,7 +87,7 @@ jobs:
             rm -rf /home/govy6997/public_html/staging/example.go-village.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
+          rsync -avz --progress -e "ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3" build/ govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
@@ -91,4 +99,4 @@ jobs:
             rm -rf /home/govy6997/public_html/production/sukma.go-village.id/*
             exit
           EOF
-          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
+          rsync -avz --progress -e "ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3" build/ govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
