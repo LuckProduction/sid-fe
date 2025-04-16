@@ -262,7 +262,7 @@ export const dashboardLink = [
     children: [
       {
         path: '/dashboard/correspondence',
-        label: 'Jenis Surat',
+        label: 'Permohanan Surat',
         element: Dashboard.LetterType,
         permissions: [[Action.READ, Model.LetterTemplate]]
       },
@@ -292,7 +292,7 @@ export const dashboardLink = [
       },
       {
         path: '/dashboard/village_report',
-        label: 'Laporan Desa',
+        label: 'Lapor Penduduk',
         element: Dashboard.VillageReport,
         permissions: [[Action.READ, Model.VillageReport]]
       }

@@ -14,7 +14,9 @@ export default class SubmitReportService {
    * */
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/lapor-penduduk', { token });
+    const response = await api.get('/lapor-penduduk', { token, params });
+    console.log(response);
+
     if (!response.data) return response;
     return { ...response, data: SubmitReport.fromApiData(response.data) };
   }

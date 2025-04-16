@@ -194,7 +194,10 @@ const LetterType = () => {
     <div>
       <Card>
         <Tabs type="card">
-          <Tabs.TabPane key="jenis-laporan" tab="Jenis Laporan">
+          <Tabs.TabPane key="permohonan surat" tab="Permohonan Surat">
+            <SubmitLetter />
+          </Tabs.TabPane>
+          <Tabs.TabPane key="master-surat" tab="Master Surat">
             <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={LetterTypeModel} modul={Modul.LETTER_TYPE} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
             <div className="w-full max-w-full overflow-x-auto">
               <DataTable
@@ -206,9 +209,6 @@ const LetterType = () => {
                 handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
               />
             </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane key="permohonan surat" tab="Permohonan Surat">
-            <SubmitLetter />
           </Tabs.TabPane>
         </Tabs>
       </Card>

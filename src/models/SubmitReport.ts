@@ -19,7 +19,7 @@ export interface IncomingApiData {
     konten: string;
   }[];
   status: string;
-  create_at: string;
+  created_at: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -90,7 +90,7 @@ export default class SubmitReport extends Model {
         content: item.konten
       })),
       apiData.status,
-      apiData.create_at
+      apiData.created_at
     ) as ReturnType<T, IncomingApiData, SubmitReport>;
   }
 }

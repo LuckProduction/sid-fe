@@ -45,6 +45,8 @@ const SubmitReport = () => {
   const submitReport = getAllSubmitReports.data ?? [];
   const villageReport = getAllVillageReports.data ?? [];
 
+  console.log(submitReport);
+
   const isDocumentPath = (content) => {
     // eslint-disable-next-line no-useless-escape
     const regex = /^(.*\/)?[^\/]+\.(pdf|docx?|xlsx?|pptx?)$/i;

@@ -1,12 +1,11 @@
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { VillageReportService } from '@/services';
-import { Button, Card, List, Space, Tabs, Tag } from 'antd';
+import { Button, Card, Space, Tabs, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { VillageReport as VillageReportModel } from '@/models';
 import { Action } from '@/constants';
 import Modul from '@/constants/Modul';
 import { formFields } from './FormFields';
-import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DataTable, DataTableHeader } from '@/components';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -20,8 +19,6 @@ const VillageReport = () => {
   const navigate = useNavigate();
   const { execute, ...getAllVillageReports } = useService(VillageReportService.getAll);
   const storeVillageReport = useService(VillageReportService.store);
-  const updateVillageReport = useService(VillageReportService.update);
-  const deleteVillageReport = useService(VillageReportService.delete);
   const deleteBatchVillageReports = useService(VillageReportService.deleteBatch);
   const [selectedData, setSelectedData] = useState([]);
   const pagination = usePagination({ totalData: getAllVillageReports.totalData });
@@ -95,123 +92,6 @@ const VillageReport = () => {
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Edit
-            title={`Edit ${Modul.VILLAGE_REPORT}`}
-            model={VillageReportModel}
-            onClick={() => {
-              modal.edit({
-                title: `Edit ${Modul.VILLAGE_REPORT}`,
-                data: record,
-                formFields: formFields,
-                onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateVillageReport.execute(record.id, values, token);
-                  if (isSuccess) {
-                    success('Berhasil', message);
-                    fetchVillageReports({ token: token, page: pagination.page, per_page: pagination.per_page });
-                  } else {
-                    error('Gagal', message);
-                  }
-                  return isSuccess;
-                }
-              });
-            }}
-          />
-          <Detail
-            title={`Detail ${Modul.VILLAGE_REPORT}`}
-            model={VillageReportModel}
-            onClick={() => {
-              modal.show.description({
-                title: record.report_name,
-                data: [
-                  {
-                    key: 'report_name',
-                    label: `Nama ${Modul.VILLAGE_REPORT}`,
-                    children: record.report_name
-                  },
-
-                  {
-                    key: 'status',
-                    label: `Status `,
-                    children: (() => {
-                      let statusTag;
-                      switch (record.status) {
-                        case 'aktif':
-                          statusTag = <Tag color="blue-inverse">Aktif</Tag>;
-                          break;
-                        case 'nonaktif':
-                          statusTag = <Tag color="red-inverse">Non-Aktif</Tag>;
-                          break;
-                        default:
-                          statusTag = <Tag color="error">Undefined</Tag>;
-                      }
-                      return statusTag;
-                    })()
-                  },
-                  {
-                    key: 'type',
-                    label: `Jenis`,
-                    children: (() => {
-                      let typeTag;
-                      switch (record.type) {
-                        case 'ubah':
-                          typeTag = <Tag color="blue">Ubah</Tag>;
-                          break;
-                        case 'masuk':
-                          typeTag = <Tag color="green">Masuk</Tag>;
-                          break;
-                        case 'keluar':
-                          typeTag = <Tag color="warning">Keluar</Tag>;
-                          break;
-                        case 'lahir':
-                          typeTag = <Tag color="blue-inverse">Lahir</Tag>;
-                          break;
-                        case 'meninggal':
-                          typeTag = <Tag color="red-inverse">Meninggal</Tag>;
-                          break;
-                        default:
-                          typeTag = <Tag color="error">Undifined</Tag>;
-                      }
-                      return typeTag;
-                    })()
-                  },
-                  {
-                    key: 'report_attribute',
-                    label: `Atribut Laporan`,
-                    children: (
-                      <List
-                        dataSource={record.report_attribute}
-                        renderItem={(item) => (
-                          <List.Item>
-                            <List.Item.Meta title={item.attribute} description={item.tipe} />
-                          </List.Item>
-                        )}
-                      />
-                    )
-                  }
-                ]
-              });
-            }}
-          />
-          <Delete
-            title={`Delete ${Modul.VILLAGE_REPORT}`}
-            model={VillageReportModel}
-            onClick={() => {
-              modal.delete.default({
-                title: `Delete ${Modul.VILLAGE_REPORT}`,
-                data: record,
-                onSubmit: async () => {
-                  const { isSuccess, message } = await deleteVillageReport.execute(record.id, token);
-                  if (isSuccess) {
-                    success('Berhasil', message);
-                    fetchVillageReports({ token: token, page: pagination.page, per_page: pagination.per_page });
-                  } else {
-                    error('Gagal', message);
-                  }
-                  return isSuccess;
-                }
-              });
-            }}
-          />
           <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/report_attribute/${record.id}`)} />
         </Space>
       )
@@ -257,6 +137,9 @@ const VillageReport = () => {
     <div>
       <Card>
         <Tabs type="card">
+          <Tabs.TabPane key="laporan-penduduk" tab="Laporan Penduduk">
+            <SubmitReport />
+          </Tabs.TabPane>
           <Tabs.TabPane key="master-laporan" tab="Master Laporan">
             <DataTableHeader onSearch={(values) => setFilterValues({ ...filterValues, search: values })} model={VillageReportModel} modul={Modul.VILLAGE_REPORT} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedData} />
             <div className="w-full max-w-full overflow-x-auto">
@@ -269,9 +152,6 @@ const VillageReport = () => {
                 handleSelectedData={(_, selectedRows) => setSelectedData(selectedRows)}
               />
             </div>
-          </Tabs.TabPane>
-          <Tabs.TabPane key="laporan-penduduk" tab="Laporan Penduduk">
-            <SubmitReport />
           </Tabs.TabPane>
         </Tabs>
       </Card>

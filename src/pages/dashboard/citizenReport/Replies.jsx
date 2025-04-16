@@ -64,7 +64,7 @@ const Replies = () => {
       dataIndex: ['citizen_report', 'report_title'],
       sorter: (a, b) => a.citizen_report.report_title.length - b.citizen_report.report_title.length,
       searchable: true,
-      render: (_, record) => <div className="news-text max-w-80">{record}</div>
+      render: (_, record) => <div className="news-text max-w-80">{record.citizen_report.report_title}</div>
     },
     {
       title: 'Status',

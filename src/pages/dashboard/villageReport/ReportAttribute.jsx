@@ -62,6 +62,12 @@ const ReportAttribute = () => {
       searchable: true
     },
     {
+      title: 'Wajib Diisi',
+      dataIndex: 'required',
+      sorter: (a, b) => a.required.length - b.required.length,
+      searchable: true
+    },
+    {
       title: 'Placeholder',
       dataIndex: 'placeholder',
       sorter: (a, b) => a.placeholder.length - b.placeholder.length,
