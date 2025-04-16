@@ -5,7 +5,7 @@ import { Button, Card, Space, Tabs, Tag, Tooltip } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { CitizenReport as CitizenReportModel } from '@/models';
 import Modul from '@/constants/Modul';
-import { citizenReportsFilterFields, replyFormFields, statusFormFields } from './FormFields';
+import { citizenReportsFilterFields, replyFormFields, citizenReportStatusFormFields } from './FormFields';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { useNavigate } from 'react-router-dom';
@@ -104,7 +104,7 @@ const CitizenReport = () => {
               modal.edit({
                 title: `Edit Status ${Modul.CITIZEN_REPORT}`,
                 data: record,
-                formFields: statusFormFields,
+                formFields: citizenReportStatusFormFields,
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await verifCitizenReport.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {
@@ -126,7 +126,7 @@ const CitizenReport = () => {
               modal.delete.default({
                 title: `Delete ${Modul.CITIZEN_REPORT}`,
                 data: record,
-                formFields: statusFormFields,
+                formFields: citizenReportStatusFormFields,
                 onSubmit: async () => {
                   const { isSuccess, message } = await deleteCitizenReport.execute(record.id, token);
                   if (isSuccess) {

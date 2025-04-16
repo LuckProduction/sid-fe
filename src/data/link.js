@@ -262,7 +262,7 @@ export const dashboardLink = [
     children: [
       {
         path: '/dashboard/correspondence',
-        label: 'Permohanan Surat',
+        label: 'Permohonan Surat',
         element: Dashboard.LetterType,
         permissions: [[Action.READ, Model.LetterTemplate]]
       },

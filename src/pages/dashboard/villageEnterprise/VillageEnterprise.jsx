@@ -117,7 +117,7 @@ const VillageEnterprise = () => {
               const [longitude = '', latitude = ''] = coordinates.split(',').map((coord) => coord.trim());
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_ENTERPRISE}`,
-                data: { ...record, operational_time: record.operational_time.split(',').map((time) => dayjs(time, 'HH-mm')), longitude: longitude, latitude: latitude },
+                data: { ...record, operational_time: record.operational_time.split(',').map((time) => dayjs(time, 'HH-mm')), longitude: longitude, latitude: latitude, resident: record.resident.id },
                 formFields: formFields({ fetchResident }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updateVillageEnterprise.execute(
@@ -238,7 +238,7 @@ const VillageEnterprise = () => {
   };
 
   const onCreate = () => {
-    modal.edit({
+    modal.create({
       title: `Tambah ${Modul.VILLAGE_ENTERPRISE}`,
       formFields: formFields({ fetchResident }),
       onSubmit: async (values) => {

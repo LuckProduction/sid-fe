@@ -5,7 +5,7 @@ import { Button, Card, Descriptions, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { CitizenReportReply as citizenReportReplyModel } from '@/models';
 import Modul from '@/constants/Modul';
-import { repliesFilterFields, replyFormFields, statusFormFields } from './FormFields';
+import { repliesFilterFields, replyFormFields, repliesStatusFormFields } from './FormFields';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DataTable, DataTableHeader } from '@/components';
 import timeAgo from '@/utils/timeAgo';
@@ -185,7 +185,7 @@ const Replies = () => {
               modal.edit({
                 title: `Edit Status ${Modul.CITIZEN_REPORT_REPLIES}`,
                 data: record,
-                formFields: statusFormFields,
+                formFields: repliesStatusFormFields,
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await verifyCitizenReportReply.execute(record.id, { ...values, _method: 'PUT' }, token);
                   if (isSuccess) {

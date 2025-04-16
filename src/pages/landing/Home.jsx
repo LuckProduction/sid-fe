@@ -420,7 +420,7 @@ const Home = () => {
                 <p className="text-xl font-semibold text-white">Lapak Badan Usaha Desa :</p>
               </Reveal>
             </div>
-            <Button icon={<RightOutlined />} onClick={() => navigate('/village_enterprise')} iconPosition="end" variant="solid">
+            <Button icon={<RightOutlined />} onClick={() => navigate('/village_enterprises')} iconPosition="end" variant="solid">
               Selengkapnya
             </Button>
           </div>

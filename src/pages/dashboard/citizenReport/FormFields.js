@@ -1,7 +1,44 @@
 import { InputType } from '@/constants';
 import Modul from '@/constants/Modul';
 
-export const statusFormFields = () => [
+export const citizenReportStatusFormFields = () => [
+  {
+    label: `Status ${Modul.CITIZEN_REPORT}`,
+    name: 'status',
+    type: InputType.SELECT,
+    picker: 'select',
+    rules: [
+      {
+        required: true,
+        message: `Status ${Modul.CITIZEN_REPORT} harus diisi`
+      }
+    ],
+    options: [
+      {
+        label: 'Verifikasi',
+        value: 'verifikasi'
+      },
+      {
+        label: 'Privasi',
+        value: 'privasi'
+      },
+      {
+        label: 'Verifikasi',
+        value: 'verifikasi'
+      },
+      {
+        label: 'Diproses',
+        value: 'diproses'
+      },
+      {
+        label: 'Selesai',
+        value: 'selesai'
+      }
+    ]
+  }
+];
+
+export const repliesStatusFormFields = () => [
   {
     label: `Status ${Modul.CITIZEN_REPORT}`,
     name: 'status',
@@ -28,7 +65,7 @@ export const statusFormFields = () => [
 
 export const replyFormFields = () => [
   {
-    label: `Koten balasan ${Modul.CITIZEN_REPORT}`,
+    label: `Konten balasan ${Modul.CITIZEN_REPORT}`,
     name: 'content',
     type: InputType.LONGTEXT,
     rules: [
