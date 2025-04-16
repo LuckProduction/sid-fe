@@ -20,6 +20,22 @@ export default class ReportAttributeService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: ReportAttribute[];
+   * }>}
+   * */
+  static async getByReport({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get('/atribut-master-laporan', { token, params });
+    if (!response.data) return response;
+    return { ...response, data: ReportAttribute.fromApiData(response.data) };
+  }
+
+  /**
    * @param {ReportAttribute} data
    * @param {string} token
    * @returns {Promise<{

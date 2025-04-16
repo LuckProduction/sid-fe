@@ -10,7 +10,7 @@ export interface IncomingApiData {
     tipe: string;
     status: string;
   };
-  master_penduduk_id: IncomingResident;
+  master_penduduk_id: IncomingResident | null;
   tipe_pelapor: string;
   atribut_laporan_penduduk: {
     id: number;
@@ -44,7 +44,7 @@ export default class SubmitReport extends Model {
       kk_number: number;
       gender: string;
       religion: string;
-    },
+    } | null,
     public reporter_type: string,
     public report_attribute: {
       id: number;
@@ -69,17 +69,19 @@ export default class SubmitReport extends Model {
         status: apiData.master_laporan_id.status,
         type: apiData.master_laporan_id.tipe
       },
-      {
-        id: apiData.master_penduduk_id.id,
-        nik: apiData.master_penduduk_id.nik,
-        full_name: apiData.master_penduduk_id.nama_lengkap,
-        family_relation: apiData.master_penduduk_id.hubungan_keluarga,
-        resident_status: apiData.master_penduduk_id.status_penduduk,
-        marital_status: apiData.master_penduduk_id.status_perkawinan,
-        kk_number: apiData.master_penduduk_id.nomor_kk,
-        gender: apiData.master_penduduk_id.jenis_kelamin,
-        religion: apiData.master_penduduk_id.agama
-      },
+      apiData.master_penduduk_id
+        ? {
+            id: apiData.master_penduduk_id.id,
+            nik: apiData.master_penduduk_id.nik,
+            full_name: apiData.master_penduduk_id.nama_lengkap,
+            family_relation: apiData.master_penduduk_id.hubungan_keluarga,
+            resident_status: apiData.master_penduduk_id.status_penduduk,
+            marital_status: apiData.master_penduduk_id.status_perkawinan,
+            kk_number: apiData.master_penduduk_id.nomor_kk,
+            gender: apiData.master_penduduk_id.jenis_kelamin,
+            religion: apiData.master_penduduk_id.agama
+          }
+        : null,
       apiData.tipe_pelapor,
       apiData.atribut_laporan_penduduk.map((item) => ({
         id: item.id,

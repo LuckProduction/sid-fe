@@ -32,7 +32,6 @@ export { default as CitizenReportService } from './CitizenReportService';
 export { default as TaxPeriodService } from './TaxPeriodService';
 export { default as PublicTaxService } from './PublicTaxService';
 export { default as CitizenReportReplyService } from './CitizenReportReplyService';
-export { default as ReportResidentService } from './ReportResidentService';
 export { default as VillageReportService } from './VillageReportService';
 export { default as ReportAttributeService } from './ReportAttributeService';
 export { default as SubmitReportService } from './SubmitReportService';

@@ -7,8 +7,8 @@ import dateFormatter from '@/utils/dateFormatter';
 import helperJsonApi from '@/utils/helperJsonApi';
 import { mapAttributesToFormFields } from '@/utils/attributToForm';
 import { CopyOutlined, LeftOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Form, Input, Modal, Result, Select, Tooltip, Typography } from 'antd';
-import { useReducer, useEffect } from 'react';
+import { Button, Card, DatePicker, Form, Input, Modal, Result, Select, Tabs, Tooltip, Typography } from 'antd';
+import { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const initialState = {
@@ -32,7 +32,7 @@ const reducer = (state, action) => {
       return { ...state, modalStatus: action.payload };
     case 'SET_IS_SUBMITTED':
       return { ...state, isSubmitted: action.payload };
-    case 'SET_LETTER_TYPE_DETAIL':
+    case 'SET_REPORT_DETAIL':
       return { ...state, villageReportDetail: action.payload };
     case 'RESET':
       return initialState;
@@ -44,9 +44,9 @@ const reducer = (state, action) => {
 const SubmitReport = () => {
   const navigate = useNavigate();
   const { error, success } = useNotification();
-  const [form] = Form.useForm();
+  const [nikForm, noNIkForm] = Form.useForm();
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [activeKey, setActiveKey] = useState('no-nik');
   const { execute: fetchVillageReport, ...getAllVillageReport } = useService(LandingService.getAllVillageReport);
   const { execute: fetchVillageReportDetail, ...getVillageReportDetail } = useService(LandingService.getVillageReportDetail);
   const searchResident = useService(LandingService.getResident);
@@ -57,16 +57,18 @@ const SubmitReport = () => {
 
   const villageReport = getAllVillageReport.data ?? [];
 
+  const reportWithNikRequired = villageReport.filter((report) => ['ubah', 'keluar'].includes(report.type));
+  const reportWithoutNikRequired = villageReport.filter((report) => ['masuk', 'meninggal', 'lahir'].includes(report.type));
+
   useEffect(() => {
-    dispatch({ type: 'SET_LETTER_TYPE_DETAIL', payload: getVillageReportDetail.data ?? {} });
+    dispatch({ type: 'SET_REPORT_DETAIL', payload: getVillageReportDetail.data ?? {} });
   }, [getVillageReportDetail.data]);
 
-  const handleCheckLetter = async (values) => {
+  const handleReportFetch = async (values, isNik) => {
     try {
-      const { data, isSuccess } = await searchResident.execute({
-        ...values,
-        tanggal_lahir: dateFormatter(values.tanggal_lahir)
-      });
+      const requestData = isNik ? { ...values, tanggal_lahir: dateFormatter(values.tanggal_lahir) } : { nama_laporan: values.nama_laporan };
+
+      const { data, isSuccess } = isNik ? await searchResident.execute(requestData) : await fetchVillageReportDetail(requestData.nama_laporan);
 
       dispatch({
         type: 'SET_FORM_DATA',
@@ -74,9 +76,9 @@ const SubmitReport = () => {
       });
 
       dispatch({ type: 'SET_MODAL_STATUS', payload: 'initial' });
-      dispatch({ type: 'SET_MODAL_OPEN', payload: true });
+      dispatch({ type: 'SET_MODAL_OPEN', payload: isNik ? true : false });
     } catch (err) {
-      console.error('Terjadi kesalahan:', err);
+      console.error('Error fetching report data:', err);
     }
   };
 
@@ -94,7 +96,7 @@ const SubmitReport = () => {
 
     try {
       const formattedData = {
-        nik: state.formData.nik,
+        nik: state.formData.nik ?? null,
         master_laporan_id: state.villageReportDetail.id,
         tipe_pelapor: 'diri sendiri',
         atribut_laporan_penduduk: (
@@ -108,7 +110,7 @@ const SubmitReport = () => {
                     const base64String = await readFileAsBase64(file.originFileObj);
                     return {
                       atribut_master_laporan_id: attr.id,
-                      konten: base64String
+                      konten: base64String ?? '-'
                     };
                   })
                 );
@@ -116,7 +118,7 @@ const SubmitReport = () => {
 
               return {
                 atribut_master_laporan_id: attr.id,
-                konten: values[attr.attribute]
+                konten: values[attr.attribute] ?? '-'
               };
             })
           )
@@ -143,7 +145,18 @@ const SubmitReport = () => {
 
   const handleModalClose = () => {
     dispatch({ type: 'RESET' });
-    form.resetFields();
+    nikForm.resetFields();
+    noNIkForm.resetFields();
+  };
+
+  const handleTabChange = (key) => {
+    dispatch({ type: 'RESET' });
+    setActiveKey(key);
+    if (key === 'no-nik') {
+      nikForm.resetFields();
+    } else {
+      noNIkForm.resetFields();
+    }
   };
 
   return (
@@ -168,57 +181,86 @@ const SubmitReport = () => {
       <section className="min-h-screen w-full bg-white">
         <div className="mx-auto flex max-w-screen-lg flex-col gap-y-6 px-6 py-12">
           <Card className="w-full">
-            <Form form={form} className="flex w-full flex-col items-center gap-2 lg:flex-row" onFinish={handleCheckLetter}>
-              <Form.Item
-                className="col-span-4 m-0 w-full"
-                name="nik"
-                rules={[
-                  {
-                    required: true,
-                    message: 'NIK wajib diisi!'
-                  },
-                  {
-                    pattern: /^[0-9]+$/,
-                    message: 'NIK harus berupa angka !'
-                  }
-                ]}
-              >
-                <Input className="w-full" size="large" placeholder="Masukan NIK" />
-              </Form.Item>
-              <Form.Item
-                className="col-span-4 m-0 w-full"
-                name="tanggal_lahir"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Tanggal lahir wajib diisi!'
-                  }
-                ]}
-              >
-                <DatePicker className="w-full" size="large" placeholder="Masukan Tanggal Lahir" />
-              </Form.Item>
-              <Form.Item
-                className="col-span-4 m-0 w-full"
-                name="nama_laporan"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Nama laporan wajib diisi!'
-                  }
-                ]}
-              >
-                <Select className="w-full" size="large" placeholder="Pilih Laporan">
-                  {villageReport?.map((item) => (
-                    <Select.Option key={item.id} value={item.id}>
-                      {item.report_name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Button className="w-full lg:w-fit" loading={searchResident.isLoading} variant="solid" color="primary" size="large" htmlType="submit">
-                Proses
-              </Button>
-            </Form>
+            <Tabs activeKey={activeKey} onChange={handleTabChange}>
+              <Tabs.TabPane tab="Laporan Tanpa NIK Terdaftar" key="no-nik">
+                <Form form={noNIkForm} className="mt-4 flex w-full flex-col items-center gap-2 lg:flex-row" onFinish={(values) => handleReportFetch(values, false)}>
+                  <Form.Item
+                    className="col-span-4 m-0 w-full"
+                    name="nama_laporan"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Nama laporan wajib diisi!'
+                      }
+                    ]}
+                  >
+                    <Select className="w-full" size="large" placeholder="Pilih Laporan">
+                      {reportWithoutNikRequired?.map((item) => (
+                        <Select.Option key={item.id} value={item.id}>
+                          {item.report_name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Button className="w-full lg:w-fit" loading={getVillageReportDetail.isLoading} variant="solid" color="primary" size="large" htmlType="submit">
+                    Proses
+                  </Button>
+                </Form>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Laporan Dengan NIK Terdaftar" key="withnik">
+                <Form form={noNIkForm} className="mt-4 flex w-full flex-col items-center gap-2 lg:flex-row" onFinish={(values) => handleReportFetch(values, true)}>
+                  <Form.Item
+                    className="col-span-4 m-0 w-full"
+                    name="nik"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'NIK wajib diisi!'
+                      },
+                      {
+                        pattern: /^[0-9]+$/,
+                        message: 'NIK harus berupa angka !'
+                      }
+                    ]}
+                  >
+                    <Input className="w-full" size="large" placeholder="Masukan NIK" />
+                  </Form.Item>
+                  <Form.Item
+                    className="col-span-4 m-0 w-full"
+                    name="tanggal_lahir"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Tanggal lahir wajib diisi!'
+                      }
+                    ]}
+                  >
+                    <DatePicker className="w-full" size="large" placeholder="Masukan Tanggal Lahir" />
+                  </Form.Item>
+                  <Form.Item
+                    className="col-span-4 m-0 w-full"
+                    name="nama_laporan"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Nama laporan wajib diisi!'
+                      }
+                    ]}
+                  >
+                    <Select className="w-full" size="large" placeholder="Pilih Laporan">
+                      {reportWithNikRequired?.map((item) => (
+                        <Select.Option key={item.id} value={item.id}>
+                          {item.report_name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  <Button className="w-full lg:w-fit" loading={searchResident.isLoading} variant="solid" color="primary" size="large" htmlType="submit">
+                    Proses
+                  </Button>
+                </Form>
+              </Tabs.TabPane>
+            </Tabs>
           </Card>
           {!state.isSubmitted && Object.keys(state.villageReportDetail).length > 0 && (
             <Card>
@@ -268,22 +310,26 @@ const SubmitReport = () => {
             }
           />
         ) : (
-          <Result
-            status="success"
-            title="Lanjutkan Membuat Laporan"
-            subTitle="Anda terdaftar dalam database kependudukan desa. Silakan lanjutkan."
-            extra={
-              <Button
-                type="primary"
-                onClick={() => {
-                  fetchVillageReportDetail(state.formData.nama_laporan);
-                  dispatch({ type: 'SET_MODAL_OPEN', payload: false });
-                }}
-              >
-                Lanjutkan
-              </Button>
-            }
-          />
+          state.isModalOpen &&
+          state.formData.nik &&
+          state.modalStatus === 'initial' && (
+            <Result
+              status="success"
+              title="Lanjutkan Membuat Laporan"
+              subTitle="Anda terdaftar dalam database kependudukan desa. Silakan lanjutkan."
+              extra={
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    fetchVillageReportDetail(state.formData.nama_laporan);
+                    dispatch({ type: 'SET_MODAL_OPEN', payload: false });
+                  }}
+                >
+                  Lanjutkan
+                </Button>
+              }
+            />
+          )
         )}
       </Modal>
     </>

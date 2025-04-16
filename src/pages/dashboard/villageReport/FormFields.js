@@ -71,7 +71,7 @@ export const formFields = () => [
 export const reportAttributeFormFields = () => [
   {
     label: `Nama ${Modul.REPORT_ATTRIBUTE}`,
-    name: 'attribute',
+    name: 'attribute_name',
     type: InputType.TEXT,
     rules: [
       {
@@ -128,6 +128,27 @@ export const reportAttributeFormFields = () => [
       {
         required: true,
         message: `Placeholder ${Modul.REPORT_ATTRIBUTE} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Required ${Modul.REPORT_ATTRIBUTE}`,
+    name: 'required',
+    type: InputType.SELECT,
+    rules: [
+      {
+        required: true,
+        message: `Required ${Modul.REPORT_ATTRIBUTE} harus diisi`
+      }
+    ],
+    options: [
+      {
+        label: 'Tdak',
+        value: 'tidak'
+      },
+      {
+        label: 'Ya',
+        value: 'ya'
       }
     ]
   }

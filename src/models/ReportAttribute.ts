@@ -11,6 +11,7 @@ export interface IncomingApiData {
   nama_atribut: string;
   tipe: string;
   label: string;
+  harus_diisi: 'ya' | 'tidak';
   placeholder: string;
 }
 
@@ -46,6 +47,7 @@ export default class ReportAttribute extends Model {
     public attribute_name: string,
     public type: string,
     public label: string,
+    public required: 'ya' | 'tidak',
     public placeholder: string
   ) {
     super();
@@ -64,6 +66,7 @@ export default class ReportAttribute extends Model {
       apiData.nama_atribut,
       apiData.tipe,
       apiData.label,
+      apiData.harus_diisi,
       apiData.placeholder
     ) as ReturnType<T, IncomingApiData, ReportAttribute>;
   }

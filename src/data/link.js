@@ -38,6 +38,11 @@ export const landingLink = [
         label: 'Potensi',
         key: '/village_potentials',
         element: Landing.VillagePotential
+      },
+      {
+        label: 'Batas Desa',
+        key: '/village_boundaries',
+        element: Landing.VillageBoundaries
       }
     ]
   },
@@ -88,11 +93,6 @@ export const landingLink = [
         label: 'Pemetaan',
         key: '/maps',
         element: Landing.Map
-      },
-      {
-        label: 'Batas Desa',
-        key: '/village_boundaries',
-        element: Landing.VillageBoundaries
       }
     ]
   },

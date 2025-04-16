@@ -105,7 +105,7 @@ const SubmitLetter = () => {
                     const base64String = await readFileAsBase64(file.originFileObj);
                     return {
                       atribut_surat_id: attr.id,
-                      konten: base64String
+                      konten: base64String ?? '-'
                     };
                   })
                 );
@@ -113,7 +113,7 @@ const SubmitLetter = () => {
 
               return {
                 atribut_surat_id: attr.id,
-                konten: values[attr.attribute]
+                konten: values[attr.attribute] ?? '-'
               };
             })
           )

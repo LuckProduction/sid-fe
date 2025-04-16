@@ -126,50 +126,52 @@ const SubmitReport = () => {
             title={`Detail ${Modul.VILLAGE_REPORT}`}
             model={SubmitReportModel}
             onClick={() => {
-              modal.show.description({
-                title: 'Detail data pengajuan laporan',
-                data: [
-                  {
-                    key: 'Token Surat',
-                    label: `Token ${Modul.VILLAGE_REPORT}`,
-                    children: record.token
-                  },
-                  {
-                    key: 'status',
-                    label: `Status `,
-                    children: (() => {
-                      let statusTag;
-                      switch (record.status) {
-                        case 'proses':
-                          statusTag = <Tag color="blue">Selesai</Tag>;
-                          break;
-                        case 'terima':
-                          statusTag = <Tag color="green">Verifikasi</Tag>;
-                          break;
-                        case 'tolak':
-                          statusTag = <Tag color="red">Menunggu</Tag>;
-                          break;
-                        default:
-                          statusTag = <Tag color="error">Undefined</Tag>;
-                      }
-                      return statusTag;
-                    })()
-                  },
-                  {
-                    key: 'Nama Laporan',
-                    label: `Nama Laporan`,
-                    children: record.village_report.report_name
-                  },
-                  {
-                    key: 'Tipe Laporan',
-                    label: `Tipe Laporan`,
-                    children: record.village_report.type
-                  },
-                  {
-                    key: 'Status Laporan',
-                    label: `Status Surat`,
-                    children: record.village_report.status
-                  },
+              const data = [
+                {
+                  key: 'Token Surat',
+                  label: `Token ${Modul.VILLAGE_REPORT}`,
+                  children: record.token
+                },
+                {
+                  key: 'status',
+                  label: `Status `,
+                  children: (() => {
+                    let statusTag;
+                    switch (record.status) {
+                      case 'proses':
+                        statusTag = <Tag color="blue">Selesai</Tag>;
+                        break;
+                      case 'terima':
+                        statusTag = <Tag color="green">Verifikasi</Tag>;
+                        break;
+                      case 'tolak':
+                        statusTag = <Tag color="red">Menunggu</Tag>;
+                        break;
+                      default:
+                        statusTag = <Tag color="error">Undefined</Tag>;
+                    }
+                    return statusTag;
+                  })()
+                },
+                {
+                  key: 'Nama Laporan',
+                  label: `Nama Laporan`,
+                  children: record.village_report.report_name
+                },
+                {
+                  key: 'Tipe Laporan',
+                  label: `Tipe Laporan`,
+                  children: record.village_report.type
+                },
+                {
+                  key: 'Status Laporan',
+                  label: `Status Surat`,
+                  children: record.village_report.status
+                }
+              ];
+
+              if (record.resident !== null) {
+                data.push(
                   {
                     key: 'Nama Pemohon',
                     label: `Nama Pemohon`,
@@ -187,7 +189,7 @@ const SubmitReport = () => {
                   },
                   {
                     key: 'Jenis Kelamin',
-                    label: `Jenis Kelamin `,
+                    label: `Jenis Kelamin`,
                     children: (() => {
                       let gender;
                       switch (record.resident.gender) {
@@ -202,33 +204,39 @@ const SubmitReport = () => {
                       }
                       return gender;
                     })()
-                  },
-                  {
-                    key: 'Atribut Laporan',
-                    label: 'Atribut Laporan',
-                    children: (
-                      <List
-                        dataSource={record.report_attribute}
-                        renderItem={(item) => (
-                          <List.Item>
-                            <List.Item.Meta
-                              title={item.attribute_name}
-                              description={
-                                isDocumentPath(item.content) ? (
-                                  <Button icon={<DownloadOutlined />} size="small" className="text-xs" color="primary" variant="solid" onClick={() => window.open(`${BASE_URL}/${item.content}`, '_blank')}>
-                                    Dokumen
-                                  </Button>
-                                ) : (
-                                  item.content
-                                )
-                              }
-                            />
-                          </List.Item>
-                        )}
-                      />
-                    )
                   }
-                ]
+                );
+              }
+
+              data.push({
+                key: 'Atribut Laporan',
+                label: 'Atribut Laporan',
+                children: (
+                  <List
+                    dataSource={record.report_attribute}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <List.Item.Meta
+                          title={item.attribute_name}
+                          description={
+                            isDocumentPath(item.content) ? (
+                              <Button icon={<DownloadOutlined />} size="small" className="text-xs" color="primary" variant="solid" onClick={() => window.open(`${BASE_URL}/${item.content}`, '_blank')}>
+                                Dokumen
+                              </Button>
+                            ) : (
+                              item.content
+                            )
+                          }
+                        />
+                      </List.Item>
+                    )}
+                  />
+                )
+              });
+
+              modal.show.description({
+                title: 'Detail data pengajuan laporan',
+                data: data
               });
             }}
           />

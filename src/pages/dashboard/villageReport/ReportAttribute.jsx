@@ -1,6 +1,6 @@
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { ReportAttributeService } from '@/services';
-import { Button, Card, Space } from 'antd';
+import { Card, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { ReportAttribute as ReportAttributeModel } from '@/models';
 import { Action } from '@/constants';
@@ -8,8 +8,7 @@ import Modul from '@/constants/Modul';
 import { reportAttributeFormFields } from './FormFields';
 import { Delete, Edit } from '@/components/dashboard/button';
 import { DataTable, DataTableHeader } from '@/components';
-import { DatabaseOutlined } from '@ant-design/icons';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const { UPDATE, READ, DELETE } = Action;
 
@@ -17,8 +16,7 @@ const ReportAttribute = () => {
   const { id } = useParams();
   const { token, user } = useAuth();
   const { success, error } = useNotification();
-  const navigate = useNavigate();
-  const { execute, ...getAllReportAttributes } = useService(ReportAttributeService.getAll);
+  const { execute, ...getAllReportAttributes } = useService(ReportAttributeService.getByReport);
   const storeReportAttribute = useService(ReportAttributeService.store);
   const updateReportAttribute = useService(ReportAttributeService.update);
   const deleteReportAttribute = useService(ReportAttributeService.delete);
@@ -33,9 +31,10 @@ const ReportAttribute = () => {
       token: token,
       page: pagination.page,
       per_page: pagination.per_page,
-      search: filterValues.search
+      search: filterValues.search,
+      master_laporan_id: id
     });
-  }, [execute, filterValues.search, pagination.page, pagination.per_page, token]);
+  }, [execute, filterValues.search, id, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
     fetchReportAttributes();
@@ -46,8 +45,8 @@ const ReportAttribute = () => {
   const Column = [
     {
       title: 'Nama Atribut',
-      dataIndex: 'attribute',
-      sorter: (a, b) => a.attribute.length - b.attribute.length,
+      dataIndex: 'attribute_name',
+      sorter: (a, b) => a.attribute_name.length - b.attribute_name.length,
       searchable: true
     },
     {
@@ -116,7 +115,6 @@ const ReportAttribute = () => {
               });
             }}
           />
-          <Button icon={<DatabaseOutlined />} variant="solid" color="geekblue" onClick={() => navigate(window.location.pathname + `/report_attribute/${record.id}`)} />
         </Space>
       )
     });
