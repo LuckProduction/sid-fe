@@ -31,7 +31,7 @@ jobs:
         run: npm test
 
       - name: Build React App
-        run: npm run build --verbose
+        run: npm run build --verbose # Tambahkan --verbose untuk debugging
 
       - name: Debug Build Output
         run: ls -la build/ || echo "Build folder not found"
@@ -64,51 +64,31 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_NEW }}
 
-      - name: Debug Runner IP
-        run: |
-          curl -s https://api.ipify.org || echo "Failed to get runner IP"
-
       - name: Add SSH Host Key
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -p 2223 go-village.id >> ~/.ssh/known_hosts
 
-      - name: Debug Connection Before Deploy
-        run: |
-          ssh -p 2223 -v -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id "echo Test connection" || echo "SSH connection failed"
-
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          tar -czf build.tar.gz -C build .
-          ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
+          ssh -p 2223 govy6997@go-village.id << 'EOF'
             if [ ! -d "/home/govy6997/public_html/staging/example.go-village.id" ]; then
               mkdir -p /home/govy6997/public_html/staging/example.go-village.id
             fi
             rm -rf /home/govy6997/public_html/staging/example.go-village.id/*
             exit
           EOF
-          scp -P 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 build.tar.gz govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
-          ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
-            tar -xzf /home/govy6997/public_html/staging/example.go-village.id/build.tar.gz -C /home/govy6997/public_html/staging/example.go-village.id/
-            rm /home/govy6997/public_html/staging/example.go-village.id/build.tar.gz
-            exit
-          EOF
+          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
-          tar -czf build.tar.gz -C build .
-          ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
+          ssh -p 2223 govy6997@go-village.id << 'EOF'
             if [ ! -d "/home/govy6997/public_html/production/sukma.go-village.id" ]; then
               mkdir -p /home/govy6997/public_html/production/sukma.go-village.id
             fi
             rm -rf /home/govy6997/public_html/production/sukma.go-village.id/*
             exit
           EOF
-          scp -P 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 build.tar.gz govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
-          ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
-            tar -xzf /home/govy6997/public_html/production/sukma.go-village.id/build.tar.gz -C /home/govy6997/public_html/production/sukma.go-village.id/
-            rm /home/govy6997/public_html/production/sukma.go-village.id/build.tar.gz
-            exit
-          EOF
+          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
