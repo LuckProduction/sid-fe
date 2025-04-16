@@ -80,6 +80,7 @@ jobs:
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
+          tar -czf build.tar.gz -C build .
           ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
             if [ ! -d "/home/govy6997/public_html/staging/example.go-village.id" ]; then
               mkdir -p /home/govy6997/public_html/staging/example.go-village.id
@@ -87,11 +88,17 @@ jobs:
             rm -rf /home/govy6997/public_html/staging/example.go-village.id/*
             exit
           EOF
-          rsync -avz --progress -e "ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3" build/ govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
+          scp -P 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 build.tar.gz govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
+          ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
+            tar -xzf /home/govy6997/public_html/staging/example.go-village.id/build.tar.gz -C /home/govy6997/public_html/staging/example.go-village.id/
+            rm /home/govy6997/public_html/staging/example.go-village.id/build.tar.gz
+            exit
+          EOF
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
+          tar -czf build.tar.gz -C build .
           ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
             if [ ! -d "/home/govy6997/public_html/production/sukma.go-village.id" ]; then
               mkdir -p /home/govy6997/public_html/production/sukma.go-village.id
@@ -99,4 +106,9 @@ jobs:
             rm -rf /home/govy6997/public_html/production/sukma.go-village.id/*
             exit
           EOF
-          rsync -avz --progress -e "ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3" build/ govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
+          scp -P 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 build.tar.gz govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
+          ssh -p 2223 -o ConnectTimeout=30 -o ConnectionAttempts=3 govy6997@go-village.id << 'EOF'
+            tar -xzf /home/govy6997/public_html/production/sukma.go-village.id/build.tar.gz -C /home/govy6997/public_html/production/sukma.go-village.id/
+            rm /home/govy6997/public_html/production/sukma.go-village.id/build.tar.gz
+            exit
+          EOF
