@@ -2,7 +2,7 @@
 import { CheckCircleFilled, DatabaseOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
 import { useCrudModal, usePagination, useService } from '@/hooks';
 import parse from 'html-react-parser';
@@ -77,7 +77,7 @@ const Home = () => {
               <div>
                 <Typography.Title>
                   <Reveal>
-                    Sistem Informasi Desa <span className="text-blue-500">{villageProfile?.data?.village_name}</span>
+                    Sistem Informasi Desa <span className="text-blue-500">GoVillage</span>
                   </Reveal>
                 </Typography.Title>
                 <Typography.Title level={4} style={{ margin: 0 }}>
@@ -258,27 +258,30 @@ const Home = () => {
               </Reveal>
               <ul className="flex flex-col gap-y-3">
                 <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Update Terkait Berita, Potensi, Dan Lapak BUMDes
+                  <li>
+                    <NavLink to="/news" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
+                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                      Update Terkait Berita, Potensi, Dan Lapak BUMDes
+                      <RightOutlined />
+                    </NavLink>
                   </li>
                 </Reveal>
                 <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Layanan Surat Menyurat
+                  <li>
+                    <NavLink to="/letterings" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
+                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                      Layanan Surat Menyurat
+                      <RightOutlined />
+                    </NavLink>
                   </li>
                 </Reveal>
                 <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Transparansi Statistik Desa
-                  </li>
-                </Reveal>
-                <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Akses Tak Terbatas Data Desa
+                  <li>
+                    <NavLink to="/apbd_statistics" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
+                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                      Transparansi Statistik Desa
+                      <RightOutlined />
+                    </NavLink>
                   </li>
                 </Reveal>
               </ul>

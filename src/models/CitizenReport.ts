@@ -7,10 +7,19 @@ export interface IncomingApiData {
   judul_pengaduan: string;
   deskripsi: string;
   dokumen: string;
-  master_penduduk_id: IncomingResident;
+  slug: string;
+  master_penduduk_id: {
+    id: number;
+    foto: string;
+    nama_lengkap: string;
+  };
   balasan_pengaduan: {
     id: number;
-    master_penduduk_id: IncomingResident;
+    master_penduduk_id: {
+      id: number;
+      foto: string;
+      nama_lengkap: string;
+    };
     layanan_pengaduan_id: number;
     konten: string;
     dokumen: string;
@@ -51,6 +60,7 @@ export default class CitizenReport extends Model {
     public report_title: string,
     public desc: string,
     public doc: string,
+    public slug: string,
     public resident: {
       id: number;
       full_name: string;
@@ -88,6 +98,7 @@ export default class CitizenReport extends Model {
       apiData.judul_pengaduan,
       apiData.deskripsi,
       apiData.dokumen !== null ? asset(apiData.dokumen) : apiData.dokumen,
+      apiData.slug,
       {
         id: apiData.master_penduduk_id.id,
         full_name: apiData.master_penduduk_id.nama_lengkap,
