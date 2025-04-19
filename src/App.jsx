@@ -1,7 +1,7 @@
 import { Result } from 'antd';
-import { authLink, dashboardLink, landingLink } from './data/link';
+import { authLink, dashboardLink, kioskLink, landingLink } from './data/link';
 import { useAuth, useService } from './hooks';
-import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
+import { AuthLayout, DashboardLayout, KioskLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
@@ -54,6 +54,19 @@ function App() {
   return (
     <RouterProvider
       router={createBrowserRouter([
+        {
+          element: (
+            <>
+              <KioskLayout />
+            </>
+          ),
+          children: [
+            ...kioskLink.map(({ path, element: Element }) => ({
+              path,
+              element: <Element />
+            }))
+          ]
+        },
         {
           element: (
             <>

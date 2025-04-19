@@ -3,7 +3,16 @@ import * as Model from '@/models';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
+import * as Kiosk from '@/pages/kiosk';
 import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
+
+export const kioskLink = [
+  {
+    label: 'Foo',
+    element: Kiosk.Foo,
+    path: '/kiosk/foo'
+  }
+];
 
 export const landingLink = [
   {

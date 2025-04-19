@@ -19,6 +19,8 @@ const DetailCitizenReport = () => {
 
   const detailCitizenReport = getDetailCitizenReport.data ?? {};
 
+  console.log(detailCitizenReport);
+
   return (
     <Card className="p-4">
       {Object.keys(detailCitizenReport).length === 0 ? (
