@@ -8,9 +8,29 @@ import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, HomeOutl
 
 export const kioskLink = [
   {
-    label: 'Foo',
-    element: Kiosk.Foo,
-    path: '/kiosk/foo'
+    label: 'Feature',
+    element: Kiosk.Features,
+    path: '/kiosk/features'
+  },
+  {
+    label: 'Surat Menyurat',
+    element: Kiosk.Lettering,
+    path: '/kiosk/features/lettering'
+  },
+  {
+    label: 'Permohonan Surat',
+    element: Kiosk.SubmitLetter,
+    path: '/kiosk/features/lettering/submit_letter'
+  },
+  {
+    label: 'Cari Surat',
+    element: Kiosk.BrowseLetter,
+    path: '/kiosk/features/lettering/browse_letter'
+  },
+  {
+    label: 'Pengaduan',
+    element: Kiosk.CitizenReport,
+    path: '/kiosk/features/citizen_report/citizen_report_list'
   }
 ];
 

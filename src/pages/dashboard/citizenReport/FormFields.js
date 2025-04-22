@@ -171,6 +171,64 @@ export const createFormFields = () => [
   }
 ];
 
+export const createWithoutFile = () => [
+  {
+    label: `Judul ${Modul.CITIZEN_REPORT}`,
+    name: 'report_title',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Judul ${Modul.CITIZEN_REPORT} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Deskripsi ${Modul.CITIZEN_REPORT}`,
+    name: 'desc',
+    type: InputType.LONGTEXT,
+    rules: [
+      {
+        required: true,
+        message: `Deskripsi ${Modul.CITIZEN_REPORT} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `NIK Pengadu `,
+    name: 'nik',
+    type: InputType.TEXT,
+    rules: [
+      {
+        pattern: /^[0-9]+$/,
+        message: 'NIK harus berupa angka !'
+      }
+    ]
+  },
+  {
+    label: `Status ${Modul.CITIZEN_REPORT}`,
+    name: 'status',
+    type: InputType.SELECT,
+    picker: 'select',
+    rules: [
+      {
+        required: true,
+        message: `Status ${Modul.CITIZEN_REPORT} harus diisi`
+      }
+    ],
+    options: [
+      {
+        label: 'Privasi',
+        value: 'privasi'
+      },
+      {
+        label: 'Publikasi',
+        value: 'publikasi'
+      }
+    ]
+  }
+];
+
 export const citizenReportsFilterFields = () => [
   {
     label: `Status ${Modul.CITIZEN_REPORT}`,

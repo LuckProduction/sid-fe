@@ -12,8 +12,9 @@ import { Notfound } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { LandingService } from './services';
 import { useEffect, useState } from 'react';
-import { ScrollToTop } from './components';
+import { ProtectedRoute, ScrollToTop } from './components';
 import PublicTax from './pages/dashboard/publicTax/PublicTax';
+import { Home } from './pages/kiosk';
 
 function App() {
   const { user } = useAuth();
@@ -63,8 +64,13 @@ function App() {
           children: [
             ...kioskLink.map(({ path, element: Element }) => ({
               path,
-              element: <Element />
-            }))
+              element: (
+                <ProtectedRoute>
+                  <Element />
+                </ProtectedRoute>
+              )
+            })),
+            { path: '/kiosk', element: <Home /> }
           ]
         },
         {

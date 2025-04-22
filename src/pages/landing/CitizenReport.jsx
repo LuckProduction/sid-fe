@@ -4,7 +4,7 @@ import { LandingService } from '@/services';
 import { CommentOutlined, DownloadOutlined, InfoCircleFilled, LeftOutlined, LikeFilled, LikeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, Input, Modal, Pagination, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createFormFields } from '../dashboard/citizenReport/FormFields';
 import timeAgo from '@/utils/timeAgo';
 import asset from '@/utils/asset';
@@ -107,7 +107,9 @@ const CitizenReport = () => {
                     >
                       <div className="flex flex-col gap-y-2">
                         <b className="text-sm">{`(${reportItem?.resident?.full_name} - ${timeAgo(reportItem?.created_at)} )`} ,</b>
-                        <b className="text-sm">{reportItem?.report_title}</b>
+                        <Link to={'/citizen_report'} className="text-sm">
+                          {reportItem?.report_title}
+                        </Link>
                         <p className="mt-2">{reportItem?.desc}</p>
                         {reportItem?.doc && (
                           <>
