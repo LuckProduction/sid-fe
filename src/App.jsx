@@ -8,7 +8,7 @@ import './index.css';
 import { ApbdItem, Beneficiary, CreateArticle, DetailCitizenReport as DetailCitizenReportDashboard, DetailResident, EditArticle, EditResident, FamilyDetail, InstitutionMember, Lettering, ProfileSettings, ReportAttribute } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
 import { BrowseLetter, DetailCitizenReport as DetailCitizenReportLanding, DetailNews, DetailVillageEnterprise, SubmitLetter, VillageBoundaries } from './pages/landing';
-import { Notfound } from './pages/result';
+import { Notfound, PrivacyPolicy } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { LandingService } from './services';
 import { useEffect, useState } from 'react';
@@ -73,6 +73,7 @@ function App() {
             { path: '/letterings/browse', element: <BrowseLetter /> },
             { path: '/letterings/submitletter', element: <SubmitLetter /> },
             { path: '/villageboundaries', element: <VillageBoundaries /> },
+            { path: '/privacy_policy', element: <PrivacyPolicy /> },
             { path: '*', element: <Notfound /> }
           ]
         },
