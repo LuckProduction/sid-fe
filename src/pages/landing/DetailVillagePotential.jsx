@@ -1,7 +1,7 @@
-import { useService } from '@/hooks';
+import { useNotification, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { EyeOutlined } from '@ant-design/icons';
-import { Card, Skeleton, Typography } from 'antd';
+import { EyeOutlined, FacebookOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
+import { Button, Card, Skeleton, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { useParams } from 'react-router-dom';
@@ -9,8 +9,10 @@ import 'leaflet/dist/leaflet.css';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 import L from 'leaflet';
+import { SocialMediaShare } from '@/utils/SocialMediaShare';
 
 const DetailVillagePotential = () => {
+  const { error } = useNotification();
   const { slug } = useParams();
   const { execute: fetchVillagePotential, ...getAllVillagePotential } = useService(LandingService.getDetailVillagePotential);
   const [coordinate, setCoodinate] = useState(null);
@@ -37,6 +39,25 @@ const DetailVillagePotential = () => {
     }
   }, [villagePotential.coordinate]);
 
+  const shareData = {
+    title: villagePotential.potential_name,
+    text: villagePotential.potential_name,
+    url: window.location.href
+  };
+
+  const handleShare = async () => {
+    try {
+      if (window.navigator.share) {
+        await window.navigator.share(shareData);
+      } else {
+        await window.navigator.clipboard.writeText(shareData.url);
+        error('Gagal', 'Gagal Membagikan');
+      }
+    } catch (error) {
+      error('Gagal membagikan:', error);
+    }
+  };
+
   return (
     <>
       <section className="mx-auto w-full max-w-screen-md px-4 pt-24">
@@ -48,12 +69,66 @@ const DetailVillagePotential = () => {
         ) : (
           <>
             <Typography.Title level={1}>{villagePotential.potential_name}</Typography.Title>
-            <div className="mb-12 flex w-full items-center gap-x-4">
+            <div className="mb-4 flex w-full items-center gap-x-4">
               <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
                 <EyeOutlined className="text-xs" />
                 {villagePotential.seen}
               </div>
               <div className="inline-flex items-center text-xs text-gray-400">{villagePotential.created_at}</div>
+            </div>
+            <div className="mb-12 flex flex-wrap gap-2">
+              <Button
+                icon={<FacebookOutlined />}
+                color="blue"
+                variant="filled"
+                onClick={() =>
+                  window.open(
+                    SocialMediaShare({
+                      currentUrl: window.location.href,
+                      text: villagePotential.potential_name,
+                      media: 'facebook'
+                    }),
+                    '_blank'
+                  )
+                }
+              >
+                Bagikan di Facebook
+              </Button>
+              <Button
+                icon={<XOutlined />}
+                color="default"
+                variant="filled"
+                onClick={() =>
+                  window.open(
+                    SocialMediaShare({
+                      currentUrl: window.location.href,
+                      text: villagePotential.potential_name,
+                      media: 'x'
+                    }),
+                    '_blank'
+                  )
+                }
+              >
+                Bagikan di X
+              </Button>
+              <Button
+                icon={<WhatsAppOutlined />}
+                color="green"
+                variant="filled"
+                onClick={() =>
+                  window.open(
+                    SocialMediaShare({
+                      currentUrl: window.location.href,
+                      text: villagePotential.potential_name,
+                      media: 'whatsapp'
+                    }),
+                    '_blank'
+                  )
+                }
+              >
+                Bagikan di WhatsApp
+              </Button>
+              <Button icon={<ShareAltOutlined />} color="default" variant="filled" onClick={handleShare} />
             </div>
             <div className="mb-12">{villagePotential.description ? villagePotential.description : <Skeleton active />}</div>
             <Typography.Title level={3}>{villagePotential.location}</Typography.Title>
