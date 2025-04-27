@@ -2,9 +2,8 @@ import { useKioskAuth } from '@/context/KiosAuth';
 import { useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { createFromKiosk } from '@/pages/dashboard/citizenReport/FormFields';
 import { LandingService } from '@/services';
-import asset from '@/utils/asset';
 import timeAgo from '@/utils/timeAgo';
-import { CommentOutlined, DownloadOutlined, InfoCircleFilled, LeftOutlined, LikeFilled, LikeOutlined, PlusOutlined } from '@ant-design/icons';
+import { CommentOutlined, InfoCircleFilled, LeftOutlined, LikeFilled, LikeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, Input, Modal, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -17,34 +16,24 @@ const CitizenReport = () => {
   const { user } = useKioskAuth();
   const { execute, ...getAllCitizenReport } = useService(LandingService.getAllCitizenReports);
   const likeCitizenReport = useService(LandingService.likeCitizenReport);
-  const likeCitizenReportReply = useService(LandingService.likeCitizenReportReply);
   const pagination = usePagination({ totalData: getAllCitizenReport.totalData });
   const [filterValues, setFilterValues] = useState({ search: '', status: null });
   const storeCitizenReport = useService(LandingService.storeCitizenReport);
-  const [showReplies, setShowReplies] = useState({});
 
   const fetchCitizenReport = useCallback(() => {
     execute({
       page: pagination.page,
       per_page: pagination.per_page,
       search: filterValues.search,
-      status: filterValues.status,
-      master_penduduk_id: user.id
+      status: filterValues.status
     });
-  }, [execute, filterValues.search, filterValues.status, pagination.page, pagination.per_page, user.id]);
+  }, [execute, filterValues.search, filterValues.status, pagination.page, pagination.per_page]);
 
   useEffect(() => {
     fetchCitizenReport();
   }, [fetchCitizenReport]);
 
   const citizenReport = getAllCitizenReport.data ?? [];
-
-  const toggleReplies = (reportId) => {
-    setShowReplies((prevState) => ({
-      ...prevState,
-      [reportId]: !prevState[reportId]
-    }));
-  };
 
   return (
     <section className="relative flex h-full w-full">
@@ -87,26 +76,9 @@ const CitizenReport = () => {
                   <Timeline.Item dot={<Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold" src={reportItem?.resident?.foto} />}>
                     <div className="flex w-full flex-col gap-y-2 px-2">
                       <b className="text-sm">{`(${reportItem?.resident?.full_name} - ${timeAgo(reportItem?.created_at)} )`} ,</b>
-                      <NavLink to={`/kiosk/features/citizen_report/detail/${reportItem.slug}`} className="text-sm font-bold underline">
+                      <NavLink to={`/kiosk/features/citizen_report/detail/${reportItem.slug}`} className="mb-4 text-sm font-bold underline">
                         {reportItem?.report_title}
                       </NavLink>
-                      <p className="mt-2">{reportItem?.desc}</p>
-                      {reportItem?.doc && (
-                        <>
-                          <hr className="my-2" />
-                          <div className="flex flex-col gap-2">
-                            <p>Lampiran :</p>
-
-                            {!reportItem.doc.split('.').pop().toLowerCase().includes('pdf') && <img className="max-w-96" src={asset(reportItem.doc)} alt="Lampiran" />}
-
-                            {reportItem.doc.split('.').pop().toLowerCase() === 'pdf' && (
-                              <Button icon={<DownloadOutlined />} className="w-fit" type="primary" onClick={() => window.open(reportItem.doc, '_blank')}>
-                                Unduh PDF
-                              </Button>
-                            )}
-                          </div>
-                        </>
-                      )}
                       <div className="flex w-full items-center gap-x-2">
                         <Button
                           icon={reportItem.has_like ? <LikeFilled className="text-blue-500" /> : <LikeOutlined />}
@@ -117,51 +89,15 @@ const CitizenReport = () => {
                             await likeCitizenReport.execute(reportItem.id);
                             fetchCitizenReport();
                           }}
-                        />
-                        <Button icon={<CommentOutlined />} size="large" className="w-full" style={{ width: '100%' }} onClick={() => toggleReplies(reportItem.id)} />
+                        >
+                          {String(reportItem.liked)}
+                        </Button>
+                        <Button icon={<CommentOutlined />} size="large" className="w-full" style={{ width: '100%' }} onClick={() => navigate(`/kiosk/features/citizen_report/detail/${reportItem.slug}`)}>
+                          {String(reportItem.reply.length)}
+                        </Button>
                       </div>
                     </div>
                   </Timeline.Item>
-                  {showReplies[reportItem.id] &&
-                    reportItem?.reply.map((reply) => (
-                      <Timeline.Item key={reply.id} dot={<Avatar src={reply?.resident?.foto} />}>
-                        <Card
-                          className="ms-2 border"
-                          actions={[
-                            <div
-                              key="like"
-                              className="inline-flex items-center gap-x-2"
-                              onClick={async () => {
-                                await likeCitizenReportReply.execute(reply.id);
-                                fetchCitizenReport();
-                              }}
-                            >
-                              {reply.has_like ? <LikeFilled className="text-blue-500" /> : <LikeOutlined />}
-                              {String(reply.liked)}
-                            </div>
-                          ]}
-                        >
-                          <div className="flex flex-col gap-y-2">
-                            <b className="text-sm">{`(${reply?.resident?.full_name} - ${timeAgo(reply?.created_at)} )`} ,</b>
-                            <p className="mt-2">{reply?.content}</p>
-                            {reply?.doc && (
-                              <>
-                                <hr className="my-2" />
-                                <p>Lampiran :</p>
-
-                                {!reply?.doc.split('.').pop().toLowerCase().includes('pdf') && <img className="max-w-96" src={asset(reply.doc)} alt="Lampiran" />}
-
-                                {reply?.doc.split('.').pop().toLowerCase() === 'pdf' && (
-                                  <Button icon={<DownloadOutlined />} className="w-fit" variant="solid" color="primary" onClick={() => window.open(asset(reply?.doc), '_blank')}>
-                                    Dokumen
-                                  </Button>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </Card>
-                      </Timeline.Item>
-                    ))}
                 </Timeline>
               </Card>
             ))}

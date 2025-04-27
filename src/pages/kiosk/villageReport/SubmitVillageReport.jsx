@@ -206,15 +206,15 @@ const SubmitVillageReport = () => {
               current={step === 'letter_type' ? 0 : step === 'attribut' ? 1 : 2}
               items={[
                 {
-                  title: 'Pilih Surat',
+                  title: 'Pilih Laporan',
                   icon: <FileOutlined />
                 },
                 {
-                  title: 'Atribut Surat',
+                  title: 'Atribut Laporan',
                   icon: <TableOutlined />
                 },
                 {
-                  title: 'Konfirmasi Surat',
+                  title: 'Konfirmasi Laporan',
                   icon: <ScanOutlined />
                 }
               ]}
