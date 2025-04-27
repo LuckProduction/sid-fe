@@ -18,9 +18,11 @@ const BrowseVillageReport = () => {
   const fetchLegalProducts = useCallback(() => {
     execute({
       master_penduduk_id: user.id,
-      search: filterValues.search
+      search: filterValues.search,
+      page: pagination.page,
+      per_page: pagination.per_page
     });
-  }, [execute, filterValues.search, user.id]);
+  }, [execute, filterValues.search, pagination.page, pagination.per_page, user.id]);
 
   useEffect(() => {
     fetchLegalProducts();
@@ -42,8 +44,8 @@ const BrowseVillageReport = () => {
       </div>
       <div className="flex h-full w-full flex-[4] items-center justify-center bg-blue-500">
         <div className="flex w-full max-w-2xl flex-col gap-y-4">
-          <Input.Search allowClear size="large" placeholder="Masukan Judul Pengaduan" onSearch={(values) => setFilterValues({ search: values })} />
-          <div className="flex h-full max-h-96 flex-col gap-y-4">
+          <Input.Search allowClear size="large" placeholder="Masukan Judul Laporan" onSearch={(values) => setFilterValues({ search: values })} />
+          <div className="flex h-full max-h-[23rem] flex-col gap-y-4 overflow-y-auto">
             {!villageReport.length ? (
               <Card>
                 <Skeleton active />
@@ -88,7 +90,7 @@ const BrowseVillageReport = () => {
             )}
           </div>
           <Card className="w-fit">
-            <Pagination className="text-white" current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={2} />
+            <Pagination className="text-white" current={pagination.page} total={pagination.totalData} onChange={pagination.onChange} pageSize={pagination.per_page} />
           </Card>
         </div>
       </div>

@@ -102,7 +102,7 @@ const BrowseLetter = () => {
                           color="primary"
                           onClick={() => {
                             modal.show.paragraph({
-                              title: 'Profil Desa',
+                              title: 'Print Surat',
                               width: 1000,
                               data: {
                                 content: (

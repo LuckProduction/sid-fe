@@ -2,7 +2,7 @@ import { useKioskAuth } from '@/context/KiosAuth';
 import { useCrudModal, useService } from '@/hooks';
 import { KioskService } from '@/services';
 import { DollarOutlined, HeartOutlined, LeftOutlined } from '@ant-design/icons';
-import { Descriptions, Skeleton, Tag, Typography } from 'antd';
+import { Descriptions, Empty, Skeleton, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -62,7 +62,7 @@ const PublicService = () => {
                       ) : (
                         <>
                           {!publicAssistance.length ? (
-                            <Skeleton active />
+                            <Empty description="Data bantuan anda kosong" className="py-24" />
                           ) : (
                             <>
                               {publicAssistance.map((item, index) => (
@@ -100,7 +100,7 @@ const PublicService = () => {
                       ) : (
                         <>
                           {!tax.length ? (
-                            <Skeleton active />
+                            <Empty description="Data pajak anda kosong" className="py-24" />
                           ) : (
                             <>
                               {tax.map((item, index) => (

@@ -1,9 +1,10 @@
 import { useKioskAuth } from '@/context/KiosAuth';
 import { useNotification, useService } from '@/hooks';
 import { KioskService, LandingService } from '@/services';
+import dateFormatter from '@/utils/dateFormatter';
 import timeAgo from '@/utils/timeAgo';
 import { CommentOutlined, DownloadOutlined, LeftOutlined, LikeFilled, LikeOutlined, SendOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Input, Skeleton, Timeline, Typography } from 'antd';
+import { Avatar, Button, Card, Image, Input, Skeleton, Timeline, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -15,7 +16,7 @@ const DetailCitizenReport = () => {
   const { execute: fetchDetailCitizenReport, ...getDetailCitizenReport } = useService(LandingService.getDetailCitizenReport);
   const likeCitizenReport = useService(LandingService.likeCitizenReport);
   const createCitizenReply = useService(KioskService.storeCitizenReportReply);
-  const [showReplies, setShowReplies] = useState(false);
+  const [showReplies, setShowReplies] = useState(true);
   const [replyValue, setReplyValue] = useState('');
 
   useEffect(() => {
@@ -47,7 +48,9 @@ const DetailCitizenReport = () => {
                 <Timeline className="w-full">
                   <Timeline.Item dot={<Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold" src={citizenReport?.resident?.foto} />}>
                     <div className="flex w-full flex-col gap-y-2 px-2">
-                      <b className="text-sm">{citizenReport?.report_title}</b>
+                      <b className="text-sm">
+                        {`(${citizenReport?.resident?.full_name} - ${timeAgo(citizenReport?.created_at)} )`} , {dateFormatter(citizenReport?.created_at)}{' '}
+                      </b>
                       <p className="mt-2">{citizenReport?.desc}</p>
                       {citizenReport?.doc && (
                         <>
@@ -55,7 +58,7 @@ const DetailCitizenReport = () => {
                           <div className="flex flex-col gap-2">
                             <p>Lampiran :</p>
 
-                            {!citizenReport.doc.split('.').pop().toLowerCase().includes('pdf') && <img className="max-w-96" src={citizenReport.doc} alt="Lampiran" />}
+                            {!citizenReport.doc.split('.').pop().toLowerCase().includes('pdf') && <Image src={citizenReport.doc} width={200} height={200} />}
 
                             {citizenReport.doc.split('.').pop().toLowerCase() === 'pdf' && (
                               <Button icon={<DownloadOutlined />} className="w-fit" type="primary" onClick={() => window.open(citizenReport.doc, '_blank')}>
@@ -73,10 +76,14 @@ const DetailCitizenReport = () => {
                           style={{ width: '100%' }}
                           onClick={async () => {
                             await likeCitizenReport.execute(citizenReport.id);
-                            fetchDetailCitizenReport();
+                            fetchDetailCitizenReport(slug);
                           }}
-                        />
-                        <Button icon={<CommentOutlined />} size="large" className="w-full" style={{ width: '100%' }} onClick={() => setShowReplies(!showReplies)} />
+                        >
+                          {String(citizenReport.liked)}
+                        </Button>
+                        <Button icon={<CommentOutlined />} size="large" className="w-full" style={{ width: '100%' }} onClick={() => setShowReplies(!showReplies)}>
+                          {String(citizenReport.reply.length)}
+                        </Button>
                       </div>
                     </div>
                   </Timeline.Item>
@@ -92,7 +99,7 @@ const DetailCitizenReport = () => {
                                 <hr className="my-2" />
                                 <p>Lampiran :</p>
 
-                                {!reply?.doc.split('.').pop().toLowerCase().includes('pdf') && <img className="max-w-96" src={reply.doc} alt="Lampiran" />}
+                                {!reply?.doc.split('.').pop().toLowerCase().includes('pdf') && <Image src={reply.doc} width={400} height={400} />}
 
                                 {reply?.doc.split('.').pop().toLowerCase() === 'pdf' && (
                                   <Button icon={<DownloadOutlined />} className="w-fit" variant="solid" color="primary" onClick={() => window.open(reply?.doc, '_blank')}>
