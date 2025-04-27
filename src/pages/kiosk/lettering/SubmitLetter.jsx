@@ -1,7 +1,8 @@
 import { Crud } from '@/components';
 import { useKioskAuth } from '@/context/KiosAuth';
 import { useNotification, useService } from '@/hooks';
-import { LandingService } from '@/services';
+import { KioskService, LandingService } from '@/services';
+import { kioskToken } from '@/services/KioskService';
 import { BASE_URL } from '@/utils/api';
 import { mapAttributesToFormFields } from '@/utils/attributToForm';
 import helperJsonApi from '@/utils/helperJsonApi';
@@ -43,7 +44,7 @@ const reducer = (state, action) => {
 const SubmitLetter = () => {
   const navigate = useNavigate();
   const { execute: fetchLetterType, ...getAllLetterType } = useService(LandingService.getAllLetterType);
-  const { execute: fetchLetterTypeDetail, ...getLetterTypeDetail } = useService(LandingService.getLetterTypeDetail);
+  const { execute: fetchLetterTypeDetail, ...getLetterTypeDetail } = useService(KioskService.getLetterTypeDetailWithoutDoc);
   const [step, setStep] = useState('letter_type');
   const [state, dispatch] = useReducer(reducer, initialState);
   const { error, success } = useNotification();
@@ -129,7 +130,7 @@ const SubmitLetter = () => {
         ).flat()
       };
 
-      const response = await helperJsonApi(BASE_URL + '/permohonan-surat', formattedData);
+      const response = await helperJsonApi(BASE_URL + '/anjungan/permohonan-surat', formattedData, kioskToken);
 
       if (response.status) {
         success('Berhasil', response.message);
@@ -228,8 +229,10 @@ const SubmitLetter = () => {
                   }
                 />
               ) : (
-                <Card className="max-h-80 w-full overflow-y-auto">
-                  <Crud extraLarge={true} formFields={mapAttributesToFormFields(state.letterTypeDetail.letter_attribut)} type="create" onSubmit={handlePreviewLetter} isLoading={state.submitLoading} />
+                <Card>
+                  <div className="max-h-80 w-full overflow-y-auto">
+                    <Crud extraLarge={true} formFields={mapAttributesToFormFields(state.letterTypeDetail.letter_attribut)} type="create" onSubmit={handlePreviewLetter} isLoading={state.submitLoading} />
+                  </div>
                 </Card>
               )}
             </>
@@ -241,7 +244,6 @@ const SubmitLetter = () => {
                 {getPreviewData(state.formData).map((item, idx) => (
                   <Descriptions.Item key={idx} label={item.label}>
                     {item.value}
-                    {console.log(item)}
                   </Descriptions.Item>
                 ))}
               </Descriptions>
@@ -265,7 +267,7 @@ const SubmitLetter = () => {
             title="Permohonan Berhasil!"
             subTitle="Surat Anda telah berhasil dibuat dan diproses."
             extra={[
-              <Button key="cek_surat" color="primary" variant="solid" size="large" onClick={() => navigate('kiosk/features/lettering/browse_letter')}>
+              <Button key="cek_surat" color="primary" variant="solid" size="large" onClick={() => navigate('/kiosk/features/lettering/browse_letter')}>
                 Cari Surat
               </Button>
             ]}

@@ -14,7 +14,7 @@ import { LandingService } from './services';
 import { useEffect, useState } from 'react';
 import { ProtectedRoute, ScrollToTop } from './components';
 import PublicTax from './pages/dashboard/publicTax/PublicTax';
-import { Home } from './pages/kiosk';
+import { DetailCitizenReport, DetailVillageReport, Home } from './pages/kiosk';
 
 function App() {
   const { user } = useAuth();
@@ -70,7 +70,9 @@ function App() {
                 </ProtectedRoute>
               )
             })),
-            { path: '/kiosk', element: <Home /> }
+            { path: '/kiosk', element: <Home /> },
+            { path: '/kiosk/features/citizen_report/detail/:slug', element: <DetailCitizenReport /> },
+            { path: '/kiosk/features/village_report/detail/:id', element: <DetailVillageReport /> }
           ]
         },
         {

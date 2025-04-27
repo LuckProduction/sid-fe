@@ -1,13 +1,13 @@
 import { useKioskAuth } from '@/context/KiosAuth';
 import { useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { createWithoutFile } from '@/pages/dashboard/citizenReport/FormFields';
+import { createFromKiosk } from '@/pages/dashboard/citizenReport/FormFields';
 import { LandingService } from '@/services';
 import asset from '@/utils/asset';
 import timeAgo from '@/utils/timeAgo';
 import { CommentOutlined, DownloadOutlined, InfoCircleFilled, LeftOutlined, LikeFilled, LikeOutlined, PlusOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Image, Input, Modal, Result, Timeline, Tooltip, Typography } from 'antd';
+import { Avatar, Button, Card, Image, Input, Modal, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const CitizenReport = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const CitizenReport = () => {
             kembali
           </button>
           <Typography.Title level={1} style={{ marginTop: 0 }}>
-            Permohonan Surat
+            Pengaduan
           </Typography.Title>
         </div>
       </div>
@@ -76,13 +76,20 @@ const CitizenReport = () => {
             <Input.Search allowClear size="large" placeholder="Masukan Judul Pengaduan" onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
           </div>
           <div className="flex h-full max-h-[28rem] flex-col gap-y-6 overflow-y-auto">
+            {!citizenReport.length && (
+              <Card>
+                <Skeleton />
+              </Card>
+            )}
             {citizenReport?.map((reportItem) => (
               <Card key={reportItem.id} className="p-2">
                 <Timeline>
                   <Timeline.Item dot={<Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold" src={reportItem?.resident?.foto} />}>
                     <div className="flex w-full flex-col gap-y-2 px-2">
                       <b className="text-sm">{`(${reportItem?.resident?.full_name} - ${timeAgo(reportItem?.created_at)} )`} ,</b>
-                      <b className="text-sm">{reportItem?.report_title}</b>
+                      <NavLink to={`/kiosk/features/citizen_report/detail/${reportItem.slug}`} className="text-sm font-bold underline">
+                        {reportItem?.report_title}
+                      </NavLink>
                       <p className="mt-2">{reportItem?.desc}</p>
                       {reportItem?.doc && (
                         <>
@@ -203,9 +210,9 @@ const CitizenReport = () => {
                   setClueModal({ isModalOpen: false });
                   modal.create({
                     title: `Buat Pengaduan`,
-                    formFields: createWithoutFile,
+                    formFields: createFromKiosk,
                     onSubmit: async (values) => {
-                      const { message, isSuccess } = await storeCitizenReport.execute(values, values.doc?.file ? values.doc.file : null);
+                      const { message, isSuccess } = await storeCitizenReport.execute({ ...values, nik: user.nik }, values.doc?.file ? values.doc.file : null);
                       if (isSuccess) {
                         success('Berhasil', message);
                         fetchCitizenReport({ page: pagination.page, per_page: pagination.per_page });

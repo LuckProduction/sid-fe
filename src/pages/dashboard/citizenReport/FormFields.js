@@ -171,7 +171,7 @@ export const createFormFields = () => [
   }
 ];
 
-export const createWithoutFile = () => [
+export const createFromKiosk = () => [
   {
     label: `Judul ${Modul.CITIZEN_REPORT}`,
     name: 'report_title',
@@ -191,17 +191,6 @@ export const createWithoutFile = () => [
       {
         required: true,
         message: `Deskripsi ${Modul.CITIZEN_REPORT} harus diisi`
-      }
-    ]
-  },
-  {
-    label: `NIK Pengadu `,
-    name: 'nik',
-    type: InputType.TEXT,
-    rules: [
-      {
-        pattern: /^[0-9]+$/,
-        message: 'NIK harus berupa angka !'
       }
     ]
   },

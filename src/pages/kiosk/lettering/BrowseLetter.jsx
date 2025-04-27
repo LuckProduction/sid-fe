@@ -1,6 +1,6 @@
 import { useKioskAuth } from '@/context/KiosAuth';
-import { usePagination, useService } from '@/hooks';
-import { LandingService } from '@/services';
+import { useCrudModal, usePagination, useService } from '@/hooks';
+import { KioskService } from '@/services';
 import { BASE_URL } from '@/utils/api';
 import { CalendarOutlined, ClockCircleOutlined, LeftOutlined } from '@ant-design/icons';
 import { Button, Card, Empty, Input, Pagination, Skeleton, Tag, Typography } from 'antd';
@@ -10,8 +10,9 @@ import { useNavigate } from 'react-router-dom';
 const BrowseLetter = () => {
   const navigate = useNavigate();
   const { user } = useKioskAuth();
-  const { execute, ...getAllSubmitLetter } = useService(LandingService.getAllSubmitLetter);
+  const { execute, ...getAllSubmitLetter } = useService(KioskService.getAllSubmitLetter);
   const [filterValues, setFilterValues] = useState({ search: '', master_penduduk_id: user.id });
+  const modal = useCrudModal();
 
   const pagination = usePagination({ totalData: getAllSubmitLetter.totalData });
 
@@ -29,9 +30,6 @@ const BrowseLetter = () => {
   }, [fetchSubmitLetter]);
 
   const submitLetter = getAllSubmitLetter.data ?? [];
-
-  console.log(submitLetter);
-
   return (
     <>
       <section className="relative flex h-full w-full">
@@ -84,6 +82,8 @@ const BrowseLetter = () => {
                             return <Tag color="blue">Verifikasi</Tag>;
                           case 'selesai':
                             return <Tag color="green">Selesai</Tag>;
+                          case 'anjungan':
+                            return <Tag color="green">Anjungan</Tag>;
                           default:
                             return <Tag color="default">{item.status}</Tag>;
                         }
@@ -96,14 +96,30 @@ const BrowseLetter = () => {
                           <span className="text-lg">{item.letter_type.letter_name}</span>
                         </div>
                         <Button
-                          disabled={item.status !== 'selesai'}
+                          disabled={item.status !== 'selesai' && item.status !== 'anjungan'}
                           size="large"
                           variant="solid"
                           color="primary"
                           onClick={() => {
-                            const printWindow = window.open(`${BASE_URL}/permohonan-surat/download/${item.token}`, '_blank');
-                            printWindow?.focus();
-                            printWindow?.print();
+                            modal.show.paragraph({
+                              title: 'Profil Desa',
+                              width: 1000,
+                              data: {
+                                content: (
+                                  <>
+                                    <iframe
+                                      style={{ aspectRatio: 16 / 9, width: '100%' }}
+                                      className="h-full w-full"
+                                      src={`${BASE_URL}/permohonan-surat/download/${item.token}`}
+                                      title="YouTube video player"
+                                      frameBorder="0"
+                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                      allowFullScreen
+                                    ></iframe>
+                                  </>
+                                )
+                              }
+                            });
                           }}
                         >
                           Cetak Surat

@@ -2,7 +2,7 @@ import { ReadModalType } from '@/constants';
 import { Descriptions, List, Modal, Table, Typography } from 'antd';
 import PropTypes from 'prop-types';
 
-export default function ReadModal({ title, isModalOpen, close, data, type = ReadModalType.PARAGRAPH, isLoading = false, columns = [], ...props }) {
+export default function ReadModal({ title, isModalOpen, close, data, type = ReadModalType.PARAGRAPH, isLoading = false, columns = [], width, ...props }) {
   const jsxs = {
     [ReadModalType.PARAGRAPH]: (
       <div className="flex flex-col gap-4">
@@ -16,7 +16,7 @@ export default function ReadModal({ title, isModalOpen, close, data, type = Read
   };
 
   return (
-    <Modal title={title} open={isModalOpen} onClose={close} onCancel={close} footer={null} {...props}>
+    <Modal title={title} open={isModalOpen} onClose={close} onCancel={close} footer={null} width={width} {...props}>
       <div className="mt-4">{jsxs[type]}</div>
     </Modal>
   );
@@ -29,5 +29,6 @@ ReadModal.propTypes = {
   close: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.arrayOf(PropTypes.object)])).isRequired,
   isLoading: PropTypes.bool,
-  columns: PropTypes.arrayOf(PropTypes.object)
+  columns: PropTypes.arrayOf(PropTypes.object),
+  width: PropTypes.number
 };

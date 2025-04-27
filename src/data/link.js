@@ -31,6 +31,26 @@ export const kioskLink = [
     label: 'Pengaduan',
     element: Kiosk.CitizenReport,
     path: '/kiosk/features/citizen_report/citizen_report_list'
+  },
+  {
+    label: 'Lapor Penduduk',
+    element: Kiosk.VillageReport,
+    path: '/kiosk/features/village_report'
+  },
+  {
+    label: 'Riwayat Lapor Penduduk',
+    element: Kiosk.BrowseVillageReport,
+    path: '/kiosk/features/village_report/village_report_list'
+  },
+  {
+    label: 'Buat Laporan Penduduk',
+    element: Kiosk.SubmitVillageReport,
+    path: '/kiosk/features/village_report/submit_village_report'
+  },
+  {
+    label: 'Cek Bansos Dan Pajak',
+    element: Kiosk.PublicService,
+    path: '/kiosk/features/public_service'
   }
 ];
 
