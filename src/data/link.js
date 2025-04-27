@@ -3,7 +3,56 @@ import * as Model from '@/models';
 import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
+import * as Kiosk from '@/pages/kiosk';
 import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
+
+export const kioskLink = [
+  {
+    label: 'Feature',
+    element: Kiosk.Features,
+    path: '/kiosk/features'
+  },
+  {
+    label: 'Surat Menyurat',
+    element: Kiosk.Lettering,
+    path: '/kiosk/features/lettering'
+  },
+  {
+    label: 'Permohonan Surat',
+    element: Kiosk.SubmitLetter,
+    path: '/kiosk/features/lettering/submit_letter'
+  },
+  {
+    label: 'Cari Surat',
+    element: Kiosk.BrowseLetter,
+    path: '/kiosk/features/lettering/browse_letter'
+  },
+  {
+    label: 'Pengaduan',
+    element: Kiosk.CitizenReport,
+    path: '/kiosk/features/citizen_report/citizen_report_list'
+  },
+  {
+    label: 'Lapor Penduduk',
+    element: Kiosk.VillageReport,
+    path: '/kiosk/features/village_report'
+  },
+  {
+    label: 'Riwayat Lapor Penduduk',
+    element: Kiosk.BrowseVillageReport,
+    path: '/kiosk/features/village_report/village_report_list'
+  },
+  {
+    label: 'Buat Laporan Penduduk',
+    element: Kiosk.SubmitVillageReport,
+    path: '/kiosk/features/village_report/submit_village_report'
+  },
+  {
+    label: 'Cek Bansos Dan Pajak',
+    element: Kiosk.PublicService,
+    path: '/kiosk/features/public_service'
+  }
+];
 
 export const landingLink = [
   {

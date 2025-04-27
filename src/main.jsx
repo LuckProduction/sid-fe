@@ -4,6 +4,7 @@ import './index.css';
 import App from './App.jsx';
 import { AntdConfigProviders, AuthProvider, CrudModalProvider, NotificationProvider } from './providers';
 import 'leaflet/dist/leaflet.css';
+import KioskAuthProvider from './providers/KioskAuthProvider';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -11,7 +12,9 @@ createRoot(document.getElementById('root')).render(
       <NotificationProvider>
         <AuthProvider>
           <CrudModalProvider>
-            <App />
+            <KioskAuthProvider>
+              <App />
+            </KioskAuthProvider>
           </CrudModalProvider>
         </AuthProvider>
       </NotificationProvider>

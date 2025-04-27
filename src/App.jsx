@@ -1,7 +1,7 @@
 import { Result } from 'antd';
-import { authLink, dashboardLink, landingLink } from './data/link';
+import { authLink, dashboardLink, kioskLink, landingLink } from './data/link';
 import { useAuth, useService } from './hooks';
-import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
+import { AuthLayout, DashboardLayout, KioskLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
@@ -12,8 +12,9 @@ import { Notfound, PrivacyPolicy } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { LandingService } from './services';
 import { useEffect, useState } from 'react';
-import { ScrollToTop } from './components';
+import { ProtectedRoute, ScrollToTop } from './components';
 import PublicTax from './pages/dashboard/publicTax/PublicTax';
+import { DetailCitizenReport, DetailVillageReport, Home } from './pages/kiosk';
 
 function App() {
   const { user } = useAuth();
@@ -54,6 +55,26 @@ function App() {
   return (
     <RouterProvider
       router={createBrowserRouter([
+        {
+          element: (
+            <>
+              <KioskLayout />
+            </>
+          ),
+          children: [
+            ...kioskLink.map(({ path, element: Element }) => ({
+              path,
+              element: (
+                <ProtectedRoute>
+                  <Element />
+                </ProtectedRoute>
+              )
+            })),
+            { path: '/kiosk', element: <Home /> },
+            { path: '/kiosk/features/citizen_report/detail/:slug', element: <DetailCitizenReport /> },
+            { path: '/kiosk/features/village_report/detail/:id', element: <DetailVillageReport /> }
+          ]
+        },
         {
           element: (
             <>

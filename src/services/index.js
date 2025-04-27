@@ -35,3 +35,4 @@ export { default as CitizenReportReplyService } from './CitizenReportReplyServic
 export { default as VillageReportService } from './VillageReportService';
 export { default as ReportAttributeService } from './ReportAttributeService';
 export { default as SubmitReportService } from './SubmitReportService';
+export { default as KioskService } from './KioskService';

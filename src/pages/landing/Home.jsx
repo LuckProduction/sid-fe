@@ -206,7 +206,7 @@ const Home = () => {
               <div className="col-span-4 grid grid-cols-4 gap-6 lg:col-span-5">
                 {visiMisi?.data &&
                   visiMisi?.data
-                    .filter((item) => item.type !== 'visi') // Hanya ambil item yang bukan "visi"
+                    .filter((item) => item.type !== 'visi')
                     .map((item, index) => (
                       <Card key={item.id} className="col-span-4 border-none bg-blue-400 transition-all duration-300 hover:-translate-y-2 lg:col-span-2">
                         <div className="flex flex-col gap-y-2 p-4">

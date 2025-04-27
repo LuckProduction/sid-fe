@@ -15,6 +15,7 @@ export default class CitizenReportService {
   static async getAll({ token, ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
     const response = await api.get('/layanan-pengaduan', { token, params });
+
     if (!response.data) return response;
     return { ...response, data: CitizenReport.fromApiData(response.data) };
   }
@@ -30,6 +31,7 @@ export default class CitizenReportService {
    * */
   static async getById(id, token) {
     const response = await api.get(`/layanan-pengaduan/${id}`, { token });
+
     if (!response.data) return response;
     return { ...response, data: CitizenReport.fromApiData(response.data) };
   }
