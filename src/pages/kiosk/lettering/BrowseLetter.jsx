@@ -110,7 +110,7 @@ const BrowseLetter = () => {
                                     <iframe
                                       style={{ aspectRatio: 16 / 9, width: '100%' }}
                                       className="h-full w-full"
-                                      src={`${BASE_URL}/permohonan-surat/download/${item.token}`}
+                                      src={`${BASE_URL}/anjungan/cetak-surat/${item.token}`}
                                       title="YouTube video player"
                                       frameBorder="0"
                                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
