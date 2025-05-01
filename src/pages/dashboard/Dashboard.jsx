@@ -142,7 +142,7 @@ const Dashboard = () => {
         }
       }
     };
-  }, [apbdStatistic, residentStatistic]);
+  }, [apbdStatistic, residentStatistic, viewers]);
 
   return (
     <div className="grid w-full grid-cols-12 gap-4">
