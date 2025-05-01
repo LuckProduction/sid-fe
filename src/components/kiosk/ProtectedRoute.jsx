@@ -9,7 +9,6 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/kiosk" replace />;
   }
 
-  // Kalau sudah login, render children
   return children;
 };
 

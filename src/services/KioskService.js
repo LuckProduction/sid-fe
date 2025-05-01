@@ -63,4 +63,11 @@ export default class KioskService {
     if (!response.data) return response;
     return { ...response, data: response.data };
   }
+
+  static async getAllSettings({ ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/pengaturan`, { params, token: kioskToken });
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
 }

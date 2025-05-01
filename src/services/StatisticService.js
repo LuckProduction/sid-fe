@@ -24,4 +24,10 @@ export default class StatisticService {
     if (!response.data) return response;
     return { ...response, data: response.data };
   }
+
+  static async getAllViewers(token) {
+    const response = await api.get(`/pengunjung`, { token });
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
 }
