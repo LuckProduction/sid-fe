@@ -5,18 +5,32 @@ import { LandingService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
 import { PoweroffOutlined } from '@ant-design/icons';
 import { Button, Image, Skeleton } from 'antd';
-import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { useCallback, useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import KioskService, { kioskToken } from '../services/KioskService';
 
 const Kiosk = () => {
   const { execute: fetchVillageProfile, ...getVillageProfile } = useService(LandingService.getVillageProfile);
+  const { execute, ...getAllWebSettings } = useService(KioskService.getAllSettings);
   const { user, logout } = useKioskAuth();
+
+  const fetchWebSettings = useCallback(() => {
+    execute({ kioskToken });
+  }, [execute]);
 
   useEffect(() => {
     fetchVillageProfile();
-  }, [fetchVillageProfile]);
+    fetchWebSettings();
+  }, [fetchVillageProfile, fetchWebSettings]);
 
   const villageProfile = getVillageProfile.data ?? {};
+  const webSettings = getAllWebSettings.data ?? [];
+
+  const aksesAnjungan = webSettings?.find((setting) => setting.slug === 'akses_anjungan');
+
+  if (!webSettings || aksesAnjungan?.nilai === 'false') {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="flex h-dvh flex-col font-sans">

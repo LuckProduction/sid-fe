@@ -45,3 +45,5 @@ export { default as TaxPeriod } from './publicTax/TaxPeriod';
 export { default as VillageReport } from './villageReport/VillageReport';
 export { default as ReportAttribute } from './villageReport/ReportAttribute';
 export { default as SubmitReport } from './villageReport/SubmitReport';
+
+export { default as WebSettings } from './webSettings/WebSettings';

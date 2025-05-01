@@ -2,8 +2,8 @@ import { useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { SocialMediaShare } from '@/utils/SocialMediaShare';
 import timeAgo from '@/utils/timeAgo';
-import { CommentOutlined, DownloadOutlined, FacebookOutlined, MenuOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Dropdown, Skeleton, Timeline } from 'antd';
+import { CommentOutlined, DownloadOutlined, FacebookOutlined, LikeFilled, LikeOutlined, MenuOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Dropdown, Image, Skeleton, Timeline } from 'antd';
 import useNotification from 'antd/es/notification/useNotification';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -12,7 +12,8 @@ const DetailCitizenReport = () => {
   const { error } = useNotification();
   const { slug } = useParams();
   const { execute: fetchDetailCitizenReport, ...getDetailCitizenReport } = useService(LandingService.getDetailCitizenReport);
-  const [showReplies, setShowReplies] = useState(false);
+  const [showReplies, setShowReplies] = useState(true);
+  const likeCitizenReport = useService(LandingService.likeCitizenReport);
 
   useEffect(() => {
     fetchDetailCitizenReport(slug);
@@ -118,6 +119,17 @@ const DetailCitizenReport = () => {
                   </Dropdown>
                 }
                 actions={[
+                  <div
+                    key="like"
+                    className="inline-flex items-center gap-x-2"
+                    onClick={async () => {
+                      await likeCitizenReport.execute(citizenReport.id);
+                      fetchDetailCitizenReport(slug);
+                    }}
+                  >
+                    {citizenReport.has_like ? <LikeFilled className="text-blue-500" /> : <LikeOutlined />}
+                    {String(citizenReport.liked)}
+                  </div>,
                   <div key="comment" className="inline-flex items-center gap-x-2" onClick={() => setShowReplies(!showReplies)}>
                     <CommentOutlined />
                     {String(citizenReport.reply.length)}
@@ -134,7 +146,7 @@ const DetailCitizenReport = () => {
                       <div className="flex flex-col gap-2">
                         <p>Lampiran :</p>
 
-                        {!citizenReport.doc.split('.').pop().toLowerCase().includes('pdf') && <img className="max-w-96" src={citizenReport.doc} alt="Lampiran" />}
+                        {!citizenReport.doc.split('.').pop().toLowerCase().includes('pdf') && <Image src={citizenReport.doc} width={200} height={200} />}
 
                         {citizenReport.doc.split('.').pop().toLowerCase() === 'pdf' && (
                           <Button icon={<DownloadOutlined />} className="w-fit" type="primary" onClick={() => window.open(citizenReport.doc, '_blank')}>
