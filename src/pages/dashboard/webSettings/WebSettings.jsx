@@ -12,11 +12,11 @@ const WebSettings = () => {
   const storeWebSettings = useService(WebSettingsService.store);
 
   const fetchWebSettings = useCallback(() => {
-    execute({ token });
-  }, [execute, token]);
+    execute({});
+  }, [execute]);
 
   useEffect(() => {
-    fetchWebSettings();
+    fetchWebSettings({});
   }, [fetchWebSettings]);
 
   const webSettings = useMemo(() => getAllWebSettings.data ?? [], [getAllWebSettings.data]);
@@ -117,7 +117,7 @@ const WebSettings = () => {
       error('Gagal', message);
     }
 
-    fetchWebSettings({ token: token });
+    fetchWebSettings({});
 
     return isSuccess;
   };

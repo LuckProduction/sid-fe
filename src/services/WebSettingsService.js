@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { WebSettings } from '@/models';
 import api from '@/utils/api';
+import { kioskToken } from './KioskService';
 
 export default class WebSettingsService {
   /**
@@ -12,9 +13,10 @@ export default class WebSettingsService {
    *  data?: WebSettings[];
    * }>}
    * */
-  static async getAll({ token, ...filters }) {
+  static async getAll({ ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
-    const response = await api.get('/pengaturan', { token, params });
+    const response = await api.get('/pengaturan', { params, token: kioskToken });
+    console.log(response);
     if (!response.data) return response;
     return { ...response, data: WebSettings.fromApiData(response.data) };
   }
