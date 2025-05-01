@@ -64,7 +64,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
         );
 
       case InputType.SELECT:
-        return <Select placeholder="Pilih" size="large" {...field} style={extraLargeStyle} />;
+        return <Select placeholder="Pilih" size="large" {...field} {...field.extra} style={extraLargeStyle} />;
 
       case InputType.SELECT_LOGO:
         return (

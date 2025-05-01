@@ -189,6 +189,11 @@ export const dashboardLink = [
         label: 'Visi Misi Desa',
         element: Dashboard.VisiMisi,
         permissions: [[Action.READ, Model.VisiMisi]]
+      },
+      {
+        path: '/dashboard/web_settings',
+        label: 'Pengaturan Web',
+        element: Dashboard.WebSettings
       }
     ]
   },

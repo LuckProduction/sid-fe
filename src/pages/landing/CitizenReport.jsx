@@ -117,7 +117,7 @@ const CitizenReport = () => {
                             <div className="flex flex-col gap-2">
                               <p>Lampiran :</p>
 
-                              {!reportItem.doc.split('.').pop().toLowerCase().includes('pdf') && <img className="max-w-96" src={reportItem.doc} alt="Lampiran" />}
+                              {!reportItem.doc.split('.').pop().toLowerCase().includes('pdf') && <Image src={reportItem.doc} width={200} height={200} />}
 
                               {reportItem.doc.split('.').pop().toLowerCase() === 'pdf' && (
                                 <Button icon={<DownloadOutlined />} className="w-fit" type="primary" onClick={() => window.open(reportItem.doc, '_blank')}>

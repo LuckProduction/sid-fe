@@ -1,5 +1,22 @@
 /* eslint-disable no-unused-vars */
-import { Article, CitizenReport, LegalProducts, LetterType, Map, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VillageReport, VisiMisi } from '@/models';
+import {
+  Article,
+  CitizenReport,
+  LegalProducts,
+  LetterType,
+  Map,
+  Speech,
+  SubmitLetter,
+  VillageBoundaries,
+  VillageEnterprise,
+  VillageInstitution,
+  VillageOfficials,
+  VillagePotential,
+  VillageProfile,
+  VillageReport,
+  VisiMisi,
+  WebSettings
+} from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -172,5 +189,11 @@ export default class LandingService {
 
   static async browseReport(data) {
     return await api.post(`/lapor-penduduk/cari-laporan`, { body: data });
+  }
+
+  static async getAllSettings() {
+    const response = await api.get('/pengaturan');
+    if (!response.data) return response;
+    return { ...response, data: WebSettings.fromApiData(response.data) };
   }
 }
