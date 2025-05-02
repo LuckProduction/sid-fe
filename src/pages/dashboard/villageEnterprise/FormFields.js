@@ -115,5 +115,30 @@ export const formFields = ({ fetchResident }) => [
         }
       }
     ]
+  },
+  {
+    label: `Status`,
+    name: 'status',
+    type: InputType.SELECT,
+    rules: [
+      {
+        required: true,
+        message: `Status harus diisi`
+      }
+    ],
+    options: [
+      {
+        label: 'Aktif',
+        value: 'aktif'
+      },
+      {
+        label: 'Nonaktif',
+        value: 'nonaktif'
+      },
+      {
+        label: 'Verifikasi',
+        value: 'verifikasi'
+      }
+    ]
   }
 ];
