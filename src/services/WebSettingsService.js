@@ -16,7 +16,6 @@ export default class WebSettingsService {
   static async getAll({ ...filters }) {
     const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
     const response = await api.get('/pengaturan', { params, token: kioskToken });
-    console.log(response);
     if (!response.data) return response;
     return { ...response, data: WebSettings.fromApiData(response.data) };
   }

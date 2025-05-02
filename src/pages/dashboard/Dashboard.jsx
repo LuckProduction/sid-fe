@@ -206,24 +206,6 @@ const Dashboard = () => {
           </Card>
         </>
       )}
-      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
-        <Typography.Title level={5} className="w-full text-center">
-          Statistik Penduduk
-        </Typography.Title>
-        {chartConfigs.resident ? <Pie {...chartConfigs.resident} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
-      </Card>
-      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
-        <Typography.Title level={5} className="w-full text-center">
-          Statistik APBD
-        </Typography.Title>
-        {chartConfigs.apbd ? <Column {...chartConfigs.apbd} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
-      </Card>
-      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
-        <Typography.Title level={5} className="w-full text-center">
-          Penyaluran Bantuan
-        </Typography.Title>
-        {chartConfigs.publicAssistance ? <Column {...chartConfigs.publicAssistance} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
-      </Card>
       <div className="col-span-12 flex w-auto flex-col gap-y-2 lg:col-span-6">
         <Card className="w-auto">
           <Typography.Title level={5} className="w-full text-center">
@@ -243,6 +225,24 @@ const Dashboard = () => {
           {chartConfigs.viewers ? <Column {...chartConfigs.viewers} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
         </Card>
       </div>
+      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
+        <Typography.Title level={5} className="w-full text-center">
+          Statistik Penduduk
+        </Typography.Title>
+        {chartConfigs.resident ? <Pie {...chartConfigs.resident} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
+      </Card>
+      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
+        <Typography.Title level={5} className="w-full text-center">
+          Statistik APBD
+        </Typography.Title>
+        {chartConfigs.apbd ? <Column {...chartConfigs.apbd} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
+      </Card>
+      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
+        <Typography.Title level={5} className="w-full text-center">
+          Penyaluran Bantuan
+        </Typography.Title>
+        {chartConfigs.publicAssistance ? <Column {...chartConfigs.publicAssistance} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
+      </Card>
     </div>
   );
 };

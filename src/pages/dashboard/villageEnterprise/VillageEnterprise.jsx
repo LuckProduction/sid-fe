@@ -1,7 +1,7 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { Action } from '@/constants';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { Button, Card, Descriptions, Image, Result, Space } from 'antd';
+import { Button, Card, Descriptions, Image, Result, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { ResidentService, VillageEnterpriseService } from '@/services';
 import { VillageEnterprise as VillageEnterpriseModel } from '@/models';
@@ -101,6 +101,24 @@ const VillageEnterprise = () => {
       dataIndex: 'operational_time',
       sorter: (a, b) => a.operational_time.length - b.operational_time.length,
       searchable: true
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      sorter: (a, b) => a.status.length - b.status.length,
+      searchable: true,
+      render: (record) => {
+        switch (record) {
+          case 'aktif':
+            return <Tag color="blue">Aktif</Tag>;
+          case 'nonaktif':
+            return <Tag color="red">Nonaktif</Tag>;
+          case 'verifikasi':
+            return <Tag color="warning">Verifikasi</Tag>;
+          default:
+            return <Tag color="default">Undifined</Tag>;
+        }
+      }
     }
   ];
 
@@ -178,6 +196,27 @@ const VillageEnterprise = () => {
                     key: 'contact',
                     label: `Kontak`,
                     children: record.contact
+                  },
+                  {
+                    key: 'status',
+                    label: `Status `,
+                    children: (() => {
+                      let statusTag;
+                      switch (record.status) {
+                        case 'aktif':
+                          statusTag = <Tag color="blue">Aktif</Tag>;
+                          break;
+                        case 'nonaktif':
+                          statusTag = <Tag color="red">Non-Aktif</Tag>;
+                          break;
+                        case 'verifikasi':
+                          statusTag = <Tag color="warning">Verifikasi</Tag>;
+                          break;
+                        default:
+                          statusTag = <Tag color="error">Undefined</Tag>;
+                      }
+                      return statusTag;
+                    })()
                   }
                 ]
               });

@@ -92,6 +92,11 @@ export const landingLink = [
         label: 'Batas Desa',
         key: '/village_boundaries',
         element: Landing.VillageBoundaries
+      },
+      {
+        label: 'Aplikasi Mobile',
+        key: '/mobile_landing',
+        element: Landing.MobileLanding
       }
     ]
   },

@@ -13,6 +13,7 @@ export interface IncomingApiData {
   titik_koordinat: string;
   kontak: string;
   jam_operasional: string;
+  status: 'aktif' | 'nonaktif' | 'verifikasi';
   menu_lapak?: {
     id: number;
     nama_menu: string;
@@ -34,6 +35,7 @@ export interface OutgoingApiData {
   jam_operasional: string;
   kontak: string;
   master_penduduk_id: number;
+  status: string;
 }
 
 interface FormValue {
@@ -46,6 +48,7 @@ interface FormValue {
   operational_time: string;
   contact: string;
   resident: number;
+  status: string;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -73,6 +76,7 @@ export default class VillageEnterprise extends Model {
     public coordinate: string,
     public contact: string,
     public operational_time: string,
+    public status: 'aktif' | 'nonaktif' | 'verifikasi',
     public enterprise_menu?: {
       id: number;
       menu_name: string;
@@ -110,6 +114,7 @@ export default class VillageEnterprise extends Model {
       apiData.titik_koordinat,
       apiData.kontak,
       apiData.jam_operasional,
+      apiData.status,
       apiData.menu_lapak?.map((menu) => ({
         id: menu.id,
         menu_name: menu.nama_menu,
@@ -133,7 +138,8 @@ export default class VillageEnterprise extends Model {
       foto: villageEnterprise.foto,
       jam_operasional: villageEnterprise.operational_time,
       kontak: villageEnterprise.contact,
-      master_penduduk_id: villageEnterprise.resident
+      master_penduduk_id: villageEnterprise.resident,
+      status: villageEnterprise.status
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;
