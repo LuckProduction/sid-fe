@@ -27,7 +27,7 @@ const Resident = () => {
   const [selectedResident, setSelectedResident] = useState([]);
   const modal = useCrudModal();
   const pagination = usePagination({ totalData: getAllResident.totalData });
-  const [filterValues, setFilterValues] = useState({ search: '', jenis_kelamin: null, status_perkawinan: null, status_penduduk: null, hubungan_keluarga: null, dusun_id: null });
+  const [filterValues, setFilterValues] = useState({ search: '', jenis_kelamin: null, status_perkawinan: null, status_penduduk: null, hubungan_keluarga: null, dusun_id: null, kategori_umur: null });
 
   const fetchResident = useCallback(() => {
     execute({
@@ -39,9 +39,22 @@ const Resident = () => {
       status_perkawinan: filterValues.status_perkawinan,
       status_penduduk: filterValues.status_penduduk,
       hubungan_keluarga: filterValues.hubungan_keluarga,
-      dusun_id: filterValues.dusun_id
+      dusun_id: filterValues.dusun_id,
+      kategori_umur: filterValues.kategori_umur
     });
-  }, [execute, filterValues.dusun_id, filterValues.hubungan_keluarga, filterValues.jenis_kelamin, filterValues.search, filterValues.status_penduduk, filterValues.status_perkawinan, pagination.page, pagination.per_page, token]);
+  }, [
+    execute,
+    filterValues.dusun_id,
+    filterValues.hubungan_keluarga,
+    filterValues.jenis_kelamin,
+    filterValues.search,
+    filterValues.status_penduduk,
+    filterValues.status_perkawinan,
+    filterValues.kategori_umur,
+    pagination.page,
+    pagination.per_page,
+    token
+  ]);
 
   useEffect(() => {
     fetchResident();
@@ -52,7 +65,27 @@ const Resident = () => {
   const hamlet = getAllHamlet.data ?? [];
 
   const exportResident = () => {
-    fetch(`${BASE_URL}/master-penduduk/export?penduduk=true`, {
+    const query = {
+      penduduk: 'true',
+      search: filterValues.search,
+      jenis_kelamin: filterValues.jenis_kelamin,
+      status_perkawinan: filterValues.status_perkawinan,
+      status_penduduk: filterValues.status_penduduk,
+      hubungan_keluarga: filterValues.hubungan_keluarga,
+      dusun_id: filterValues.dusun_id,
+      kategori_umur: filterValues.kategori_umur
+    };
+
+    const filteredQuery = Object.entries(query).reduce((acc, [key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+
+    const queryParams = new URLSearchParams(filteredQuery).toString();
+
+    fetch(`${BASE_URL}/master-penduduk/export?${queryParams}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -112,6 +145,8 @@ const Resident = () => {
             return <Tag color="warning">Pindah</Tag>;
           case 'masuk':
             return <Tag color="green-inverse">Masuk</Tag>;
+          case 'tetap':
+            return <Tag color="blue">Tetap</Tag>;
           default:
             return <Tag color="default">Undifined</Tag>;
         }
@@ -242,7 +277,8 @@ const Resident = () => {
       status_perkawinan: filterValues.status_perkawinan,
       status_penduduk: filterValues.status_penduduk,
       hubungan_keluarga: filterValues.hubungan_keluarga,
-      dusun_id: filterValues.dusun_id
+      dusun_id: filterValues.dusun_id,
+      kategori_umur: filterValues.kategori_umur
     },
     isLoading: getAllResident.isLoading,
     onSubmit: (values) => {
@@ -251,7 +287,8 @@ const Resident = () => {
         status_perkawinan: values.status_perkawinan,
         status_penduduk: values.status_penduduk,
         hubungan_keluarga: values.hubungan_keluarga,
-        dusun_id: values.dusun_id
+        dusun_id: values.dusun_id,
+        kategori_umur: values.kategori_umur
       });
     }
   };

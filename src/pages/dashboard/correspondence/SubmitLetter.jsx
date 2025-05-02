@@ -83,6 +83,8 @@ const SubmitLetter = () => {
             return <Tag color="green">Verifikasi</Tag>;
           case 'menunggu':
             return <Tag color="yellow">Menunggu</Tag>;
+          case 'anjungan':
+            return <Tag color="lime">anjungan</Tag>;
           default:
             return <Tag color="error">Undifined</Tag>;
         }

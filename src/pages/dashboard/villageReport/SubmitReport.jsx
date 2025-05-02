@@ -67,7 +67,6 @@ const SubmitReport = () => {
     {
       title: 'Pengaju',
       dataIndex: ['resident', 'full_name'],
-      sorter: (a, b) => a.resident.full_name.length - b.resident.full_name.length,
       searchable: true
     },
     {
