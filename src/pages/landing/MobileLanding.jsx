@@ -19,7 +19,7 @@ const MobileLanding = () => {
           </div>
         </Reveal>
         <div className="mt-6">
-          <Button onClick={() => window.open('https://drive.google.com/drive/folders/1q6SwIFI6a33eaItmRtXgbW_V7G791Fcy', '_blank')} icon={<AndroidOutlined />} variant="solid" color="primary" size="large">
+          <Button onClick={() => window.open('https://api-example.go-village.id/api/download-apk', '_blank')} icon={<AndroidOutlined />} variant="solid" color="primary" size="large">
             Download APK
           </Button>
         </div>

@@ -21,6 +21,21 @@ export default class ComunityService {
 
   /**
    * @param {number} id
+   * @param {LegalProducts} data
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  errors?: { [key: string]: string[] };
+   * }>}
+   */
+  static async update(id, data, token) {
+    return await api.put(`/layanan-mandiri/edit/${id}`, { body: data, token });
+  }
+
+  /**
+   * @param {number} id
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;
