@@ -40,7 +40,7 @@ ReadModal.propTypes = {
   type: PropTypes.oneOf(Object.values(ReadModalType)),
   isModalOpen: PropTypes.bool.isRequired,
   close: PropTypes.func.isRequired,
-  data: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.arrayOf(PropTypes.object)])).isRequired,
+  data: PropTypes.any.isRequired,
   isLoading: PropTypes.bool,
   columns: PropTypes.arrayOf(PropTypes.object),
   width: PropTypes.number
