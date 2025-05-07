@@ -1,43 +1,49 @@
+import { MapPicker } from '@/components/dashboard/input';
 import Modul from '@/constants/Modul';
 import { useAuth, useNotification, useService } from '@/hooks';
-import { ArticleService, CategoryService } from '@/services';
-import { Button, Card, Form, Input, Select, Typography } from 'antd';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Editor } from '@tinymce/tinymce-react';
-import Dragger from 'antd/es/upload/Dragger';
-import { InboxOutlined } from '@ant-design/icons';
+import { CategoryService, VillagePotentialService } from '@/services';
 import strings from '@/utils/strings';
+import { InboxOutlined } from '@ant-design/icons';
+import { Editor } from '@tinymce/tinymce-react';
+import { Button, Card, Form, Input, Select, Typography } from 'antd';
+import Dragger from 'antd/es/upload/Dragger';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Create = () => {
+  const [form] = Form.useForm();
   const { token } = useAuth();
   const navigate = useNavigate();
-  const [form] = Form.useForm();
   const { success, error } = useNotification();
+  const storeVillagePotential = useService(VillagePotentialService.store);
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
-  const storeArticle = useService(ArticleService.store);
+  const [realtimeData, setRealtimeData] = useState({});
 
   useEffect(() => {
-    fetchCategory(token, 'artikel');
+    fetchCategory(token, 'potensi');
   }, [fetchCategory, token]);
 
   const category = getAllCategory.data ?? [];
 
   const handleEditorChange = (editor) => {
-    const content = editor.getContent();
-    form.setFieldsValue({ content });
+    const description = editor.getContent();
+    form.setFieldsValue({ description });
+  };
+
+  const handleValuesChange = (changedValue) => {
+    setRealtimeData((prevData) => ({ ...prevData, ...changedValue }));
   };
 
   return (
     <div>
       <Card className="mb-6 flex items-center justify-between">
-        <Typography.Title level={5}>Tambah {Modul.ARTICLE}</Typography.Title>
+        <Typography.Title level={5}>Tambah {Modul.VILLAGE_POTENTIALS}</Typography.Title>
       </Card>
       <Form
         form={form}
         className="grid w-full grid-cols-12 gap-2"
         onFinish={async (values) => {
-          const { message, isSuccess } = await storeArticle.execute({ ...values, user_id: 1 }, token, values.image.file);
+          const { message, isSuccess } = await storeVillagePotential.execute({ ...values, coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
           if (isSuccess) {
             success('Berhasil', message);
             navigate(-1);
@@ -50,7 +56,7 @@ const Create = () => {
         <Card className="col-span-8">
           <Form.Item
             className="m-0"
-            name="content"
+            name="description"
             rules={[
               {
                 required: true,
@@ -72,8 +78,8 @@ const Create = () => {
               onInit={(evt, editor) => {
                 editor.on('change', () => handleEditorChange(editor));
               }}
-              onEditorChange={(content) => {
-                form.setFieldsValue({ content });
+              onEditorChange={(description) => {
+                form.setFieldsValue({ description });
               }}
             />
           </Form.Item>
@@ -81,40 +87,27 @@ const Create = () => {
         <Card className="col-span-4">
           <Form.Item
             className="mb-4"
-            name="title"
+            name="potential_name"
             rules={[
               {
                 required: true,
-                message: 'Judul wajib diisi!'
+                message: 'Nama potensi wajib diisi!'
               }
             ]}
           >
-            <Input placeholder={`Judul ${Modul.ARTICLE}`} size="large" />
+            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
           </Form.Item>
           <Form.Item
             className="mb-4"
-            name="status"
+            name="location"
             rules={[
               {
                 required: true,
-                message: 'Status wajib diisi!'
+                message: 'Lokasi potensi wajib diisi!'
               }
             ]}
           >
-            <Select
-              placeholder={`Status ${Modul.ARTICLE}`}
-              size="large"
-              options={[
-                {
-                  label: 'Draft',
-                  value: 'draft'
-                },
-                {
-                  label: 'Publish',
-                  value: 'publish'
-                }
-              ]}
-            />
+            <Input placeholder={`Lokasi ${Modul.VILLAGE_POTENTIALS}`} size="large" />
           </Form.Item>
           <Form.Item
             className="mb-4"
@@ -127,22 +120,23 @@ const Create = () => {
             ]}
           >
             <Select
-              mode="multiple"
-              placeholder={`Kategori ${Modul.ARTICLE}`}
+              placeholder={`Kategori ${Modul.VILLAGE_POTENTIALS}`}
               size="large"
-              options={category.map((item) => ({
-                label: item.category_name,
-                value: item.id
-              }))}
+              options={category
+                .filter((field) => field.name !== 'content')
+                .map((item) => ({
+                  label: item.category_name,
+                  value: item.id
+                }))}
             />
           </Form.Item>
           <Form.Item
             className="mb-4"
-            name="image"
+            name="foto"
             rules={[
               {
                 required: true,
-                message: 'Gambar wajib diisi!'
+                message: 'Foto wajib diisi!'
               }
             ]}
           >
@@ -162,24 +156,39 @@ const Create = () => {
               <p className="ant-upload-hint">{strings('accepted_file_types_s', ['.png', '.jpg', '.jpeg', 'webp'].join(', '))}</p>
             </Dragger>
           </Form.Item>
+          <Form.Item className="mb-4">
+            <MapPicker form={form} handleValuesChange={handleValuesChange} realtimeData={realtimeData} />
+          </Form.Item>
           <Form.Item
             className="mb-4"
-            name="tag"
+            name="latitude"
             rules={[
               {
                 required: true,
-                message: 'Tag wajib diisi!'
+                message: 'Latitude wajib diisi!'
               }
             ]}
           >
-            <Input placeholder={`Tag ${Modul.ARTICLE}`} size="large" />
+            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
+          </Form.Item>
+          <Form.Item
+            className="mb-4"
+            name="longitude"
+            rules={[
+              {
+                required: true,
+                message: 'Longitude wajib diisi!'
+              }
+            ]}
+          >
+            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
           </Form.Item>
           <Form.Item className="mt-2">
             <div className="flex w-full items-center justify-end gap-x-2">
               <Button type="default" htmlType="reset" size="large">
                 Reset
               </Button>
-              <Button size="large" type="primary" htmlType="submit" loading={storeArticle.isLoading}>
+              <Button size="large" type="primary" htmlType="submit" loading={storeVillagePotential.isLoading}>
                 Kirim
               </Button>
             </div>

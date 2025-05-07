@@ -21,7 +21,8 @@ const ProfileSettings = () => {
   }, [form, user]);
 
   const onSubmitChangeProfile = async (values) => {
-    const { message, isSuccess } = await updateUserProfil.execute(user.id, { ...values, _method: 'PUT' }, token);
+    const role = values.roleId === 1 ? 'admin' : 'pegawai';
+    const { message, isSuccess } = await updateUserProfil.execute(user.id, { ...values, _method: 'PUT', role: role }, token);
     if (isSuccess) {
       success('Berhasil', message);
     } else {
@@ -76,22 +77,22 @@ const ProfileSettings = () => {
                     <b>Data Operator</b>
                   </Form.Item>
                   <Form.Item label="Nama Lengkap" name="name" rules={[{ required: true, message: 'Field Nama harus diisi' }]}>
-                    <Input size="large" />
+                    <Input disabled size="large" />
                   </Form.Item>
-                  <Form.Item label="User Role" name="role" rules={[{ required: true, message: 'Field Role harus diisi' }]}>
-                    <Select size="large">
+                  <Form.Item label="User Role" name="roleId" rules={[{ required: true, message: 'Field Role harus diisi' }]}>
+                    <Select size="large" disabled>
                       <Select.Option value={1}>Admin</Select.Option>
                       <Select.Option value={2}>Pegawai</Select.Option>
                     </Select>
                   </Form.Item>
                   <Form.Item label="Email" name="email">
-                    <Input size="large" />
+                    <Input disabled size="large" />
                   </Form.Item>
-                  <Form.Item>
+                  {/* <Form.Item>
                     <Button type="primary" htmlType="submit" loading={updateUserProfil.isLoading}>
                       Simpan
                     </Button>
-                  </Form.Item>
+                  </Form.Item> */}
                 </Form>
               </Card>
             ) : activeMenu === 'password' ? (

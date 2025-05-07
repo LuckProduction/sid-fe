@@ -9,16 +9,16 @@ import Category from './Category';
 import { Delete, Edit } from '@/components/dashboard/button';
 import { Action } from '@/constants';
 import { VillagePotential as VillagePotentialModel } from '@/models';
+import { useNavigate } from 'react-router-dom';
 
 const { DELETE, UPDATE } = Action;
 
 const VillagePotential = () => {
   const { token, user } = useAuth();
+  const navigate = useNavigate();
   const { success, error } = useNotification();
   const { execute, ...getAllVillagePotential } = useService(VillagePotentialService.getAll);
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
-  const storeVillagePotential = useService(VillagePotentialService.store);
-  const updateVillagePotential = useService(VillagePotentialService.update);
   const deleteVillagePotential = useService(VillagePotentialService.delete);
   const deleteBatchVillagePotential = useService(VillagePotentialService.deleteBatch);
   const [selectedVillagePotential, setSelectedVillagePotential] = useState([]);
@@ -67,22 +67,7 @@ const VillagePotential = () => {
             title={`Edit ${Modul.VILLAGE_POTENTIALS}`}
             model={VillagePotentialModel}
             onClick={() => {
-              const [longitude, latitude] = record.coordinate.split(',').map((coord) => coord.trim());
-              modal.edit({
-                title: `Edit ${Modul.VILLAGE_POTENTIALS}`,
-                data: { ...record, category: record.category.id, longitude: longitude, latitude: latitude },
-                formFields: villagePotentialFormFields({ options: { category } }).filter((field) => field.name !== 'content'),
-                onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateVillagePotential.execute(record.id, { ...values, _method: 'PUT', coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
-                  if (isSuccess) {
-                    success('Berhasil', message);
-                    fetchVillagePotential(token);
-                  } else {
-                    error('Gagal', message);
-                  }
-                  return isSuccess;
-                }
-              });
+              navigate(window.location.pathname + '/edit/' + record.id);
             }}
           />
           <Delete
@@ -128,23 +113,6 @@ const VillagePotential = () => {
     });
   };
 
-  const onCreate = () => {
-    modal.create({
-      title: `Tambah ${Modul.VILLAGE_POTENTIALS}`,
-      formFields: villagePotentialFormFields({ options: { category } }).filter((field) => field.name !== 'content'),
-      onSubmit: async (values) => {
-        const { message, isSuccess } = await storeVillagePotential.execute({ ...values, coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
-        if (isSuccess) {
-          success('Berhasil', message);
-          fetchVillagePotential(token);
-        } else {
-          error('Gagal', message);
-        }
-        return isSuccess;
-      }
-    });
-  };
-
   return (
     <Card>
       <Tabs type="card">
@@ -153,7 +121,7 @@ const VillagePotential = () => {
             onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
             model={VillagePotentialModel}
             modul={Modul.VILLAGE_POTENTIALS}
-            onStore={onCreate}
+            onStore={() => navigate(window.location.pathname + '/create')}
             onDeleteBatch={onDeleteBatch}
             selectedData={selectedVillagePotential}
           />

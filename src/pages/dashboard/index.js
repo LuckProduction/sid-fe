@@ -47,3 +47,6 @@ export { default as ReportAttribute } from './villageReport/ReportAttribute';
 export { default as SubmitReport } from './villageReport/SubmitReport';
 
 export { default as WebSettings } from './webSettings/WebSettings';
+
+export { default as CreateVillagePotentials } from './villagePotential/Create';
+export { default as EditVillagePotentials } from './villagePotential/Edit';

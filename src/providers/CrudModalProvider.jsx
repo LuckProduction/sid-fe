@@ -66,7 +66,8 @@ export default function CrudModalProvider({ children }) {
         paragraph: ({ title, data, width }) => open({ type: ReadModalType.PARAGRAPH, title, data, width }),
         list: ({ title, data, width }) => open({ type: ReadModalType.LIST, title, data, width }),
         table: ({ title, data, columns, width }) => open({ type: ReadModalType.TABLE, title, data, columns, width }),
-        description: ({ title, data, width }) => open({ type: ReadModalType.DESCRIPTION, title, data, width })
+        description: ({ title, data, width }) => open({ type: ReadModalType.DESCRIPTION, title, data, width }),
+        video: ({ title, data, width }) => open({ type: ReadModalType.VIDEO, title, data, width })
       },
       edit: ({ title, data, formFields, onSubmit, onChange }) => open({ type: CrudModalType.EDIT, title, data, formFields, onSubmit, onChange }),
       delete: {

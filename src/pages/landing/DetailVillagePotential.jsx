@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { useParams } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
+import parse from 'html-react-parser';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 import L from 'leaflet';
 import { SocialMediaShare } from '@/utils/SocialMediaShare';
+import { MapCenterUpdater } from '@/components';
 
 const DetailVillagePotential = () => {
   const { error } = useNotification();
@@ -130,15 +132,18 @@ const DetailVillagePotential = () => {
               </Button>
               <Button icon={<ShareAltOutlined />} color="default" variant="filled" onClick={handleShare} />
             </div>
-            <div className="mb-12">{villagePotential.description ? villagePotential.description : <Skeleton active />}</div>
+            <div className="mb-12">{villagePotential.description ? parse(villagePotential.description) : <Skeleton active />}</div>
             <Typography.Title level={3}>{villagePotential.location}</Typography.Title>
             <Card>
-              <MapContainer center={[0.693, 122.4704]} zoom={8} style={{ height: '500px', width: '100%' }}>
+              <MapContainer center={coordinate || [0.693, 122.4704]} zoom={13} style={{ height: '500px', width: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {coordinate && (
-                  <Marker position={coordinate} icon={customIcon}>
-                    <Popup>Lokasi Potensi Desa</Popup>
-                  </Marker>
+                  <>
+                    <Marker position={coordinate} icon={customIcon}>
+                      <Popup>Lokasi Potensi Desa</Popup>
+                    </Marker>
+                    <MapCenterUpdater coordinate={coordinate} />
+                  </>
                 )}
               </MapContainer>
             </Card>

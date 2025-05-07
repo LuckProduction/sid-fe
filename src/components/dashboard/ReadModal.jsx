@@ -12,11 +12,24 @@ export default function ReadModal({ title, isModalOpen, close, data, type = Read
     ),
     [ReadModalType.LIST]: <List bordered dataSource={data} renderItem={(item) => <List.Item>{item}</List.Item>} />,
     [ReadModalType.TABLE]: <Table columns={columns} dataSource={data} loading={isLoading} />,
-    [ReadModalType.DESCRIPTION]: <Descriptions bordered column={1} items={data ?? []} layout="horizontal" />
+    [ReadModalType.DESCRIPTION]: <Descriptions bordered column={1} items={data ?? []} layout="horizontal" />,
+    [ReadModalType.VIDEO]:
+      isModalOpen && data ? (
+        <iframe
+          key={data} // tambahkan key agar iframe reset jika video berubah
+          style={{ aspectRatio: 16 / 9, width: '100%' }}
+          className="h-full w-full"
+          src={data}
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      ) : null
   };
 
   return (
-    <Modal title={title} open={isModalOpen} onClose={close} onCancel={close} footer={null} width={width} {...props}>
+    <Modal destroyOnClose title={title} open={isModalOpen} onClose={close} onCancel={close} footer={null} width={width} {...props}>
       <div className="mt-4">{jsxs[type]}</div>
     </Modal>
   );
