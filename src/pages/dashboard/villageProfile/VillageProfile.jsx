@@ -37,7 +37,8 @@ const VillagePorfile = () => {
       data: { ...VillageBoundaries, longitude: longitude, latitude: latitude },
       formFields: VillageBoundariesFormFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await udpateVillageBoundaries.execute({ ...values, headvillage_coordinate: `${values.longitude}, ${values.latitude}` }, token, values.adiministrative_file.file);
+        const file = values.administrative_file?.file;
+        const { message, isSuccess } = await udpateVillageBoundaries.execute({ ...values, headvillage_coordinate: `${values.longitude}, ${values.latitude}` }, token, file);
         if (isSuccess) {
           success('Berhasil', message);
           fetchVillageProfile(token);

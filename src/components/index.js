@@ -17,3 +17,4 @@ export { default as ScrollToTop } from './ScrollTop';
 export { default as ProtectedRoute } from './kiosk/ProtectedRoute';
 
 export { default as LiveClock } from './LiveClock';
+export { default as MapCenterUpdater } from './MapCenterUpdater';

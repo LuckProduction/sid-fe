@@ -5,7 +5,22 @@ import { AuthLayout, DashboardLayout, KioskLayout, LandingLayout } from './layou
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
-import { ApbdItem, Beneficiary, CreateArticle, DetailCitizenReport as DetailCitizenReportDashboard, DetailResident, EditArticle, EditResident, FamilyDetail, InstitutionMember, Lettering, ProfileSettings, ReportAttribute } from './pages/dashboard';
+import {
+  ApbdItem,
+  Beneficiary,
+  CreateArticle,
+  CreateVillagePotentials,
+  DetailCitizenReport as DetailCitizenReportDashboard,
+  DetailResident,
+  EditArticle,
+  EditResident,
+  EditVillagePotentials,
+  FamilyDetail,
+  InstitutionMember,
+  Lettering,
+  ProfileSettings,
+  ReportAttribute
+} from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
 import { BrowseLetter, DetailCitizenReport as DetailCitizenReportLanding, DetailNews, DetailVillageEnterprise, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound, PrivacyPolicy } from './pages/result';
@@ -120,6 +135,8 @@ function App() {
                 };
               })
             ),
+            { path: '/dashboard/village_potential/create', element: <CreateVillagePotentials /> },
+            { path: '/dashboard/village_potential/edit/:id', element: <EditVillagePotentials /> },
             { path: '/dashboard/article/create', element: <CreateArticle /> },
             { path: '/dashboard/article/edit/:id', element: <EditArticle /> },
             { path: '/dashboard/residential/detail/:id', element: <DetailResident /> },

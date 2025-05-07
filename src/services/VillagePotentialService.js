@@ -20,6 +20,21 @@ export default class VillagePotentialService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: Article[];
+   * }>}
+   * */
+  static async getById(token, id) {
+    const response = await api.get(`/potensi-desa/${id}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: VillagePotential.fromApiData(response.data) };
+  }
+
+  /**
    * @param {VillagePotential} data
    * @param {string} token
    * @returns {Promise<{

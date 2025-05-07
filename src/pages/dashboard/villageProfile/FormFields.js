@@ -209,7 +209,7 @@ export const VillageBoundariesFormFields = () => [
   },
   {
     label: `File Batas`,
-    name: 'adiministrative_file',
+    name: 'administrative_file',
     type: InputType.UPLOAD,
     max: 1,
     beforeUpload: () => {
@@ -218,7 +218,7 @@ export const VillageBoundariesFormFields = () => [
     getFileList: (data) => {
       return [
         {
-          url: data?.adiministrative_file,
+          url: data?.administrative_file,
           name: data?.name
         }
       ];

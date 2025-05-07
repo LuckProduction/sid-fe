@@ -42,11 +42,15 @@ export default class AuthService {
   }
 
   static async forgot(email) {
-    return await api.post('/auth/forgot-password', { body: { email } });
+    return await api.post('/password/request', { body: { email } });
   }
 
-  static async reset(token, password, password_confirmation) {
-    return await api.post('/auth/reset-password', { body: { password, password_confirmation, token } });
+  static async verify(code, email) {
+    return await api.post('/password/verify', { body: { code, email } });
+  }
+
+  static async reset(code, email, password, password_confirmation) {
+    return await api.post('/password/reset', { body: { code, email, password, password_confirmation } });
   }
 
   static async changeProfile(token, data) {
