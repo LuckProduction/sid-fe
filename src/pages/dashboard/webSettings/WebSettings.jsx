@@ -135,14 +135,14 @@ const WebSettings = () => {
         </>
       ) : (
         <>
-          <Card className="col-span-1 h-fit">
+          <Card className="col-span-4 h-fit lg:col-span-1">
             <Menu onClick={(e) => setActiveMenu(e.key)} mode="vertical" selectedKeys={activeMenu ? [activeMenu] : []}>
               {webSettings?.map((item) => (
                 <Menu.Item key={item.id}>{item.setting_name}</Menu.Item>
               ))}
             </Menu>
           </Card>
-          <Card className="col-span-3">
+          <Card className="col-span-4 lg:col-span-3">
             {activeItem ? (
               <>
                 <Typography.Title level={5}>{activeItem.setting_name}</Typography.Title>

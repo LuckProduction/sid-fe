@@ -35,7 +35,7 @@ const Create = () => {
       </Card>
       <Form
         form={form}
-        className="grid w-full grid-cols-12 gap-2"
+        className="grid w-full grid-cols-6 gap-2"
         onFinish={async (values) => {
           const { message, isSuccess } = await storeArticle.execute({ ...values, user_id: 1 }, token, values.image.file);
           if (isSuccess) {
@@ -47,7 +47,7 @@ const Create = () => {
           return isSuccess;
         }}
       >
-        <Card className="col-span-8">
+        <Card className="col-span-6 lg:col-span-4">
           <Form.Item
             className="m-0"
             name="content"
@@ -78,7 +78,7 @@ const Create = () => {
             />
           </Form.Item>
         </Card>
-        <Card className="col-span-4">
+        <Card className="col-span-6 lg:col-span-2">
           <Form.Item
             className="mb-4"
             name="title"

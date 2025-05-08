@@ -71,7 +71,7 @@ const Edit = () => {
       </Card>
       <Form
         form={form}
-        className="grid w-full grid-cols-12 gap-2"
+        className="grid w-full grid-cols-6 gap-2"
         onFinish={async (values) => {
           const { message, isSuccess } = await updateVillagePotential.execute(initialData.id, { ...values, _method: 'PUT', coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
           if (isSuccess) {
@@ -83,7 +83,7 @@ const Edit = () => {
           return isSuccess;
         }}
       >
-        <Card className="col-span-8">
+        <Card className="col-span-6 lg:col-span-4">
           <Form.Item
             className="m-0"
             name="description"
@@ -114,7 +114,7 @@ const Edit = () => {
             />
           </Form.Item>
         </Card>
-        <Card className="col-span-4">
+        <Card cclassName="lg:col-span-2 col-span-6">
           <Form.Item
             className="mb-4"
             name="potential_name"
@@ -200,7 +200,7 @@ const Edit = () => {
               }
             ]}
           >
-            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
+            <Input placeholder={`Latitude`} size="large" />
           </Form.Item>
           <Form.Item
             className="mb-4"
@@ -212,7 +212,7 @@ const Edit = () => {
               }
             ]}
           >
-            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
+            <Input placeholder={`Longitudez`} size="large" />
           </Form.Item>
           <Form.Item className="mt-2">
             <div className="flex w-full items-center justify-end gap-x-2">
