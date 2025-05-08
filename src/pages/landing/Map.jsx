@@ -1,4 +1,4 @@
-import { Reveal } from '@/components';
+import { MapCenterUpdater, Reveal } from '@/components';
 import Modul from '@/constants/Modul';
 import { useCrudModal, useService } from '@/hooks';
 import { LandingService } from '@/services';
@@ -17,11 +17,13 @@ const Map = () => {
   const { token } = theme.useToken();
   const [modal, setModal] = useState({ isVisible: false });
   const { execute, ...getAllMap } = useService(LandingService.getAllMap);
+  const { execute: fetchVillageBoundaries, data: villageBoundaries } = useService(LandingService.getAllVillageBoundaries);
   const [filterValues, setFilterValues] = useState({ search: '' });
   const [tempSelectedMap, setTempSelectedMap] = useState(null);
   const [stackedSelectedMap, setStackedSelectedMap] = useState([]);
   const [geojsonLayers, setGeojsonLayers] = useState([]);
   const [markerPoints, setMarkerPoints] = useState([]);
+  const [headVillageCoord, setHeadVillageCoord] = useState(null);
 
   const fetchMap = useCallback(() => {
     execute({
@@ -31,9 +33,19 @@ const Map = () => {
 
   useEffect(() => {
     fetchMap();
-  }, [fetchMap]);
+    fetchVillageBoundaries();
+  }, [fetchMap, fetchVillageBoundaries]);
 
   const map = getAllMap.data ?? [];
+
+  useEffect(() => {
+    if (villageBoundaries?.headvillage_coordinate) {
+      const coords = villageBoundaries.headvillage_coordinate.split(', ').map(Number);
+      if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+        setHeadVillageCoord([coords[1], coords[0]]);
+      }
+    }
+  }, [villageBoundaries]);
 
   const formatGeoJsonUrl = useCallback((url) => {
     if (!url) return null;
@@ -205,22 +217,27 @@ const Map = () => {
               </div>
             </div>
           </Card>
-          <Card className="col-span-6 lg:col-span-4">
-            <MapContainer center={[0.5, 122.5]} zoom={6} style={{ height: '500px', width: '100%' }}>
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-              {markerPoints.map((marker) => (
-                <Marker key={marker.id} position={marker.position}>
-                  <Popup>
-                    <b>{marker.name}</b> <br />
-                    {marker.desc}
-                  </Popup>
-                </Marker>
-              ))}
-              {geojsonLayers.map((layer) => (
-                <GeoJSON key={layer.id} data={layer.data} />
-              ))}
-            </MapContainer>
-          </Card>
+          {headVillageCoord && (
+            <Card className="col-span-6 lg:col-span-4">
+              <MapContainer center={headVillageCoord || [0.693, 122.4704]} zoom={13} style={{ height: '500px', width: '100%' }}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                {markerPoints.map((marker) => (
+                  <>
+                    <Marker key={marker.id} position={marker.position}>
+                      <Popup>
+                        <b>{marker.name}</b> <br />
+                        {marker.desc}
+                      </Popup>
+                    </Marker>
+                    <MapCenterUpdater coordinate={headVillageCoord} />
+                  </>
+                ))}
+                {geojsonLayers.map((layer) => (
+                  <GeoJSON key={layer.id} data={layer.data} />
+                ))}
+              </MapContainer>
+            </Card>
+          )}
         </div>
       </section>
       <Modal

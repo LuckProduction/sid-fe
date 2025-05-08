@@ -46,7 +46,7 @@ const ProfileSettings = () => {
         <DataLoader type="profil" />
       ) : (
         <>
-          <div className="col-span-4 flex w-full flex-col gap-y-4">
+          <div className="col-span-12 flex w-full flex-col gap-y-4 lg:col-span-4">
             <Card className="w-full" cover={<img src="/image_asset/card_background.png" />}>
               <div className="relative px-4">
                 <div className="absolute -top-16">
@@ -69,7 +69,7 @@ const ProfileSettings = () => {
               </Menu>
             </Card>
           </div>
-          <div className="col-span-8">
+          <div className="col-span-12 lg:col-span-8">
             {activeMenu === 'profil' ? (
               <Card className="w-full" title="Profile Operator">
                 <Form layout="vertical" form={form} onFinish={onSubmitChangeProfile}>

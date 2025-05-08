@@ -41,7 +41,7 @@ const Create = () => {
       </Card>
       <Form
         form={form}
-        className="grid w-full grid-cols-12 gap-2"
+        className="grid w-full grid-cols-6 gap-2"
         onFinish={async (values) => {
           const { message, isSuccess } = await storeVillagePotential.execute({ ...values, coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
           if (isSuccess) {
@@ -53,7 +53,7 @@ const Create = () => {
           return isSuccess;
         }}
       >
-        <Card className="col-span-8">
+        <Card className="col-span-6 lg:col-span-4">
           <Form.Item
             className="m-0"
             name="description"
@@ -84,7 +84,7 @@ const Create = () => {
             />
           </Form.Item>
         </Card>
-        <Card className="col-span-4">
+        <Card className="col-span-6 lg:col-span-2">
           <Form.Item
             className="mb-4"
             name="potential_name"
@@ -169,7 +169,7 @@ const Create = () => {
               }
             ]}
           >
-            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
+            <Input placeholder={`Latitude`} size="large" />
           </Form.Item>
           <Form.Item
             className="mb-4"
@@ -181,7 +181,7 @@ const Create = () => {
               }
             ]}
           >
-            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
+            <Input placeholder={`Longitude`} size="large" />
           </Form.Item>
           <Form.Item className="mt-2">
             <div className="flex w-full items-center justify-end gap-x-2">

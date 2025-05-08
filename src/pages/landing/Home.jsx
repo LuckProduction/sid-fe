@@ -135,11 +135,9 @@ const Home = () => {
                   <p className="text-4xl font-bold text-white">Mudah & Cepat</p>
                 </div>
                 <div className="inline-flex items-center gap-x-2">
-                  <Avatar.Group shape="circle" size="large">
-                    <Avatar style={{ backgroundColor: '#fde3cf' }}>A</Avatar>
-                    <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
-                  </Avatar.Group>
-                  <span className="rounded-full bg-blue-500 p-3 px-5 text-xs text-white">50+ Perangkat Desa</span>
+                  <Button className="w-full" onClick={() => navigate('/mobile_landing')} variant="solid" color="primary" size="large">
+                    Akses Dalam Genggaman
+                  </Button>
                 </div>
               </div>
             </div>

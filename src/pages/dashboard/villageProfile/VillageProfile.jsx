@@ -1,7 +1,7 @@
 import { DataLoader } from '@/components';
 import { useAuth, useCrudModal, useNotification, useService } from '@/hooks';
 import { SpeechService, VillageBoundariesService, VillageProfilService } from '@/services';
-import { DownloadOutlined, EditOutlined, PlayCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { DownloadOutlined, EditOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Image, Typography } from 'antd';
 import { useEffect } from 'react';
 import { districtFormFields, logoFormFields, regencyFormFields, speechFormFields, VillageBoundariesFormFields, villageFormFields } from './FormFields';
@@ -90,6 +90,28 @@ const VillagePorfile = () => {
             <div className="mb-6 flex flex-col justify-between gap-y-6">
               <Typography.Title level={5}>Data Profil Desa</Typography.Title>
               <div className="inline-flex flex-wrap items-center gap-x-2 gap-y-2">
+                <Button
+                  icon={<EditOutlined />}
+                  onClick={() =>
+                    modal.edit({
+                      title: 'Kata Sambutan',
+                      data: speech,
+                      formFields: speechFormFields,
+                      onSubmit: async (values) => {
+                        const { message, isSuccess } = await updateSpeech.execute(values, token);
+                        if (isSuccess) {
+                          success('Berhasil', message);
+                          fetchSpeech(token);
+                        } else {
+                          error('Gagal', message);
+                        }
+                        return isSuccess;
+                      }
+                    })
+                  }
+                >
+                  Sambutan
+                </Button>
                 <Button
                   icon={<EditOutlined />}
                   onClick={() =>
@@ -242,32 +264,7 @@ const VillagePorfile = () => {
               </Descriptions.Item>
             </Descriptions>
             <Descriptions column={1} bordered className="mb-6">
-              <Descriptions.Item label="Kata Sambutan">
-                {speech.content}
-                <Button
-                  type="link"
-                  icon={speech.length <= 0 ? <PlusOutlined /> : <EditOutlined />}
-                  onClick={() =>
-                    modal.edit({
-                      title: 'Kata Sambutan',
-                      data: speech,
-                      formFields: speechFormFields,
-                      onSubmit: async (values) => {
-                        const { message, isSuccess } = await updateSpeech.execute(values, token);
-                        if (isSuccess) {
-                          success('Berhasil', message);
-                          fetchSpeech(token);
-                        } else {
-                          error('Gagal', message);
-                        }
-                        return isSuccess;
-                      }
-                    })
-                  }
-                >
-                  Kata Sambutan
-                </Button>
-              </Descriptions.Item>
+              <Descriptions.Item label="Kata Sambutan">{speech.content}</Descriptions.Item>
             </Descriptions>
           </Card>
         </div>
