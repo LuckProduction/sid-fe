@@ -915,5 +915,40 @@ export const residentFilterFields = ({ options }) => [
       label: item.hamlet_name,
       value: item.id
     }))
+  },
+  {
+    label: `Kategori Umur`,
+    name: 'kategori_umur',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Bayi',
+        value: 'Bayi'
+      },
+      {
+        label: 'Balita',
+        value: 'Balita'
+      },
+      {
+        label: 'Anak - Anak',
+        value: 'Anak-Anak'
+      },
+      {
+        label: 'Remaja',
+        value: 'Remaja'
+      },
+      {
+        label: 'Dewasa',
+        value: 'Dewasa'
+      },
+      {
+        label: 'Paruh Baya',
+        value: 'Paruh Baya'
+      },
+      {
+        label: 'Lansia',
+        value: 'Lansia'
+      }
+    ]
   }
 ];

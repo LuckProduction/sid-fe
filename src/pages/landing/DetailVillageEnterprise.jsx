@@ -2,15 +2,16 @@ import { Reveal } from '@/components';
 import { useCrudModal, useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { rupiahFormat } from '@/utils/rupiahFormat';
-import { LikeOutlined, PushpinOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
+import { LikeFilled, LikeOutlined, PushpinOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Image, Skeleton, Tag, Typography } from 'antd';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
+// FIXME: UPDATE LIKE UTILITIES
 const DetailVillageEnterprise = () => {
   const { slug } = useParams();
   const { execute: fetchDetailEnterprise, ...getAllDetailEnterprise } = useService(LandingService.getDetailEnterprise);
-  const likeLetter = useService(LandingService.likeLettering);
+  const likeEnterpriseMenu = useService(LandingService.likeEnterpriseMenu);
   const modal = useCrudModal();
 
   useEffect(() => {
@@ -35,7 +36,6 @@ const DetailVillageEnterprise = () => {
             <Descriptions className="mt-12" bordered column={1}>
               <Descriptions.Item label="Nama Lapak BUMDes">{detailEnterprise.enterprise_name}</Descriptions.Item>
               <Descriptions.Item label="Deskripsi">{detailEnterprise.desc}</Descriptions.Item>
-
               <Descriptions.Item label="Kontak (WA)">
                 <Button icon={<WhatsAppOutlined />} variant="outlined" color="green" onClick={() => window.open(`https://wa.me/${detailEnterprise.contact}`, '_blank')}>
                   WhatsApp
@@ -114,6 +114,19 @@ const DetailVillageEnterprise = () => {
               ))
             : detailEnterprise?.enterprise_menu?.map((item, index) => (
                 <Card
+                  actions={[
+                    <div
+                      key="like"
+                      className="inline-flex items-center gap-x-2"
+                      onClick={async () => {
+                        await likeEnterpriseMenu.execute(item.id);
+                        fetchDetailEnterprise(slug);
+                      }}
+                    >
+                      {item.has_like ? <LikeFilled className="text-blue-500" /> : <LikeOutlined />}
+                      {String(item.liked)}
+                    </div>
+                  ]}
                   key={index}
                   className="col-span-12 w-full md:col-span-6 lg:col-span-3"
                   cover={<img className={item.status === 'tersedia' ? 'grayscale-0' : 'grayscale'} alt="example" style={{ height: '120px', objectFit: 'cover' }} src={item.foto} />}
@@ -129,19 +142,6 @@ const DetailVillageEnterprise = () => {
                   <Reveal>
                     <div className="text-xl font-semibold">{rupiahFormat(item.price)}</div>
                   </Reveal>
-
-                  <div className="mt-2 flex flex-col gap-y-1">
-                    <button
-                      onClick={async () => {
-                        await likeLetter.execute(item.id);
-                        fetchDetailEnterprise(slug);
-                      }}
-                      className="inline-flex items-center gap-x-2 text-xs text-gray-400"
-                    >
-                      <LikeOutlined />
-                      {String(item.liked)}
-                    </button>
-                  </div>
                 </Card>
               ))}
         </div>

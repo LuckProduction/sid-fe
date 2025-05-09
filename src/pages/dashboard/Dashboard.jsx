@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Column, Pie } from '@ant-design/charts';
-import { GiftOutlined, HomeOutlined, MailOutlined, PaperClipOutlined } from '@ant-design/icons';
-import { Card, Skeleton, Typography } from 'antd';
+import { GiftOutlined, HomeOutlined, MailOutlined, PaperClipOutlined, UserOutlined } from '@ant-design/icons';
+import { Card, Skeleton, Statistic, Typography } from 'antd';
 import { useEffect, useMemo } from 'react';
 import { useAuth, useService } from '@/hooks';
 import { StatisticService } from '@/services';
@@ -12,26 +12,29 @@ const Dashboard = () => {
   const { execute: executeResidentStatisticFetch, ...getAllResidentStatistic } = useService(StatisticService.getAllResidentStatistic);
   const { execute: executePublicAssistanceStatistic, ...getAllPublicAssistanceStatistic } = useService(StatisticService.getAllPublicAssistanceStatistic);
   const { execute: executeOverview, ...getAllOverview } = useService(StatisticService.getAllOverview);
+  const { execute: executeViewers, ...getAllViewers } = useService(StatisticService.getAllViewers);
 
   useEffect(() => {
     if (token) {
       if (!getAllApbdStatistic.data) executeApbdStatisticFetch();
       if (!getAllResidentStatistic.data) executeResidentStatisticFetch();
       if (!getAllOverview.data) executeOverview(token);
+      if (!getAllViewers.data) executeViewers(token);
     }
     executePublicAssistanceStatistic();
-  }, [token, executeApbdStatisticFetch, executeResidentStatisticFetch, executeOverview, executePublicAssistanceStatistic]);
+  }, [token, executeApbdStatisticFetch, executeResidentStatisticFetch, executeOverview, executePublicAssistanceStatistic, executeViewers]);
 
   const apbdStatistic = getAllApbdStatistic.data ?? {};
   const residentStatistic = getAllResidentStatistic.data ?? {};
   const overview = getAllOverview.data ?? {};
+  const viewers = getAllViewers.data ?? {};
 
   const publicAssistanceStatistic = useMemo(() => {
     return getAllPublicAssistanceStatistic.data ?? [];
   }, [getAllPublicAssistanceStatistic.data]);
 
   const chartConfigs = useMemo(() => {
-    if (!apbdStatistic.semua || !residentStatistic.penduduk) return { resident: null, apbd: null };
+    if (!apbdStatistic.semua || !residentStatistic.penduduk || !viewers.dailyStats) return { resident: null, apbd: null, viewers: null };
 
     const apbdData = apbdStatistic.semua.flatMap((item) => [
       { tahun: item.tahun, kategori: 'Belanja', nilai: item.belanja_pendapatan.belanja },
@@ -42,6 +45,11 @@ const Dashboard = () => {
 
     const residentData = Object.entries(residentStatistic.penduduk ?? {}).map(([key, value]) => ({
       category: key.replace(/_/g, ' '),
+      value
+    }));
+
+    const viewersData = Object.entries(viewers.dailyStats ?? {}).map(([date, value]) => ({
+      date,
       value
     }));
 
@@ -66,6 +74,31 @@ const Dashboard = () => {
           style: { fontSize: 14, textAlign: 'center' }
         },
         interactions: [{ type: 'element-active' }]
+      },
+      viewers: {
+        data: viewersData,
+        xField: 'date',
+        yField: 'value',
+        label: {
+          position: 'middle',
+          style: {
+            fill: '#FFFFFF',
+            opacity: 0.6
+          }
+        },
+        xAxis: {
+          label: {
+            autoHide: true,
+            autoRotate: false
+          }
+        },
+        yAxis: {
+          minInterval: 1
+        },
+        meta: {
+          date: { alias: 'Tanggal' },
+          value: { alias: 'Jumlah Kunjungan' }
+        }
       },
       apbd: {
         data: apbdData,
@@ -109,7 +142,7 @@ const Dashboard = () => {
         }
       }
     };
-  }, [apbdStatistic, residentStatistic]);
+  }, [apbdStatistic, residentStatistic, viewers]);
 
   return (
     <div className="grid w-full grid-cols-12 gap-4">
@@ -173,19 +206,38 @@ const Dashboard = () => {
           </Card>
         </>
       )}
-      <Card className="col-span-12 w-auto lg:col-span-6">
+      <div className="col-span-12 flex w-auto flex-col gap-y-2 lg:col-span-6">
+        <Card className="w-auto">
+          <Typography.Title level={5} className="w-full text-center">
+            Statistik Pengunjung
+          </Typography.Title>
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            <Card className="col-span-1">
+              <Statistic title="Per-Hari" value={viewers.dailyVisitors} prefix={<UserOutlined />} />
+            </Card>
+            <Card className="col-span-1">
+              <Statistic title="Per-Minggu" value={viewers.weeklyVisitors} prefix={<UserOutlined />} />
+            </Card>
+            <Card className="col-span-1">
+              <Statistic title="Per-Bulan" value={viewers.monthlyVisitors} prefix={<UserOutlined />} />
+            </Card>
+          </div>
+          {chartConfigs.viewers ? <Column {...chartConfigs.viewers} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
+        </Card>
+      </div>
+      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
         <Typography.Title level={5} className="w-full text-center">
           Statistik Penduduk
         </Typography.Title>
         {chartConfigs.resident ? <Pie {...chartConfigs.resident} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
       </Card>
-      <Card className="col-span-12 w-auto lg:col-span-6">
+      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
         <Typography.Title level={5} className="w-full text-center">
           Statistik APBD
         </Typography.Title>
         {chartConfigs.apbd ? <Column {...chartConfigs.apbd} className="mt-6 h-auto w-full" /> : <Skeleton active className="mt-6" />}
       </Card>
-      <Card className="col-span-12 w-auto lg:col-span-6">
+      <Card className="col-span-12 h-fit w-auto lg:col-span-6">
         <Typography.Title level={5} className="w-full text-center">
           Penyaluran Bantuan
         </Typography.Title>

@@ -1,19 +1,35 @@
 import { Result } from 'antd';
-import { authLink, dashboardLink, landingLink } from './data/link';
+import { authLink, dashboardLink, kioskLink, landingLink } from './data/link';
 import { useAuth, useService } from './hooks';
-import { AuthLayout, DashboardLayout, LandingLayout } from './layouts';
+import { AuthLayout, DashboardLayout, KioskLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
 import './index.css';
-import { ApbdItem, Beneficiary, CreateArticle, DetailCitizenReport, DetailResident, EditArticle, EditResident, FamilyDetail, InstitutionMember, Lettering, ProfileSettings, ReportAttribute } from './pages/dashboard';
+import {
+  ApbdItem,
+  Beneficiary,
+  CreateArticle,
+  CreateVillagePotentials,
+  DetailCitizenReport as DetailCitizenReportDashboard,
+  DetailResident,
+  EditArticle,
+  EditResident,
+  EditVillagePotentials,
+  FamilyDetail,
+  InstitutionMember,
+  Lettering,
+  ProfileSettings,
+  ReportAttribute
+} from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
-import { BrowseLetter, DetailNews, DetailVillageEnterprise, SubmitLetter, VillageBoundaries } from './pages/landing';
-import { Notfound } from './pages/result';
+import { BrowseLetter, DetailCitizenReport as DetailCitizenReportLanding, DetailNews, DetailVillageEnterprise, SubmitLetter, VillageBoundaries } from './pages/landing';
+import { Notfound, PrivacyPolicy } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { LandingService } from './services';
 import { useEffect, useState } from 'react';
-import { ScrollToTop } from './components';
+import { ProtectedRoute, ScrollToTop } from './components';
 import PublicTax from './pages/dashboard/publicTax/PublicTax';
+import { DetailCitizenReport, DetailVillageReport, Home } from './pages/kiosk';
 
 function App() {
   const { user } = useAuth();
@@ -57,6 +73,26 @@ function App() {
         {
           element: (
             <>
+              <KioskLayout />
+            </>
+          ),
+          children: [
+            ...kioskLink.map(({ path, element: Element }) => ({
+              path,
+              element: (
+                <ProtectedRoute>
+                  <Element />
+                </ProtectedRoute>
+              )
+            })),
+            { path: '/kiosk', element: <Home /> },
+            { path: '/kiosk/features/citizen_report/detail/:slug', element: <DetailCitizenReport /> },
+            { path: '/kiosk/features/village_report/detail/:id', element: <DetailVillageReport /> }
+          ]
+        },
+        {
+          element: (
+            <>
               <LandingLayout />
               <ScrollToTop />
             </>
@@ -69,9 +105,11 @@ function App() {
             { path: '/news/detail/:slug', element: <DetailNews /> },
             { path: '/village_enterprises/detail/:slug', element: <DetailVillageEnterprise /> },
             { path: '/village_potentials/detail/:slug', element: <DetailVillagePotential /> },
+            { path: '/citizen_reports/detail/:slug', element: <DetailCitizenReportLanding /> },
             { path: '/letterings/browse', element: <BrowseLetter /> },
             { path: '/letterings/submitletter', element: <SubmitLetter /> },
             { path: '/villageboundaries', element: <VillageBoundaries /> },
+            { path: '/privacy_policy', element: <PrivacyPolicy /> },
             { path: '*', element: <Notfound /> }
           ]
         },
@@ -97,6 +135,8 @@ function App() {
                 };
               })
             ),
+            { path: '/dashboard/village_potential/create', element: <CreateVillagePotentials /> },
+            { path: '/dashboard/village_potential/edit/:id', element: <EditVillagePotentials /> },
             { path: '/dashboard/article/create', element: <CreateArticle /> },
             { path: '/dashboard/article/edit/:id', element: <EditArticle /> },
             { path: '/dashboard/residential/detail/:id', element: <DetailResident /> },
@@ -107,7 +147,7 @@ function App() {
             { path: '/dashboard/correspondence/lettering/:id', element: <Lettering /> },
             { path: '/dashboard/profile-settings', element: <ProfileSettings /> },
             { path: '/dashboard/family/detail/:id', element: <FamilyDetail /> },
-            { path: '/dashboard/citizen_report/detail/:id', element: <DetailCitizenReport /> },
+            { path: '/dashboard/citizen_report/detail/:id', element: <DetailCitizenReportDashboard /> },
             { path: '/dashboard/tax_period/public_tax/:id', element: <PublicTax /> },
             { path: '/dashboard/village_report/report_attribute/:id', element: <ReportAttribute /> }
           ]

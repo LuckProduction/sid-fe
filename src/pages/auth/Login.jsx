@@ -60,6 +60,9 @@ const Login = () => {
               suffix={passwordVisible ? <EyeOutlined onClick={() => setPasswordVisible(false)} /> : <EyeInvisibleOutlined onClick={() => setPasswordVisible(true)} />}
             />
           </Form.Item>
+          <Link className="text-color-primary-500 hover:text-color-primary-200 mt-2 block text-right text-xs" to="/auth/forget_password">
+            Lupa Kata Sandi
+          </Link>
         </Form.Item>
         <Form.Item>
           <Button block loading={isLoading} type="primary" htmlType="submit" size="large">

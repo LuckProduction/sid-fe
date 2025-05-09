@@ -44,8 +44,9 @@ export default function CrudModalProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [formFields, setFormFields] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [width, setWidth] = useState(undefined);
 
-  const open = useCallback(({ type, title = '', data = null, formFields = [], onSubmit = () => {}, onChange = () => {}, columns = [] }) => {
+  const open = useCallback(({ type, title = '', data = null, formFields = [], onSubmit = () => {}, onChange = () => {}, columns = [], width }) => {
     setTitle(title);
     setData(data);
     setType(type);
@@ -54,17 +55,19 @@ export default function CrudModalProvider({ children }) {
     setOnChange(() => onChange);
     setIsOpen(true);
     setColumns(columns);
+    setWidth(width);
   }, []);
 
   const methods = useMemo(
     () => ({
       create: ({ title, formFields, onSubmit, onChange }) => open({ type: CrudModalType.CREATE, title, formFields, onSubmit, onChange }),
       show: {
-        default: ({ title, data, formFields }) => open({ type: CrudModalType.SHOW, title, data, formFields }),
-        paragraph: ({ title, data }) => open({ type: ReadModalType.PARAGRAPH, title, data }),
-        list: ({ title, data }) => open({ type: ReadModalType.LIST, title, data }),
-        table: ({ title, data, columns }) => open({ type: ReadModalType.TABLE, title, data, columns }),
-        description: ({ title, data }) => open({ type: ReadModalType.DESCRIPTION, title, data })
+        default: ({ title, data, formFields, width }) => open({ type: CrudModalType.SHOW, title, data, formFields, width }),
+        paragraph: ({ title, data, width }) => open({ type: ReadModalType.PARAGRAPH, title, data, width }),
+        list: ({ title, data, width }) => open({ type: ReadModalType.LIST, title, data, width }),
+        table: ({ title, data, columns, width }) => open({ type: ReadModalType.TABLE, title, data, columns, width }),
+        description: ({ title, data, width }) => open({ type: ReadModalType.DESCRIPTION, title, data, width }),
+        video: ({ title, data, width }) => open({ type: ReadModalType.VIDEO, title, data, width })
       },
       edit: ({ title, data, formFields, onSubmit, onChange }) => open({ type: CrudModalType.EDIT, title, data, formFields, onSubmit, onChange }),
       delete: {
@@ -105,7 +108,7 @@ export default function CrudModalProvider({ children }) {
           isLoading={isLoading}
         />
       )}
-      {isInEnum(type, ReadModalType) && <ReadModal isModalOpen={isOpen} data={data} close={close} title={title} type={type} columns={columns} />}
+      {isInEnum(type, ReadModalType) && <ReadModal isModalOpen={isOpen} data={data} close={close} title={title} type={type} columns={columns} width={width} />}
     </CrudModalContext.Provider>
   );
 }

@@ -2,7 +2,7 @@
 import { CheckCircleFilled, DatabaseOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
 import { useCrudModal, usePagination, useService } from '@/hooks';
 import parse from 'html-react-parser';
@@ -77,7 +77,7 @@ const Home = () => {
               <div>
                 <Typography.Title>
                   <Reveal>
-                    Sistem Informasi Desa <span className="text-blue-500">{villageProfile?.data?.village_name}</span>
+                    Sistem Informasi Desa <span className="text-blue-500">GoVillage</span>
                   </Reveal>
                 </Typography.Title>
                 <Typography.Title level={4} style={{ margin: 0 }}>
@@ -102,23 +102,9 @@ const Home = () => {
                   variant="outlined"
                   color="primary"
                   onClick={() =>
-                    modal.show.paragraph({
+                    modal.show.video({
                       title: 'Profil Desa',
-                      data: {
-                        content: (
-                          <>
-                            <iframe
-                              style={{ aspectRatio: 16 / 9, width: '100%' }}
-                              className="h-full w-full"
-                              src={villageProfile?.data?.profile_video_link}
-                              title="YouTube video player"
-                              frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            ></iframe>
-                          </>
-                        )
-                      }
+                      data: villageProfile?.data?.profile_video_link
                     })
                   }
                 >
@@ -149,11 +135,9 @@ const Home = () => {
                   <p className="text-4xl font-bold text-white">Mudah & Cepat</p>
                 </div>
                 <div className="inline-flex items-center gap-x-2">
-                  <Avatar.Group shape="circle" size="large">
-                    <Avatar style={{ backgroundColor: '#fde3cf' }}>A</Avatar>
-                    <Avatar style={{ backgroundColor: '#f56a00' }}>K</Avatar>
-                  </Avatar.Group>
-                  <span className="rounded-full bg-blue-500 p-3 px-5 text-xs text-white">50+ Perangkat Desa</span>
+                  <Button className="w-full" onClick={() => navigate('/mobile_landing')} variant="solid" color="primary" size="large">
+                    Akses Dalam Genggaman
+                  </Button>
                 </div>
               </div>
             </div>
@@ -206,7 +190,7 @@ const Home = () => {
               <div className="col-span-4 grid grid-cols-4 gap-6 lg:col-span-5">
                 {visiMisi?.data &&
                   visiMisi?.data
-                    .filter((item) => item.type !== 'visi') // Hanya ambil item yang bukan "visi"
+                    .filter((item) => item.type !== 'visi')
                     .map((item, index) => (
                       <Card key={item.id} className="col-span-4 border-none bg-blue-400 transition-all duration-300 hover:-translate-y-2 lg:col-span-2">
                         <div className="flex flex-col gap-y-2 p-4">
@@ -258,27 +242,30 @@ const Home = () => {
               </Reveal>
               <ul className="flex flex-col gap-y-3">
                 <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Update Terkait Berita, Potensi, Dan Lapak BUMDes
+                  <li>
+                    <NavLink to="/news" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
+                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                      Update Terkait Berita, Potensi, Dan Lapak BUMDes
+                      <RightOutlined />
+                    </NavLink>
                   </li>
                 </Reveal>
                 <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Layanan Surat Menyurat
+                  <li>
+                    <NavLink to="/letterings" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
+                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                      Layanan Surat Menyurat
+                      <RightOutlined />
+                    </NavLink>
                   </li>
                 </Reveal>
                 <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Transparansi Statistik Desa
-                  </li>
-                </Reveal>
-                <Reveal>
-                  <li className="inline-flex items-center gap-x-2 font-semibold">
-                    <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                    Akses Tak Terbatas Data Desa
+                  <li>
+                    <NavLink to="/apbd_statistics" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
+                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
+                      Transparansi Statistik Desa
+                      <RightOutlined />
+                    </NavLink>
                   </li>
                 </Reveal>
               </ul>

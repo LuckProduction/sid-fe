@@ -9,7 +9,7 @@ import Dragger from 'antd/es/upload/Dragger';
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoading }) => {
+const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoading, extraLarge = false }) => {
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
 
@@ -28,21 +28,29 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
     setRealtimeData({ ...realtimeData, ...changedValue });
   }
 
+  const extraLargeStyle = extraLarge
+    ? {
+        height: 64,
+        fontSize: 20,
+        borderRadius: 8
+      }
+    : {};
+
   const renderFormInput = (field) => {
     field.readOnly = type === 'show' || type === 'delete';
 
     switch (field.type) {
       case InputType.TEXT:
-        return <Input placeholder={`Masukan ${field.label}`} size="large" readOnly={field.readOnly} {...field.extra} />;
+        return <Input placeholder={`Masukan ${field.label}`} size="large" readOnly={field.readOnly} {...field.extra} style={extraLargeStyle} />;
 
       case InputType.NUMBER:
-        return <InputNumber placeholder={`Masukan ${field.label}`} min={field.min} max={field.max} className="w-full" size="large" readOnly={field.readOnly} {...field.extra} />;
+        return <InputNumber placeholder={`Masukan ${field.label}`} min={field.min} max={field.max} className="w-full" size="large" readOnly={field.readOnly} {...field.extra} style={extraLargeStyle} />;
 
       case InputType.LONGTEXT:
-        return <TextArea placeholder={field.label} rows={4} readOnly={field.readOnly} size="large" {...field.extra} />;
+        return <TextArea placeholder={field.label} rows={4} readOnly={field.readOnly} size="large" {...field.extra} style={extraLargeStyle} />;
 
       case InputType.DATE:
-        return <DatePicker className="w-full" size="large" placeholder={`Pilih ${field.label}`} readOnly={field.readOnly} {...field.extra} />;
+        return <DatePicker className="w-full" size="large" placeholder={`Pilih ${field.label}`} readOnly={field.readOnly} {...field.extra} style={extraLargeStyle} />;
 
       case InputType.UPLOAD:
         return (
@@ -56,7 +64,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
         );
 
       case InputType.SELECT:
-        return <Select placeholder="Pilih" size="large" {...field} />;
+        return <Select placeholder="Pilih" size="large" {...field} {...field.extra} style={extraLargeStyle} />;
 
       case InputType.SELECT_LOGO:
         return (
@@ -248,15 +256,15 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
       {type !== 'show' && (
         <Form.Item className="mt-2">
           <div className="flex w-full items-center justify-end gap-x-2">
-            <Button type="default" htmlType="reset">
+            <Button type="default" htmlType="reset" size="large">
               Reset
             </Button>
             {type === 'delete' ? (
-              <Button type="primary" danger htmlType="submit" loading={isLoading}>
+              <Button size="large" type="primary" danger htmlType="submit" loading={isLoading}>
                 Hapus
               </Button>
             ) : (
-              <Button type="primary" htmlType="submit" loading={isLoading}>
+              <Button size="large" type="primary" htmlType="submit" loading={isLoading}>
                 Kirim
               </Button>
             )}
@@ -274,5 +282,6 @@ Crud.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   type: PropTypes.string,
   initialData: PropTypes.object,
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  extraLarge: PropTypes.bool
 };

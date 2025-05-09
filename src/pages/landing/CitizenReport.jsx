@@ -4,7 +4,7 @@ import { LandingService } from '@/services';
 import { CommentOutlined, DownloadOutlined, InfoCircleFilled, LeftOutlined, LikeFilled, LikeOutlined, PlusOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, Input, Modal, Pagination, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { createFormFields } from '../dashboard/citizenReport/FormFields';
 import timeAgo from '@/utils/timeAgo';
 import asset from '@/utils/asset';
@@ -107,7 +107,9 @@ const CitizenReport = () => {
                     >
                       <div className="flex flex-col gap-y-2">
                         <b className="text-sm">{`(${reportItem?.resident?.full_name} - ${timeAgo(reportItem?.created_at)} )`} ,</b>
-                        <b className="text-sm">{reportItem?.report_title}</b>
+                        <NavLink to={window.location.pathname + `/detail/${reportItem.slug}`} className="text-sm font-bold underline">
+                          {reportItem?.report_title}
+                        </NavLink>
                         <p className="mt-2">{reportItem?.desc}</p>
                         {reportItem?.doc && (
                           <>
@@ -115,7 +117,7 @@ const CitizenReport = () => {
                             <div className="flex flex-col gap-2">
                               <p>Lampiran :</p>
 
-                              {!reportItem.doc.split('.').pop().toLowerCase().includes('pdf') && <img className="max-w-96" src={asset(reportItem.doc)} alt="Lampiran" />}
+                              {!reportItem.doc.split('.').pop().toLowerCase().includes('pdf') && <Image src={reportItem.doc} width={200} height={200} />}
 
                               {reportItem.doc.split('.').pop().toLowerCase() === 'pdf' && (
                                 <Button icon={<DownloadOutlined />} className="w-fit" type="primary" onClick={() => window.open(reportItem.doc, '_blank')}>

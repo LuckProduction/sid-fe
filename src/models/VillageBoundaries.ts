@@ -28,7 +28,7 @@ interface formValue {
   east?: string;
   west?: string;
   area?: string;
-  adiministrative_file?: string;
+  administrative_file?: string;
   headvillage_coordinate?: string;
 }
 
@@ -65,7 +65,7 @@ export default class VillageBoundaries extends Model {
       ...(villageBoundaries.east ? { batas_timur: villageBoundaries.east } : {}),
       ...(villageBoundaries.west ? { batas_barat: villageBoundaries.west } : {}),
       ...(villageBoundaries.area ? { luas_wilayah: villageBoundaries.area } : {}),
-      ...(villageBoundaries.adiministrative_file ? { file_batas_desa: villageBoundaries.adiministrative_file } : {}),
+      ...(villageBoundaries.administrative_file ? { file_batas_desa: villageBoundaries.administrative_file } : {}),
       ...(villageBoundaries.headvillage_coordinate ? { titik_koordinat_kantor_desa: villageBoundaries.headvillage_coordinate } : {})
     };
 

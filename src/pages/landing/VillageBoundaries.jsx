@@ -1,4 +1,4 @@
-import { DataLoader, Reveal } from '@/components';
+import { DataLoader, MapCenterUpdater, Reveal } from '@/components';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { LeftOutlined, PushpinOutlined } from '@ant-design/icons';
@@ -105,13 +105,16 @@ const VillageBoundaries = () => {
               </Descriptions>
             </Card>
             <Card className="col-span-12 lg:col-span-6">
-              <MapContainer center={[0.693, 122.4704]} zoom={8} style={{ height: '500px', width: '100%' }}>
+              <MapContainer center={headVillageCoord || [0.693, 122.4704]} zoom={13} style={{ height: '500px', width: '100%' }}>
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 {geojsonData && <GeoJSON key={Math.random()} data={geojsonData} />}
                 {headVillageCoord && (
-                  <Marker position={headVillageCoord} icon={customIcon}>
-                    <Popup>Kantor Kepala Desa</Popup>
-                  </Marker>
+                  <>
+                    <Marker position={headVillageCoord} icon={customIcon}>
+                      <Popup>Kantor Kepala Desa</Popup>
+                    </Marker>
+                    <MapCenterUpdater coordinate={headVillageCoord} />
+                  </>
                 )}
               </MapContainer>
             </Card>

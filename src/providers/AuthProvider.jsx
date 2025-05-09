@@ -31,6 +31,7 @@ export default function AuthProvider({ children }) {
   const { execute: logoutService, isLoading: logoutIsLoading } = useService(AuthService.logout);
   const { execute: forgotService, isLoading: forgotIsLoading } = useService(AuthService.forgot);
   const { execute: resetService, isLoading: resetIsLoading } = useService(AuthService.reset);
+  const { execute: verifyService, isLoading: verifyIsLoading } = useService(AuthService.verify);
   const { execute: getUser, isLoading: getUserIsLoading } = useService(AuthService.me);
   const [token, setToken] = useLocalStorage('token', '');
   const [user, setUser] = useState(null);
@@ -93,21 +94,40 @@ export default function AuthProvider({ children }) {
 
       return {
         isSuccess,
-        message: 'Email reset kata sandi telah dikirim'
+        message: 'Email kode verifikasi telah dikirim'
       };
     },
     [forgotService]
   );
 
+  const verify = useCallback(
+    /**
+     * @param {string} code
+     * @param {string} email
+     * @returns {Promise<Response>}
+     */
+    async (code, email) => {
+      const { message, isSuccess } = await verifyService(email, code);
+      if (!isSuccess) return { message, isSuccess };
+
+      return {
+        isSuccess,
+        message: 'Kode yang dikirimkan valid'
+      };
+    },
+    [verifyService]
+  );
+
   const reset = useCallback(
     /**
-     * @param {string} token
+     * @param {string} code
+     * @param {string} email
      * @param {string} password
      * @param {string} confirmPassword
      * @returns {Promise<Response>}
      */
-    async (token, password, confirmPassword) => {
-      const { message, isSuccess } = await resetService(token, password, confirmPassword);
+    async (code, email, password, confirmPassword) => {
+      const { message, isSuccess } = await resetService(code, email, password, confirmPassword);
       if (!isSuccess) return { message, isSuccess };
 
       return {
@@ -132,9 +152,10 @@ export default function AuthProvider({ children }) {
         logout,
         forgot,
         reset,
+        verify,
         token,
         user,
-        isLoading: loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading,
+        isLoading: loginIsLoading || logoutIsLoading || getUserIsLoading || forgotIsLoading || resetIsLoading || verifyIsLoading,
         onUnauthorized
       }}
     >

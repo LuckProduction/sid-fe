@@ -1,5 +1,22 @@
 /* eslint-disable no-unused-vars */
-import { Article, CitizenReport, LegalProducts, LetterType, Map, Speech, SubmitLetter, VillageBoundaries, VillageEnterprise, VillageInstitution, VillageOfficials, VillagePotential, VillageProfile, VillageReport, VisiMisi } from '@/models';
+import {
+  Article,
+  CitizenReport,
+  LegalProducts,
+  LetterType,
+  Map,
+  Speech,
+  SubmitLetter,
+  VillageBoundaries,
+  VillageEnterprise,
+  VillageInstitution,
+  VillageOfficials,
+  VillagePotential,
+  VillageProfile,
+  VillageReport,
+  VisiMisi,
+  WebSettings
+} from '@/models';
 import api from '@/utils/api';
 
 export default class LandingService {
@@ -33,6 +50,12 @@ export default class LandingService {
     const response = await api.get(`/landing/potensi/${slug}`);
     if (!response.data) return response;
     return { ...response, data: VillagePotential.fromApiData(response.data) };
+  }
+
+  static async getDetailCitizenReport(slug) {
+    const response = await api.get(`/layanan-pengaduan/detail/${slug}`);
+    if (!response.data) return response;
+    return { ...response, data: CitizenReport.fromApiData(response.data) };
   }
 
   static async getSpeech(page = 1, per_page = 10) {
@@ -125,12 +148,11 @@ export default class LandingService {
 
   static async getDetailEnterprise(slug) {
     const response = await api.get(`/landing/lapak/${slug}`);
-
     if (!response.data) return response;
     return { ...response, data: VillageEnterprise.fromApiData(response.data) };
   }
 
-  static async likeLettering(id) {
+  static async likeEnterpriseMenu(id) {
     return await api.put(`/menu-lapak/suka/${id}`);
   }
 
@@ -167,5 +189,11 @@ export default class LandingService {
 
   static async browseReport(data) {
     return await api.post(`/lapor-penduduk/cari-laporan`, { body: data });
+  }
+
+  static async getAllSettings() {
+    const response = await api.get('/pengaturan');
+    if (!response.data) return response;
+    return { ...response, data: WebSettings.fromApiData(response.data) };
   }
 }

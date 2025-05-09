@@ -46,7 +46,6 @@ const SubmitLetter = () => {
   const { error, success } = useNotification();
   const [form] = Form.useForm();
   const [state, dispatch] = useReducer(reducer, initialState);
-
   const { execute: fetchLetterType, ...getAllLetterType } = useService(LandingService.getAllLetterType);
   const { execute: fetchLetterTypeDetail, ...getLetterTypeDetail } = useService(LandingService.getLetterTypeDetail);
   const searchResident = useService(LandingService.getResident);
