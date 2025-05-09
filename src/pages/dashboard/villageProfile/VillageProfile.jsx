@@ -90,6 +90,9 @@ const VillagePorfile = () => {
             <div className="mb-6 flex flex-col justify-between gap-y-6">
               <Typography.Title level={5}>Data Profil Desa</Typography.Title>
               <div className="inline-flex flex-wrap items-center gap-x-2 gap-y-2">
+                <Button icon={<EditOutlined />} onClick={handleEditVillageBoundaries}>
+                  Batas Desa
+                </Button>
                 <Button
                   icon={<EditOutlined />}
                   onClick={() =>
@@ -257,11 +260,6 @@ const VillagePorfile = () => {
                 )}
               </Descriptions.Item>
               <Descriptions.Item label="Luas Wilayah">{VillageBoundaries?.area}</Descriptions.Item>
-              <Descriptions.Item label="Edit Batas Desa">
-                <Button icon={<EditOutlined />} onClick={handleEditVillageBoundaries}>
-                  Edit
-                </Button>
-              </Descriptions.Item>
             </Descriptions>
             <Descriptions column={1} bordered className="mb-6">
               <Descriptions.Item label="Kata Sambutan">{speech.content}</Descriptions.Item>
