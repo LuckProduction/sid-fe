@@ -8,11 +8,6 @@ import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, HomeOutl
 
 export const kioskLink = [
   {
-    label: 'Feature',
-    element: Kiosk.Features,
-    path: '/kiosk/features'
-  },
-  {
     label: 'Surat Menyurat',
     element: Kiosk.Lettering,
     path: '/kiosk/features/lettering'
@@ -33,19 +28,9 @@ export const kioskLink = [
     path: '/kiosk/features/citizen_report/citizen_report_list'
   },
   {
-    label: 'Lapor Penduduk',
-    element: Kiosk.VillageReport,
-    path: '/kiosk/features/village_report'
-  },
-  {
     label: 'Riwayat Lapor Penduduk',
     element: Kiosk.BrowseVillageReport,
     path: '/kiosk/features/village_report/village_report_list'
-  },
-  {
-    label: 'Buat Laporan Penduduk',
-    element: Kiosk.SubmitVillageReport,
-    path: '/kiosk/features/village_report/submit_village_report'
   },
   {
     label: 'Cek Bansos Dan Pajak',

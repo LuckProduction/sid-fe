@@ -33,9 +33,9 @@ const Home = () => {
           </div>
         </div>
         <div className="flex h-full w-full flex-[4] items-center justify-center bg-blue-500">
-          <div className="flex w-full max-w-xl flex-col items-center gap-y-12">
+          <div className="flex w-full max-w-xl flex-col items-center gap-y-6">
             <Typography.Title level={3} style={{ color: '#fff' }}>
-              Akses Fitur Dengan NIK
+              Akses Fitur dan Layanan Desa
             </Typography.Title>
             <Card className="w-full">
               {/* FIXME: REMOVE AUTOCOMPLETEk */}
@@ -63,6 +63,9 @@ const Home = () => {
                 </Form.Item>
               </Form>
             </Card>
+            <Button className="w-full p-6" size="large" variant="solid" onClick={() => navigate(window.location.pathname + '/features')}>
+              Layanan Tanpa NIK
+            </Button>
           </div>
         </div>
         <div className="absolute bottom-0 w-[22rem]">
