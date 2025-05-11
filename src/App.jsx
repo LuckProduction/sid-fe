@@ -29,7 +29,7 @@ import { LandingService } from './services';
 import { useEffect, useState } from 'react';
 import { ProtectedRoute, ScrollToTop } from './components';
 import PublicTax from './pages/dashboard/publicTax/PublicTax';
-import { DetailCitizenReport, DetailVillageReport, Home } from './pages/kiosk';
+import { DetailCitizenReport, DetailVillageReport, Features, Home, SubmitVillageReport, VillageReport } from './pages/kiosk';
 
 function App() {
   const { user } = useAuth();
@@ -86,8 +86,33 @@ function App() {
               )
             })),
             { path: '/kiosk', element: <Home /> },
-            { path: '/kiosk/features/citizen_report/detail/:slug', element: <DetailCitizenReport /> },
-            { path: '/kiosk/features/village_report/detail/:id', element: <DetailVillageReport /> }
+            { path: '/kiosk/features', element: <Features /> },
+            { path: '/kiosk/features/village_report', element: <VillageReport /> },
+            { path: '/kiosk/features/village_report/submit_village_report', element: <SubmitVillageReport /> },
+            {
+              path: '/kiosk/features/citizen_report/detail/:slug',
+              element: (
+                <ProtectedRoute>
+                  <DetailCitizenReport />
+                </ProtectedRoute>
+              )
+            },
+            {
+              path: '/kiosk/features/village_report/detail/:id',
+              element: (
+                <ProtectedRoute>
+                  <DetailVillageReport />
+                </ProtectedRoute>
+              )
+            },
+            {
+              path: '/kiosk/features/village_report/detail/:id',
+              element: (
+                <ProtectedRoute>
+                  <DetailVillageReport />
+                </ProtectedRoute>
+              )
+            }
           ]
         },
         {
