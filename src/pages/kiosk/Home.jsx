@@ -111,7 +111,7 @@ const Home = () => {
             <Descriptions bordered column={1}>
               <Descriptions.Item label="Nama Lengkap">{user?.full_name}</Descriptions.Item>
               <Descriptions.Item label="Tempat Tanggal Lahir">
-                {user?.birth.birth_place} , {user?.birth.birth_date}
+                {user?.birth?.birth_place} , {user?.birth?.birth_date}
               </Descriptions.Item>
               <Descriptions.Item label="Status Pajak">
                 <List

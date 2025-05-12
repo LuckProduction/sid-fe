@@ -1,5 +1,5 @@
 import { useKioskAuth } from '@/context/KiosAuth';
-import { CommentOutlined, DollarOutlined, FileProtectOutlined, UserOutlined } from '@ant-design/icons';
+import { CommentOutlined, DollarOutlined, FileProtectOutlined, LeftOutlined, UserOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,7 +11,13 @@ const Features = () => {
     <section className="relative flex h-full w-full">
       <div className="flex h-full w-full flex-[2] items-center justify-center pb-60">
         <div className="flex flex-col px-24">
-          <Typography.Paragraph>Hai!!! {user?.full_name ?? 'Pengguna'}</Typography.Paragraph>
+          {!user && (
+            <button className="mb-6 inline-flex items-center gap-x-2 text-sm" onClick={() => navigate(-1)}>
+              <LeftOutlined />
+              kembali
+            </button>
+          )}
+          {user && <Typography.Paragraph>Hai!!! {user?.full_name}</Typography.Paragraph>}
           <Typography.Title level={2} style={{ marginTop: 0 }}>
             Mau Apa Hari Ini?
           </Typography.Title>
