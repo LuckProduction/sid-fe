@@ -135,12 +135,12 @@ const VillageEnterprise = () => {
               const [longitude = '', latitude = ''] = coordinates.split(',').map((coord) => coord.trim());
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_ENTERPRISE}`,
-                data: { ...record, operational_time: record.operational_time.split(',').map((time) => dayjs(time, 'HH-mm')), longitude: longitude, latitude: latitude, resident: record.resident.id },
+                data: { ...record, operational_time: record.operational_time.split(' - ').map((time) => dayjs(time, 'HH-mm')), longitude: longitude, latitude: latitude, resident: record.resident.id },
                 formFields: formFields({ fetchResident }),
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updateVillageEnterprise.execute(
                     record.id,
-                    { ...values, operational_time: values.operational_time.map(timeFormatter), coordinate: `${values.longitude}, ${values.latitude}`, _method: 'PUT' },
+                    { ...values, operational_time: values.operational_time.map(timeFormatter).join(' - '), coordinate: `${values.longitude}, ${values.latitude}`, _method: 'PUT' },
                     token,
                     values.foto.file
                   );
@@ -281,7 +281,7 @@ const VillageEnterprise = () => {
       title: `Tambah ${Modul.VILLAGE_ENTERPRISE}`,
       formFields: formFields({ fetchResident }),
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeVillageEnterprise.execute({ ...values, operational_time: values.operational_time.map(timeFormatter), coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
+        const { message, isSuccess } = await storeVillageEnterprise.execute({ ...values, operational_time: values.operational_time.map(timeFormatter).join(' - '), coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
         if (isSuccess) {
           success('Berhasil', message);
           fetchVillageEnterprise({ token: token, page: pagination.page, per_page: pagination.per_page });
