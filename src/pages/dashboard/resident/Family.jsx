@@ -96,7 +96,7 @@ const Family = () => {
           case 'masuk':
             return <Tag color="green-inverse">Tetap</Tag>;
           default:
-            return <Tag color="default">Undifined</Tag>;
+            return <Tag color="default">{record}</Tag>;
         }
       }
     },

@@ -281,7 +281,6 @@ const VillageEnterprise = () => {
       title: `Tambah ${Modul.VILLAGE_ENTERPRISE}`,
       formFields: formFields({ fetchResident }),
       onSubmit: async (values) => {
-        console.log(values.operational_time.map(timeFormatter));
         const { message, isSuccess } = await storeVillageEnterprise.execute({ ...values, operational_time: values.operational_time.map(timeFormatter).join(' - '), coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
         if (isSuccess) {
           success('Berhasil', message);

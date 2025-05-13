@@ -148,7 +148,7 @@ const Resident = () => {
           case 'tetap':
             return <Tag color="blue">Tetap</Tag>;
           default:
-            return <Tag color="default">Undifined</Tag>;
+            return <Tag color="default">{record}</Tag>;
         }
       }
     }

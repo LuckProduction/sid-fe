@@ -120,7 +120,7 @@ const ProspectiveVoters = () => {
           case 'masuk':
             return <Tag color="green-inverse">Masuk</Tag>;
           default:
-            return <Tag color="default">Undifined</Tag>;
+            return <Tag color="default">{record}</Tag>;
         }
       }
     },
