@@ -8,6 +8,7 @@ import dateFormatter from '@/utils/dateFormatter';
 import helperJsonApi from '@/utils/helperJsonApi';
 import { FileOutlined, LeftOutlined, ScanOutlined, TableOutlined } from '@ant-design/icons';
 import { Button, Card, DatePicker, Descriptions, Form, Input, Modal, Result, Select, Steps, Tabs, Typography } from 'antd';
+import dayjs from 'dayjs';
 import { useEffect, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -99,10 +100,26 @@ const SubmitVillageReport = () => {
   };
 
   const getPreviewData = (values) => {
-    return Object.entries(values).map(([key, value]) => ({
-      label: key,
-      value: value?.fileList ? value.fileList.map((f) => f.name).join(', ') : value || '-'
-    }));
+    return Object.entries(values).map(([key, value]) => {
+      let formattedValue = '-';
+
+      if (value?.fileList) {
+        formattedValue = value.fileList.map((f) => f.name).join(', ');
+      } else if (dayjs.isDayjs(value)) {
+        formattedValue = value.format('DD MMMM YYYY'); // atau sesuaikan format
+      } else if (value instanceof Date) {
+        formattedValue = dayjs(value).format('DD MMMM YYYY');
+      } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+        formattedValue = dayjs(value).format('DD MMMM YYYY');
+      } else {
+        formattedValue = value || '-';
+      }
+
+      return {
+        label: key,
+        value: formattedValue
+      };
+    });
   };
 
   const handlePreviewReport = async (values) => {

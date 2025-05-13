@@ -7,7 +7,7 @@ function MapCenterUpdater({ coordinate }) {
 
   useEffect(() => {
     if (coordinate) {
-      map.flyTo(coordinate, map.getZoom());
+      map.flyTo(coordinate, 13);
     }
   }, [coordinate, map]);
 
