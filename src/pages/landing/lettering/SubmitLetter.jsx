@@ -62,20 +62,50 @@ const SubmitLetter = () => {
 
   const handleCheckLetter = async (values) => {
     try {
-      const { data, isSuccess } = await searchResident.execute({
+      const { data, isSuccess, message } = await searchResident.execute({
         ...values,
         tanggal_lahir: dateFormatter(values.tanggal_lahir)
       });
 
+      if (!isSuccess || !data) {
+        // Tampilkan modal error
+        dispatch({
+          type: 'SET_MODAL_STATUS',
+          payload: 'error'
+        });
+        dispatch({
+          type: 'SET_MODAL_MESSAGE',
+          payload: message || 'Data tidak ditemukan atau terjadi kesalahan.'
+        });
+        dispatch({
+          type: 'SET_MODAL_OPEN',
+          payload: true
+        });
+        return; // Hentikan eksekusi lebih lanjut
+      }
+
+      // Jika sukses
       dispatch({
         type: 'SET_FORM_DATA',
-        payload: isSuccess && data ? { ...data, jenis_surat: values.jenis_surat } : {}
+        payload: { ...data, jenis_surat: values.jenis_surat }
       });
 
       dispatch({ type: 'SET_MODAL_STATUS', payload: 'initial' });
       dispatch({ type: 'SET_MODAL_OPEN', payload: true });
     } catch (err) {
       console.error('Terjadi kesalahan:', err);
+      dispatch({
+        type: 'SET_MODAL_STATUS',
+        payload: 'error'
+      });
+      dispatch({
+        type: 'SET_MODAL_MESSAGE',
+        payload: 'Terjadi kesalahan sistem. Silakan coba lagi.'
+      });
+      dispatch({
+        type: 'SET_MODAL_OPEN',
+        payload: true
+      });
     }
   };
 
