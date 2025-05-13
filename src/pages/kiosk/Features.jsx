@@ -1,5 +1,5 @@
 import { useKioskAuth } from '@/context/KiosAuth';
-import { CommentOutlined, DollarOutlined, FileProtectOutlined, UserOutlined } from '@ant-design/icons';
+import { CommentOutlined, DollarOutlined, FileProtectOutlined, LeftOutlined, UserOutlined } from '@ant-design/icons';
 import { Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,7 +11,13 @@ const Features = () => {
     <section className="relative flex h-full w-full">
       <div className="flex h-full w-full flex-[2] items-center justify-center pb-60">
         <div className="flex flex-col px-24">
-          <Typography.Paragraph>Hai!!! {user.full_name}</Typography.Paragraph>
+          {!user && (
+            <button className="mb-6 inline-flex items-center gap-x-2 text-sm" onClick={() => navigate(-1)}>
+              <LeftOutlined />
+              kembali
+            </button>
+          )}
+          {user && <Typography.Paragraph>Hai!!! {user?.full_name}</Typography.Paragraph>}
           <Typography.Title level={2} style={{ marginTop: 0 }}>
             Mau Apa Hari Ini?
           </Typography.Title>
@@ -19,22 +25,31 @@ const Features = () => {
       </div>
       <div className="flex h-full w-full flex-[4] items-center justify-center bg-blue-500">
         <div className="grid max-w-xl grid-cols-2 gap-6">
-          <button onClick={() => navigate('/kiosk/features/lettering')} className="col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 text-green-500 transition-all duration-300 hover:-translate-y-2">
+          <button
+            disabled={!user}
+            onClick={() => navigate('/kiosk/features/lettering')}
+            className={`col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 ${!user ? 'cursor-not-allowed text-green-200' : 'cursor-pointer text-green-500'} transition-all duration-300 hover:-translate-y-2`}
+          >
             <FileProtectOutlined className="text-6xl" />
             Permohonan Surat
           </button>
           <button
+            disabled={!user}
             onClick={() => navigate('/kiosk/features/citizen_report/citizen_report_list')}
-            className="col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 text-purple-500 transition-all duration-300 hover:-translate-y-2"
+            className={`col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 ${!user ? 'cursor-not-allowed text-purple-200' : 'cursor-pointer text-purple-500'} transition-all duration-300 hover:-translate-y-2`}
           >
             <CommentOutlined className="text-6xl" />
             Pengaduan
           </button>
-          <button onClick={() => navigate('/kiosk/features/village_report')} className="col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 text-orange-500 transition-all duration-300 hover:-translate-y-2">
+          <button onClick={() => navigate('/kiosk/features/village_report')} className={`col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 text-orange-500 transition-all duration-300 hover:-translate-y-2`}>
             <UserOutlined className="text-6xl" />
             Lapor Penduduk
           </button>
-          <button onClick={() => navigate('/kiosk/features/public_service')} className="col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 text-blue-500 transition-all duration-300 hover:-translate-y-2">
+          <button
+            disabled={!user}
+            onClick={() => navigate('/kiosk/features/public_service')}
+            className={`col-span-1 flex flex-col items-center justify-center gap-y-4 rounded-md bg-white p-16 ${!user ? 'cursor-not-allowed text-blue-200' : 'cursor-pointer text-blue-500'} transition-all duration-300 hover:-translate-y-2`}
+          >
             <DollarOutlined className="text-6xl" />
             Bantuan Sosial / Cek Pajak
           </button>

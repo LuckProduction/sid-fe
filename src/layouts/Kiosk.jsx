@@ -71,7 +71,6 @@ const Kiosk = () => {
                 <Button onClick={logout} icon={<PoweroffOutlined />} size="large" variant="text" color="default" className="text-xl text-white" />
               </div>
             )}
-
             <div className="inline-flex w-full items-center justify-end divide-x-2 divide-white text-sm text-white">
               <LiveClock />
               <div className="px-4">
