@@ -41,7 +41,7 @@ const VillagePorfile = () => {
         const { message, isSuccess } = await udpateVillageBoundaries.execute({ ...values, headvillage_coordinate: `${values.longitude}, ${values.latitude}` }, token, file);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchVillageProfile(token);
+          fetchVillageBoundaries(token);
         } else {
           error('Gagal', message);
         }
@@ -52,7 +52,7 @@ const VillagePorfile = () => {
 
   return (
     <>
-      {getAll.isLoading ? (
+      {getAll.isLoading && getAllSpeech.isLoading && getAllVillageBoundaries.isLoading ? (
         <DataLoader type="datatable" />
       ) : (
         <div className="grid grid-cols-12 gap-4">
@@ -145,7 +145,7 @@ const VillagePorfile = () => {
                       data: villageProfile?.district_profile?.regency_profile,
                       formFields: regencyFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await updateVillageProfile.execute({ ...values, district_profile: { regency_profile: { ...values } } }, token);
+                        const { message, isSuccess } = await updateVillageProfile.execute({ ...values, regency_profile: { ...values } }, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchVillageProfile(token);
@@ -246,10 +246,10 @@ const VillagePorfile = () => {
               <Descriptions.Item label="Kode Kabupaten">{villageProfile?.district_profile?.regency_profile?.regency_code}</Descriptions.Item>
             </Descriptions>
             <Descriptions column={1} bordered className="mb-6">
-              <Descriptions.Item label="Batas Utara">{VillageBoundaries?.north}</Descriptions.Item>
-              <Descriptions.Item label="Batas Selatan">{VillageBoundaries?.south}</Descriptions.Item>
-              <Descriptions.Item label="Batas Timur">{VillageBoundaries?.east}</Descriptions.Item>
-              <Descriptions.Item label="Batas Barat">{VillageBoundaries?.west}</Descriptions.Item>
+              <Descriptions.Item label="Batas Utara">{VillageBoundaries.north}</Descriptions.Item>
+              <Descriptions.Item label="Batas Selatan">{VillageBoundaries.south}</Descriptions.Item>
+              <Descriptions.Item label="Batas Timur">{VillageBoundaries.east}</Descriptions.Item>
+              <Descriptions.Item label="Batas Barat">{VillageBoundaries.west}</Descriptions.Item>
               <Descriptions.Item label="File Batas Desa">
                 {!VillageBoundaries?.adiministrative_file?.length ? (
                   'File Batas Desa Belum Tersedia'

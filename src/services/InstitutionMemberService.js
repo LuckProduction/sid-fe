@@ -29,7 +29,14 @@ export default class InstitutionMemberService {
    * }}
    */
   static async store(data, token, file) {
-    return await api.post('/anggota-lembaga', { body: InstitutionMember.toApiData(data), token, file: { foto: file } });
+    const payload = {
+      body: InstitutionMember.toApiData(data),
+      token
+    };
+    if (file) {
+      payload.file = { foto: file };
+    }
+    return await api.post('/anggota-lembaga', { ...payload });
   }
 
   /**

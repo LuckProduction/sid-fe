@@ -40,10 +40,10 @@ interface OutgoingApiData {
   profil_kecamatan?: {
     nama_camat?: string;
     kode_kecamatan?: string;
-    profil_kabupaten?: {
-      nama_bupati?: string;
-      kode_kabupaten?: string;
-    };
+  };
+  profil_kabupaten?: {
+    nama_bupati?: string;
+    kode_kabupaten?: string;
   };
 }
 
@@ -52,17 +52,17 @@ interface FormValue {
   village_name?: string;
   village_code?: string;
   postal_code?: string;
-  office_adress?: string;
+  office_address?: string;
   village_email?: string;
   profile_video_link?: string;
   village_logo?: string;
   district_profile?: {
     districthead_name?: string;
     district_code?: string;
-    regency_profile?: {
-      regencyhead_name?: string;
-      regency_code?: string;
-    };
+  };
+  regency_profile?: {
+    regencyhead_name?: string;
+    regency_code?: string;
   };
 }
 
@@ -130,19 +130,19 @@ export default class VillageProfile extends Model {
       ...(formValue.village_name ? { nama_desa: formValue.village_name } : {}),
       ...(formValue.village_code ? { kode_desa: formValue.village_code } : {}),
       ...(formValue.postal_code ? { kode_pos_desa: formValue.postal_code } : {}),
-      ...(formValue.office_adress ? { alamat_kantor: formValue.office_adress } : {}),
+      ...(formValue.office_address ? { alamat_kantor: formValue.office_address } : {}),
       ...(formValue.village_email ? { email_desa: formValue.village_email } : {}),
       ...(formValue.profile_video_link ? { embed_video_profil_desa: formValue.profile_video_link } : {}),
       profil_kecamatan: formValue.district_profile
         ? {
             kode_kecamatan: formValue.district_profile.district_code,
-            nama_camat: formValue.district_profile.districthead_name,
-            profil_kabupaten: formValue.district_profile.regency_profile
-              ? {
-                  kode_kabupaten: formValue.district_profile.regency_profile.regency_code,
-                  nama_bupati: formValue.district_profile.regency_profile.regencyhead_name
-                }
-              : undefined
+            nama_camat: formValue.district_profile.districthead_name
+          }
+        : undefined,
+      profil_kabupaten: formValue.regency_profile
+        ? {
+            kode_kabupaten: formValue.regency_profile.regency_code,
+            nama_bupati: formValue.regency_profile.regencyhead_name
           }
         : undefined
     };

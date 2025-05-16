@@ -2,7 +2,7 @@ import InboxType from '@/constants/InboxType';
 import { useService } from '@/hooks';
 import { InboxService } from '@/services';
 import timeAgo from '@/utils/timeAgo';
-import { DeleteOutlined, FileOutlined, GroupOutlined } from '@ant-design/icons';
+import { DeleteOutlined, FileOutlined, GroupOutlined, WarningOutlined } from '@ant-design/icons';
 import { Avatar, Button, Empty } from 'antd';
 import PropTypes from 'prop-types';
 
@@ -34,6 +34,22 @@ const Inbox = ({ inbox, token, fetchInbox }) => {
             <div className="flex flex-col gap-y-2">
               <p className="max-w-xs text-xs">
                 <span className="font-semibold"> {data.data.nama_lengkap}</span> telah membuat pengaduan dengan judul <span className="font-semibold"> {data.data.judul_pengaduan}</span>{' '}
+                <span className="text-gray-500">
+                  {'('}
+                  {timeAgo(data.data.waktu)}
+                  {')'}
+                </span>
+              </p>
+            </div>
+          </div>
+        );
+      case InboxType.SUCCESS_VILLAGE_REPORT:
+        return (
+          <div className="flex w-full gap-x-2 py-4">
+            <Avatar className="bg-yellow-100 text-yellow-500" icon={<WarningOutlined />} />
+            <div className="flex flex-col gap-y-2">
+              <p className="max-w-xs text-xs">
+                <span className="font-semibold"> {data.data.nama_lengkap}</span> telah membuat laporan <span className="font-semibold"> {data.data.jenis_laporan}</span>{' '}
                 <span className="text-gray-500">
                   {'('}
                   {timeAgo(data.data.waktu)}

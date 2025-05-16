@@ -107,7 +107,7 @@ const FamilyDetail = () => {
                   const { isSuccess, message } = await deleteResident.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchFamilyDetail();
+                    fetchFamilyDetail(id, token);
                   } else {
                     error('Gagal', message);
                   }
@@ -144,7 +144,7 @@ const FamilyDetail = () => {
                         const { message, isSuccess } = await storeResident.execute({ ...values, kk_number: familyDetail.kk_number }, token);
                         if (isSuccess) {
                           success('Berhasil', message);
-                          fetchFamilyDetail();
+                          fetchFamilyDetail(id, token);
                         } else {
                           error('Gagal', message);
                         }
