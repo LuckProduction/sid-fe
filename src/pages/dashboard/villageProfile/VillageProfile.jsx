@@ -251,7 +251,7 @@ const VillagePorfile = () => {
               <Descriptions.Item label="Batas Timur">{VillageBoundaries.east}</Descriptions.Item>
               <Descriptions.Item label="Batas Barat">{VillageBoundaries.west}</Descriptions.Item>
               <Descriptions.Item label="File Batas Desa">
-                {!VillageBoundaries?.adiministrative_file?.length ? (
+                {!VillageBoundaries?.administrative_file?.length ? (
                   'File Batas Desa Belum Tersedia'
                 ) : (
                   <Button icon={<DownloadOutlined />} onClick={() => window.open(VillageBoundaries.adiministrative_file, '_blank')}>
