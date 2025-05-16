@@ -8,7 +8,7 @@ export interface IncomingApiData {
   batas_timur: string;
   batas_barat: string;
   luas_wilayah: string;
-  file_batas_desa: string;
+  file_batas_desa: string | null;
   titik_koordinat_kantor_desa: string;
 }
 
@@ -42,7 +42,7 @@ export default class VillageBoundaries extends Model {
     public east: string,
     public west: string,
     public area: string,
-    public administrative_file: string,
+    public administrative_file: string | null,
     public headvillage_coordinate: string
   ) {
     super();
@@ -50,11 +50,16 @@ export default class VillageBoundaries extends Model {
 
   public static fromApiData<T extends IncomingApiData | IncomingApiData[]>(apiData: T): ReturnType<T, IncomingApiData, VillageBoundaries> {
     if (Array.isArray(apiData)) return apiData.map((object) => this.fromApiData(object)) as ReturnType<T, IncomingApiData, VillageBoundaries>;
-    return new VillageBoundaries(apiData.id, apiData.batas_utara, apiData.batas_selatan, apiData.batas_timur, apiData.batas_barat, apiData.luas_wilayah, asset(apiData.file_batas_desa), apiData.titik_koordinat_kantor_desa) as ReturnType<
-      T,
-      IncomingApiData,
-      VillageBoundaries
-    >;
+    return new VillageBoundaries(
+      apiData.id,
+      apiData.batas_utara,
+      apiData.batas_selatan,
+      apiData.batas_timur,
+      apiData.batas_barat,
+      apiData.luas_wilayah,
+      apiData.file_batas_desa === null ? null : asset(apiData.file_batas_desa),
+      apiData.titik_koordinat_kantor_desa
+    ) as ReturnType<T, IncomingApiData, VillageBoundaries>;
   }
 
   public static toApiData<T extends formValue | formValue[]>(villageBoundaries: T): ReturnType<T, formValue, OutgoingApiData> {
