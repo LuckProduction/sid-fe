@@ -216,10 +216,11 @@ export const VillageBoundariesFormFields = () => [
       return false;
     },
     getFileList: (data) => {
+      if (!data?.administrative_file) return [];
       return [
         {
-          url: data?.administrative_file,
-          name: data?.name
+          url: data.administrative_file,
+          name: data.name || 'File Batas Desa'
         }
       ];
     },
