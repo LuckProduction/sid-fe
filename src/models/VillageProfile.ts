@@ -40,10 +40,10 @@ interface OutgoingApiData {
   profil_kecamatan?: {
     nama_camat?: string;
     kode_kecamatan?: string;
-    profil_kabupaten?: {
-      nama_bupati?: string;
-      kode_kabupaten?: string;
-    };
+  };
+  profil_kabupaten?: {
+    nama_bupati?: string;
+    kode_kabupaten?: string;
   };
 }
 
@@ -59,10 +59,10 @@ interface FormValue {
   district_profile?: {
     districthead_name?: string;
     district_code?: string;
-    regency_profile?: {
-      regencyhead_name?: string;
-      regency_code?: string;
-    };
+  };
+  regency_profile?: {
+    regencyhead_name?: string;
+    regency_code?: string;
   };
 }
 
@@ -136,13 +136,13 @@ export default class VillageProfile extends Model {
       profil_kecamatan: formValue.district_profile
         ? {
             kode_kecamatan: formValue.district_profile.district_code,
-            nama_camat: formValue.district_profile.districthead_name,
-            profil_kabupaten: formValue.district_profile.regency_profile
-              ? {
-                  kode_kabupaten: formValue.district_profile.regency_profile.regency_code,
-                  nama_bupati: formValue.district_profile.regency_profile.regencyhead_name
-                }
-              : undefined
+            nama_camat: formValue.district_profile.districthead_name
+          }
+        : undefined,
+      profil_kabupaten: formValue.regency_profile
+        ? {
+            kode_kabupaten: formValue.regency_profile.regency_code,
+            nama_bupati: formValue.regency_profile.regencyhead_name
           }
         : undefined
     };

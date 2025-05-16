@@ -145,7 +145,7 @@ const VillagePorfile = () => {
                       data: villageProfile?.district_profile?.regency_profile,
                       formFields: regencyFormFields,
                       onSubmit: async (values) => {
-                        const { message, isSuccess } = await updateVillageProfile.execute({ ...values, district_profile: { regency_profile: { ...values } } }, token);
+                        const { message, isSuccess } = await updateVillageProfile.execute({ ...values, regency_profile: { ...values } }, token);
                         if (isSuccess) {
                           success('Berhasil', message);
                           fetchVillageProfile(token);
