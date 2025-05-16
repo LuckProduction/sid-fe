@@ -952,3 +952,111 @@ export const residentFilterFields = ({ options }) => [
     ]
   }
 ];
+
+export const familyFilterFields = ({ options }) => [
+  {
+    label: `Status Kependudukan`,
+    name: 'status_penduduk',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Aktif',
+        value: 'aktif'
+      },
+      {
+        label: 'Meninggal',
+        value: 'meninggal'
+      },
+      {
+        label: 'Pindah',
+        value: 'pindah'
+      },
+      {
+        label: 'Masuk',
+        value: 'masuk'
+      }
+    ]
+  },
+  {
+    label: `Status Pernikahan`,
+    name: 'status_perkawinan',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Menikah',
+        value: 'telah menikah'
+      },
+      {
+        label: 'Belum Menikah',
+        value: 'belum menikah'
+      },
+      {
+        label: 'Cerai Hidup',
+        value: 'cerai hidup'
+      },
+      {
+        label: 'Cerai Mati',
+        value: 'cerai mati'
+      }
+    ]
+  },
+  {
+    label: `Jenis Kelamin`,
+    name: 'jenis_kelamin',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Laki Laki',
+        value: 'L'
+      },
+      {
+        label: 'Perempuan',
+        value: 'P'
+      }
+    ]
+  },
+  {
+    label: `Dusun`,
+    name: 'dusun_id',
+    type: InputType.SELECT,
+    options: options.hamlet.map((item) => ({
+      label: item.hamlet_name,
+      value: item.id
+    }))
+  },
+  {
+    label: `Kategori Umur`,
+    name: 'kategori_umur',
+    type: InputType.SELECT,
+    options: [
+      {
+        label: 'Bayi',
+        value: 'Bayi'
+      },
+      {
+        label: 'Balita',
+        value: 'Balita'
+      },
+      {
+        label: 'Anak - Anak',
+        value: 'Anak-Anak'
+      },
+      {
+        label: 'Remaja',
+        value: 'Remaja'
+      },
+      {
+        label: 'Dewasa',
+        value: 'Dewasa'
+      },
+      {
+        label: 'Paruh Baya',
+        value: 'Paruh Baya'
+      },
+      {
+        label: 'Lansia',
+        value: 'Lansia'
+      }
+    ]
+  }
+];

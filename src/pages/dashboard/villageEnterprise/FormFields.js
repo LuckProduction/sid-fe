@@ -63,7 +63,7 @@ export const formFields = ({ fetchResident }) => [
     rules: [{ required: true, message: 'Longitude harus diisi' }]
   },
   {
-    label: `Foto ${Modul.ARTICLE}`,
+    label: `Foto ${Modul.VILLAGE_ENTERPRISE}`,
     name: 'foto',
     type: InputType.UPLOAD,
     max: 1,

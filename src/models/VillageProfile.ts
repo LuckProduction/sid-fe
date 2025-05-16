@@ -52,7 +52,7 @@ interface FormValue {
   village_name?: string;
   village_code?: string;
   postal_code?: string;
-  office_adress?: string;
+  office_address?: string;
   village_email?: string;
   profile_video_link?: string;
   village_logo?: string;
@@ -130,7 +130,7 @@ export default class VillageProfile extends Model {
       ...(formValue.village_name ? { nama_desa: formValue.village_name } : {}),
       ...(formValue.village_code ? { kode_desa: formValue.village_code } : {}),
       ...(formValue.postal_code ? { kode_pos_desa: formValue.postal_code } : {}),
-      ...(formValue.office_adress ? { alamat_kantor: formValue.office_adress } : {}),
+      ...(formValue.office_address ? { alamat_kantor: formValue.office_address } : {}),
       ...(formValue.village_email ? { email_desa: formValue.village_email } : {}),
       ...(formValue.profile_video_link ? { embed_video_profil_desa: formValue.profile_video_link } : {}),
       profil_kecamatan: formValue.district_profile

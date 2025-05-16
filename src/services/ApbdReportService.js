@@ -45,7 +45,14 @@ export default class ApbdReportService {
    * }}
    */
   static async store(data, token, file) {
-    return await api.post('/laporan-apbd', { body: ApbdReport.toApiData(data), token, file: { dokumen: file } });
+    const payload = {
+      body: ApbdReport.toApiData(data),
+      token
+    };
+    if (file) {
+      payload.file = { dokumen: file };
+    }
+    return await api.post('/laporan-apbd', { ...payload });
   }
 
   /**
