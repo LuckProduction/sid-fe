@@ -7,6 +7,16 @@ import { Card, Statistic, Tabs, Typography } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const umurRanges = {
+  Bayi: '1- 2 tahun',
+  Balita: '3 - 4 tahun',
+  'Anak-Anak': '5 - 17 tahun',
+  Remaja: '18 - 25 tahun',
+  Dewasa: '26 - 45 tahun',
+  'Paruh Baya': '46 - 60 tahun',
+  Lansia: '60+ tahun'
+};
+
 const ResidentStatistic = () => {
   const navigate = useNavigate();
 
@@ -16,7 +26,18 @@ const ResidentStatistic = () => {
     executeResidentStatisticFetch();
   }, [executeResidentStatisticFetch]);
 
-  const residentStatistic = useMemo(() => getAllResidentStatistic.data ?? {}, [getAllResidentStatistic.data]);
+  const rawResidentStatistic = useMemo(() => getAllResidentStatistic.data ?? {}, [getAllResidentStatistic.data]);
+
+  const residentStatistic = useMemo(() => {
+    const updated = { ...rawResidentStatistic };
+    if (updated.umur) {
+      updated.umur = updated.umur.map((item) => ({
+        ...item,
+        rentang_umur: umurRanges[item.kategori_umur] || 'Tidak diketahui'
+      }));
+    }
+    return updated;
+  }, [rawResidentStatistic]);
 
   const tabKeys = Object.keys(residentStatistic).filter((key) => key !== 'penduduk');
   const [chartConfigs, setChartConfigs] = useState(null);
@@ -31,11 +52,17 @@ const ResidentStatistic = () => {
   const getColumns = (data) => {
     if (!data || data.length === 0) return [];
 
+    const toTitleCase = (str) =>
+      str
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
     const keys = Object.keys(data[0]).filter((key) => key !== 'jumlah');
 
     return keys
       .map((key) => ({
-        title: key.charAt(0).toUpperCase() + key.slice(1), // Capitalize
+        title: toTitleCase(key),
         dataIndex: key
       }))
       .concat({

@@ -106,7 +106,7 @@ const PublicTax = () => {
       render: (_, record) => (
         <Space size="small">
           <Edit
-            title={`Edit ${Modul.TAX}`}
+            title={`Edit Peserta ${Modul.TAX}`}
             model={PublicTaxModel}
             onClick={() => {
               modal.edit({
@@ -134,7 +134,7 @@ const PublicTax = () => {
             }}
           />
           <Detail
-            title={`Detail ${Modul.TAX}`}
+            title={`Detail Peserta ${Modul.TAX}`}
             model={PublicTaxModel}
             onClick={() => {
               modal.show.description({
@@ -142,7 +142,7 @@ const PublicTax = () => {
                 data: [
                   {
                     key: 'full_name',
-                    label: `Nama Penduduk ${Modul.TAX_PARTICIPANT}`,
+                    label: `Nama Penduduk ${Modul.TAX}`,
                     children: record.resident.full_name
                   },
                   {
@@ -223,7 +223,7 @@ const PublicTax = () => {
             }}
           />
           <Delete
-            title={`Delete ${Modul.TAX}`}
+            title={`Delete Peserta ${Modul.TAX}`}
             model={PublicTaxModel}
             onClick={() => {
               modal.delete.default({
@@ -248,7 +248,7 @@ const PublicTax = () => {
 
   const onDeleteBatch = () => {
     modal.delete.batch({
-      title: `Hapus ${selectedData.length} ${Modul.TAX_PARTICIPANT} Yang Dipilih ? `,
+      title: `Hapus ${selectedData.length} Peserta ${Modul.TAX} Yang Dipilih ? `,
       onSubmit: async () => {
         const ids = selectedData.map((item) => item.id);
         const { message, isSuccess } = await deleteBatchPublicTax.execute(ids, token);
@@ -265,7 +265,7 @@ const PublicTax = () => {
 
   const onCreate = () => {
     modal.create({
-      title: `Tambah ${Modul.TAX_PARTICIPANT}`,
+      title: `Tambah Peserta ${Modul.TAX}`,
       formFields: publicTaxFormFields({ fetchResident }),
       onSubmit: async (values) => {
         const { message, isSuccess } = await storePublicTax.execute(
@@ -290,7 +290,7 @@ const PublicTax = () => {
     modal.create({
       formFields: [
         {
-          label: `File ${Modul.TAX_PARTICIPANT} `,
+          label: `File Peserta ${Modul.TAX} `,
           name: 'file',
           type: InputType.UPLOAD,
           max: 1,
@@ -309,7 +309,7 @@ const PublicTax = () => {
           rules: [{ required: true, message: 'Logo harus diisi' }]
         }
       ],
-      title: `Import ${Modul.TAX_PARTICIPANT} `,
+      title: `Import Peserta ${Modul.TAX} `,
       onSubmit: async (values) => {
         const { message, isSuccess } = await importPublicTax.execute({ ...values, periode_pajak_id: id }, token, values.file.file);
         if (isSuccess) {

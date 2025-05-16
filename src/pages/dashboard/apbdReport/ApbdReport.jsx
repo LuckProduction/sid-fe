@@ -168,7 +168,7 @@ const ApbdReport = () => {
       title: `Tambah ${Modul.APBD_REPORT}`,
       formFields: formFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeApbdReport.execute({ ...values, year: dateFormatter(values.year, 'year') }, token, values.document.file);
+        const { message, isSuccess } = await storeApbdReport.execute({ ...values, year: dateFormatter(values.year, 'year') }, token, values?.document?.file ?? null);
         if (isSuccess) {
           success('Berhasil', message);
           fetchApbdReport({ token: token, page: pagination.page, per_page: pagination.per_page });

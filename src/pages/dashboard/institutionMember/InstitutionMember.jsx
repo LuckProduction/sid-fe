@@ -165,7 +165,7 @@ const InstitutionMember = () => {
       title: `Tambah ${Modul.INSTITUTION_MEMBER}`,
       formFields: institutionMemberFormFields({ options: { employment }, fetchResident }),
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: id }, token, values.foto.file);
+        const { message, isSuccess } = await storeInstitutionMember.execute({ ...values, village_institution: id }, token, values?.foto?.file ?? null);
         if (isSuccess) {
           success('Berhasil', message);
           fetchInstitutionMember({ token: token, lembaga: id, page: pagination.page, per_page: pagination.per_page });
@@ -184,7 +184,7 @@ const InstitutionMember = () => {
       ) : (
         <div className="grid w-full grid-cols-12 gap-4">
           <Card className="col-span-12">
-            <DataTableHeader model={InstitutionMemberModel} modul={Modul.VILLAGE_OFFICIALS} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedInstitutionMember} />
+            <DataTableHeader model={InstitutionMemberModel} modul={Modul.INSTITUTION_MEMBER} onStore={onCreate} onDeleteBatch={onDeleteBatch} selectedData={selectedInstitutionMember} />
             <div className="w-full max-w-full overflow-x-auto">
               <DataTable
                 data={institutionMember}

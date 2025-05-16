@@ -49,7 +49,6 @@ export const institutionMemberFormFields = ({ options, fetchResident }) => [
         }
       ];
     },
-    accept: ['.png', '.jpg', '.jpeg', 'webp'],
-    rules: [{ required: true, message: 'Logo harus diisi' }]
+    accept: ['.png', '.jpg', '.jpeg', 'webp']
   }
 ];

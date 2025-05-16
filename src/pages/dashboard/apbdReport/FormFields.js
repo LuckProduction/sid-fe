@@ -43,8 +43,7 @@ export const formFields = () => [
         }
       ];
     },
-    accept: ['.pdf'],
-    rules: [{ required: true, message: 'Dokumen harus diisi' }]
+    accept: ['.pdf']
   }
 ];
 

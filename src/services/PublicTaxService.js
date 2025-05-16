@@ -45,7 +45,7 @@ export default class PublicTaxService {
    * }>}
    */
   static async update(id, data, token) {
-    return await api.patch(`/wajib-pajak/edit/${id}`, { body: PublicTax.toApiData(data), token });
+    return await api.put(`/wajib-pajak/edit/${id}`, { body: PublicTax.toApiData(data), token });
   }
 
   /**

@@ -74,13 +74,13 @@ export const taxPeriodFormFields = () => [
 
 export const publicTaxFormFields = ({ fetchResident }) => [
   {
-    label: `Nama ${Modul.BENEFICIARY}`,
+    label: `Nama Peserta ${Modul.TAX}`,
     name: 'resident',
     type: InputType.SELECT_FETCH,
     rules: [
       {
         required: true,
-        message: `Nama ${Modul.BENEFICIARY} harus diisi`
+        message: `Nama peserta ${Modul.TAX} harus diisi`
       }
     ],
     fetchOptions: fetchResident,

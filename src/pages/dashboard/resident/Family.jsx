@@ -7,7 +7,7 @@ import Modul from '@/constants/Modul';
 import { Resident as ResidentModel } from '@/models';
 import { DatabaseOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { residentFilterFields } from './FormFields';
+import { familyFilterFields } from './FormFields';
 import { BASE_URL } from '@/utils/api';
 
 const Family = () => {
@@ -27,10 +27,9 @@ const Family = () => {
       jenis_kelamin: filterValues.jenis_kelamin,
       status_perkawinan: filterValues.status_perkawinan,
       status_penduduk: filterValues.status_penduduk,
-      hubungan_keluarga: filterValues.hubungan_keluarga,
       dusun_id: filterValues.dusun_id
     });
-  }, [execute, filterValues.dusun_id, filterValues.hubungan_keluarga, filterValues.jenis_kelamin, filterValues.search, filterValues.status_penduduk, filterValues.status_perkawinan, pagination.page, pagination.per_page, token]);
+  }, [execute, filterValues.dusun_id, filterValues.jenis_kelamin, filterValues.search, filterValues.status_penduduk, filterValues.status_perkawinan, pagination.page, pagination.per_page, token]);
 
   useEffect(() => {
     fetchFamily();
@@ -107,7 +106,7 @@ const Family = () => {
   ];
 
   const filter = {
-    formFields: residentFilterFields({ options: { hamlet } }),
+    formFields: familyFilterFields({ options: { hamlet } }),
     initialData: {
       jenis_kelamin: filterValues.jenis_kelamin,
       status_perkawinan: filterValues.status_perkawinan,
