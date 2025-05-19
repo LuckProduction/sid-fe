@@ -116,7 +116,7 @@ const VillageEnterprise = () => {
           case 'verifikasi':
             return <Tag color="warning">Verifikasi</Tag>;
           default:
-            return <Tag color="default">Undifined</Tag>;
+            return <Tag color="default">{record}</Tag>;
         }
       }
     }

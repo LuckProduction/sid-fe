@@ -76,7 +76,7 @@ const Article = () => {
           case 'publish':
             return <Tag color="green">Publish</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record}</Tag>;
         }
       }
     }

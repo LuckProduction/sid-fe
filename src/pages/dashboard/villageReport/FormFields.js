@@ -156,13 +156,13 @@ export const reportAttributeFormFields = () => [
 
 export const statusSubmitFormFields = () => [
   {
-    label: `Status ${Modul.SUBMIT_LETTER}`,
+    label: `Status Lapor Penduduk`,
     name: 'status',
     type: InputType.SELECT,
     rules: [
       {
         required: true,
-        message: `Status ${Modul.SUBMIT_LETTER} harus diisi`
+        message: `Status Lapor Penduduk harus diisi`
       }
     ],
     options: [
@@ -177,6 +177,17 @@ export const statusSubmitFormFields = () => [
       {
         label: 'Tolak',
         value: 'tolak'
+      }
+    ]
+  },
+  {
+    name: 'umpan_balik',
+    type: InputType.LONGTEXT,
+    label: `Umpan Balik`,
+    rules: [
+      {
+        required: true,
+        message: `Umpan balik harus diisi`
       }
     ]
   }

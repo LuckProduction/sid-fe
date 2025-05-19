@@ -86,7 +86,7 @@ const CitizenReport = () => {
           case 'selesai':
             return <Tag color="geekblue">Selesai</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record.status}</Tag>;
         }
       }
     }

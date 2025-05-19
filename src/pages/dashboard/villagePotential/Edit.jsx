@@ -114,7 +114,7 @@ const Edit = () => {
             />
           </Form.Item>
         </Card>
-        <Card cclassName="lg:col-span-2 col-span-6">
+        <Card className="col-span-6 lg:col-span-2">
           <Form.Item
             className="mb-4"
             name="potential_name"

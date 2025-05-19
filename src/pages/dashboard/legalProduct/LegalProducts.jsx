@@ -69,7 +69,7 @@ const LegalProducts = () => {
           case 'nonaktif':
             return <Tag color="warning">Non-Aktif</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record.status}</Tag>;
         }
       }
     }

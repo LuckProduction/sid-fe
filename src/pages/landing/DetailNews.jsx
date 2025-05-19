@@ -58,9 +58,10 @@ const DetailNews = () => {
               <Skeleton active />
             ) : (
               <>
-                <Typography.Title level={1}>
-                  {detailArticle.title} <Tag>{detailArticle.tag}</Tag>
-                </Typography.Title>
+                <div className="flex flex-col">
+                  <Typography.Title level={1}>{detailArticle.title}</Typography.Title>
+                  <Tag className="mb-4 w-fit">{detailArticle.tag}</Tag>
+                </div>
                 <div className="mb-4 flex w-full flex-wrap gap-4">
                   {detailArticle.category.map((item, index) => (
                     <b key={index}>{item.category_name}</b>
@@ -127,7 +128,7 @@ const DetailNews = () => {
                   </Button>
                   <Button icon={<ShareAltOutlined />} color="default" variant="filled" onClick={handleShare} />
                 </div>
-                <div>{detailArticle.content ? parse(detailArticle.content) : <Skeleton active />}</div>
+                <div className="text-justify leading-8">{detailArticle.content ? parse(detailArticle.content) : <Skeleton active />}</div>
               </>
             )}
           </section>

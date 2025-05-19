@@ -19,6 +19,7 @@ export interface IncomingApiData {
     konten: string;
   }[];
   status: string;
+  umpan_balik: string;
   created_at: string;
 }
 
@@ -53,6 +54,7 @@ export default class SubmitReport extends Model {
       content: string;
     }[],
     public status: string,
+    public feedback: string,
     public created_at: string
   ) {
     super();
@@ -90,6 +92,7 @@ export default class SubmitReport extends Model {
         content: item.konten
       })),
       apiData.status,
+      apiData.umpan_balik,
       apiData.created_at
     ) as ReturnType<T, IncomingApiData, SubmitReport>;
   }

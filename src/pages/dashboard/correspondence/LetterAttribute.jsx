@@ -70,7 +70,7 @@ const LetterAttribute = () => {
           case 'ya':
             return <Tag color="green">Wajib</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record}</Tag>;
         }
       }
     }

@@ -65,7 +65,7 @@ const VillageReport = () => {
           case 'meninggal':
             return <Tag color="red-inverse">Meninggal</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record.type}</Tag>;
         }
       }
     },
@@ -81,7 +81,7 @@ const VillageReport = () => {
           case 'nonaktif':
             return <Tag color="red-inverse">Non Aktif</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record.status}</Tag>;
         }
       }
     }

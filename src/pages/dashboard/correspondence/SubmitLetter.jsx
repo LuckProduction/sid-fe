@@ -86,7 +86,7 @@ const SubmitLetter = () => {
           case 'anjungan':
             return <Tag color="lime">anjungan</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record}</Tag>;
         }
       }
     },
