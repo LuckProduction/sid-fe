@@ -1,4 +1,4 @@
-import { DashboardFooter, DashboardSider, Inbox } from '@/components';
+import { DashboardFooter, DashboardSider, DynamicDocumentTitle, Inbox } from '@/components';
 import { useAuth, useService } from '@/hooks';
 import { InboxService } from '@/services';
 import generateBreadCrumb from '@/utils/generateBreadCrumb';
@@ -66,68 +66,71 @@ const Dashboard = () => {
   const isDesktop = breakpoints.lg || breakpoints.xl || breakpoints.xxl;
 
   return (
-    <Layout className="min-h-screen font-sans">
-      <DashboardSider collapsed={collapsed} onCloseMenu={() => setCollapsed(true)} />
-      <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer
-          }}
-        >
-          <div className="flex h-full w-full items-center justify-between px-4">
-            <Button type="text" icon={<MenuOutlined />} onClick={() => setCollapsed(!collapsed)} color="default"></Button>
-            <div className="flex items-center gap-x-2">
-              <Popover className="max-w-sm" trigger="click" placement={isDesktop ? 'bottomLeft' : 'bottom'} content={<Inbox inbox={inbox} token={token} fetchInbox={fetchInbox} />}>
-                <Button
-                  onClick={async () => {
-                    await readInbox.execute({}, token);
-                    fetchInbox();
-                  }}
-                  icon={
-                    <Badge count={inbox.filter((item) => item.read_at === null).length} size="small">
-                      <BellOutlined />
-                    </Badge>
-                  }
-                  type="text"
-                  color="default"
-                />
-              </Popover>
-              {!user ? (
-                <>
-                  <Skeleton.Button active className="leading-4" size="small" />
-                  <Skeleton.Avatar active className="leading-4" />
-                </>
-              ) : (
-                <>
-                  <span>Hai, {user.name}</span>
+    <>
+      <DynamicDocumentTitle layout="dashboard" />
+      <Layout className="min-h-screen font-sans">
+        <DashboardSider collapsed={collapsed} onCloseMenu={() => setCollapsed(true)} />
+        <Layout>
+          <Header
+            style={{
+              padding: 0,
+              background: colorBgContainer
+            }}
+          >
+            <div className="flex h-full w-full items-center justify-between px-4">
+              <Button type="text" icon={<MenuOutlined />} onClick={() => setCollapsed(!collapsed)} color="default"></Button>
+              <div className="flex items-center gap-x-2">
+                <Popover className="max-w-sm" trigger="click" placement={isDesktop ? 'bottomLeft' : 'bottom'} content={<Inbox inbox={inbox} token={token} fetchInbox={fetchInbox} />}>
+                  <Button
+                    onClick={async () => {
+                      await readInbox.execute({}, token);
+                      fetchInbox();
+                    }}
+                    icon={
+                      <Badge count={inbox.filter((item) => item.read_at === null).length} size="small">
+                        <BellOutlined />
+                      </Badge>
+                    }
+                    type="text"
+                    color="default"
+                  />
+                </Popover>
+                {!user ? (
+                  <>
+                    <Skeleton.Button active className="leading-4" size="small" />
+                    <Skeleton.Avatar active className="leading-4" />
+                  </>
+                ) : (
+                  <>
+                    <span>Hai, {user.name}</span>
 
-                  <Dropdown menu={{ items }}>
-                    <a onClick={(e) => e.preventDefault()}>
-                      <Space>
-                        <Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold">U</Avatar>
-                      </Space>
-                    </a>
-                  </Dropdown>
-                </>
-              )}
+                    <Dropdown menu={{ items }}>
+                      <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                          <Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold">U</Avatar>
+                        </Space>
+                      </a>
+                    </Dropdown>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </Header>
+          </Header>
 
-        <Content style={{ margin: '24px 16px 0' }}>
-          <Breadcrumb className="mb-4 ms-2">
-            {breadcrumbs.map((breadcrumb, index) => (
-              <Breadcrumb.Item key={breadcrumb.path}>{index === breadcrumbs.length - 1 ? <span>{breadcrumb.label}</span> : <Link to={breadcrumb.path}>{breadcrumb.label}</Link>}</Breadcrumb.Item>
-            ))}
-          </Breadcrumb>
+          <Content style={{ margin: '24px 16px 0' }}>
+            <Breadcrumb className="mb-4 ms-2">
+              {breadcrumbs.map((breadcrumb, index) => (
+                <Breadcrumb.Item key={breadcrumb.path}>{index === breadcrumbs.length - 1 ? <span>{breadcrumb.label}</span> : <Link to={breadcrumb.path}>{breadcrumb.label}</Link>}</Breadcrumb.Item>
+              ))}
+            </Breadcrumb>
 
-          <Outlet />
-        </Content>
+            <Outlet />
+          </Content>
 
-        <DashboardFooter />
+          <DashboardFooter />
+        </Layout>
       </Layout>
-    </Layout>
+    </>
   );
 };
 

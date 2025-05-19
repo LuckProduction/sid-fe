@@ -132,7 +132,7 @@ const DetailVillagePotential = () => {
               </Button>
               <Button icon={<ShareAltOutlined />} color="default" variant="filled" onClick={handleShare} />
             </div>
-            <div className="mb-12">{villagePotential.description ? parse(villagePotential.description) : <Skeleton active />}</div>
+            <div className="mb-12 text-justify leading-8">{villagePotential.description ? parse(villagePotential.description) : <Skeleton active />}</div>
             <Typography.Title level={3}>{villagePotential.location}</Typography.Title>
             <Card>
               <MapContainer center={coordinate || [0.693, 122.4704]} zoom={13} style={{ height: '500px', width: '100%' }}>

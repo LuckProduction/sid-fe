@@ -15,10 +15,6 @@ export const citizenReportStatusFormFields = () => [
     ],
     options: [
       {
-        label: 'Verifikasi',
-        value: 'verifikasi'
-      },
-      {
         label: 'Privasi',
         value: 'privasi'
       },
