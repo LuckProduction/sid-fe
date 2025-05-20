@@ -1,7 +1,7 @@
 import { Reveal } from '@/components';
 import { useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { CommentOutlined, DownloadOutlined, InfoCircleFilled, LeftOutlined, LikeFilled, LikeOutlined, PlusOutlined } from '@ant-design/icons';
+import { CommentOutlined, DownloadOutlined, HeartFilled, HeartOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, Input, Modal, Pagination, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -95,7 +95,7 @@ const CitizenReport = () => {
                             fetchCitizenReport();
                           }}
                         >
-                          {reportItem.has_like ? <LikeFilled className="text-blue-500" /> : <LikeOutlined />}
+                          {reportItem.has_like ? <HeartFilled className="text-red-500" /> : <HeartOutlined />}
                           {String(reportItem.liked)}
                         </div>,
                         <div key="comment" className="inline-flex items-center gap-x-2" onClick={() => toggleReplies(reportItem.id)}>
@@ -144,7 +144,7 @@ const CitizenReport = () => {
                                 fetchCitizenReport();
                               }}
                             >
-                              {reply.has_like ? <LikeFilled className="text-blue-500" /> : <LikeOutlined />}
+                              {reply.has_like ? <HeartFilled className="text-red-500" /> : <HeartOutlined />}
                               {String(reply.liked)}
                             </div>
                           ]}
