@@ -1,7 +1,6 @@
 function flattenLandingLinks(links) {
   const result = [];
 
-  // Rekursi untuk traversing setiap item di dalam array links
   function traverse(linkArray) {
     linkArray.forEach(({ key, element, children }) => {
       if (key && element) {
@@ -11,7 +10,7 @@ function flattenLandingLinks(links) {
         });
       }
       if (children) {
-        traverse(children); // Rekursi pada children jika ada
+        traverse(children);
       }
     });
   }

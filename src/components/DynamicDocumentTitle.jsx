@@ -1,14 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { landingLink } from '@/data/link';
 import { useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { flattenLandingLinks } from '@/utils/landingLink';
 import PropTypes from 'prop-types';
+import { landingLink } from '@/data/link';
+
+const flattenLandingLinks = (links) => {
+  let flat = [];
+  links.forEach((link) => {
+    if (link.children) {
+      flat = flat.concat(flattenLandingLinks(link.children));
+    } else {
+      flat.push(link);
+    }
+  });
+  return flat;
+};
+
+const findLabelByPath = (links, path) => {
+  const flatLinks = flattenLandingLinks(links);
+  const matched = flatLinks.find((link) => path === link.key || path.startsWith(link.key + '/'));
+  return matched ? matched.label : null;
+};
 
 const DynamicDocumentTitle = ({ layout }) => {
   const location = useLocation();
-  const flatLandingLinks = flattenLandingLinks(landingLink);
 
   const { data: villageProfile, execute: fetchVillageProfile } = useService(LandingService.getVillageProfile);
 
@@ -22,7 +38,6 @@ const DynamicDocumentTitle = ({ layout }) => {
   }, [fetchVillageProfile]);
 
   useEffect(() => {
-    const pathname = location.pathname;
     const icon = villageProfile?.village_logo || '/vite.svg';
     const villageName = villageProfile?.village_name || 'GoVillage';
     const districtName = villageProfile?.district_profile?.district_name || '';
@@ -30,15 +45,11 @@ const DynamicDocumentTitle = ({ layout }) => {
     let pageTitle = 'Beranda';
 
     if (layout === 'landing') {
-      const matched = flatLandingLinks.find((link) => pathname === link.key || pathname.startsWith(link.key + '/'));
-
-      if (pathname.startsWith('/dashboard')) {
+      if (location.pathname.startsWith('/dashboard')) {
         pageTitle = 'Dashboard';
-      } else if (matched) {
-        pageTitle = matched.label;
       } else {
-        const parts = pathname.split('/').filter(Boolean);
-        pageTitle = parts.at(-1)?.replace(/_/g, ' ') || 'Beranda';
+        const labelFromLandingLink = findLabelByPath(landingLink, location.pathname);
+        pageTitle = labelFromLandingLink || 'Beranda';
       }
 
       const fullTitle = `${pageTitle} | ${villageName} ${districtName} - GoVillage`;
@@ -60,7 +71,7 @@ const DynamicDocumentTitle = ({ layout }) => {
         return { title: fullTitle, icon };
       });
     }
-  }, [location.pathname, villageProfile, flatLandingLinks, layout]);
+  }, [location.pathname, villageProfile, layout]);
 
   useEffect(() => {
     document.title = titleData.title;
