@@ -19,7 +19,6 @@ const Edit = () => {
   const { execute: fetchCategory, ...getAllCategory } = useService(CategoryService.getByType);
   const { execute: fetchArticle, ...getAllArticle } = useService(ArticleService.getById);
   const updateArticle = useService(ArticleService.update);
-  const [realtimeData, setRealtimeData] = useState(initialData);
 
   useEffect(() => {
     fetchCategory(token, 'artikel');
@@ -34,6 +33,8 @@ const Edit = () => {
       category: article?.category?.map((item) => item.id) ?? []
     };
   }, [getAllArticle.data]);
+
+  const [realtimeData, setRealtimeData] = useState(initialData);
 
   useEffect(() => {
     form.setFieldsValue(initialData ?? {});
@@ -82,7 +83,7 @@ const Edit = () => {
               return isSuccess;
             }}
           >
-            <Card className="col-span-6 lg:col-span-4">
+            <Card className="col-span-4">
               <Form.Item
                 className="m-0"
                 name="content"
@@ -113,7 +114,7 @@ const Edit = () => {
                 />
               </Form.Item>
             </Card>
-            <Card className="col-span-6 lg:col-span-2">
+            <Card className="col-span-2">
               <Form.Item
                 className="mb-4"
                 name="title"

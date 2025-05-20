@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { landingLink } from '@/data/link';
+import { useAuth } from '@/hooks';
 import { findItemByKey } from '@/utils/landingLink';
 import { MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Drawer, Grid, Image, Menu, Skeleton } from 'antd';
@@ -9,6 +10,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = ({ villageProfile }) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const breakpoints = Grid.useBreakpoint();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -72,7 +74,7 @@ const Navbar = ({ villageProfile }) => {
       </div>
       <div className="flex items-center justify-end gap-x-4">
         <Button variant="solid" color="primary" icon={<UserOutlined />} onClick={() => navigate('/auth/login')}>
-          Masuk
+          {user ? 'Dashboard' : 'Masuk'}
         </Button>
       </div>
     </div>

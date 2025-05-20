@@ -1,3 +1,4 @@
+import { DynamicDocumentTitle } from '@/components';
 import { useAuth } from '@/hooks';
 import { useEffect } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
@@ -19,11 +20,14 @@ const Auth = () => {
   }, [navigate, redirect, token]);
 
   return (
-    <div className="w-full bg-slate-50 font-sans">
-      <div className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col items-center justify-center px-4 py-12">
-        <Outlet />
+    <>
+      <DynamicDocumentTitle layout="auth" />
+      <div className="w-full bg-slate-50 font-sans">
+        <div className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col items-center justify-center px-4 py-12">
+          <Outlet />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -83,7 +83,7 @@ const SubmitReport = () => {
           case 'tolak':
             return <Tag color="red">Tolak</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record}</Tag>;
         }
       }
     },
@@ -106,7 +106,7 @@ const SubmitReport = () => {
             onClick={() => {
               modal.edit({
                 title: `Edit ${Modul.VILLAGE_REPORT}`,
-                data: record,
+                data: { ...record, umpan_balik: record.feedback },
                 formFields: statusSubmitFormFields,
                 onSubmit: async (values) => {
                   const { message, isSuccess } = await updateSubmitReport.execute(record.id, values, token);
@@ -133,24 +133,29 @@ const SubmitReport = () => {
                 },
                 {
                   key: 'status',
-                  label: `Status `,
+                  label: `Status`,
                   children: (() => {
                     let statusTag;
                     switch (record.status) {
                       case 'proses':
-                        statusTag = <Tag color="blue">Selesai</Tag>;
+                        statusTag = <Tag color="blue">Proses</Tag>;
                         break;
                       case 'terima':
-                        statusTag = <Tag color="green">Verifikasi</Tag>;
+                        statusTag = <Tag color="green">Terima</Tag>;
                         break;
                       case 'tolak':
-                        statusTag = <Tag color="red">Menunggu</Tag>;
+                        statusTag = <Tag color="red">Tolak</Tag>;
                         break;
                       default:
-                        statusTag = <Tag color="error">Undefined</Tag>;
+                        statusTag = <Tag color="error">{record.status}</Tag>;
                     }
                     return statusTag;
                   })()
+                },
+                {
+                  key: 'feedback',
+                  label: `Umpan Balik ${Modul.VILLAGE_REPORT}`,
+                  children: record.feedback
                 },
                 {
                   key: 'Nama Laporan',
@@ -164,7 +169,7 @@ const SubmitReport = () => {
                 },
                 {
                   key: 'Status Laporan',
-                  label: `Status Surat`,
+                  label: `Status Laporan`,
                   children: record.village_report.status
                 }
               ];

@@ -1,6 +1,6 @@
 import { Result } from 'antd';
 import { authLink, dashboardLink, kioskLink, landingLink } from './data/link';
-import { useAuth, useService } from './hooks';
+import { useAuth } from './hooks';
 import { AuthLayout, DashboardLayout, KioskLayout, LandingLayout } from './layouts';
 import { createBrowserRouter } from 'react-router-dom';
 import { RouterProvider } from 'react-router';
@@ -25,8 +25,6 @@ import { flattenLandingLinks } from './utils/landingLink';
 import { BrowseLetter, DetailCitizenReport as DetailCitizenReportLanding, DetailNews, DetailVillageEnterprise, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound, PrivacyPolicy } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
-import { LandingService } from './services';
-import { useEffect, useState } from 'react';
 import { ProtectedRoute, ScrollToTop } from './components';
 import PublicTax from './pages/dashboard/publicTax/PublicTax';
 import { DetailCitizenReport, DetailVillageReport, Features, Home, SubmitVillageReport, VillageReport } from './pages/kiosk';
@@ -34,38 +32,6 @@ import { DetailCitizenReport, DetailVillageReport, Features, Home, SubmitVillage
 function App() {
   const { user } = useAuth();
   const flatLandingLinks = flattenLandingLinks(landingLink);
-  const [titleData, setTitleData] = useState({ title: 'Loading...', icon: '' });
-
-  const { execute: fetchVillageProfile, ...getAll } = useService(LandingService.getVillageProfile);
-
-  useEffect(() => {
-    fetchVillageProfile();
-  }, [fetchVillageProfile]);
-
-  const villageProfile = getAll.data ?? {};
-
-  useEffect(() => {
-    if (getAll.data) {
-      setTitleData({
-        title: 'GoVillage | ' + villageProfile.village_name || 'Default Title',
-        icon: villageProfile.village_logo || '/vite.svg'
-      });
-    }
-  }, [getAll.data, villageProfile.village_logo, villageProfile.village_name]);
-
-  useEffect(() => {
-    document.title = titleData.title;
-
-    if (titleData.icon) {
-      let link = document.querySelector("link[rel~='icon']");
-      if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
-      }
-      link.href = titleData.icon;
-    }
-  }, [titleData]);
 
   return (
     <RouterProvider

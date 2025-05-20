@@ -2,18 +2,20 @@ import { useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { SocialMediaShare } from '@/utils/SocialMediaShare';
 import timeAgo from '@/utils/timeAgo';
-import { CommentOutlined, DownloadOutlined, FacebookOutlined, LikeFilled, LikeOutlined, MenuOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
+import { CommentOutlined, DownloadOutlined, FacebookOutlined, HeartFilled, HeartOutlined, LeftOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Dropdown, Image, Skeleton, Timeline } from 'antd';
 import useNotification from 'antd/es/notification/useNotification';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const DetailCitizenReport = () => {
   const { error } = useNotification();
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { execute: fetchDetailCitizenReport, ...getDetailCitizenReport } = useService(LandingService.getDetailCitizenReport);
   const [showReplies, setShowReplies] = useState(true);
   const likeCitizenReport = useService(LandingService.likeCitizenReport);
+  const likeCitizenReportReply = useService(LandingService.likeCitizenReportReply);
 
   useEffect(() => {
     fetchDetailCitizenReport(slug);
@@ -106,18 +108,21 @@ const DetailCitizenReport = () => {
       {Object.keys(citizenReport).length === 0 ? (
         <Skeleton active />
       ) : (
-        <>
+        <div className="flex flex-col gap-y-2">
+          <div className="mb-6 inline-flex items-center gap-x-2">
+            <Button onClick={() => navigate(-1)} icon={<LeftOutlined />} color="primary" variant="solid">
+              Kembali
+            </Button>
+            <Dropdown menu={{ items: shareItems, onClick: handleShareItemClick }}>
+              <Button variant="solid">
+                <ShareAltOutlined />
+              </Button>
+            </Dropdown>
+          </div>
           <Timeline className="w-full">
             <Timeline.Item dot={<Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold" src={citizenReport?.resident?.foto} />}>
               <Card
                 title={<b className="text-sm">{`(${citizenReport?.resident?.full_name} - ${timeAgo(citizenReport?.created_at)} )`} ,</b>}
-                extra={
-                  <Dropdown menu={{ items: shareItems, onClick: handleShareItemClick }}>
-                    <Button color="default" variant="link">
-                      <MenuOutlined />
-                    </Button>
-                  </Dropdown>
-                }
                 actions={[
                   <div
                     key="like"
@@ -127,7 +132,7 @@ const DetailCitizenReport = () => {
                       fetchDetailCitizenReport(slug);
                     }}
                   >
-                    {citizenReport.has_like ? <LikeFilled className="text-blue-500" /> : <LikeOutlined />}
+                    {citizenReport.has_like ? <HeartFilled className="text-red-500" /> : <HeartOutlined />}
                     {String(citizenReport.liked)}
                   </div>,
                   <div key="comment" className="inline-flex items-center gap-x-2" onClick={() => setShowReplies(!showReplies)}>
@@ -162,7 +167,22 @@ const DetailCitizenReport = () => {
             {showReplies &&
               citizenReport?.reply.map((reply) => (
                 <Timeline.Item key={reply.id} dot={<Avatar src={reply?.resident?.foto} />}>
-                  <Card className="ms-2 border">
+                  <Card
+                    actions={[
+                      <div
+                        key="like"
+                        className="inline-flex items-center gap-x-2"
+                        onClick={async () => {
+                          await likeCitizenReportReply.execute(reply.id);
+                          fetchDetailCitizenReport(slug);
+                        }}
+                      >
+                        {reply.has_like ? <HeartFilled className="text-red-500" /> : <HeartOutlined />}
+                        {String(reply.liked)}
+                      </div>
+                    ]}
+                    className="ms-2 border"
+                  >
                     <div className="flex flex-col gap-y-2">
                       <b className="text-sm">{`(${reply?.resident?.full_name} - ${timeAgo(reply?.created_at)} )`} ,</b>
                       <p className="mt-2">{reply?.content}</p>
@@ -185,7 +205,7 @@ const DetailCitizenReport = () => {
                 </Timeline.Item>
               ))}
           </Timeline>
-        </>
+        </div>
       )}
     </section>
   );

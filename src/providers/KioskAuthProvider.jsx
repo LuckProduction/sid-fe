@@ -25,7 +25,7 @@ export default function KioskAuthProvider({ children }) {
     }
     timerRef.current = setTimeout(() => {
       logout();
-    }, 100000); // ← ganti jadi 5000 ms kalau mau 5 detik
+    }, 100000);
   }, [logout]);
 
   const login = (user) => {

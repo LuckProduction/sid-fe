@@ -94,7 +94,7 @@ const PublicTax = () => {
           case 'belum bayar':
             return <Tag color="warning">Belum Lunas</Tag>;
           default:
-            return <Tag color="error">Undifined</Tag>;
+            return <Tag color="error">{record.status}</Tag>;
         }
       }
     }
