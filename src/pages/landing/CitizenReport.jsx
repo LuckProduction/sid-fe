@@ -1,21 +1,22 @@
-import { Reveal } from '@/components';
+import { Crud, Reveal } from '@/components';
 import { useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { CommentOutlined, DownloadOutlined, FacebookOutlined, HeartFilled, HeartOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Dropdown, Image, Input, Modal, Pagination, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
+import { CommentOutlined, DownloadOutlined, FacebookOutlined, FilterOutlined, HeartFilled, HeartOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Dropdown, Image, Input, Modal, Pagination, Popover, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { createFormFields } from '../dashboard/citizenReport/FormFields';
 import timeAgo from '@/utils/timeAgo';
 import asset from '@/utils/asset';
 import { SocialMediaShare } from '@/utils/SocialMediaShare';
+import { InputType } from '@/constants';
 
 const CitizenReport = () => {
   const navigate = useNavigate();
   const modal = useCrudModal();
   const { success, error } = useNotification();
   const { execute, ...getAllCitizenReport } = useService(LandingService.getAllCitizenReports);
-  const [filterValues, setFilterValues] = useState({ search: '', status: null });
+  const [filterValues, setFilterValues] = useState({ search: '', status: null, order_by: '' });
   const [showReplies, setShowReplies] = useState({});
   const pagination = usePagination({ totalData: getAllCitizenReport.totalData });
   const storeCitizenReport = useService(LandingService.storeCitizenReport);
@@ -28,15 +29,45 @@ const CitizenReport = () => {
       page: pagination.page,
       per_page: pagination.per_page,
       search: filterValues.search,
-      status: filterValues.status
+      status: filterValues.status,
+      order_by: filterValues.order_by
     });
-  }, [execute, filterValues.search, filterValues.status, pagination.page, pagination.per_page]);
+  }, [execute, filterValues.search, filterValues.status, filterValues.order_by, pagination.page, pagination.per_page]);
 
   useEffect(() => {
     fetchCitizenReport();
   }, [fetchCitizenReport]);
 
   const citizenReport = getAllCitizenReport.data ?? [];
+
+  const filter = {
+    formFields: [
+      {
+        label: `Urutkan Berdasarkan `,
+        name: 'order_by',
+        type: InputType.SELECT,
+        options: [
+          {
+            label: 'Suka',
+            value: 'like'
+          },
+          {
+            label: 'Terbaru',
+            value: ''
+          }
+        ]
+      }
+    ],
+    initialData: {
+      order_by: filterValues.order_by
+    },
+    isLoading: getAllCitizenReport.isLoading,
+    onSubmit: (values) => {
+      setFilterValues({
+        order_by: values.order_by
+      });
+    }
+  };
 
   const toggleReplies = (reportId) => {
     setShowReplies((prevState) => ({
@@ -159,6 +190,9 @@ const CitizenReport = () => {
               />
             </Tooltip>
             <Input.Search size="large" placeholder="Cari Topik Pengaduan" onSearch={(values) => setFilterValues({ ...filterValues, search: values })} />
+            <Popover placement="leftBottom" trigger="click" content={<Crud formFields={filter.formFields} initialData={filter.initialData} isLoading={filter.isLoading} onSubmit={filter.onSubmit} type="create" />}>
+              <Button icon={<FilterOutlined />} shape="circle" size="large" />
+            </Popover>
           </div>
           <div className="flex w-full flex-col divide-y-2">
             {citizenReport?.map((reportItem) => (
