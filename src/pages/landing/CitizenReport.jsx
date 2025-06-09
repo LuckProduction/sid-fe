@@ -1,13 +1,14 @@
 import { Reveal } from '@/components';
 import { useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { CommentOutlined, DownloadOutlined, HeartFilled, HeartOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Image, Input, Modal, Pagination, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
+import { CommentOutlined, DownloadOutlined, FacebookOutlined, HeartFilled, HeartOutlined, InfoCircleFilled, LeftOutlined, PlusOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Dropdown, Image, Input, Modal, Pagination, Result, Skeleton, Timeline, Tooltip, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { createFormFields } from '../dashboard/citizenReport/FormFields';
 import timeAgo from '@/utils/timeAgo';
 import asset from '@/utils/asset';
+import { SocialMediaShare } from '@/utils/SocialMediaShare';
 
 const CitizenReport = () => {
   const navigate = useNavigate();
@@ -42,6 +43,85 @@ const CitizenReport = () => {
       ...prevState,
       [reportId]: !prevState[reportId]
     }));
+  };
+
+  const shareItems = [
+    {
+      label: 'Bagikan di Facebook',
+      key: 'facebook',
+      icon: <FacebookOutlined />
+    },
+    {
+      label: 'Bagikan di WhatsApp',
+      key: 'whatsapp',
+      icon: <WhatsAppOutlined />
+    },
+    {
+      label: 'Bagikan di X',
+      key: 'x',
+      icon: <XOutlined />
+    },
+    {
+      label: 'Bagikan',
+      key: 'share',
+      icon: <ShareAltOutlined />
+    }
+  ];
+
+  const handleShare = async (reportItem) => {
+    const shareData = {
+      title: reportItem.report_title,
+      text: reportItem.report_title,
+      url: window.location.href
+    };
+    try {
+      if (window.navigator.share) {
+        await window.navigator.share(shareData);
+      } else {
+        await window.navigator.clipboard.writeText(shareData.url);
+        error('Gagal', 'Gagal Membagikan');
+      }
+    } catch (error) {
+      error('Gagal membagikan:', error);
+    }
+  };
+
+  const handleShareItemClick = (key, reportItem) => {
+    switch (key) {
+      case 'facebook':
+        window.open(
+          SocialMediaShare({
+            currentUrl: window.location.href,
+            text: reportItem.report_title,
+            media: 'facebook'
+          }),
+          '_blank'
+        );
+        break;
+      case 'x':
+        window.open(
+          SocialMediaShare({
+            currentUrl: window.location.href,
+            text: reportItem.report_title,
+            media: 'x'
+          }),
+          '_blank'
+        );
+        break;
+      case 'whatsapp':
+        window.open(
+          SocialMediaShare({
+            currentUrl: window.location.href,
+            text: reportItem.report_title,
+            media: 'whatsapp'
+          }),
+          '_blank'
+        );
+        break;
+      case 'share':
+        handleShare(reportItem);
+        break;
+    }
   };
 
   return (
@@ -86,6 +166,8 @@ const CitizenReport = () => {
                 <Timeline>
                   <Timeline.Item dot={<Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold" src={reportItem?.resident?.foto} />}>
                     <Card
+                      title={<b className="text-sm">{reportItem?.resident?.full_name}</b>}
+                      extra={<div className="text-sm">{timeAgo(reportItem?.created_at)}</div>}
                       actions={[
                         <div
                           key="like"
@@ -101,12 +183,22 @@ const CitizenReport = () => {
                         <div key="comment" className="inline-flex items-center gap-x-2" onClick={() => toggleReplies(reportItem.id)}>
                           <CommentOutlined />
                           {String(reportItem.reply.length)}
-                        </div>
+                        </div>,
+                        <Dropdown
+                          key="share"
+                          menu={{
+                            items: shareItems,
+                            onClick: ({ key }) => handleShareItemClick(key, reportItem)
+                          }}
+                        >
+                          <div className="inline-flex cursor-pointer items-center gap-x-2">
+                            <ShareAltOutlined />
+                          </div>
+                        </Dropdown>
                       ]}
                       className="ms-2 border bg-gray-100"
                     >
                       <div className="flex flex-col gap-y-2">
-                        <b className="text-sm">{`(${reportItem?.resident?.full_name} - ${timeAgo(reportItem?.created_at)} )`} ,</b>
                         <NavLink to={window.location.pathname + `/detail/${reportItem.slug}`} className="text-sm font-bold underline">
                           {reportItem?.report_title}
                         </NavLink>

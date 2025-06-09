@@ -107,7 +107,7 @@ export const landingLink = [
   },
   {
     label: 'Bantuan',
-    key: '/public_assistances',
+    key: '/browse_beneficiary',
     element: Landing.BrowseBeneficiary
   },
   {
@@ -122,6 +122,11 @@ export const landingLink = [
         label: 'Statistik APBDes',
         key: '/apbd_statistics',
         element: Landing.ApbdStatistic
+      },
+      {
+        label: 'Statistik Bantuan',
+        key: '/beneficiary_statistic',
+        element: Landing.PublicAssistanceStatistics
       }
     ]
   },

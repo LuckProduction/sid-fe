@@ -108,21 +108,18 @@ const DetailCitizenReport = () => {
       {Object.keys(citizenReport).length === 0 ? (
         <Skeleton active />
       ) : (
-        <div className="flex flex-col gap-y-2">
+        <div className="flex w-full flex-col gap-y-2">
           <div className="mb-6 inline-flex items-center gap-x-2">
             <Button onClick={() => navigate(-1)} icon={<LeftOutlined />} color="primary" variant="solid">
               Kembali
             </Button>
-            <Dropdown menu={{ items: shareItems, onClick: handleShareItemClick }}>
-              <Button variant="solid">
-                <ShareAltOutlined />
-              </Button>
-            </Dropdown>
           </div>
           <Timeline className="w-full">
-            <Timeline.Item dot={<Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold" src={citizenReport?.resident?.foto} />}>
+            <Timeline.Item className="w-full" dot={<Avatar className="bg-color-primary-100 text-color-primary-500 font-semibold" src={citizenReport?.resident?.foto} />}>
               <Card
-                title={<b className="text-sm">{`(${citizenReport?.resident?.full_name} - ${timeAgo(citizenReport?.created_at)} )`} ,</b>}
+                classNames="w-full"
+                title={<b className="text-sm">{citizenReport?.resident?.full_name}</b>}
+                extra={<div className="text-sm">{timeAgo(citizenReport?.created_at)}</div>}
                 actions={[
                   <div
                     key="like"
@@ -138,13 +135,18 @@ const DetailCitizenReport = () => {
                   <div key="comment" className="inline-flex items-center gap-x-2" onClick={() => setShowReplies(!showReplies)}>
                     <CommentOutlined />
                     {String(citizenReport.reply.length)}
-                  </div>
+                  </div>,
+                  <Dropdown key="share" menu={{ items: shareItems, onClick: handleShareItemClick }}>
+                    <div key="comment" className="inline-flex items-center gap-x-2">
+                      <ShareAltOutlined />
+                    </div>
+                  </Dropdown>
                 ]}
                 className="ms-2 border bg-gray-100"
               >
-                <div className="flex flex-col gap-y-2">
+                <div className="flex w-full flex-col gap-y-2">
                   <b className="text-sm">{citizenReport?.report_title}</b>
-                  <p className="mt-2">{citizenReport?.desc}</p>
+                  <p className="mt-2 w-full">{citizenReport?.desc}</p>
                   {citizenReport?.doc && (
                     <>
                       <hr className="my-2" />
