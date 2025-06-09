@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CheckCircleFilled, DatabaseOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, ExclamationCircleOutlined, EyeOutlined, FieldTimeOutlined, LineChartOutlined, MailOutlined, PlayCircleOutlined, RightOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
@@ -205,75 +205,82 @@ const Home = () => {
           )}
         </div>
       </section>
-      <section className="w-full bg-gray-100">
-        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-8 items-center gap-x-10 gap-y-12 px-6 py-16 lg:py-32">
-          {villageProfile.isLoading ? (
-            <div className="col-span-8 flex flex-col gap-y-6 lg:col-span-4">
-              <div className="flex flex-col gap-y-2">
-                <h2 className="font-semibold text-blue-500">Batas Desa</h2>
-                <p className="text-2xl font-semibold">Batas Desa Sukma</p>
-              </div>
-              <Skeleton active />
-              <ul className="flex flex-col gap-y-3">
-                <li className="inline-flex items-center gap-x-2 font-semibold">
-                  <Skeleton.Input active size="small" />
-                </li>
-                <li className="inline-flex items-center gap-x-2 font-semibold">
-                  <Skeleton.Input active size="small" />
-                </li>
-              </ul>
-              <Skeleton.Button active />
-            </div>
-          ) : (
-            <div className="col-span-8 flex flex-col gap-y-6 lg:col-span-4">
-              <div className="flex flex-col gap-y-2">
-                <Reveal>
-                  <h2 className="font-semibold text-blue-500">Fitur dan Layanan</h2>
-                </Reveal>
-                <Reveal>
-                  <p className="text-2xl font-semibold">Fitur Sistem Informasi Desa</p>
-                </Reveal>
-              </div>
-              <Reveal>
-                <p className="max-w-lg">
-                  Sistem Informasi Desa Digital hadir dengan berbagai fitur yang dirancang khusus untuk mendukung visi desa modern. Dari pemetaan wilayah hingga layanan administrasi berbasis digital, semua disesuaikan untuk meningkatkan efisiensi,
-                  transparansi, dan pembangunan desa yang berkelanjutan!
-                </p>
-              </Reveal>
-              <ul className="flex flex-col gap-y-3">
-                <Reveal>
-                  <li>
-                    <NavLink to="/news" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
-                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                      Update Terkait Berita, Potensi, Dan Lapak BUMDes
-                      <RightOutlined />
-                    </NavLink>
-                  </li>
-                </Reveal>
-                <Reveal>
-                  <li>
-                    <NavLink to="/letterings" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
-                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                      Layanan Surat Menyurat
-                      <RightOutlined />
-                    </NavLink>
-                  </li>
-                </Reveal>
-                <Reveal>
-                  <li>
-                    <NavLink to="/apbd_statistics" className="inline-flex items-center gap-x-2 font-semibold underline transition-colors hover:text-blue-500">
-                      <CheckCircleFilled className="text-blue-500" style={{ fontSize: '24px' }} />
-                      Transparansi Statistik Desa
-                      <RightOutlined />
-                    </NavLink>
-                  </li>
-                </Reveal>
-              </ul>
-            </div>
-          )}
 
-          <div className="col-span-8 flex items-center justify-center lg:col-span-4">
-            <img src="/illustration/feature.png" />
+      <section className="w-full bg-gray-100">
+        <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-x-10 gap-y-12 px-6 py-16 lg:flex-row lg:py-32">
+          <div className="flex w-full flex-[2] flex-col gap-y-6">
+            <div className="flex flex-col gap-y-2">
+              <h2 className="font-semibold text-blue-500">Fitur dan Layanan</h2>
+              <p className="text-2xl font-semibold">Fitur Sistem Informasi Desa</p>
+            </div>
+            Sistem Informasi Desa Digital hadir dengan berbagai fitur yang dirancang khusus untuk mendukung visi desa modern. Dari pemetaan wilayah hingga layanan administrasi berbasis digital, semua disesuaikan untuk meningkatkan efisiensi,
+            transparansi, dan pembangunan desa yang berkelanjutan!
+          </div>
+          <div className="grid w-full flex-[3] grid-cols-2 gap-x-6 gap-y-2 pb-1 lg:ms-24">
+            <div className="col-span-2 h-fit w-full lg:col-span-1">
+              <Card
+                title={
+                  <NavLink to="/letterings">
+                    <div className="flex items-center gap-x-4 py-5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
+                        <MailOutlined />
+                      </div>
+                      <span>Permohonan Surat</span>
+                    </div>
+                  </NavLink>
+                }
+              >
+                Ajukan surat sesuai kebutuhan Anda dalam hitungan menit.
+              </Card>
+            </div>
+            <div className="col-span-2 h-fit w-full lg:col-span-1 lg:mt-6">
+              <Card
+                title={
+                  <NavLink to="/citizen_reports">
+                    <div className="flex items-center gap-x-4 py-5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
+                        <ExclamationCircleOutlined />
+                      </div>
+                      <span>Pengaduan Masyarakat</span>
+                    </div>
+                  </NavLink>
+                }
+              >
+                Laporkan permasalahan di desa Anda dengan mudah!
+              </Card>
+            </div>
+            <div className="col-span-2 h-fit w-full lg:col-span-1">
+              <Card
+                title={
+                  <NavLink to="/submit_report">
+                    <div className="flex items-center gap-x-4 py-5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
+                        <UsergroupAddOutlined />
+                      </div>
+                      <span>Lapor Penduduk</span>
+                    </div>
+                  </NavLink>
+                }
+              >
+                Ajukan Laporan sesuai kebutuhan Anda dalam hitungan menit.
+              </Card>
+            </div>
+            <div className="col-span-2 h-fit w-full lg:col-span-1 lg:mt-6">
+              <Card
+                title={
+                  <NavLink to="/resident_statistics">
+                    <div className="flex items-center gap-x-4 py-5">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
+                        <LineChartOutlined />
+                      </div>
+                      <span>Statistik Desa</span>
+                    </div>
+                  </NavLink>
+                }
+              >
+                Pantau perkembangan desa melalui data statistik desa secara real time
+              </Card>
+            </div>
           </div>
         </div>
       </section>
