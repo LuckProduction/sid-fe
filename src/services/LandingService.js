@@ -34,8 +34,17 @@ export default class LandingService {
   }
 
   static async getAllVillagePotential({ page = null, per_page = null, search }) {
-    const params = page && per_page ? { page, per_page } : {};
-    const response = await api.get(`/landing/potensi-desa?search=${search}`, { ...params });
+    const params = {};
+
+    if (page !== null && per_page !== null) {
+      params.page = page;
+      params.per_page = per_page;
+    }
+    if (search) {
+      params.search = search;
+    }
+
+    const response = await api.get(`/landing/potensi-desa`, { params }); // ⬅️ kirim params walau kosong
     if (!response.data) return response;
     return { ...response, data: VillagePotential.fromApiData(response.data) };
   }

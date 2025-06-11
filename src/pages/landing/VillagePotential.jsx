@@ -6,6 +6,7 @@ import parse from 'html-react-parser';
 import { Reveal } from '@/components';
 import { useNavigate } from 'react-router-dom';
 import { EyeOutlined } from '@ant-design/icons';
+import dateFormatter from '@/utils/dateFormatter';
 
 const VillagePotential = () => {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ const VillagePotential = () => {
                   <div className="news-text mt-2">{parse(item.description)}</div>
                 </Reveal>
                 <div className="mt-6 flex flex-col gap-y-1">
-                  <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
+                  <div className="inline-flex items-center text-xs text-gray-400">{dateFormatter(item.created_at)}</div>
                   <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
                     <EyeOutlined className="text-xs" />
                     {item.seen}

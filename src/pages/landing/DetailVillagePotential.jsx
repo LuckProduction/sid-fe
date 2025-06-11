@@ -12,6 +12,7 @@ import markerShadowPng from 'leaflet/dist/images/marker-shadow.png';
 import L from 'leaflet';
 import { SocialMediaShare } from '@/utils/SocialMediaShare';
 import { MapCenterUpdater } from '@/components';
+import dateFormatter from '@/utils/dateFormatter';
 
 const DetailVillagePotential = () => {
   const { error } = useNotification();
@@ -76,7 +77,7 @@ const DetailVillagePotential = () => {
                 <EyeOutlined className="text-xs" />
                 {villagePotential.seen}
               </div>
-              <div className="inline-flex items-center text-xs text-gray-400">{villagePotential.created_at}</div>
+              <div className="inline-flex items-center text-xs text-gray-400">{dateFormatter(villagePotential.created_at)}</div>
             </div>
             <div className="mb-12 flex flex-wrap gap-2">
               <Button

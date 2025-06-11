@@ -2,6 +2,7 @@ import { useKioskAuth } from '@/context/KiosAuth';
 import { useCrudModal, usePagination, useService } from '@/hooks';
 import { KioskService } from '@/services';
 import { BASE_URL } from '@/utils/api';
+import dateFormatter from '@/utils/dateFormatter';
 import { CalendarOutlined, ClockCircleOutlined, LeftOutlined } from '@ant-design/icons';
 import { Button, Card, Empty, Input, Pagination, Skeleton, Tag, Typography } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
@@ -66,11 +67,12 @@ const BrowseLetter = () => {
                         <div className="inline-flex items-center gap-x-4">
                           <div className="inline-flex items-center gap-x-2">
                             <CalendarOutlined />
-                            {item.created_at}
+
+                            {dateFormatter(item.created_at)}
                           </div>
                           <div className="inline-flex items-center gap-x-2">
                             <ClockCircleOutlined />
-                            {item.created_at}
+                            {dateFormatter(item.created_at)}
                           </div>
                         </div>
                       }

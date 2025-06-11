@@ -7,6 +7,7 @@ import { Reveal } from '@/components';
 import { useCrudModal, usePagination, useService } from '@/hooks';
 import parse from 'html-react-parser';
 import { LandingService } from '@/services';
+import dateFormatter from '@/utils/dateFormatter';
 
 const Home = () => {
   const { villageProfile, speech, visiMisi, institution } = useOutletContext();
@@ -392,7 +393,7 @@ const Home = () => {
                       <div className="news-text mt-2">{parse(item.content)}</div>
                     </Reveal>
                     <div className="mt-6 flex flex-col gap-y-1">
-                      <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
+                      <div className="inline-flex items-center text-xs text-gray-400">{dateFormatter(item.created_at)}</div>
                       <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
                         <EyeOutlined className="text-xs" />
                         {item.seen}

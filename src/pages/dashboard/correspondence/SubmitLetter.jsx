@@ -2,7 +2,7 @@ import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { LetterTypeService, SubmitLetterService } from '@/services';
-import { Button, List, Space, Tag } from 'antd';
+import { Button, List, Space, Tag, Tooltip } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { letterTypeFormFields, submitLetterFilterFields, submitLetterFormFields } from './FormFields';
 import { SubmitLetter as SubmitLetterModel } from '@/models';
@@ -10,6 +10,8 @@ import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import { DownloadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '@/utils/asset';
+import dateFormatter from '@/utils/dateFormatter';
+import timeAgo from '@/utils/timeAgo';
 
 const { UPDATE, DELETE } = Action;
 
@@ -94,6 +96,7 @@ const SubmitLetter = () => {
       title: 'Dibuat',
       dataIndex: 'created_at',
       sorter: (a, b) => a.created_at.length - b.created_at.length,
+      render: (record) => <Tooltip title={dateFormatter(record)}>{timeAgo(record)}</Tooltip>,
       searchable: true
     }
   ];

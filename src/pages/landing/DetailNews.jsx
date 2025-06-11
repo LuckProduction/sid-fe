@@ -7,6 +7,7 @@ import parse from 'html-react-parser';
 import { EyeOutlined, FacebookOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
 import { Reveal } from '@/components';
 import { SocialMediaShare } from '@/utils/SocialMediaShare';
+import dateFormatter from '@/utils/dateFormatter';
 
 const DetailNews = () => {
   const { slug } = useParams();
@@ -72,7 +73,7 @@ const DetailNews = () => {
                     <EyeOutlined className="text-xs" />
                     {detailArticle.seen}
                   </div>
-                  <div className="inline-flex items-center text-xs text-gray-400">{detailArticle.created_at}</div>
+                  <div className="inline-flex items-center text-xs text-gray-400">{dateFormatter(detailArticle.created_at)}</div>
                 </div>
                 <div className="mb-12 flex flex-wrap gap-2">
                   <Button
@@ -163,7 +164,7 @@ const DetailNews = () => {
                           <div className="news-text mt-2">{parse(item.content)}</div>
                         </Reveal>
                         <div className="mt-6 flex flex-col gap-y-1">
-                          <div className="inline-flex items-center text-xs text-gray-400">{item.created_at}</div>
+                          <div className="inline-flex items-center text-xs text-gray-400">{dateFormatter(item.created_at)}</div>
                           <div className="inline-flex items-center gap-x-2 text-xs text-gray-400">
                             <EyeOutlined className="text-xs" />
                             {item.seen}
