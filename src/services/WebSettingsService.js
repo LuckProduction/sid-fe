@@ -21,6 +21,21 @@ export default class WebSettingsService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: WebSettings[];
+   * }>}
+   * */
+  static async getBySlug(slug, token) {
+    const response = await api.get(`/pengaturan/${slug}`, { token });
+    if (!response.data) return response;
+    return { ...response, data: WebSettings.fromApiData(response.data) };
+  }
+
+  /**
    * @param {WebSettings} data
    * @param {string} token
    * @returns {Promise<{

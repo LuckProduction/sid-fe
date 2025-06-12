@@ -2,11 +2,14 @@ import { MapCenterUpdater, Reveal } from '@/components';
 import Modul from '@/constants/Modul';
 import { useCrudModal, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { CaretRightOutlined, DeleteOutlined, DownloadOutlined, InfoOutlined, LeftOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, DeleteOutlined, DownloadOutlined, InfoOutlined, LeftOutlined, PlusCircleOutlined, PlusOutlined, HomeFilled, PushpinFilled, ShopFilled } from '@ant-design/icons';
 import { Button, Card, Collapse, Descriptions, Empty, Input, Modal, Popconfirm, Tag, theme, Typography } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
+import * as ReactDOMServer from 'react-dom/server';
+import L from 'leaflet';
+import dateFormatter from '@/utils/dateFormatter';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 const tenant = import.meta.env.VITE_TENANTS;
@@ -18,12 +21,47 @@ const Map = () => {
   const [modal, setModal] = useState({ isVisible: false });
   const { execute, ...getAllMap } = useService(LandingService.getAllMap);
   const { execute: fetchVillageBoundaries, data: villageBoundaries } = useService(LandingService.getAllVillageBoundaries);
+  const { execute: fetchVillagePotential, data: villagePotentials } = useService(LandingService.getAllVillagePotential);
+  const { execute: fetchEnterprise, data: villageEnterprises } = useService(LandingService.getAllEnterprise);
   const [filterValues, setFilterValues] = useState({ search: '' });
   const [tempSelectedMap, setTempSelectedMap] = useState(null);
   const [stackedSelectedMap, setStackedSelectedMap] = useState([]);
   const [geojsonLayers, setGeojsonLayers] = useState([]);
   const [markerPoints, setMarkerPoints] = useState([]);
   const [headVillageCoord, setHeadVillageCoord] = useState(null);
+
+  const headVillageIcon = L.divIcon({
+    html: ReactDOMServer.renderToStaticMarkup(<HomeFilled style={{ fontSize: '24px', color: '#3b82f6' }} />),
+    className: '',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24],
+    popupAnchor: [0, -24]
+  });
+
+  const potentialIcon = L.divIcon({
+    html: ReactDOMServer.renderToStaticMarkup(<PushpinFilled style={{ fontSize: '24px', color: '#ef4444' }} />),
+    className: '',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24],
+    popupAnchor: [0, -24]
+  });
+
+  const enterpriseIcon = L.divIcon({
+    html: ReactDOMServer.renderToStaticMarkup(<ShopFilled style={{ fontSize: '24px', color: '#22c55e ' }} />),
+    className: '',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24],
+    popupAnchor: [0, -24]
+  });
+
+  const defaultIcon = new L.Icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    shadowSize: [41, 41]
+  });
 
   const fetchMap = useCallback(() => {
     execute({
@@ -34,18 +72,11 @@ const Map = () => {
   useEffect(() => {
     fetchMap();
     fetchVillageBoundaries();
-  }, [fetchMap, fetchVillageBoundaries]);
+    fetchVillagePotential({});
+    fetchEnterprise({});
+  }, [fetchEnterprise, fetchMap, fetchVillageBoundaries, fetchVillagePotential]);
 
-  const map = getAllMap.data ?? [];
-
-  useEffect(() => {
-    if (villageBoundaries?.headvillage_coordinate) {
-      const coords = villageBoundaries.headvillage_coordinate.split(', ').map(Number);
-      if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
-        setHeadVillageCoord([coords[1], coords[0]]);
-      }
-    }
-  }, [villageBoundaries]);
+  const map = useMemo(() => getAllMap.data ?? [], [getAllMap.data]);
 
   const formatGeoJsonUrl = useCallback((url) => {
     if (!url) return null;
@@ -54,36 +85,188 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
-    const newMarkers = [];
-    const newGeojsonLayers = [];
+    if (villageBoundaries?.headvillage_coordinate) {
+      const coords = villageBoundaries.headvillage_coordinate.split(', ').map(Number);
+      const mapData = {
+        id: 'kantor-desa',
+        type: 'titik',
+        map_name: 'Titik Kantor Desa',
+        desc: 'Lokasi Kantor Desa',
+        content: villageBoundaries.headvillage_coordinate,
+        category: { category_name: 'Default' }
+      };
+      if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+        const latLng = [coords[1], coords[0]];
+        setHeadVillageCoord(latLng);
 
-    stackedSelectedMap.forEach(async (item) => {
-      if (item.type === 'titik') {
-        const coords = item.content.split(', ').map(Number);
-        if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
-          newMarkers.push({
-            id: item.id,
-            position: [coords[1], coords[0]],
-            name: item.map_name,
-            desc: item.desc
-          });
+        setStackedSelectedMap((prev) => {
+          const alreadyExists = prev.some((item) => item.id === 'kantor-desa');
+          if (alreadyExists) return prev;
+
+          return [mapData, ...prev];
+        });
+
+        const alreadyExistsInMap = map.some((item) => item.id === 'kantor-desa');
+        if (!alreadyExistsInMap) {
+          map.push(mapData);
         }
-      } else if (item.type === 'area') {
-        const geoJsonUrl = formatGeoJsonUrl(item.content);
-        if (geoJsonUrl) {
-          try {
-            const response = await fetch(geoJsonUrl);
-            const geojson = await response.json();
-            newGeojsonLayers.push({ id: item.id, data: geojson });
-          } catch (error) {
-            console.error('Error fetching GeoJSON:', error);
+      }
+    }
+  }, [map, villageBoundaries]);
+
+  useEffect(() => {
+    if (villagePotentials?.length) {
+      const coordinates = villagePotentials
+        .map((item) => {
+          if (!item.coordinate) return null;
+          const coords = item.coordinate.split(',').map(Number);
+          if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+            return {
+              latlng: [coords[1], coords[0]], // [lat, lng]
+              name: item.potential_name,
+              desc: item.description,
+              id: item.slug,
+              category: item.category
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      if (coordinates.length > 0) {
+        setStackedSelectedMap((prev) => {
+          const alreadyExists = prev.some((item) => item.id === 'potensi-desa');
+          if (alreadyExists) return prev;
+
+          const mapData = {
+            id: 'potensi-desa',
+            type: 'titik',
+            map_name: 'Potensi Desa',
+            desc: 'Titik-titik Potensi Desa',
+            content: coordinates,
+            category: { category_name: 'Potensi' }
+          };
+
+          const alreadyExistsInMap = map.some((item) => item.id === 'potensi-desa');
+          if (!alreadyExistsInMap) {
+            map.push(mapData);
+          }
+
+          return [mapData, ...prev];
+        });
+      }
+    }
+  }, [map, villagePotentials]);
+
+  useEffect(() => {
+    if (villageEnterprises?.length) {
+      const coordinates = villageEnterprises
+        .map((item) => {
+          if (!item.coordinate) return null;
+          const coords = item.coordinate.split(',').map(Number);
+          if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+            return {
+              latlng: [coords[1], coords[0]],
+              name: item.enterprise_name,
+              desc: item.desc,
+              id: item.slug,
+              category: { id: 1, category_name: 'something' }
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      if (coordinates.length > 0) {
+        setStackedSelectedMap((prev) => {
+          const alreadyExists = prev.some((item) => item.id === 'lapak-desa');
+          if (alreadyExists) return prev;
+
+          const mapData = {
+            id: 'lapak-desa',
+            type: 'titik',
+            map_name: 'Lapak Desa',
+            desc: 'Titik-titik Lapak BUMDes',
+            content: coordinates,
+            category: { category_name: 'Lapak BUMdes' }
+          };
+
+          const alreadyExistsInMap = map.some((item) => item.id === 'lapak-desa');
+          if (!alreadyExistsInMap) {
+            map.push(mapData);
+          }
+
+          return [mapData, ...prev];
+        });
+      }
+    }
+  }, [map, villageEnterprises]);
+
+  useEffect(() => {
+    const processMapData = async () => {
+      const newMarkers = [];
+      const newGeojsonLayers = [];
+
+      for (const item of stackedSelectedMap) {
+        if (item.type === 'titik') {
+          if (item.id === 'potensi-desa' && Array.isArray(item.content)) {
+            item.content.forEach((point, idx) => {
+              if (Array.isArray(point.latlng) && point.latlng.length === 2) {
+                newMarkers.push({
+                  id: `potensi-desa-${point.id ?? idx}`, // gunakan slug sebagai id unik
+                  position: point.latlng,
+                  name: point.name,
+                  category: point.category
+                });
+              }
+            });
+          } else if (item.id === 'lapak-desa' && Array.isArray(item.content)) {
+            item.content.forEach((point, idx) => {
+              if (Array.isArray(point.latlng) && point.latlng.length === 2) {
+                newMarkers.push({
+                  id: `lapak-desa-${idx}`, // gunakan slug sebagai id unik
+                  position: point.latlng,
+                  name: point.name,
+                  category: point.category
+                });
+              }
+            });
+          } else if (typeof item.content === 'string') {
+            const coords = item.content.split(',').map(Number);
+            if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+              newMarkers.push({
+                id: item.id,
+                position: [coords[1], coords[0]],
+                name: item.map_name,
+                desc: item.desc,
+                category: item.category
+              });
+            }
+          }
+        }
+
+        // ✅ GeoJSON
+        else if (item.type === 'area') {
+          const geoJsonUrl = formatGeoJsonUrl(item.content);
+          if (geoJsonUrl) {
+            try {
+              const response = await fetch(geoJsonUrl);
+              const geojson = await response.json();
+              newGeojsonLayers.push({ id: item.id, data: geojson });
+            } catch (error) {
+              console.error('Error fetching GeoJSON:', error);
+            }
           }
         }
       }
-    });
 
-    setMarkerPoints(newMarkers);
-    setGeojsonLayers(newGeojsonLayers);
+      setMarkerPoints(newMarkers);
+      setGeojsonLayers(newGeojsonLayers);
+    };
+
+    if (stackedSelectedMap.length > 0) {
+      processMapData();
+    }
   }, [formatGeoJsonUrl, stackedSelectedMap]);
 
   const panelStyle = {
@@ -138,7 +321,7 @@ const Map = () => {
                   {
                     key: 'release',
                     label: `Tanggal Rilis Dataset`,
-                    children: item.created_at
+                    children: dateFormatter(item.created_at)
                   },
                   {
                     key: 'update',
@@ -221,16 +404,25 @@ const Map = () => {
             <MapContainer center={headVillageCoord || [0.693, 122.4704]} zoom={8} style={{ height: '500px', width: '100%' }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <MapCenterUpdater coordinate={headVillageCoord} />
-              {markerPoints.map((marker) => (
-                <>
-                  <Marker key={marker.id} position={marker.position}>
-                    <Popup>
-                      <b>{marker.name}</b> <br />
-                      {marker.desc}
-                    </Popup>
-                  </Marker>
-                </>
-              ))}
+              {markerPoints.length > 0 &&
+                markerPoints
+                  .filter((marker) => marker.id.includes('potensi') || marker.id.includes('kantor-desa') || marker.id.includes('lapak-desa'))
+                  .map((marker) => {
+                    if (!marker?.position) return null;
+                    return (
+                      <Marker
+                        key={`${marker.id}-${marker.position.lat}-${marker.position.lng}`}
+                        position={marker.position}
+                        icon={marker.id.includes('potensi') ? potentialIcon : marker.id.includes('kantor-desa') ? headVillageIcon : marker.id.includes('lapak-desa') ? enterpriseIcon : defaultIcon}
+                      >
+                        <Popup>
+                          <strong>{marker.name}</strong>
+                          <br />
+                          {marker.desc}
+                        </Popup>
+                      </Marker>
+                    );
+                  })}
               {geojsonLayers.map((layer) => (
                 <GeoJSON key={layer.id} data={layer.data} />
               ))}
@@ -278,8 +470,8 @@ const Map = () => {
                   <Descriptions.Item label="Tipe Dataset">{tempSelectedMap.type}</Descriptions.Item>
                   <Descriptions.Item label="Kategori Dataset">{tempSelectedMap.category.category_name}</Descriptions.Item>
                   <Descriptions.Item label="Deskripsi">{tempSelectedMap.desc}</Descriptions.Item>
-                  <Descriptions.Item label="Tanggal Rilis Dataset">{tempSelectedMap.created_at}</Descriptions.Item>
-                  <Descriptions.Item label="Terakhir Dataset Diperbaharui">{tempSelectedMap.updated_at}</Descriptions.Item>
+                  <Descriptions.Item label="Tanggal Rilis Dataset">{dateFormatter(tempSelectedMap.created_at)}</Descriptions.Item>
+                  <Descriptions.Item label="Terakhir Dataset Diperbaharui">{dateFormatter(tempSelectedMap.updated_at)}</Descriptions.Item>
                 </Descriptions>
                 <Button icon={<PlusOutlined />} variant="solid" color="primary" className="mt-4" onClick={handleAddDataset}>
                   Tambah Dataset

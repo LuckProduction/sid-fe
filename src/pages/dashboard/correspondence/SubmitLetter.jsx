@@ -1,15 +1,17 @@
 import { DataTable, DataTableHeader } from '@/components';
 import Modul from '@/constants/Modul';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { LetterTypeService, SubmitLetterService } from '@/services';
-import { Button, List, Space, Tag } from 'antd';
+import { LetterTypeService, SubmitLetterService, WebSettingsService } from '@/services';
+import { Button, List, Result, Space, Tag, Tooltip } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { letterTypeFormFields, submitLetterFilterFields, submitLetterFormFields } from './FormFields';
 import { SubmitLetter as SubmitLetterModel } from '@/models';
 import { Action } from '@/constants';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
-import { DownloadOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '@/utils/asset';
+import dateFormatter from '@/utils/dateFormatter';
+import timeAgo from '@/utils/timeAgo';
 
 const { UPDATE, DELETE } = Action;
 
@@ -25,6 +27,7 @@ const SubmitLetter = () => {
   const pagination = usePagination({ totalData: getAllSubmitLetter.totalData });
   const modal = useCrudModal();
   const [filterValues, setFilterValues] = useState({ search: '', jenis_surat_id: null, status: null });
+  const { execute: fetchWebSettings, ...getAllWebaSettings } = useService(WebSettingsService.getBySlug);
 
   const fetchSubmitLetter = useCallback(() => {
     execute({
@@ -40,10 +43,14 @@ const SubmitLetter = () => {
   useEffect(() => {
     fetchSubmitLetter();
     fetchLetterType({ token: token });
-  }, [fetchLetterType, fetchSubmitLetter, token]);
+    fetchWebSettings('gunakan_tanda_tangan_digital', token);
+  }, [fetchLetterType, fetchSubmitLetter, fetchWebSettings, token]);
 
   const submitLetter = getAllSubmitLetter.data ?? [];
   const letterType = getAllLetterType.data ?? [];
+  const webSettings = getAllWebaSettings.data ?? {};
+
+  ['Perlu Verifikasi Mobile oleh Kepala Desa', 'Diaktifkan tanpa Verifikasi', 'Dinonaktifkan'];
 
   const isDocumentPath = (content) => {
     // eslint-disable-next-line no-useless-escape
@@ -94,6 +101,7 @@ const SubmitLetter = () => {
       title: 'Dibuat',
       dataIndex: 'created_at',
       sorter: (a, b) => a.created_at.length - b.created_at.length,
+      render: (record) => <Tooltip title={dateFormatter(record)}>{timeAgo(record)}</Tooltip>,
       searchable: true
     }
   ];
@@ -103,27 +111,72 @@ const SubmitLetter = () => {
       title: 'Aksi',
       render: (_, record) => (
         <Space size="small">
-          <Edit
-            title={`Edit ${Modul.LETTER_SUBMIT}`}
-            model={SubmitLetterModel}
-            onClick={() => {
-              modal.edit({
-                title: `Edit ${Modul.LETTER_SUBMIT}`,
-                data: record,
-                formFields: submitLetterFormFields,
-                onSubmit: async (values) => {
-                  const { message, isSuccess } = await updateSubmitLetter.execute(record.id, { ...values, _method: 'PUT' }, token);
-                  if (isSuccess) {
-                    success('Berhasil', message);
-                    fetchSubmitLetter({ token: token, page: pagination.page, per_page: pagination.per_page });
-                  } else {
-                    error('Gagal', message);
+          {['Diaktifkan tanpa Verifikasi', 'Dinonaktifkan'].includes(webSettings.value) && (
+            <Edit
+              title={`Edit ${Modul.LETTER_SUBMIT}`}
+              model={SubmitLetterModel}
+              onClick={() => {
+                modal.edit({
+                  title: `Edit ${Modul.LETTER_SUBMIT}`,
+                  data: record,
+                  formFields: submitLetterFormFields,
+                  onSubmit: async (values) => {
+                    const { message, isSuccess } = await updateSubmitLetter.execute(record.id, { ...values, _method: 'PUT' }, token);
+                    if (isSuccess) {
+                      success('Berhasil', message);
+                      fetchSubmitLetter({ token: token, page: pagination.page, per_page: pagination.per_page });
+                    } else {
+                      error('Gagal', message);
+                    }
+                    return isSuccess;
                   }
-                  return isSuccess;
-                }
-              });
-            }}
-          />
+                });
+              }}
+            />
+          )}
+          {['Perlu Verifikasi Mobile oleh Kepala Desa'].includes(webSettings.value) && (
+            <Button
+              icon={<CheckCircleOutlined />}
+              variant="outlined"
+              color={record.status === 'verifikasi' ? 'primary' : 'default'}
+              onClick={() => {
+                modal.show.paragraph({
+                  data: {
+                    content: (
+                      <Result
+                        title="Ubah Status ?"
+                        subTitle="Tindakan ini akan mengubah status permohanan surat"
+                        extra={[
+                          <Button key="buy" onClick={() => modal.close()}>
+                            Batal
+                          </Button>,
+                          <Button
+                            type="primary"
+                            key="console"
+                            onClick={async () => {
+                              const { message, isSuccess } = await updateSubmitLetter.execute(record.id, { status: record.status === 'verifikasi' ? 'menunggu' : 'verifikasi', _method: 'PUT' }, token);
+                              if (isSuccess) {
+                                success('Berhasil', message);
+                                fetchSubmitLetter({ token: token, page: pagination.page, per_page: pagination.per_page });
+                                modal.close();
+                              } else {
+                                error('Gagal', message);
+                                modal.close();
+                              }
+                              return isSuccess;
+                            }}
+                          >
+                            Ubah
+                          </Button>
+                        ]}
+                      />
+                    )
+                  }
+                });
+              }}
+            />
+          )}
+
           <Detail
             title={`Detail ${Modul.LETTER_SUBMIT}`}
             model={SubmitLetterModel}
