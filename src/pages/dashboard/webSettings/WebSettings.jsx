@@ -32,7 +32,7 @@ const WebSettings = () => {
       label: activeItem.setting_name,
       rules: [{ required: true, message: 'Harus diisi' }],
       extra: {
-        disabled: activeItem.editable !== 1
+        disabled: activeItem.editable !== true
       }
     };
 
@@ -69,6 +69,18 @@ const WebSettings = () => {
           {
             ...baseField,
             type: InputType.TEXT
+          }
+        ];
+      case 'select':
+        return [
+          {
+            ...baseField,
+            type: InputType.SELECT,
+            options:
+              activeItem.options?.map((item) => ({
+                label: item,
+                value: item
+              })) ?? []
           }
         ];
       default:

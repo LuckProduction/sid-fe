@@ -36,6 +36,21 @@ export default class ComunityService {
 
   /**
    * @param {number} id
+   * @param {LegalProducts} data
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  errors?: { [key: string]: string[] };
+   * }>}
+   */
+  static async givePermission(id, token) {
+    return await api.put(`/layanan-mandiri/tambah-permission/${id}`, { token });
+  }
+
+  /**
+   * @param {number} id
    * @param {string} token
    * @returns {Promise<{
    *  code: HTTPStatusCode;

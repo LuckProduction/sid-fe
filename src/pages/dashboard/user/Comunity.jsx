@@ -1,5 +1,5 @@
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
-import { ComunityService, OfficerService } from '@/services';
+import { ComunityService, OfficerService, WebSettingsService } from '@/services';
 import { Button, Card, Popconfirm, Result, Space, Switch } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import Modul from '@/constants/Modul';
@@ -17,10 +17,12 @@ const Comunity = () => {
   const modal = useCrudModal();
   const { success, error } = useNotification();
   const { execute, ...getAllComunity } = useService(ComunityService.getAll);
+  const { execute: fetchWebSettings, ...getAllWebaSettings } = useService(WebSettingsService.getBySlug);
   const deleteComunity = useService(ComunityService.delete);
   const deleteBatchComunity = useService(ComunityService.deleteBatch);
   const updateComunity = useService(ComunityService.update);
   const resetPassword = useService(OfficerService.resetPassword);
+  const givePermission = useService(ComunityService.givePermission);
   const [filterValues, setFilterValues] = useState({ search: '' });
 
   const pagination = usePagination({ totalData: getAllComunity.totalData });
@@ -38,9 +40,11 @@ const Comunity = () => {
 
   useEffect(() => {
     fetchComunity();
-  }, [fetchComunity]);
+    fetchWebSettings('gunakan_tanda_tangan_digital', token);
+  }, [fetchComunity, fetchWebSettings, token]);
 
   const comunity = getAllComunity.data ?? [];
+  const webSettings = getAllWebaSettings.data ?? {};
 
   const column = [
     {
@@ -212,6 +216,33 @@ const Comunity = () => {
         )
       }
     );
+    if (webSettings.value === 'Perlu Verifikasi Mobile oleh Kepala Desa') {
+      column.push({
+        title: 'Aksi',
+        render: (_, record) => (
+          <Space size="small">
+            <Popconfirm
+              title={record.permission.includes('verifikasi_surat') ? 'Hapus Permission' : 'Berikan Permission'}
+              description="Konfirmasi Tindakan?"
+              onConfirm={async () => {
+                const { isSuccess, message } = await givePermission.execute(record.id, token);
+                if (isSuccess) {
+                  success('Berhasil', message);
+                  fetchComunity({ token: token, page: pagination.page, per_page: pagination.per_page });
+                } else {
+                  error('Gagal', message);
+                }
+                return isSuccess;
+              }}
+              okText="Ok"
+              cancelText="Batal"
+            >
+              <Button loading={resetPassword.isLoading} icon={<LockOutlined />} variant="outlined" color={record?.permission?.includes('verifikasi_surat') ? 'default' : 'primary'}></Button>
+            </Popconfirm>
+          </Space>
+        )
+      });
+    }
   }
 
   const onDeleteBatch = () => {

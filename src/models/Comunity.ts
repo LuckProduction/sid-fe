@@ -12,6 +12,7 @@ export interface IncomingApiData {
     email_verified_at: string;
   };
   status: 'aktif' | 'nonaktif';
+  permission: string[] | null;
 }
 
 type ReturnType<S, From, To> = S extends From[] ? To[] : To;
@@ -37,7 +38,8 @@ export default class Comunity extends Model {
       email: string;
       email_verified_at: string;
     },
-    public status: 'aktif' | 'nonaktif'
+    public status: 'aktif' | 'nonaktif',
+    public permission: string[] | null
   ) {
     super();
   }
@@ -64,7 +66,8 @@ export default class Comunity extends Model {
         email: apiData.user_id.email,
         email_verified_at: apiData.user_id.email_verified_at
       },
-      apiData.status
+      apiData.status,
+      apiData.permission ?? null
     ) as ReturnType<T, IncomingApiData, Comunity>;
   }
 }
