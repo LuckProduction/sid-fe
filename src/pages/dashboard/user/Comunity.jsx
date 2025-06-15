@@ -68,6 +68,33 @@ const Comunity = () => {
   ];
 
   if (user && user.eitherCan([UPDATE, ComunityModel], [DELETE, ComunityModel], [READ, ComunityModel])) {
+    if (webSettings.value === 'Perlu Verifikasi Mobile oleh Kepala Desa') {
+      column.push({
+        title: 'Akses',
+        render: (_, record) => (
+          <Space size="small">
+            <Popconfirm
+              title={record.permission.includes('verifikasi_surat') ? 'Hapus Permission' : 'Berikan Permission'}
+              description="Konfirmasi Tindakan?"
+              onConfirm={async () => {
+                const { isSuccess, message } = await givePermission.execute(record.id, token);
+                if (isSuccess) {
+                  success('Berhasil', message);
+                  fetchComunity({ token: token, page: pagination.page, per_page: pagination.per_page });
+                } else {
+                  error('Gagal', message);
+                }
+                return isSuccess;
+              }}
+              okText="Ok"
+              cancelText="Batal"
+            >
+              <Button loading={resetPassword.isLoading} icon={<LockOutlined />} variant="outlined" color={record?.permission?.includes('verifikasi_surat') ? 'default' : 'primary'}></Button>
+            </Popconfirm>
+          </Space>
+        )
+      });
+    }
     column.push(
       {
         title: 'Aksi',
@@ -216,33 +243,6 @@ const Comunity = () => {
         )
       }
     );
-    if (webSettings.value === 'Perlu Verifikasi Mobile oleh Kepala Desa') {
-      column.push({
-        title: 'Aksi',
-        render: (_, record) => (
-          <Space size="small">
-            <Popconfirm
-              title={record.permission.includes('verifikasi_surat') ? 'Hapus Permission' : 'Berikan Permission'}
-              description="Konfirmasi Tindakan?"
-              onConfirm={async () => {
-                const { isSuccess, message } = await givePermission.execute(record.id, token);
-                if (isSuccess) {
-                  success('Berhasil', message);
-                  fetchComunity({ token: token, page: pagination.page, per_page: pagination.per_page });
-                } else {
-                  error('Gagal', message);
-                }
-                return isSuccess;
-              }}
-              okText="Ok"
-              cancelText="Batal"
-            >
-              <Button loading={resetPassword.isLoading} icon={<LockOutlined />} variant="outlined" color={record?.permission?.includes('verifikasi_surat') ? 'default' : 'primary'}></Button>
-            </Popconfirm>
-          </Space>
-        )
-      });
-    }
   }
 
   const onDeleteBatch = () => {

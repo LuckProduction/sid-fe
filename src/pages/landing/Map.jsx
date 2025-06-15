@@ -1,13 +1,12 @@
-import { MapCenterUpdater, Reveal } from '@/components';
+import { CustomMapIcon, FullscreenControl, MapCenterUpdater, Reveal } from '@/components';
 import Modul from '@/constants/Modul';
 import { useCrudModal, useService } from '@/hooks';
 import { LandingService } from '@/services';
-import { CaretRightOutlined, DeleteOutlined, DownloadOutlined, InfoOutlined, LeftOutlined, PlusCircleOutlined, PlusOutlined, HomeFilled, PushpinFilled, ShopFilled } from '@ant-design/icons';
+import { CaretRightOutlined, DeleteOutlined, DownloadOutlined, InfoOutlined, LeftOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Card, Collapse, Descriptions, Empty, Input, Modal, Popconfirm, Tag, theme, Typography } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
-import * as ReactDOMServer from 'react-dom/server';
 import L from 'leaflet';
 import dateFormatter from '@/utils/dateFormatter';
 
@@ -29,30 +28,6 @@ const Map = () => {
   const [geojsonLayers, setGeojsonLayers] = useState([]);
   const [markerPoints, setMarkerPoints] = useState([]);
   const [headVillageCoord, setHeadVillageCoord] = useState(null);
-
-  const headVillageIcon = L.divIcon({
-    html: ReactDOMServer.renderToStaticMarkup(<HomeFilled style={{ fontSize: '24px', color: '#3b82f6' }} />),
-    className: '',
-    iconSize: [24, 24],
-    iconAnchor: [12, 24],
-    popupAnchor: [0, -24]
-  });
-
-  const potentialIcon = L.divIcon({
-    html: ReactDOMServer.renderToStaticMarkup(<PushpinFilled style={{ fontSize: '24px', color: '#ef4444' }} />),
-    className: '',
-    iconSize: [24, 24],
-    iconAnchor: [12, 24],
-    popupAnchor: [0, -24]
-  });
-
-  const enterpriseIcon = L.divIcon({
-    html: ReactDOMServer.renderToStaticMarkup(<ShopFilled style={{ fontSize: '24px', color: '#22c55e ' }} />),
-    className: '',
-    iconSize: [24, 24],
-    iconAnchor: [12, 24],
-    popupAnchor: [0, -24]
-  });
 
   const defaultIcon = new L.Icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -403,6 +378,7 @@ const Map = () => {
           <Card className="col-span-6 lg:col-span-4">
             <MapContainer center={headVillageCoord || [0.693, 122.4704]} zoom={8} style={{ height: '500px', width: '100%' }}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <FullscreenControl />
               <MapCenterUpdater coordinate={headVillageCoord} />
               {markerPoints.length > 0 &&
                 markerPoints
@@ -413,7 +389,15 @@ const Map = () => {
                       <Marker
                         key={`${marker.id}-${marker.position.lat}-${marker.position.lng}`}
                         position={marker.position}
-                        icon={marker.id.includes('potensi') ? potentialIcon : marker.id.includes('kantor-desa') ? headVillageIcon : marker.id.includes('lapak-desa') ? enterpriseIcon : defaultIcon}
+                        icon={
+                          marker.id.includes('potensi')
+                            ? CustomMapIcon({ iconType: 'potention' })
+                            : marker.id.includes('kantor-desa')
+                              ? CustomMapIcon({ iconType: 'headvillage' })
+                              : marker.id.includes('lapak-desa')
+                                ? CustomMapIcon({ iconType: 'enterprises' })
+                                : defaultIcon
+                        }
                       >
                         <Popup>
                           <strong>{marker.name}</strong>

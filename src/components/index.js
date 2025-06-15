@@ -9,6 +9,8 @@ export { default as Inbox } from './dashboard/Inbox';
 
 export { default as Navbar } from './landing/Navbar';
 export { default as Footer } from './landing/Footer';
+export { default as CustomMapIcon } from './landing/Map/CustomMapIcon';
+export { default as FullscreenControl } from './landing/Map/FullScreenController';
 
 export { default as DataLoader } from './DataLoader';
 export { default as Reveal } from './landing/Reveal';
