@@ -140,7 +140,7 @@ export const biodataFormFields = () => [
     getFileList: (data) => {
       return [
         {
-          url: data?.foto,
+          url: data?.image_profile,
           name: data?.name
         }
       ];

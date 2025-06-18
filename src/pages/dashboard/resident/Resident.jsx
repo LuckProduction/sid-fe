@@ -1,7 +1,7 @@
 import { DataTable, DataTableHeader } from '@/components';
 import { useAuth, useCrudModal, useNotification, usePagination, useService } from '@/hooks';
 import { HamletService, ResidentService } from '@/services';
-import { Card, Space, Tag } from 'antd';
+import { Alert, Button, Card, Collapse, Descriptions, Space, Tag } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modul from '@/constants/Modul';
@@ -11,6 +11,7 @@ import { Resident as ResidentModel } from '@/models';
 import { Delete, Detail, Edit } from '@/components/dashboard/button';
 import dateFormatter from '@/utils/dateFormatter';
 import { BASE_URL } from '@/utils/api';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { UPDATE, DELETE } = Action;
 
@@ -20,6 +21,7 @@ const Resident = () => {
   const { success, error } = useNotification();
   const { execute, ...getAllResident } = useService(ResidentService.getAll);
   const { execute: fetchHamlet, ...getAllHamlet } = useService(HamletService.getAll);
+  const { execute: fetchRecordAnomali, ...getAllRecordAnomali } = useService(ResidentService.getAllAnomali);
   const storeResident = useService(ResidentService.store);
   const importResident = useService(ResidentService.import);
   const deleteResident = useService(ResidentService.delete);
@@ -59,10 +61,12 @@ const Resident = () => {
   useEffect(() => {
     fetchResident();
     fetchHamlet({ token: token, search: '' });
-  }, [fetchHamlet, fetchResident, token]);
+    fetchRecordAnomali({ token: token, page: 1, per_page: 300 });
+  }, [fetchHamlet, fetchRecordAnomali, fetchResident, token]);
 
   const resident = getAllResident.data ?? [];
   const hamlet = getAllHamlet.data ?? [];
+  const recordAnomali = getAllRecordAnomali.data ?? [];
 
   const exportResident = () => {
     const query = {
@@ -305,6 +309,61 @@ const Resident = () => {
         onSearch={(values) => setFilterValues({ ...filterValues, search: values })}
         filter={filter}
       />
+      {recordAnomali.length > 0 && (
+        <Alert
+          message={<div className="text-xs md:text-sm">{recordAnomali.length} data penduduk terdeteksi bermasalah. Tekan periksa untuk melihat detail.</div>}
+          banner
+          className="mb-4"
+          action={
+            <Button
+              size="small"
+              type="text"
+              variant="solid"
+              color="primary"
+              icon={<ExclamationCircleOutlined />}
+              onClick={() => {
+                modal.show.paragraph({
+                  title: 'Data Penduduk yang Bermasalah',
+                  data: {
+                    content: (
+                      <Collapse
+                        items={recordAnomali.map((item) => ({
+                          key: item.id,
+                          label: item.nama_lengkap,
+                          children: (
+                            <Descriptions column={1} bordered className="mb-6">
+                              <Descriptions.Item label="Nama Lengkap">{item.nama_lengkap}</Descriptions.Item>
+                              <Descriptions.Item label="NIK">{item.nik}</Descriptions.Item>
+                              <Descriptions.Item label="Data Duplikasi">{item.duplikat}</Descriptions.Item>
+                              <Descriptions.Item label="Data Tidak Lengkap">{item.data_tidak_lengkap}</Descriptions.Item>
+                            </Descriptions>
+                          ),
+                          extra: (
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              onClick={() => {
+                                navigate(window.location.pathname + '/edit/' + item.id);
+                                modal.close();
+                              }}
+                            >
+                              Periksa
+                            </Button>
+                          )
+                        }))}
+                      />
+                    )
+                  }
+                });
+              }}
+            >
+              Periksa
+            </Button>
+          }
+        />
+      )}
+
       <div className="w-full max-w-full overflow-x-auto">
         <DataTable data={resident} columns={column} loading={getAllResident.isLoading} map={(article) => ({ key: article.id, ...article })} handleSelectedData={(_, selectedRows) => setSelectedResident(selectedRows)} pagination={pagination} />
       </div>

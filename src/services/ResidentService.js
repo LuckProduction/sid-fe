@@ -36,6 +36,22 @@ export default class ResidentService {
   }
 
   /**
+   * @param {string} token
+   * @returns {Promise<{
+   *  code: HTTPStatusCode;
+   *  status: boolean;
+   *  message: string;
+   *  data?: Article[];
+   * }>}
+   * */
+  static async getAllAnomali({ token, ...filters }) {
+    const params = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== null && value !== undefined && value !== ''));
+    const response = await api.get(`/master-penduduk/deteksi-anomali`, { token, params });
+    if (!response.data) return response;
+    return { ...response, data: response.data };
+  }
+
+  /**
    * @param {Resident} data
    * @param {string} token
    * @returns {Promise<{

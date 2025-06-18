@@ -145,7 +145,7 @@ const SubmitLetter = () => {
                     content: (
                       <Result
                         title="Ubah Status ?"
-                        subTitle="Tindakan ini akan mengubah status permohanan surat"
+                        subTitle="Surat akan diverifikasi terlebih dahulu melalui aplikasi mobile"
                         extra={[
                           <Button key="buy" onClick={() => modal.close()}>
                             Batal
