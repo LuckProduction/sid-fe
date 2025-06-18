@@ -35,25 +35,43 @@ const Create = () => {
   };
 
   return (
-    <div>
-      <Card className="mb-6 flex items-center justify-between">
-        <Typography.Title level={5}>Tambah {Modul.VILLAGE_POTENTIALS}</Typography.Title>
+    <Form
+      form={form}
+      onFinish={async (values) => {
+        const { message, isSuccess } = await storeVillagePotential.execute({ ...values, coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          navigate(-1);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }}
+    >
+      <Card className="mb-6">
+        <div className="flex w-full items-center justify-between">
+          <Typography.Title level={5}>Tambah {Modul.VILLAGE_POTENTIALS}</Typography.Title>
+          <Form.Item style={{ margin: 0 }}>
+            <Button size="large" type="primary" htmlType="submit" loading={storeVillagePotential.isLoading}>
+              Kirim
+            </Button>
+          </Form.Item>
+        </div>
       </Card>
-      <Form
-        form={form}
-        className="grid w-full grid-cols-6 gap-2"
-        onFinish={async (values) => {
-          const { message, isSuccess } = await storeVillagePotential.execute({ ...values, coordinate: `${values.longitude}, ${values.latitude}` }, token, values.foto.file);
-          if (isSuccess) {
-            success('Berhasil', message);
-            navigate(-1);
-          } else {
-            error('Gagal', message);
-          }
-          return isSuccess;
-        }}
-      >
+      <div className="grid w-full grid-cols-6 gap-2">
         <Card className="col-span-6 lg:col-span-4">
+          <Form.Item
+            className="mb-4"
+            name="potential_name"
+            rules={[
+              {
+                required: true,
+                message: 'Nama potensi wajib diisi!'
+              }
+            ]}
+          >
+            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
+          </Form.Item>
           <Form.Item
             className="m-0"
             name="description"
@@ -84,19 +102,7 @@ const Create = () => {
             />
           </Form.Item>
         </Card>
-        <Card className="col-span-6 lg:col-span-2">
-          <Form.Item
-            className="mb-4"
-            name="potential_name"
-            rules={[
-              {
-                required: true,
-                message: 'Nama potensi wajib diisi!'
-              }
-            ]}
-          >
-            <Input placeholder={`Nama ${Modul.VILLAGE_POTENTIALS}`} size="large" />
-          </Form.Item>
+        <Card className="col-span-6 h-fit lg:col-span-2">
           <Form.Item
             className="mb-4"
             name="location"
@@ -183,19 +189,9 @@ const Create = () => {
           >
             <Input placeholder={`Longitude`} size="large" />
           </Form.Item>
-          <Form.Item className="mt-2">
-            <div className="flex w-full items-center justify-end gap-x-2">
-              <Button type="default" htmlType="reset" size="large">
-                Reset
-              </Button>
-              <Button size="large" type="primary" htmlType="submit" loading={storeVillagePotential.isLoading}>
-                Kirim
-              </Button>
-            </div>
-          </Form.Item>
         </Card>
-      </Form>
-    </div>
+      </div>
+    </Form>
   );
 };
 

@@ -29,25 +29,45 @@ const Create = () => {
   };
 
   return (
-    <div>
-      <Card className="mb-6 flex items-center justify-between">
-        <Typography.Title level={5}>Tambah {Modul.ARTICLE}</Typography.Title>
+    <Form
+      form={form}
+      onFinish={async (values) => {
+        const { message, isSuccess } = await storeArticle.execute({ ...values, user_id: 1 }, token, values.image.file);
+        if (isSuccess) {
+          success('Berhasil', message);
+          navigate(-1);
+        } else {
+          error('Gagal', message);
+        }
+        return isSuccess;
+      }}
+    >
+      <Card className="mb-6">
+        <div className="flex w-full items-center justify-between">
+          <Typography.Title level={5} style={{ margin: 0 }}>
+            Tambah {Modul.ARTICLE}
+          </Typography.Title>
+          <Form.Item style={{ margin: 0 }}>
+            <Button size="large" type="primary" htmlType="submit" loading={storeArticle.isLoading}>
+              Kirim
+            </Button>
+          </Form.Item>
+        </div>
       </Card>
-      <Form
-        form={form}
-        className="grid w-full grid-cols-6 gap-2"
-        onFinish={async (values) => {
-          const { message, isSuccess } = await storeArticle.execute({ ...values, user_id: 1 }, token, values.image.file);
-          if (isSuccess) {
-            success('Berhasil', message);
-            navigate(-1);
-          } else {
-            error('Gagal', message);
-          }
-          return isSuccess;
-        }}
-      >
+      <div className="grid w-full grid-cols-6 gap-2">
         <Card className="col-span-6 lg:col-span-4">
+          <Form.Item
+            className="mb-4"
+            name="title"
+            rules={[
+              {
+                required: true,
+                message: 'Judul wajib diisi!'
+              }
+            ]}
+          >
+            <Input placeholder={`Judul ${Modul.ARTICLE}`} size="large" />
+          </Form.Item>
           <Form.Item
             className="m-0"
             name="content"
@@ -78,19 +98,7 @@ const Create = () => {
             />
           </Form.Item>
         </Card>
-        <Card className="col-span-6 lg:col-span-2">
-          <Form.Item
-            className="mb-4"
-            name="title"
-            rules={[
-              {
-                required: true,
-                message: 'Judul wajib diisi!'
-              }
-            ]}
-          >
-            <Input placeholder={`Judul ${Modul.ARTICLE}`} size="large" />
-          </Form.Item>
+        <Card className="col-span-6 h-fit lg:col-span-2">
           <Form.Item
             className="mb-4"
             name="status"
@@ -174,19 +182,9 @@ const Create = () => {
           >
             <Input placeholder={`Tag ${Modul.ARTICLE}`} size="large" />
           </Form.Item>
-          <Form.Item className="mt-2">
-            <div className="flex w-full items-center justify-end gap-x-2">
-              <Button type="default" htmlType="reset" size="large">
-                Reset
-              </Button>
-              <Button size="large" type="primary" htmlType="submit" loading={storeArticle.isLoading}>
-                Kirim
-              </Button>
-            </div>
-          </Form.Item>
         </Card>
-      </Form>
-    </div>
+      </div>
+    </Form>
   );
 };
 
