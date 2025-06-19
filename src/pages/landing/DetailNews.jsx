@@ -1,7 +1,7 @@
 import { useNotification, usePagination, useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { Button, Card, Pagination, Skeleton, Tag, Typography } from 'antd';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { EyeOutlined, FacebookOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
@@ -18,10 +18,18 @@ const DetailNews = () => {
 
   const pagination = usePagination({ totalData: getAllArticleDetail.totalData });
 
+  const fetchData = useCallback(async () => {
+    const { isSuccess } = await fetchArticleDetail(slug);
+    if (!isSuccess && getAllArticleDetail.hasExecuted) {
+      navigate('/notfound');
+    }
+    return isSuccess;
+  }, [fetchArticleDetail, getAllArticleDetail.hasExecuted, navigate, slug]);
+
   useEffect(() => {
-    fetchArticleDetail(slug);
+    fetchData();
     fetchArticle({ page: pagination.page, pagination: pagination.per_page, search: '' });
-  }, [fetchArticle, fetchArticleDetail, pagination.page, pagination.per_page, slug]);
+  }, [fetchArticle, fetchData, pagination.page, pagination.per_page]);
 
   const detailArticle = getAllArticleDetail.data ?? {};
   const article = getAllArticle.data ?? [];
