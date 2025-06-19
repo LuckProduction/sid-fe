@@ -21,6 +21,7 @@ export interface UseServiceReturnType<T, P extends any[]> {
   isSuccess: boolean;
   isLoading: boolean;
   totalData: number;
+  hasExecuted: boolean;
   execute: (...params: P) => Promise<{ data: T | null; message: string; code: HttpStatusCode; isSuccess: boolean }>;
 }
 
@@ -32,10 +33,12 @@ export default function useService<T, P extends any[]>(serviceMethod: (...params
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasExecuted, setHasExecuted] = useState(false);
   const [totalData, setTotalData] = useState(0);
 
   const execute = useCallback(
     async (...params: P) => {
+      setHasExecuted(true);
       setMessage('');
       setIsLoading(true);
       let message = '';
@@ -72,5 +75,5 @@ export default function useService<T, P extends any[]>(serviceMethod: (...params
     [onUnauthorized]
   );
 
-  return { data, message, isSuccess, isLoading, totalData, execute };
+  return { data, message, isSuccess, isLoading, totalData, execute, hasExecuted };
 }

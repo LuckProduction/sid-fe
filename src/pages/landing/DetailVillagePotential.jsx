@@ -2,9 +2,9 @@ import { useNotification, useService } from '@/hooks';
 import { LandingService } from '@/services';
 import { EyeOutlined, FacebookOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
 import { Button, Card, Skeleton, Typography } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import parse from 'html-react-parser';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
@@ -16,6 +16,7 @@ import dateFormatter from '@/utils/dateFormatter';
 
 const DetailVillagePotential = () => {
   const { error } = useNotification();
+  const navigate = useNavigate();
   const { slug } = useParams();
   const { execute: fetchVillagePotential, ...getAllVillagePotential } = useService(LandingService.getDetailVillagePotential);
   const [coordinate, setCoodinate] = useState(null);
@@ -27,9 +28,17 @@ const DetailVillagePotential = () => {
     iconAnchor: [12, 41]
   });
 
+  const fetchData = useCallback(async () => {
+    const { isSuccess } = await fetchVillagePotential(slug);
+    if (!isSuccess && getAllVillagePotential.hasExecuted) {
+      navigate('/notfound');
+    }
+    return isSuccess;
+  }, [fetchVillagePotential, getAllVillagePotential.hasExecuted, navigate, slug]);
+
   useEffect(() => {
-    fetchVillagePotential(slug);
-  }, [fetchVillagePotential, slug]);
+    fetchData();
+  }, [fetchData]);
 
   const villagePotential = getAllVillagePotential.data ?? {};
 

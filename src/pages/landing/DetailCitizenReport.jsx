@@ -5,7 +5,7 @@ import timeAgo from '@/utils/timeAgo';
 import { CommentOutlined, DownloadOutlined, FacebookOutlined, HeartFilled, HeartOutlined, LeftOutlined, ShareAltOutlined, WhatsAppOutlined, XOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Dropdown, Image, Skeleton, Timeline } from 'antd';
 import useNotification from 'antd/es/notification/useNotification';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const DetailCitizenReport = () => {
@@ -17,9 +17,17 @@ const DetailCitizenReport = () => {
   const likeCitizenReport = useService(LandingService.likeCitizenReport);
   const likeCitizenReportReply = useService(LandingService.likeCitizenReportReply);
 
+  const fetchData = useCallback(async () => {
+    const { isSuccess } = await fetchDetailCitizenReport(slug);
+    if (!isSuccess && getDetailCitizenReport.hasExecuted) {
+      navigate('/notfound');
+    }
+    return isSuccess;
+  }, [fetchDetailCitizenReport, getDetailCitizenReport.hasExecuted, navigate, slug]);
+
   useEffect(() => {
-    fetchDetailCitizenReport(slug);
-  }, [fetchDetailCitizenReport, slug]);
+    fetchData();
+  }, [fetchData]);
 
   const citizenReport = getDetailCitizenReport.data ?? {};
 

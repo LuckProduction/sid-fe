@@ -4,19 +4,28 @@ import { LandingService } from '@/services';
 import { rupiahFormat } from '@/utils/rupiahFormat';
 import { LikeFilled, LikeOutlined, PushpinOutlined, UserOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { Button, Card, Descriptions, Image, Skeleton, Tag, Typography } from 'antd';
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // FIXME: UPDATE LIKE UTILITIES
 const DetailVillageEnterprise = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { execute: fetchDetailEnterprise, ...getAllDetailEnterprise } = useService(LandingService.getDetailEnterprise);
   const likeEnterpriseMenu = useService(LandingService.likeEnterpriseMenu);
   const modal = useCrudModal();
 
+  const fetchData = useCallback(async () => {
+    const { isSuccess } = await fetchDetailEnterprise(slug);
+    if (!isSuccess && getAllDetailEnterprise.hasExecuted) {
+      navigate('/notfound');
+    }
+    return isSuccess;
+  }, [fetchDetailEnterprise, getAllDetailEnterprise.hasExecuted, navigate, slug]);
+
   useEffect(() => {
-    fetchDetailEnterprise(slug);
-  }, [fetchDetailEnterprise, slug]);
+    fetchData();
+  }, [fetchData]);
 
   const detailEnterprise = getAllDetailEnterprise.data ?? {};
 
