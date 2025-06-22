@@ -96,24 +96,25 @@ jobs:
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
+          # Ambil pemetaan tenant ke folder
           MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_STAGING }}
           if [ -z "$MAPPING" ]; then
             echo "TENANT_FOLDER_MAPPING_STAGING is not set"
             exit 1
           fi
+
+          # Pecah pemetaan menjadi array
           IFS=',' read -r -a mapping_array <<< "$MAPPING"
+
           # Loop untuk setiap pemetaan
           for entry in "${mapping_array[@]}"; do
             # Pecah tenant dan folder
             IFS=':' read -r tenant folder <<< "$entry"
             echo "Deploying tenant: $tenant to folder: $folder"
             DEPLOY_PATH="/home/govy6997/public_html/staging/$folder"
-            ssh -p 2223 govy6997@go-village.id << 'EOF'
-            if [ ! -d "$DEPLOY_PATH" ]; then
-              mkdir -p "$DEPLOY_PATH"
-            fi
-            rm -rf "$DEPLOY_PATH"/*
-            EOF
+            echo "Creating directory if not exists and cleaning up: $DEPLOY_PATH"
+            ssh -p 2223 govy6997@go-village.id "if [ ! -d \"$DEPLOY_PATH\" ]; then mkdir -p \"$DEPLOY_PATH\"; fi; rm -rf \"$DEPLOY_PATH\"/*"
+            echo "Copying files to $DEPLOY_PATH"
             scp -r -P 2223 build/$tenant/* govy6997@go-village.id:"$DEPLOY_PATH"/
           done
 
