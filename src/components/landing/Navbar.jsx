@@ -57,7 +57,7 @@ const Navbar = ({ villageProfile }) => {
               <>
                 <Image width={40} preview={false} src={villageProfile?.data?.village_logo} />
                 <b>
-                  Desa Testimoni <span className="text-blue-500">{villageProfile?.data?.village_name}</span>{' '}
+                  Desa <span className="text-blue-500">{villageProfile?.data?.village_name}</span>{' '}
                 </b>
               </>
             )}
