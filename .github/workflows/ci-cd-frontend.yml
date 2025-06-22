@@ -32,9 +32,14 @@ jobs:
 
       - name: Set Dynamic Environment Variables
         run: |
-          MAPPING=${{ secrets.TENANT_FOLDER_MAPPING }}
+          # Tentukan MAPPING berdasarkan branch
+          if [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_STAGING }}
+          else
+            MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_PRODUCTION }}
+          fi
           if [ -z "$MAPPING" ]; then
-            echo "TENANT_FOLDER_MAPPING is not set"
+            echo "TENANT_FOLDER_MAPPING is not set for this branch"
             exit 1
           fi
           IFS=',' read -r -a mapping_array <<< "$MAPPING"
