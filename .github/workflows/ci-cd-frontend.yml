@@ -32,9 +32,9 @@ jobs:
 
       - name: Set Dynamic Environment Variables
         run: |
-          MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_STAGING }}
+          MAPPING=${{ secrets.TENANT_FOLDER_MAPPING }}
           if [ -z "$MAPPING" ]; then
-            echo "TENANT_FOLDER_MAPPING_STAGING is not set"
+            echo "TENANT_FOLDER_MAPPING is not set"
             exit 1
           fi
           IFS=',' read -r -a mapping_array <<< "$MAPPING"
@@ -97,16 +97,17 @@ jobs:
             exit 1
           fi
           IFS=',' read -r -a mapping_array <<< "$MAPPING"
+          # Loop untuk setiap pemetaan
           for entry in "${mapping_array[@]}"; do
+            # Pecah tenant dan folder
             IFS=':' read -r tenant folder <<< "$entry"
             echo "Deploying tenant: $tenant to folder: $folder"
             DEPLOY_PATH="/home/govy6997/public_html/staging/$folder"
-            ssh -p 2223 govy6997@go-village.id << EOF
-              if [ ! -d "$DEPLOY_PATH" ]; then
-                mkdir -p "$DEPLOY_PATH"
-              fi
-              rm -rf "$DEPLOY_PATH"/*
-              exit
+            ssh -p 2223 govy6997@go-village.id << 'EOF'
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              mkdir -p "$DEPLOY_PATH"
+            fi
+            rm -rf "$DEPLOY_PATH"/*
             EOF
             scp -r -P 2223 build/$tenant/* govy6997@go-village.id:"$DEPLOY_PATH"/
           done
@@ -114,22 +115,23 @@ jobs:
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
-          MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_STAGING }}
+          MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_PRODUCTION }}
           if [ -z "$MAPPING" ]; then
-            echo "TENANT_FOLDER_MAPPING_STAGING is not set"
+            echo "TENANT_FOLDER_MAPPING_PRODUCTION is not set"
             exit 1
           fi
           IFS=',' read -r -a mapping_array <<< "$MAPPING"
+          # Loop untuk setiap pemetaan
           for entry in "${mapping_array[@]}"; do
+            # Pecah tenant dan folder
             IFS=':' read -r tenant folder <<< "$entry"
             echo "Deploying tenant: $tenant to folder: $folder"
-            DEPLOY_PATH="/home/govy6997/public_html/production/$folder"
-            ssh -p 2223 govy6997@go-village.id << EOF
-              if [ ! -d "$DEPLOY_PATH" ]; then
-                mkdir -p "$DEPLOY_PATH"
-              fi
-              rm -rf "$DEPLOY_PATH"/*
-              exit
+            DEPLOY_PATH="/home/govy6997/public_html/staging/$folder"
+            ssh -p 2223 govy6997@go-village.id << 'EOF'
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              mkdir -p "$DEPLOY_PATH"
+            fi
+            rm -rf "$DEPLOY_PATH"/*
             EOF
             scp -r -P 2223 build/$tenant/* govy6997@go-village.id:"$DEPLOY_PATH"/
           done
