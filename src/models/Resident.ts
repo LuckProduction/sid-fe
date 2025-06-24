@@ -56,15 +56,15 @@ export interface IncomingApiData {
 
 export interface OutgoingApiData {
   _method?: 'PUT';
-  nik: number;
-  nama_lengkap: string;
-  hubungan_keluarga: string;
-  status_penduduk: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
-  status_perkawinan: 'menikah' | 'belum menikah';
-  nomor_kk: number;
-  foto: string;
-  jenis_kelamin: string;
-  agama: string;
+  nik?: number;
+  nama_lengkap?: string;
+  hubungan_keluarga?: string;
+  status_penduduk?: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
+  status_perkawinan?: 'menikah' | 'belum menikah';
+  nomor_kk?: number;
+  foto?: string;
+  jenis_kelamin?: string;
+  agama?: string;
   alamat?: {
     alamat_kk: string;
     dusun_id: number;
@@ -94,15 +94,15 @@ export interface OutgoingApiData {
 
 interface FormValue {
   _method?: 'PUT';
-  nik: number;
-  full_name: string;
-  family_relation: string;
-  resident_status: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
-  marital_status: 'menikah' | 'belum menikah';
-  kk_number: number;
-  image_profile: string;
-  gender: string;
-  religion: string;
+  nik?: number;
+  full_name?: string;
+  family_relation?: string;
+  resident_status?: 'aktif' | 'meninggal' | 'pindah' | 'masuk';
+  marital_status?: 'menikah' | 'belum menikah';
+  kk_number?: number;
+  image_profile?: string;
+  gender?: string;
+  religion?: string;
   address?: {
     address_kk: string;
     hamlet_id: number;
@@ -320,15 +320,15 @@ export default class Resident extends Model {
             }
           }
         : {}),
-      nik: resident.nik,
-      nama_lengkap: resident.full_name,
-      hubungan_keluarga: resident.family_relation,
-      status_penduduk: resident.resident_status,
-      status_perkawinan: resident.marital_status,
-      nomor_kk: resident.kk_number,
-      foto: resident.image_profile,
-      jenis_kelamin: resident.gender,
-      agama: resident.religion
+      ...(resident.nik ? { nik: resident.nik } : {}),
+      ...(resident.full_name ? { nama_lengkap: resident.full_name } : {}),
+      ...(resident.family_relation ? { hubungan_keluarga: resident.family_relation } : {}),
+      ...(resident.resident_status ? { status_penduduk: resident.resident_status } : {}),
+      ...(resident.marital_status ? { status_perkawinan: resident.marital_status } : {}),
+      ...(resident.kk_number ? { nomor_kk: resident.kk_number } : {}),
+      ...(resident.image_profile ? { foto: resident.image_profile } : {}),
+      ...(resident.gender ? { jenis_kelamin: resident.gender } : {}),
+      ...(resident.religion ? { agama: resident.religion } : {})
     };
 
     return apiData as ReturnType<T, FormValue, OutgoingApiData>;

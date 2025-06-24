@@ -130,25 +130,6 @@ export const biodataFormFields = () => [
     ]
   },
   {
-    label: `Foto Penduduk`,
-    name: 'image_profile',
-    type: InputType.UPLOAD,
-    max: 1,
-    beforeUpload: () => {
-      return false;
-    },
-    getFileList: (data) => {
-      return [
-        {
-          url: data?.image_profile,
-          name: data?.name
-        }
-      ];
-    },
-    accept: ['.png', '.jpg', '.jpeg', 'webp'],
-    rules: [{ required: true, message: 'Foto harus diisi' }]
-  },
-  {
     label: `Jenis Kelamin`,
     name: 'gender',
     type: InputType.SELECT,
@@ -179,6 +160,28 @@ export const biodataFormFields = () => [
         message: `Agama harus diisi`
       }
     ]
+  }
+];
+
+export const fotoProfilFormField = () => [
+  {
+    label: `Foto Penduduk`,
+    name: 'image_profile',
+    type: InputType.UPLOAD,
+    max: 1,
+    beforeUpload: () => {
+      return false;
+    },
+    getFileList: (data) => {
+      return [
+        {
+          url: data?.image_profile,
+          name: data?.name
+        }
+      ];
+    },
+    accept: ['.png', '.jpg', '.jpeg', 'webp'],
+    rules: [{ required: true, message: 'Foto harus diisi' }]
   }
 ];
 

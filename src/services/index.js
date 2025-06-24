@@ -37,3 +37,4 @@ export { default as ReportAttributeService } from './ReportAttributeService';
 export { default as SubmitReportService } from './SubmitReportService';
 export { default as KioskService } from './KioskService';
 export { default as WebSettingsService } from './WebSettingsService';
+export { default as AutomaticReplyService } from './AutomaticReplyService';

@@ -31,7 +31,8 @@ enum Modul {
   TAX = 'Pajak',
   TAX_PERIOD = 'Periode Pajak',
   VILLAGE_REPORT = 'Laporan Penduduk',
-  REPORT_ATTRIBUTE = 'Atribut Laporan'
+  REPORT_ATTRIBUTE = 'Atribut Laporan',
+  AUTOMATIC_REPLY = 'Balasan Otomatis'
 }
 
 export default Modul;

@@ -22,7 +22,7 @@ import {
   ReportAttribute
 } from './pages/dashboard';
 import { flattenLandingLinks } from './utils/landingLink';
-import { BrowseLetter, DetailCitizenReport as DetailCitizenReportLanding, DetailNews, DetailVillageEnterprise, SubmitLetter, VillageBoundaries } from './pages/landing';
+import { BrowseLetter, DetailCitizenReport as DetailCitizenReportLanding, DetailNews, DetailVillageEnterprise, MitraRegistration, SubmitLetter, VillageBoundaries } from './pages/landing';
 import { Notfound, PrivacyPolicy } from './pages/result';
 import DetailVillagePotential from './pages/landing/DetailVillagePotential';
 import { ProtectedRoute, ScrollToTop } from './components';
@@ -101,6 +101,7 @@ function App() {
             { path: '/letterings/submitletter', element: <SubmitLetter /> },
             { path: '/villageboundaries', element: <VillageBoundaries /> },
             { path: '/privacy_policy', element: <PrivacyPolicy /> },
+            { path: '/mitra_registration', element: <MitraRegistration /> },
             { path: '*', element: <Notfound /> }
           ]
         },

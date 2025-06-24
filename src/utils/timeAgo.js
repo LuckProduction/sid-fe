@@ -1,6 +1,12 @@
 function timeAgo(dateString) {
   const now = new Date();
-  const past = new Date(dateString + 'Z');
+
+  const parts = dateString.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1;
+  const day = parseInt(parts[2], 10);
+
+  const past = new Date(year, month, day);
   const diffInSeconds = Math.floor((now - past) / 1000);
 
   const intervals = [
@@ -19,6 +25,7 @@ function timeAgo(dateString) {
       return `${count} ${interval.label} lalu`;
     }
   }
+
   return 'Baru saja';
 }
 

@@ -37,6 +37,9 @@ const Footer = () => {
               <NavLink className="text-sm" to="/privacy_policy">
                 Privacy & Policy
               </NavLink>
+              <NavLink className="text-sm" to="/mitra_registration">
+                Pendaftaran Mitra
+              </NavLink>
             </div>
           </div>
           <div className="col-span-6 flex items-center justify-center border-t-2 py-6">

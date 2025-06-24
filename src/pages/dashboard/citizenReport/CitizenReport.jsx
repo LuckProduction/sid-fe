@@ -13,6 +13,7 @@ import timeAgo from '@/utils/timeAgo';
 import dateFormatter from '@/utils/dateFormatter';
 import { CommentOutlined } from '@ant-design/icons';
 import Replies from './Replies';
+import { AutomaticReply } from '..';
 
 const { DELETE, UPDATE, READ } = Action;
 
@@ -215,6 +216,9 @@ const CitizenReport = () => {
           </Tabs.TabPane>
           <Tabs.TabPane key="balasan" tab="Balasan">
             <Replies />
+          </Tabs.TabPane>
+          <Tabs.TabPane key="balasan_otomatis" tab="Balasan Otomatis">
+            <AutomaticReply />
           </Tabs.TabPane>
         </Tabs>
       </Card>

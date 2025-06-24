@@ -20,3 +20,4 @@ export { default as CitizenReport } from './CitizenReport';
 export { default as BrowseReport } from './residentReport/Browse';
 export { default as SubmitReport } from './residentReport/SubmitReport';
 export { default as MobileLanding } from './MobileLanding';
+export { default as MitraRegistration } from './MitraRegistration';

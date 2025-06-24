@@ -33,7 +33,8 @@ type ModelKeys =
   | 'balasan_pengaduan'
   | 'lapor_penduduk'
   | 'master_laporan'
-  | 'atribut_master_laporan';
+  | 'atribut_master_laporan'
+  | 'balasan_otomatis';
 
 export default abstract class Model {
   static children: { [key in ModelKeys]?: ModelChildren | ModelChildren[] } = {
@@ -71,7 +72,8 @@ export default abstract class Model {
     balasan_pengaduan: undefined,
     lapor_penduduk: undefined,
     master_laporan: undefined,
-    atribut_master_laporan: undefined
+    atribut_master_laporan: undefined,
+    balasan_otomatis: undefined
   };
 }
 

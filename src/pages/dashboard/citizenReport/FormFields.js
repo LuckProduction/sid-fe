@@ -214,6 +214,31 @@ export const createFromKiosk = () => [
   }
 ];
 
+export const automaticReplyFormFields = () => [
+  {
+    label: `Kata Kunci ${Modul.AUTOMATIC_REPLY}`,
+    name: 'keyword',
+    type: InputType.TEXT,
+    rules: [
+      {
+        required: true,
+        message: `Kata Kunci ${Modul.AUTOMATIC_REPLY} harus diisi`
+      }
+    ]
+  },
+  {
+    label: `Balasan ${Modul.AUTOMATIC_REPLY}`,
+    name: 'reply',
+    type: InputType.LONGTEXT,
+    rules: [
+      {
+        required: true,
+        message: `Balasan ${Modul.AUTOMATIC_REPLY} harus diisi`
+      }
+    ]
+  }
+];
+
 export const citizenReportsFilterFields = () => [
   {
     label: `Status ${Modul.CITIZEN_REPORT}`,

@@ -205,4 +205,8 @@ export default class LandingService {
     if (!response.data) return response;
     return { ...response, data: WebSettings.fromApiData(response.data) };
   }
+
+  static async storeMitraRegistration(data) {
+    return await api.post(`/pendaftaran-mitra`, { body: data });
+  }
 }

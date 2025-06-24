@@ -61,7 +61,7 @@ const Edit = () => {
 
   return (
     <div>
-      {getAllArticle.data === 0 ? (
+      {Object.keys(getAllArticle.data ?? {}).length === 0 ? (
         <DataLoader type="datatable" />
       ) : (
         <>

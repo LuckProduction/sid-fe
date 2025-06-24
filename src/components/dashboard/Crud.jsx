@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { InputType } from '@/constants';
 import clientAsset from '@/utils/clientAsset';
 import strings from '@/utils/strings';
@@ -6,12 +7,16 @@ import { Editor } from '@tinymce/tinymce-react';
 import { Button, DatePicker, Form, Input, InputNumber, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Dragger from 'antd/es/upload/Dragger';
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import PropTypes from 'prop-types';
 
-const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoading, extraLarge = false }) => {
+const Crud = forwardRef(({ formFields, initialData, onSubmit = () => {}, type = '', isLoading, extraLarge = false }, ref) => {
   const [form] = Form.useForm();
   const [realtimeData, setRealtimeData] = useState(initialData);
+
+  useImperativeHandle(ref, () => ({
+    form
+  }));
 
   const handleEditorChange = (editor) => {
     const content = editor.getContent();
@@ -273,7 +278,7 @@ const Crud = ({ formFields, initialData, onSubmit = () => {}, type = '', isLoadi
       )}
     </Form>
   );
-};
+});
 
 export default Crud;
 

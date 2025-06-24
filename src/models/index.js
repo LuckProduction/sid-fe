@@ -35,3 +35,4 @@ export { default as VillageReport } from './VillageReport';
 export { default as ReportAttribute } from './ReportAttribute';
 export { default as SubmitReport } from './SubmitReport';
 export { default as WebSettings } from './WebSettings';
+export { default as AutomaticReply } from './AutomaticReply';
