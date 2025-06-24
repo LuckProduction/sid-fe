@@ -1,13 +1,13 @@
 import { Crud, DataLoader } from '@/components';
 import { Card, Image, Menu, Typography } from 'antd';
-import { addressFormField, biodataFormFields, brithFormField, educationCareerFormFields, parentFormFields } from './FormFields';
+import { addressFormField, biodataFormFields, brithFormField, educationCareerFormFields, fotoProfilFormField, parentFormFields } from './FormFields';
 import { useAuth, useNotification, useService } from '@/hooks';
 import { HamletService, ResidentService } from '@/services';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import dateFormatter from '@/utils/dateFormatter';
 import dayjs from 'dayjs';
-import { BookOutlined, DollarOutlined, GiftOutlined, GroupOutlined, PushpinOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { BookOutlined, DollarOutlined, GiftOutlined, GroupOutlined, PictureOutlined, PushpinOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 
 const Edit = () => {
   const { token } = useAuth();
@@ -30,7 +30,7 @@ const Edit = () => {
 
   return (
     <div className="grid w-full grid-cols-12 gap-4">
-      {getAllResident.isLoading ? (
+      {Object.keys(getAllResident.data ?? {}).length === 0 ? (
         <DataLoader type="profil" />
       ) : (
         <>
@@ -52,6 +52,9 @@ const Edit = () => {
               <Menu onClick={(e) => setActiveMenu(e.key)} mode="vertical" defaultSelectedKeys={[activeMenu]}>
                 <Menu.Item key="data_diri" icon={<UserOutlined />}>
                   Data diri
+                </Menu.Item>
+                <Menu.Item key="foto_profil" icon={<PictureOutlined />}>
+                  Foto Profil
                 </Menu.Item>
                 <Menu.Item key="alamat" icon={<PushpinOutlined />}>
                   Alamat
@@ -80,6 +83,26 @@ const Edit = () => {
                 <Crud
                   initialData={resident}
                   formFields={biodataFormFields()}
+                  onSubmit={async (values) => {
+                    setSubmitLoading(true);
+                    const { message, isSuccess } = await editResident.execute(id, { ...values, _method: 'PUT' }, token, values.image_profile.file);
+                    if (isSuccess) {
+                      success('Berhasil', message);
+                      fetchResident(token, id);
+                    } else {
+                      error('Gagal', message);
+                    }
+                    setSubmitLoading(false);
+                    return isSuccess;
+                  }}
+                  isLoading={submitLoading}
+                />
+              </Card>
+            ) : activeMenu === 'foto_profil' ? (
+              <Card className="w-full" title="Data diri penduduk">
+                <Crud
+                  initialData={resident}
+                  formFields={fotoProfilFormField()}
                   onSubmit={async (values) => {
                     setSubmitLoading(true);
                     const { message, isSuccess } = await editResident.execute(id, { ...values, _method: 'PUT' }, token, values.image_profile.file);

@@ -123,7 +123,7 @@ const FamilyDetail = () => {
 
   return (
     <>
-      {getAllFamilyDetail.isLoading ? (
+      {Object.keys(getAllFamilyDetail.data ?? {}).length === 0 ? (
         <DataLoader type="datatable" />
       ) : (
         <Card>

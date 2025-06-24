@@ -20,7 +20,7 @@ const Detail = () => {
 
   return (
     <div className="grid w-full grid-cols-12 gap-4">
-      {getAllResident.isLoading ? (
+      {Object.keys(getAllResident.data ?? {}).length === 0 ? (
         <DataLoader type="profil" />
       ) : (
         <>

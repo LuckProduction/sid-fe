@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DatabaseOutlined, ExclamationCircleOutlined, EyeOutlined, FieldTimeOutlined, LineChartOutlined, MailOutlined, PlayCircleOutlined, RightOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, ExclamationCircleOutlined, EyeOutlined, FieldTimeOutlined, LineChartOutlined, MailOutlined, PlayCircleOutlined, RightOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
@@ -145,7 +145,7 @@ const Home = () => {
           </>
         )}
       </section>
-      <section className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 py-24">
+      <section className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 pb-12 pt-24">
         <div className="flex flex-col items-center justify-center gap-y-2">
           <Reveal>
             <h2 className="text-sm font-semibold text-blue-500">Sambutan</h2>
@@ -174,6 +174,21 @@ const Home = () => {
               </div>
             </>
           )}
+        </div>
+      </section>
+      <section className="mx-auto w-full max-w-screen-xl px-8">
+        <div className="flex w-full gap-x-24 overflow-x-auto">
+          <Card className="w-fit">
+            <div className="flex w-full items-center gap-x-4">
+              <div>
+                <Avatar icon={<UserOutlined />} size={56} />
+              </div>
+              <div className="flex w-full flex-col">
+                <b className="w-full">Nama perangkat</b>
+                <span className="">Ketua Pengelola</span>
+              </div>
+            </div>
+          </Card>
         </div>
       </section>
       <section className="w-full bg-white px-4 py-24">
