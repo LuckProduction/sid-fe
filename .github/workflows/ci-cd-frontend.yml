@@ -30,21 +30,45 @@ jobs:
       - name: Run Tests
         run: npm test
 
-      - name: Build React App
-        run: npm run build
+      - name: Set Dynamic Environment Variables
+        run: |
+          # Tentukan MAPPING berdasarkan branch
+          if [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_STAGING }}
+          else
+            MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_PRODUCTION }}
+          fi
+          if [ -z "$MAPPING" ]; then
+            echo "TENANT_FOLDER_MAPPING is not set for this branch"
+            exit 1
+          fi
+          IFS=',' read -r -a mapping_array <<< "$MAPPING"
+          # Tentukan BASE_URL berdasarkan branch
+          if [ "${{ github.ref }}" == "refs/heads/staging" ]; then
+            BASE_URL="https://api-example.go-village.id"
+          else
+            BASE_URL="https://api-backend.go-village.id"
+          fi
+          for entry in "${mapping_array[@]}"; do
+            IFS=':' read -r tenant folder <<< "$entry"
+            echo "Building for tenant: $tenant with folder: $folder"
+            # Buat file .env untuk setiap tenant
+            echo "VITE_BASE_URL=$BASE_URL" > .env.$tenant
+            echo "VITE_TENANTS=$tenant" >> .env.$tenant
+            echo "VITE_ENVIRONMENT=${{ github.ref == 'refs/heads/staging' && 'staging' || 'production' }}" >> .env.$tenant
+            echo "VITE_TOKEN_KIOSK='0088-9900-RAAA'" >> .env.$tenant
+            # Build untuk setiap tenant
+            mv .env.$tenant .env
+            npm run build -- --outDir build/$tenant
+            mv .env .env.$tenant
+          done
 
-      - name: Debug Build Output
-        run: ls -la build/ || echo "Build folder not found"
-
-      - name: Upload Build Artifact
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: react-build
           path: build/
           retention-days: 1
-
-      - name: Debug Artifact Upload
-        run: echo "Artifact uploaded successfully" || echo "Artifact upload failed"
 
   deploy:
     needs: build-and-test
@@ -72,23 +96,48 @@ jobs:
       - name: Deploy to Staging
         if: github.ref == 'refs/heads/staging'
         run: |
-          ssh -p 2223 govy6997@go-village.id << 'EOF'
-            if [ ! -d "/home/govy6997/public_html/staging/example.go-village.id" ]; then
-              mkdir -p /home/govy6997/public_html/staging/example.go-village.id
-            fi
-            rm -rf /home/govy6997/public_html/staging/example.go-village.id/*
-            exit
-          EOF
-          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/staging/example.go-village.id/
+          # Ambil pemetaan tenant ke folder
+          MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_STAGING }}
+          if [ -z "$MAPPING" ]; then
+            echo "TENANT_FOLDER_MAPPING_STAGING is not set"
+            exit 1
+          fi
+
+          # Pecah pemetaan menjadi array
+          IFS=',' read -r -a mapping_array <<< "$MAPPING"
+
+          # Loop untuk setiap pemetaan
+          for entry in "${mapping_array[@]}"; do
+            # Pecah tenant dan folder
+            IFS=':' read -r tenant folder <<< "$entry"
+            echo "Deploying tenant: $tenant to folder: $folder"
+            DEPLOY_PATH="/home/govy6997/public_html/staging/$folder"
+            echo "Creating directory if not exists and cleaning up: $DEPLOY_PATH"
+            ssh -p 2223 govy6997@go-village.id "if [ ! -d \"$DEPLOY_PATH\" ]; then mkdir -p \"$DEPLOY_PATH\"; fi; rm -rf \"$DEPLOY_PATH\"/*"
+            echo "Copying files to $DEPLOY_PATH"
+            scp -r -P 2223 build/$tenant/* govy6997@go-village.id:"$DEPLOY_PATH"/
+          done
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
         run: |
-          ssh -p 2223 govy6997@go-village.id << 'EOF'
-            if [ ! -d "/home/govy6997/public_html/production/sukma.go-village.id" ]; then
-              mkdir -p /home/govy6997/public_html/production/sukma.go-village.id
+          MAPPING=${{ secrets.TENANT_FOLDER_MAPPING_PRODUCTION }}
+          if [ -z "$MAPPING" ]; then
+            echo "TENANT_FOLDER_MAPPING_PRODUCTION is not set"
+            exit 1
+          fi
+          IFS=',' read -r -a mapping_array <<< "$MAPPING"
+          # Loop untuk setiap pemetaan
+          for entry in "${mapping_array[@]}"; do
+            # Pecah tenant dan folder
+            IFS=':' read -r tenant folder <<< "$entry"
+            echo "Deploying tenant: $tenant to folder: $folder"
+            DEPLOY_PATH="/home/govy6997/public_html/staging/$folder"
+            ssh -p 2223 govy6997@go-village.id << 'EOF'
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              mkdir -p "$DEPLOY_PATH"
             fi
-            rm -rf /home/govy6997/public_html/production/sukma.go-village.id/*
-            exit
-          EOF
-          scp -r -P 2223 build/* govy6997@go-village.id:/home/govy6997/public_html/production/sukma.go-village.id/
+            rm -rf "$DEPLOY_PATH"/*
+            EOF
+            scp -r -P 2223 build/$tenant/* govy6997@go-village.id:"$DEPLOY_PATH"/
+          done
