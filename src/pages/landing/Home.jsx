@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DatabaseOutlined, ExclamationCircleOutlined, EyeOutlined, FieldTimeOutlined, LineChartOutlined, MailOutlined, PlayCircleOutlined, RightOutlined, UsergroupAddOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Card, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
+import { DatabaseOutlined, ExclamationCircleOutlined, EyeOutlined, FieldTimeOutlined, LineChartOutlined, MailOutlined, PlayCircleOutlined, RightOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { Avatar, Button, Card, Grid, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
@@ -8,10 +8,13 @@ import { useCrudModal, usePagination, useService } from '@/hooks';
 import parse from 'html-react-parser';
 import { LandingService } from '@/services';
 import dateFormatter from '@/utils/dateFormatter';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay } from 'swiper/modules';
+import 'swiper/css';
 
 const Home = () => {
-  const { villageProfile, speech, visiMisi, institution } = useOutletContext();
-
+  const { villageProfile, speech, visiMisi, institution, villageOfficials } = useOutletContext();
+  const breakpoints = Grid.useBreakpoint();
   const navigate = useNavigate();
   const modal = useCrudModal();
 
@@ -19,12 +22,14 @@ const Home = () => {
   const executeVisiMisi = useCallback(() => visiMisi.execute(), [visiMisi]);
   const executeSpeech = useCallback(() => speech.execute(), [speech]);
   const executeInstitution = useCallback(() => institution.execute(), [institution]);
+  const executeVillageOfficials = useCallback(() => villageOfficials.execute(), [villageOfficials]);
 
   useEffect(() => {
     executeVillageProfile();
     executeVisiMisi();
     executeSpeech();
     executeInstitution();
+    executeVillageOfficials();
   }, []);
 
   const { execute: executeFetchArticle, ...getAllArticle } = useService(LandingService.getAllArticle);
@@ -56,6 +61,15 @@ const Home = () => {
 
   const article = getAllArticle.data ?? [];
   const enterpise = getAllEnterprise.data ?? [];
+  const villageOfficialsData = villageOfficials.data ?? [];
+  const otherOfficials = villageOfficialsData.filter((v) => v.employment?.employment_name !== 'Kepala Desa');
+
+  const getSlidesPerView = () => {
+    if (breakpoints.xl || breakpoints.xxl) return 4;
+    if (breakpoints.lg) return 3;
+    if (breakpoints.md) return 2;
+    return 1;
+  };
 
   return (
     <>
@@ -177,19 +191,35 @@ const Home = () => {
         </div>
       </section>
       <section className="mx-auto w-full max-w-screen-xl px-8">
-        <div className="flex w-full gap-x-24 overflow-x-auto">
-          <Card className="w-fit">
-            <div className="flex w-full items-center gap-x-4">
-              <div>
-                <Avatar icon={<UserOutlined />} size={56} />
-              </div>
-              <div className="flex w-full flex-col">
-                <b className="w-full">Nama perangkat</b>
-                <span className="">Ketua Pengelola</span>
-              </div>
-            </div>
-          </Card>
-        </div>
+        <Swiper
+          autoplay={{
+            delay: 1000,
+            disableOnInteraction: false
+          }}
+          spaceBetween={20}
+          modules={[Autoplay]}
+          slidesPerView={getSlidesPerView()}
+          pagination={{
+            clickable: true
+          }}
+          className="mySwiper"
+        >
+          {otherOfficials.map((item) => (
+            <SwiperSlide key={item.id}>
+              <Card className="w-full hover:cursor-pointer" onClick={() => navigate('/village_officials')}>
+                <div className="flex w-full items-center gap-x-4">
+                  <div>
+                    <Avatar src={item.image} size={56} />
+                  </div>
+                  <div className="flex w-full flex-col">
+                    <b className="w-full">{item.name}</b>
+                    <span className="">{item.employment.employment_name}</span>
+                  </div>
+                </div>
+              </Card>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </section>
       <section className="w-full bg-white px-4 py-24">
         <div className="mx-auto grid w-full max-w-screen-xl grid-cols-4 gap-x-24 gap-y-12 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 px-6 py-12 lg:grid-cols-8 lg:px-20 lg:py-16">

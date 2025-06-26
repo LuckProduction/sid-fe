@@ -9,6 +9,7 @@ const Landing = () => {
   const getAllInstitution = useService(LandingService.getAllInstitution);
   const getAllVillageProfile = useService(LandingService.getVillageProfile);
   const getAllArticle = useService(LandingService.getAllArticle);
+  const getAllVillageOfficials = useService(LandingService.getAllVillageOfficials);
 
   return (
     <>
@@ -25,7 +26,8 @@ const Landing = () => {
               speech: getAllSpeech,
               visiMisi: getAllVisiMisi,
               institution: getAllInstitution,
-              article: getAllArticle
+              article: getAllArticle,
+              villageOfficials: getAllVillageOfficials
             }}
           />
           <Footer />
