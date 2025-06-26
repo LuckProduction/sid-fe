@@ -57,7 +57,7 @@ const Category = () => {
                   const { message, isSuccess } = await updateCategory.execute(record.id, { ...values, type: 'potensi' }, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchCategory(token, 'artikel');
+                    fetchCategory(token, 'potensi', pagination.page, pagination.per_page);
                   } else {
                     error('Gagal', message);
                   }
@@ -78,7 +78,7 @@ const Category = () => {
                   const { isSuccess, message } = await deleteCategory.execute(record.id, token);
                   if (isSuccess) {
                     success('Berhasil', message);
-                    fetchCategory(token, 'artikel');
+                    fetchCategory(token, 'potensi', pagination.page, pagination.per_page);
                   } else {
                     error('Gagal', message);
                   }
@@ -100,7 +100,7 @@ const Category = () => {
         const { message, isSuccess } = await deleteBatchCategory.execute(ids, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchCategory(token, 'artikel');
+          fetchCategory(token, 'potensi', pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }
@@ -114,10 +114,10 @@ const Category = () => {
       title: `Tambah Kategori`,
       formFields: categoryFormFields,
       onSubmit: async (values) => {
-        const { message, isSuccess } = await storeCategory.execute({ ...values, type: 'artikel' }, token);
+        const { message, isSuccess } = await storeCategory.execute({ ...values, type: 'potensi' }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchCategory(token, 'artikel');
+          fetchCategory(token, 'potensi', pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }

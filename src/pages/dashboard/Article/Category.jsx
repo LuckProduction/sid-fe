@@ -117,7 +117,7 @@ const Category = () => {
         const { message, isSuccess } = await storeCategory.execute({ ...values, type: 'artikel' }, token);
         if (isSuccess) {
           success('Berhasil', message);
-          fetchCategory(token, 'artikel');
+          fetchCategory(token, 'artikel', pagination.page, pagination.per_page);
         } else {
           error('Gagal', message);
         }
