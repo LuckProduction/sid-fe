@@ -9,7 +9,9 @@ export default function AntdConfigProviders({ children }) {
       warning={{ strict: false }}
       theme={{
         token: {
-          fontFamily: 'Plus Jakarta Sans'
+          fontFamily: 'Plus Jakarta Sans',
+          colorPrimary: '#00c951',
+          colorInfo: '#00c951'
         }
       }}
       button={{
