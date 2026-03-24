@@ -56,7 +56,7 @@ const VillageBoundaries = () => {
 
   return (
     <>
-      <section className="relative w-full bg-blue-500 text-white">
+      <section className="relative w-full bg-green-500 text-white">
         <div className="relative z-10 mx-auto max-w-screen-xl px-6 py-24">
           <button className="mb-12 inline-flex items-center gap-x-2 text-sm" onClick={() => navigate(-1)}>
             <LeftOutlined />

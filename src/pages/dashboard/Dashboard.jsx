@@ -166,7 +166,7 @@ const Dashboard = () => {
                 <p className="font-semibold capitalize">Total Bantuan</p>
                 <span className="text-xl font-semibold">{overview?.bantuan?.total_bantuan}</span>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-500 p-2 text-2xl text-white">
                 <GiftOutlined />
               </div>
             </div>
@@ -177,7 +177,7 @@ const Dashboard = () => {
                 <p className="font-semibold capitalize">Total Dusun</p>
                 <span className="text-xl font-semibold">{overview?.dusun?.total_dusun}</span>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-500 p-2 text-2xl text-white">
                 <HomeOutlined />
               </div>
             </div>
@@ -188,7 +188,7 @@ const Dashboard = () => {
                 <p className="font-semibold capitalize">Total Artikel</p>
                 <span className="text-xl font-semibold">{overview?.artikel?.total_artikel}</span>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-500 p-2 text-2xl text-white">
                 <PaperClipOutlined />
               </div>
             </div>
@@ -199,7 +199,7 @@ const Dashboard = () => {
                 <p className="font-semibold capitalize">Total Pemohonan Surat</p>
                 <span className="text-xl font-semibold">{overview?.surat?.total_permohonan}</span>
               </div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500 p-2 text-2xl text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-500 p-2 text-2xl text-white">
                 <MailOutlined />
               </div>
             </div>

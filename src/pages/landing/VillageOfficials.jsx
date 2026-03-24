@@ -20,7 +20,7 @@ const VillageOfficials = () => {
 
   return (
     <>
-      <section className="relative w-full bg-blue-500 text-white">
+      <section className="relative w-full bg-green-500 text-white">
         <div className="relative z-10 mx-auto max-w-screen-xl px-6 py-24">
           <button className="mb-12 inline-flex items-center gap-x-2 text-sm" onClick={() => navigate(-1)}>
             <LeftOutlined />
@@ -40,7 +40,7 @@ const VillageOfficials = () => {
       <section>
         <div className="mx-auto flex max-w-screen-lg flex-col items-center gap-y-6 px-6 py-24">
           <Typography.Title level={4}>
-            Kepala <span className="text-blue-500">Desa</span>{' '}
+            Kepala <span className="text-green-500">Desa</span>{' '}
           </Typography.Title>
           {headVillage && (
             <Card className="w-full max-w-2xl">
@@ -66,7 +66,7 @@ const VillageOfficials = () => {
           )}
           <hr className="mb-6 mt-6 w-full" />
           <Typography.Title level={4}>
-            Perangkat <span className="text-blue-500">Desa </span>{' '}
+            Perangkat <span className="text-green-500">Desa </span>{' '}
           </Typography.Title>
 
           <div className="grid w-full grid-cols-6 gap-12">

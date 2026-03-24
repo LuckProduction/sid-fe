@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DatabaseOutlined, ExclamationCircleOutlined, EyeOutlined, FieldTimeOutlined, LineChartOutlined, MailOutlined, PlayCircleOutlined, RightOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Grid, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
-import { NavLink, useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Reveal } from '@/components';
 import { useCrudModal, usePagination, useService } from '@/hooks';
 import parse from 'html-react-parser';
@@ -88,11 +88,11 @@ const Home = () => {
         ) : (
           <>
             <div className="col-span-6 flex w-full flex-col gap-y-4 lg:col-span-3">
-              <Image src={villageProfile?.data?.village_logo} preview={false} width={100} />
+              {/* <Image src={villageProfile?.data?.village_logo} preview={false} width={100} /> */}
               <div>
                 <Typography.Title>
                   <Reveal>
-                    Sistem Informasi Desa <span className="text-blue-500">GoVillage</span>
+                    Website Desa <span className="text-green-500">GoVillage</span>
                   </Reveal>
                 </Typography.Title>
                 <Typography.Title level={4} style={{ margin: 0 }}>
@@ -103,8 +103,7 @@ const Home = () => {
               </div>
               <Typography.Paragraph className="text-gray-500">
                 <Reveal>
-                  Selamat datang di Sistem Informasi Desa {villageProfile?.data?.village_name}, sebuah platform digital yang dirancang untuk mendukung transparansi, efisiensi, dan kemudahan akses informasi di Desa {villageProfile?.data?.village_name}
-                  .
+                  Selamat datang di Website Desa {villageProfile?.data?.village_name}, sebuah website yang dirancang untuk mendukung transparansi, efisiensi, dan kemudahan akses informasi di Desa {villageProfile?.data?.village_name}.
                 </Reveal>
               </Typography.Paragraph>
               <Space size="small">
@@ -131,11 +130,11 @@ const Home = () => {
               <div className="col-span-6 flex flex-col gap-y-4">
                 <Reveal>
                   <div className="inline-flex gap-x-4 rounded-xl bg-gray-100 p-5">
-                    <DatabaseOutlined style={{ fontSize: '26px' }} className="text-blue-500" />
+                    <DatabaseOutlined style={{ fontSize: '26px' }} className="text-green-500" />
                     <p className="text-xs font-semibold">Akses cepat dan update mudah data desa {villageProfile?.data?.village_name}</p>
                   </div>
                 </Reveal>
-                <div className="landing-village-card-container flex min-h-80 flex-col gap-y-4 rounded-xl p-6 shadow-2xl shadow-blue-400">
+                <div className="landing-village-card-container flex min-h-80 flex-col gap-y-4 rounded-xl p-6 shadow-2xl shadow-green-400">
                   <p className="text-xs font-semibold text-white">
                     Akses Cepat <FieldTimeOutlined />
                   </p>
@@ -143,16 +142,11 @@ const Home = () => {
                 </div>
               </div>
               <div className="col-span-6 flex flex-col gap-y-4">
-                <div className="flex min-h-80 flex-col gap-y-4 rounded-xl bg-gradient-to-b from-blue-500 to-blue-300 p-6">
+                <div className="flex min-h-80 flex-col gap-y-4 rounded-xl bg-gradient-to-b from-green-500 to-green-300 p-6">
                   <p className="text-xs font-semibold text-white">
                     Praktis <FieldTimeOutlined />
                   </p>
                   <p className="text-4xl font-bold text-white">Mudah & Cepat</p>
-                </div>
-                <div className="inline-flex items-center gap-x-2">
-                  <Button className="w-full" onClick={() => navigate('/mobile_landing')} variant="solid" color="primary" size="large">
-                    Akses Dalam Genggaman
-                  </Button>
                 </div>
               </div>
             </div>
@@ -162,13 +156,13 @@ const Home = () => {
       <section className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-4 pb-12 pt-24">
         <div className="flex flex-col items-center justify-center gap-y-2">
           <Reveal>
-            <h2 className="text-sm font-semibold text-blue-500">Sambutan</h2>
+            <h2 className="text-sm font-semibold text-green-500">Sambutan</h2>
           </Reveal>
           <Reveal>
             <p className="text-xl font-semibold">Sambutan Kepala Desa</p>
           </Reveal>
         </div>
-        <div className="flex w-full flex-col gap-x-4 rounded-lg border bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md lg:flex-row">
+        <div className="flex w-full flex-col gap-x-4 rounded-lg border bg-gradient-to-br from-green-500 to-green-700 text-white shadow-md lg:flex-row">
           {speech.isLoading ? (
             <Skeleton active className="p-16" />
           ) : (
@@ -222,7 +216,7 @@ const Home = () => {
         </Swiper>
       </section>
       <section className="w-full bg-white px-4 py-24">
-        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-4 gap-x-24 gap-y-12 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-700 px-6 py-12 lg:grid-cols-8 lg:px-20 lg:py-16">
+        <div className="mx-auto grid w-full max-w-screen-xl grid-cols-4 gap-x-24 gap-y-12 rounded-3xl bg-gradient-to-br from-green-500 to-green-700 px-6 py-12 lg:grid-cols-8 lg:px-20 lg:py-16">
           {visiMisi.isLoading ? (
             <Skeleton active className="col-span-4 lg:col-span-8" />
           ) : (
@@ -238,9 +232,9 @@ const Home = () => {
                   visiMisi?.data
                     .filter((item) => item.type !== 'visi')
                     .map((item, index) => (
-                      <Card key={item.id} className="col-span-4 border-none bg-blue-400 transition-all duration-300 hover:-translate-y-2 lg:col-span-2">
+                      <Card key={item.id} className="col-span-4 border-none bg-green-400 transition-all duration-300 hover:-translate-y-2 lg:col-span-2">
                         <div className="flex flex-col gap-y-2 p-4">
-                          <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-center text-lg font-bold text-blue-500">0{index + 1}</span>
+                          <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-center text-lg font-bold text-green-500">0{index + 1}</span>
                           <h3 className="text-lg font-semibold text-white">Misi No {index + 1}</h3>
                           <p className="text-xs text-white">{item.content}</p>
                         </div>
@@ -251,86 +245,7 @@ const Home = () => {
           )}
         </div>
       </section>
-
-      <section className="w-full bg-gray-100">
-        <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-x-10 gap-y-12 px-6 py-16 lg:flex-row lg:py-32">
-          <div className="flex w-full flex-[2] flex-col gap-y-6">
-            <div className="flex flex-col gap-y-2">
-              <h2 className="font-semibold text-blue-500">Fitur dan Layanan</h2>
-              <p className="text-2xl font-semibold">Fitur Sistem Informasi Desa</p>
-            </div>
-            Sistem Informasi Desa Digital hadir dengan berbagai fitur yang dirancang khusus untuk mendukung visi desa modern. Dari pemetaan wilayah hingga layanan administrasi berbasis digital, semua disesuaikan untuk meningkatkan efisiensi,
-            transparansi, dan pembangunan desa yang berkelanjutan!
-          </div>
-          <div className="grid w-full flex-[3] grid-cols-2 gap-x-6 gap-y-2 pb-1 lg:ms-24">
-            <div className="col-span-2 h-fit w-full lg:col-span-1">
-              <Card
-                title={
-                  <NavLink to="/letterings">
-                    <div className="flex items-center gap-x-4 py-5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
-                        <MailOutlined />
-                      </div>
-                      <span>Permohonan Surat</span>
-                    </div>
-                  </NavLink>
-                }
-              >
-                Ajukan surat sesuai kebutuhan Anda dalam hitungan menit.
-              </Card>
-            </div>
-            <div className="col-span-2 h-fit w-full lg:col-span-1 lg:mt-6">
-              <Card
-                title={
-                  <NavLink to="/citizen_reports">
-                    <div className="flex items-center gap-x-4 py-5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
-                        <ExclamationCircleOutlined />
-                      </div>
-                      <span>Pengaduan Masyarakat</span>
-                    </div>
-                  </NavLink>
-                }
-              >
-                Laporkan permasalahan di desa Anda dengan mudah!
-              </Card>
-            </div>
-            <div className="col-span-2 h-fit w-full lg:col-span-1">
-              <Card
-                title={
-                  <NavLink to="/submit_report">
-                    <div className="flex items-center gap-x-4 py-5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
-                        <UsergroupAddOutlined />
-                      </div>
-                      <span>Lapor Penduduk</span>
-                    </div>
-                  </NavLink>
-                }
-              >
-                Ajukan Laporan sesuai kebutuhan Anda dalam hitungan menit.
-              </Card>
-            </div>
-            <div className="col-span-2 h-fit w-full lg:col-span-1 lg:mt-6">
-              <Card
-                title={
-                  <NavLink to="/resident_statistics">
-                    <div className="flex items-center gap-x-4 py-5">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500 text-xl text-white">
-                        <LineChartOutlined />
-                      </div>
-                      <span>Statistik Desa</span>
-                    </div>
-                  </NavLink>
-                }
-              >
-                Pantau perkembangan desa melalui data statistik desa secara real time
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="w-full bg-blue-500">
+      <section className="w-full bg-green-500">
         <div className="mx-auto flex w-full max-w-screen-xl flex-col items-center justify-center gap-y-12 px-6 py-24">
           <div className="flex w-full flex-col gap-y-2">
             <Reveal>
@@ -362,14 +277,14 @@ const Home = () => {
                                 <div className="flex flex-col gap-y-2">
                                   <p>Deskripsi Lembaga: {item.desc}</p>
                                   <p>
-                                    Kode Lembaga: <Tag color="blue">{item.institution_code}</Tag>
+                                    Kode Lembaga: <Tag color="green">{item.institution_code}</Tag>
                                   </p>
                                   <p>
                                     Status:{' '}
                                     {(() => {
                                       switch (item.status) {
                                         case 'aktif':
-                                          return <Tag color="blue">Aktif</Tag>;
+                                          return <Tag color="green">Aktif</Tag>;
                                         case 'nonaktif':
                                           return <Tag color="orange">Non-Aktif</Tag>;
                                         default:
@@ -412,7 +327,7 @@ const Home = () => {
           <div className="flex items-end justify-between">
             <div className="flex flex-col gap-y-2">
               <Reveal>
-                <h2 className="text-sm font-semibold text-blue-500">Berita</h2>
+                <h2 className="text-sm font-semibold text-green-500">Berita</h2>
               </Reveal>
               <Reveal>
                 <p className="text-xl font-semibold">Berita desa terbaru :</p>
@@ -449,7 +364,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="w-full bg-blue-500">
+      <section className="w-full bg-green-500">
         <div className="mx-auto flex w-full max-w-screen-xl flex-col gap-y-8 px-4 py-28">
           <div className="flex items-end justify-between">
             <div className="flex flex-col gap-y-2">
