@@ -4,7 +4,7 @@ import * as Auth from '@/pages/auth';
 import * as Dashboard from '@/pages/dashboard';
 import * as Landing from '@/pages/landing';
 import * as Kiosk from '@/pages/kiosk';
-import { BookOutlined, DashboardOutlined, DollarOutlined, FileOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
+import { BookOutlined, DashboardOutlined, DollarOutlined, HomeOutlined, IdcardOutlined, PartitionOutlined, PushpinOutlined } from '@ant-design/icons';
 
 export const kioskLink = [
   {
@@ -46,99 +46,34 @@ export const landingLink = [
     element: Landing.Home
   },
   {
-    label: 'Tentang Desa',
-    children: [
-      {
-        label: 'Berita',
-        key: '/news',
-        element: Landing.News
-      },
-      {
-        label: 'Produk Hukum',
-        key: '/legal_products',
-        element: Landing.LegalProducts
-      },
-      {
-        label: 'Perangkat Desa',
-        key: '/village_officials',
-        element: Landing.VillageOfficials
-      },
-      {
-        label: 'Lapak BUMDes',
-        key: '/village_enterprises',
-        element: Landing.VillageEnterprise
-      },
-      {
-        label: 'Potensi',
-        key: '/village_potentials',
-        element: Landing.VillagePotential
-      },
-      {
-        label: 'Batas Desa',
-        key: '/village_boundaries',
-        element: Landing.VillageBoundaries
-      },
-      {
-        label: 'Aplikasi Mobile',
-        key: '/mobile_landing',
-        element: Landing.MobileLanding
-      }
-    ]
+    label: 'Berita',
+    key: '/news',
+    element: Landing.News
   },
   {
-    label: 'Surat Menyurat',
-    key: '/letterings',
-    element: Landing.Lettering
+    label: 'Produk Hukum',
+    key: '/legal_products',
+    element: Landing.LegalProducts
   },
   {
-    label: 'Lapor Penduduk',
-    children: [
-      {
-        label: 'Cari Laporan',
-        key: '/browse_report',
-        element: Landing.BrowseReport
-      },
-      {
-        label: 'Buat Laporan',
-        key: '/submit_report',
-        element: Landing.SubmitReport
-      }
-    ]
+    label: 'Perangkat Desa',
+    key: '/village_officials',
+    element: Landing.VillageOfficials
   },
   {
-    label: 'Bantuan',
-    key: '/browse_beneficiary',
-    element: Landing.BrowseBeneficiary
+    label: 'Lapak BUMDes',
+    key: '/village_enterprises',
+    element: Landing.VillageEnterprise
   },
   {
-    label: 'Statistik',
-    children: [
-      {
-        label: 'Statistik Penduduk',
-        key: '/resident_statistics',
-        element: Landing.ResidentStatistic
-      },
-      {
-        label: 'Statistik APBDes',
-        key: '/apbd_statistics',
-        element: Landing.ApbdStatistic
-      },
-      {
-        label: 'Statistik Bantuan',
-        key: '/beneficiary_statistic',
-        element: Landing.PublicAssistanceStatistics
-      }
-    ]
+    label: 'Potensi',
+    key: '/village_potentials',
+    element: Landing.VillagePotential
   },
   {
-    label: 'Pemetaan',
-    key: '/maps',
-    element: Landing.Map
-  },
-  {
-    label: 'Pengaduan',
-    key: '/citizen_reports',
-    element: Landing.CitizenReport
+    label: 'Batas Desa',
+    key: '/village_boundaries',
+    element: Landing.VillageBoundaries
   }
 ];
 
@@ -184,29 +119,6 @@ export const dashboardLink = [
         label: 'Visi Misi Desa',
         element: Dashboard.VisiMisi,
         permissions: [[Action.READ, Model.VisiMisi]]
-      },
-      {
-        path: '/dashboard/web_settings',
-        label: 'Pengaturan Web',
-        element: Dashboard.WebSettings
-      }
-    ]
-  },
-  {
-    label: 'Pengguna',
-    icon: UserOutlined,
-    children: [
-      {
-        path: '/dashboard/user',
-        label: 'Pegawai',
-        element: Dashboard.User,
-        permissions: [[Action.READ, Model.Officer]]
-      },
-      {
-        path: '/dashboard/comunity',
-        label: 'Masyarakat',
-        element: Dashboard.Comunity,
-        permissions: [[Action.READ, Model.Comunity]]
       }
     ]
   },
@@ -302,48 +214,6 @@ export const dashboardLink = [
         label: 'Produk Hukum ',
         element: Dashboard.LegalProducts,
         permissions: [[Action.READ, Model.LegalProducts]]
-      }
-    ]
-  },
-  {
-    label: 'Layanan Masyarakat',
-    icon: FileOutlined,
-    children: [
-      {
-        path: '/dashboard/correspondence',
-        label: 'Permohonan Surat',
-        element: Dashboard.LetterType,
-        permissions: [[Action.READ, Model.LetterTemplate]]
-      },
-      {
-        path: '/dashboard/citizen_report',
-        label: 'Pengaduan Masyarakat',
-        element: Dashboard.CitizenReport,
-        permissions: [[Action.READ, Model.CitizenReport]]
-      },
-      {
-        path: '/dashboard/village_enterprise',
-        label: 'Lapak BUMDes',
-        element: Dashboard.VillageEnterprise,
-        permissions: [[Action.READ, Model.VillageEnterprise]]
-      },
-      {
-        path: '/dashboard/public_assistance',
-        label: 'Bantuan Masyarakat',
-        element: Dashboard.PublicAssistance,
-        permissions: [[Action.READ, Model.PublicAssistance]]
-      },
-      {
-        path: '/dashboard/tax_period',
-        label: 'Wajib Pajak',
-        element: Dashboard.TaxPeriod,
-        permissions: [[Action.READ, Model.TaxPeriod]]
-      },
-      {
-        path: '/dashboard/village_report',
-        label: 'Lapor Penduduk',
-        element: Dashboard.VillageReport,
-        permissions: [[Action.READ, Model.VillageReport]]
       }
     ]
   }

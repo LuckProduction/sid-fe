@@ -37,12 +37,12 @@ const DashboardSider = ({ collapsed, onCloseMenu }) => {
     .map(({ label, children, icon: Icon }) => ({
       key: label,
       label: (
-        <Tooltip title={label} placement="right" color="blue">
+        <Tooltip title={label} placement="right" color="green">
           <span>{label}</span>
         </Tooltip>
       ),
       icon: (
-        <Tooltip title={label} placement="right" color="blue">
+        <Tooltip title={label} placement="right" color="green">
           <Icon />
         </Tooltip>
       ),
@@ -55,7 +55,7 @@ const DashboardSider = ({ collapsed, onCloseMenu }) => {
         .map(({ path, label }) => ({
           key: path,
           label: (
-            <Tooltip title={label} placement="right" color="blue">
+            <Tooltip title={label} placement="right" color="green">
               <span>{label}</span>
             </Tooltip>
           ),
