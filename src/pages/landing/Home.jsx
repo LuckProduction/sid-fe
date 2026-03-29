@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DatabaseOutlined, EyeOutlined, FieldTimeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
+import { EyeOutlined, PlayCircleOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Button, Card, Grid, Image, List, Skeleton, Space, Tag, Typography } from 'antd';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -126,29 +126,8 @@ const Home = () => {
                 </Button>
               </Space>
             </div>
-            <div className="order-last col-span-3 hidden grid-cols-12 gap-x-4 lg:grid">
-              <div className="col-span-6 flex flex-col gap-y-4">
-                <Reveal>
-                  <div className="inline-flex gap-x-4 rounded-xl bg-gray-100 p-5">
-                    <DatabaseOutlined style={{ fontSize: '26px' }} className="text-green-500" />
-                    <p className="text-xs font-semibold">Akses cepat dan update mudah data desa {villageProfile?.data?.village_name}</p>
-                  </div>
-                </Reveal>
-                <div className="landing-village-card-container flex min-h-80 flex-col gap-y-4 rounded-xl p-6 shadow-2xl shadow-green-400">
-                  <p className="text-xs font-semibold text-white">
-                    Akses Cepat <FieldTimeOutlined />
-                  </p>
-                  <p className="text-4xl font-bold text-white">Desa {villageProfile?.data?.village_name}</p>
-                </div>
-              </div>
-              <div className="col-span-6 flex flex-col gap-y-4">
-                <div className="flex min-h-80 flex-col gap-y-4 rounded-xl bg-gradient-to-b from-green-500 to-green-300 p-6">
-                  <p className="text-xs font-semibold text-white">
-                    Praktis <FieldTimeOutlined />
-                  </p>
-                  <p className="text-4xl font-bold text-white">Mudah & Cepat</p>
-                </div>
-              </div>
+            <div className="order-last col-span-3">
+              <img className="flex w-full items-center justify-center" src="./image_asset/hero.png" />
             </div>
           </>
         )}
